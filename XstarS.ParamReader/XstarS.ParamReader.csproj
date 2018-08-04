@@ -44,7 +44,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ParamReader.cs" />
+    <Compile Include="PowerShellParamReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnixShellParamReader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
