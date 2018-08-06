@@ -6,11 +6,9 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 ## 程序集 System.ComponentModel.Binding
 
-文件名：System.ComponentModel.Binding.dll
-
 包含 `System.ComponentModel.INotifyPropertyChanged` 接口的若干实现，用于属性绑定到用户控件。
 
-结合 System.dll 中的可绑定列表 `System.ComponentModel.BindingList<T>`，可实现便捷的数据绑定。
+结合 System 中的可绑定列表 `System.ComponentModel.BindingList<T>`，可实现便捷的数据绑定。
 
 ### 抽象类 `System.ComponentModel.BindableObject`
 
@@ -87,9 +85,7 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 ## 程序集 XstarS.Collections.Generic
 
-文件名：XstarS.Collections.Generic.dll
-
-对应 System.Collections.Generic.dll 程序集，泛型集合相关。
+对应 System.Collections.Generic 程序集，泛型集合相关。
 
 ### 静态类 `XstarS.Collections.Generic.ListExtension`
 
@@ -99,9 +95,15 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 提供 `System.Collections.Generic.IDictionary<TKey, TValue>` 的扩展方法的静态类。
 
-## 程序集 XstarS.ParamReader
+## 程序集 XstarS.IO
 
-文件名：XstarS.ParamReader.dll
+对应 System.IO 程序集，文件系统访问相关。
+
+### 静态类 `XstarS.IO.FileSystemInfoExtension`
+
+提供 `System.IO.FileSystemInfo` 及其派生类的扩展方法的静态类。
+
+## 程序集 XstarS.ParamReader
 
 提供若干命令行参数解析器。
 

@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "System.ComponentModel.Bindi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XstarS.Collections.Generic", "XstarS.Collections.Generic\XstarS.Collections.Generic.csproj", "{1E06FD4C-5995-4245-9D74-3C277ACAB645}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XstarS.IO", "XstarS.IO\XstarS.IO.csproj", "{D37B0619-DB11-4712-B414-64F32DD0DCF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{1E06FD4C-5995-4245-9D74-3C277ACAB645}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1E06FD4C-5995-4245-9D74-3C277ACAB645}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1E06FD4C-5995-4245-9D74-3C277ACAB645}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D37B0619-DB11-4712-B414-64F32DD0DCF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D37B0619-DB11-4712-B414-64F32DD0DCF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D37B0619-DB11-4712-B414-64F32DD0DCF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D37B0619-DB11-4712-B414-64F32DD0DCF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
