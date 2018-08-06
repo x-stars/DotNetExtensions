@@ -85,17 +85,17 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 直接更改实例的值将不会触发 `System.ComponentModel.INotifyPropertyChanged.PropertyChanged` 事件，
 并会替换 `System.ComponentModel.INotifyPropertyChanged.PropertyChanged` 事件委托，破坏绑定关系。
 
-## 程序集 XstarS.Linq
+## 程序集 XstarS.Collections.Generic
 
-文件名：XstarS.Linq.dll
+文件名：XstarS.Collections.Generic.dll
 
-对应 System.Linq.dll 程序集，泛型集合扩展方法相关。
+对应 System.Collections.Generic.dll 程序集，泛型集合相关。
 
-### 静态类 `XstarS.Linq.List`
+### 静态类 `XstarS.Collections.Generic.ListExtension`
 
 提供 `System.Collections.Generic.IList<T>` 的扩展方法的静态类。
 
-### 静态类 `XstarS.Linq.Dictionary`
+### 静态类 `XstarS.Collections.Generic.DictionaryExtension`
 
 提供 `System.Collections.Generic.IDictionary<TKey, TValue>` 的扩展方法的静态类。
 

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace XstarS.Linq
+namespace XstarS.Collections.Generic
 {
     /// <summary>
     /// 提供 <see cref="IList{T}"/> 的扩展方法的静态类。
     /// </summary>
-    public static class List
+    public static class ListExtension
     {
         /// <summary>
         /// 将指定集合的元素添加到 <see cref="IList{T}"/> 的末尾。

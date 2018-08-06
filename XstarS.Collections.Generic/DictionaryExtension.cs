@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace XstarS.Linq
+namespace XstarS.Collections.Generic
 {
     /// <summary>
     /// 提供 <see cref="IDictionary{TKey, TValue}"/> 的扩展方法的静态类。
     /// </summary>
-    public static class Dictionary
+    public static class DictionaryExtension
     {
         /// <summary>
         /// 根据指定的值获取 <see cref="IDictionary{TKey, TValue}"/> 中对应的键的方法。

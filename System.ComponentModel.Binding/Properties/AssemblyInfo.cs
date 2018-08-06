@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("System.ComponentModel.Binding")]
 [assembly: AssemblyDescription("System.ComponentModel.Binding.dll")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("XstarS")]
 [assembly: AssemblyProduct("System.ComponentModel.Binding")]
-[assembly: AssemblyCopyright("Copyright © 2018 XstarS")]
+[assembly: AssemblyCopyright("Copyright © XstarS 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

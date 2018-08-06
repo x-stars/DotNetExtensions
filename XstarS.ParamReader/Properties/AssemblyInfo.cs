@@ -9,9 +9,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("XstarS.ParamReader")]
 [assembly: AssemblyDescription("XstarS.ParamReader.dll")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("XstarS")]
 [assembly: AssemblyProduct("XstarS.ParamReader")]
-[assembly: AssemblyCopyright("Copyright © 2018 XstarS")]
+[assembly: AssemblyCopyright("Copyright © XstarS 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

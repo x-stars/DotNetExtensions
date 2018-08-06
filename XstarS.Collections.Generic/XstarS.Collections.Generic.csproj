@@ -7,8 +7,8 @@
     <ProjectGuid>{1E06FD4C-5995-4245-9D74-3C277ACAB645}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XstarS.Linq</RootNamespace>
-    <AssemblyName>XstarS.Linq</AssemblyName>
+    <RootNamespace>XstarS.Collections.Generic</RootNamespace>
+    <AssemblyName>XstarS.Collections.Generic</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -21,7 +21,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\Debug\XstarS.Linq.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\XstarS.Collections.Generic.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -30,7 +30,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\XstarS.Linq.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\XstarS.Collections.Generic.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -43,8 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="List.cs" />
-    <Compile Include="Dictionary.cs" />
+    <Compile Include="ListExtension.cs" />
+    <Compile Include="DictionaryExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
