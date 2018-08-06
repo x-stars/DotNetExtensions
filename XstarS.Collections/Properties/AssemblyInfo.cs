@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("XstarS.Collections.Generic")]
-[assembly: AssemblyDescription("XstarS.Collections.Generic.dll")]
+[assembly: AssemblyTitle("XstarS.Collections")]
+[assembly: AssemblyDescription("XstarS.Collections.dll")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("XstarS")]
-[assembly: AssemblyProduct("XstarS.Collections.Generic")]
+[assembly: AssemblyProduct("XstarS.Collections")]
 [assembly: AssemblyCopyright("Copyright © XstarS 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

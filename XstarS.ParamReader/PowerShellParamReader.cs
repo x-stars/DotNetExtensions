@@ -106,6 +106,9 @@ namespace XstarS
         /// <exception cref="ArgumentNullException">
         /// <paramref name="paramName"/> 为 <see langword="null"/>。
         /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="paramName"/> 不带参数提示符 "-" 或长度过短。
+        /// </exception>
         public override string GetParam(string paramName)
         {
             // 参数检查。
@@ -178,6 +181,9 @@ namespace XstarS
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="switchName"/> 为 <see langword="null"/>。
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="switchName"/> 不带参数提示符 "-" 或长度过短。
         /// </exception>
         public override bool GetSwitch(string switchName)
         {

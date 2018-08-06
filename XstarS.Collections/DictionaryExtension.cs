@@ -20,13 +20,11 @@ namespace XstarS.Collections.Generic
         public static ICollection<TKey> GetKeys<TKey, TValue>(this IDictionary<TKey, TValue> source, TValue value)
         {
             var keys = new List<TKey>(source.Count);
-
             foreach (TKey key in source.Keys)
             {
                 if (EqualityComparer<TValue>.Default.Equals(source[key], value))
                 { keys.Add(key); }
             }
-
             keys.TrimExcess();
             return keys;
         }

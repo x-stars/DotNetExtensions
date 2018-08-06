@@ -6,7 +6,6 @@ namespace System.ComponentModel
 {
     /// <summary>
     /// <see cref="INotifyPropertyChanged"/> 接口的实现，用于实现数据绑定到用户控件的泛型类。
-    /// 此类不能被继承。
     /// </summary>
     /// <remarks><para>
     /// 设置数据绑定时，请绑定到 <see cref="Bindable{T}.Value"/>，而非实例本身，以实现属性值发生更改时通知客户端。
@@ -17,7 +16,7 @@ namespace System.ComponentModel
     /// 并会替换 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件委托，破坏绑定关系。
     /// </para></remarks>
     /// <typeparam name="T"><see cref="Bindable{T}"/> 中用于数据绑定的值的类型。</typeparam>
-    public sealed class Bindable<T> : BindableObject, IEquatable<Bindable<T>>
+    public class Bindable<T> : BindableObject, IEquatable<Bindable<T>>
     {
         /// <summary>
         /// 当前 <see cref="Bindable{T}"/> 实例用于数据绑定的值。
@@ -47,7 +46,7 @@ namespace System.ComponentModel
             get => this.value;
             set => this.SetProperty(ref this.value, value);
         }
-
+        
         /// <summary>
         /// 返回一个值，该值指示此实例和指定的 <see cref="Bindable{T}"/> 对象是否表示相同的值。
         /// </summary>

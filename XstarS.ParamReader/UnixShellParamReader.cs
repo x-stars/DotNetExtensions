@@ -10,7 +10,6 @@ namespace XstarS
     /// <remarks>
     /// 支持连字符 "-" 后接多个开关参数的解析。
     /// 暂不支持连字符 "-" 开头的参数值的解析。
-    /// 暂不支持多个同名的有名参数的解析。
     /// 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
     /// 不支持一个参数名称后跟多个参数值的有名参数的解析。
     /// </remarks>
@@ -28,6 +27,10 @@ namespace XstarS
         /// 开关参数名称列表。
         /// </summary>
         private readonly string[] switchNames;
+        /// <summary>
+        /// 比较参数名称时采用的字符串比较器。
+        /// </summary>
+        private readonly IEqualityComparer<string> stringComparer;
 
         /// <summary>
         /// 初始化 Unix / Linux Shell 风格命令行参数解析器
@@ -49,6 +52,7 @@ namespace XstarS
             this.arguments = arguments ?? new string[0];
             this.paramNames = paramNames ?? new string[0];
             this.switchNames = switchNames ?? new string[0];
+            this.stringComparer = StringComparer.InvariantCulture;
         }
 
         /// <summary>
@@ -99,6 +103,9 @@ namespace XstarS
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="paramName"/> 为 <see langword="null"/>。
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="paramName"/> 不带参数提示符 "-" 或长度过短。
         /// </exception>
         public override string GetParam(string paramName)
         {
@@ -155,7 +162,7 @@ namespace XstarS
             for (int i = 0, currParamIndex = 0; i < this.arguments.Length; i++)
             {
                 // 当前为有名参数名称。
-                if (this.paramNames.Contains(this.arguments[i]))
+                if (this.paramNames.Contains(this.arguments[i], this.stringComparer))
                 { i++; }
                 // 当前为开关参数名称。
                 else if (this.arguments[i].StartsWith("-"))
@@ -181,6 +188,9 @@ namespace XstarS
         /// </returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="switchName"/> 为 <see langword="null"/>。
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="switchName"/> 不带参数提示符 "-" 或长度过短。
         /// </exception>
         public override bool GetSwitch(string switchName)
         {
@@ -230,6 +240,59 @@ namespace XstarS
 
             // 全部解析失败。
             return false;
+        }
+
+        /// <summary>
+        /// 解析指定名称的可重复有名参数。
+        /// </summary>
+        /// <param name="paramName">要解析的可重复有名参数的名称。</param>
+        /// <returns>
+        /// 所有名称为 <paramref name="paramName"/> 的有名参数的参数值的数组；
+        /// 不存在则返回空数组。
+        /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="paramName"/> 为 <see langword="null"/>。
+        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="paramName"/> 不带参数提示符 "-" 或长度过短。
+        /// </exception>
+        public virtual string[] GetParams(string paramName)
+        {
+            // null 检查。
+            if (paramName is null)
+            { throw new ArgumentNullException(nameof(paramName)); }
+
+            var paramValueList = new List<string>();
+            // 分隔同义名称。
+            string[] alterParamNames = paramName.Split(',');
+            foreach (string alterParamName in alterParamNames)
+            {
+                // 参数检查。
+                if (alterParamName.StartsWith("--"))
+                {
+                    if (alterParamName.Length < 3)
+                    { throw new ArgumentException("LongNameTooShort", nameof(paramName)); }
+                }
+                else if (alterParamName.StartsWith("-"))
+                {
+                    if (alterParamName.Length < 2)
+                    { throw new ArgumentException("ShortNameTooShort", nameof(paramName)); }
+                    else if (alterParamName.Length > 2)
+                    { throw new ArgumentException("ShortNameTooLong", nameof(paramName)); }
+                }
+                else
+                { throw new ArgumentException("NoPrefix", nameof(paramName)); }
+
+                // 尝试解析所有同名有名参数。
+                for (int i = 0; i < this.arguments.Length - 1; i++)
+                {
+                    // 当前为指定有名参数的名称。
+                    if (this.stringComparer.Equals(this.arguments[i], paramName))
+                    { paramValueList.Add(this.arguments[i + 1]); }
+                }
+            }
+            
+            return paramValueList.ToArray();
         }
 
         /// <summary>

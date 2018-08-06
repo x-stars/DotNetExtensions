@@ -1,4 +1,4 @@
-# DotNetExtensionLibrary
+﻿# DotNetExtensionLibrary
 
 天南十字星 (XstarS) 的 .NET Framework 扩展库。
 
@@ -8,7 +8,7 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 包含 `System.ComponentModel.INotifyPropertyChanged` 接口的若干实现，用于属性绑定到用户控件。
 
-结合 System 中的可绑定列表 `System.ComponentModel.BindingList<T>`，可实现便捷的数据绑定。
+结合 System 程序集中的可绑定列表 `System.ComponentModel.BindingList<T>`，可实现便捷的数据绑定。
 
 ### 抽象类 `System.ComponentModel.BindableObject`
 
@@ -35,7 +35,7 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 若将上例中 `BindableData` 的实例的 `Data` 属性绑定到用户控件的某属性，
 则当服务端更改 `BindableData` 实例的 `Data` 属性时，将会通知客户端属性值发生更改。
 
-### 泛型密封类 `System.ComponentModel.Bindable<T>`
+### 泛型类 `System.ComponentModel.Bindable<T>`
 
 `System.ComponentModel.INotifyPropertyChanged` 接口的实现，用于实现数据绑定到用户控件的泛型类。
 
@@ -74,8 +74,6 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
         // ......
     }
 
-    // ......
-
 若将上例中 `Flag` 属性的 `Value` 属性绑定到用户控件的某属性，
 则当服务端更改 `Flag` 属性的 `Value` 属性时，将会通知客户端属性值发生更改。
 
@@ -83,9 +81,12 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 直接更改实例的值将不会触发 `System.ComponentModel.INotifyPropertyChanged.PropertyChanged` 事件，
 并会替换 `System.ComponentModel.INotifyPropertyChanged.PropertyChanged` 事件委托，破坏绑定关系。
 
-## 程序集 XstarS.Collections.Generic
+## 程序集 XstarS.Collections
 
-对应 System.Collections.Generic 程序集，泛型集合相关。
+对应 System.Collections 程序集，泛型集合相关。
+
+> 根据 .NET 习惯，泛型集合命名空间 `System.Collections.Generic` 的内容置于 System.Collections 程序集；
+> 而非泛型集合命名空间 `System.Collections` 的内容则置于 System.Collections.NonGeneric 程序集。
 
 ### 静态类 `XstarS.Collections.Generic.ListExtension`
 
@@ -116,7 +117,15 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 * 不支持一个参数名称后跟多个参数值的有名参数的解析。
 * 不支持多个同名的有名参数的解析。
 
+### 抽象类 `XstarS.MultiValueParamReader`
+
+默认的多值命令行参数解析器。一个参数名能出现多次，之后也能接多个参数值。
+
+目前为占位抽象类，有待实现。
+
 ### 类 `XstarS.PowerShellParamReader`
+
+继承 `XstarS.ParamReader` 类。
 
 PowerShell 风格的命令行参数解析器，参数名称忽略大小写。
 
@@ -127,10 +136,11 @@ PowerShell 风格的命令行参数解析器，参数名称忽略大小写。
 
 ### 类 `XstarS.UnixShellParamReader`
 
+继承 `XstarS.ParamReader` 类。
+
 Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小写。
 
 * 支持连字符 "-" 后接多个开关参数的解析。
 * 暂不支持连字符 "-" 开头的参数值的解析。
-* 暂不支持多个同名的有名参数的解析。
 * 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
 * 不支持一个参数名称后跟多个参数值的有名参数的解析。
