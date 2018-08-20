@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("System.ComponentModel.Binding")]
-[assembly: AssemblyDescription("System.ComponentModel.Binding.dll")]
+[assembly: AssemblyTitle("XstarS.ComponentModel.Binding")]
+[assembly: AssemblyDescription("XstarS.ComponentModel.Binding.dll")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("XstarS")]
-[assembly: AssemblyProduct("System.ComponentModel.Binding")]
+[assembly: AssemblyProduct("XstarS.ComponentModel.Binding")]
 [assembly: AssemblyCopyright("Copyright © XstarS 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 
-namespace System.ComponentModel
+namespace XstarS.ComponentModel
 {
     /// <summary>
     /// <see cref="INotifyPropertyChanged"/> 接口的实现，用于实现数据绑定到用户控件的泛型类。
@@ -96,6 +96,7 @@ namespace System.ComponentModel
         /// </returns>
         public static bool operator ==(Bindable<T> bindable1, Bindable<T> bindable2) =>
             EqualityComparer<Bindable<T>>.Default.Equals(bindable1, bindable2);
+
         /// <summary>
         /// 指示两 <see cref="Bindable{T}"/> 对象是否不等。
         /// </summary>
@@ -115,6 +116,7 @@ namespace System.ComponentModel
         /// <param name="value">一个 <typeparamref name="T"/> 类型的对象。</param>
         /// <returns>使用 <paramref name="value"/> 初始化的 <see cref="Bindable{T}"/> 对象。</returns>
         public static implicit operator Bindable<T>(T value) => new Bindable<T>(value);
+
         /// <summary>
         /// 返回指定 <see cref="Bindable{T}"/> 对象用于数据绑定的值。
         /// </summary>

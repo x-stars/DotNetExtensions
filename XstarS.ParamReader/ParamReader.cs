@@ -189,6 +189,7 @@ namespace XstarS
         /// </returns>
         public static bool operator ==(ParamReader reader1, ParamReader reader2) =>
             EqualityComparer<ParamReader>.Default.Equals(reader1, reader2);
+
         /// <summary>
         /// 指示两 <see cref="ParamReader"/> 对象是否不等。
         /// </summary>

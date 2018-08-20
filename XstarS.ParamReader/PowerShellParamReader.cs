@@ -213,6 +213,7 @@ namespace XstarS
         /// </returns>
         public static bool operator ==(PowerShellParamReader reader1, PowerShellParamReader reader2) =>
             EqualityComparer<PowerShellParamReader>.Default.Equals(reader1, reader2);
+
         /// <summary>
         /// 指示两 <see cref="PowerShellParamReader"/> 对象是否不等。
         /// </summary>

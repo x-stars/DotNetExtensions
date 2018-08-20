@@ -306,6 +306,7 @@ namespace XstarS
         /// </returns>
         public static bool operator ==(UnixShellParamReader reader1, UnixShellParamReader reader2) =>
             EqualityComparer<UnixShellParamReader>.Default.Equals(reader1, reader2);
+
         /// <summary>
         /// 指示两 <see cref="UnixShellParamReader"/> 对象是否不等。
         /// </summary>

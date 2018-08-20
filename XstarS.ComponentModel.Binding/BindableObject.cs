@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace System.ComponentModel
+namespace XstarS.ComponentModel
 {
     /// <summary>
     /// <see cref="INotifyPropertyChanged"/> 接口的实现，用于实现数据绑定到用户控件的抽象类。
