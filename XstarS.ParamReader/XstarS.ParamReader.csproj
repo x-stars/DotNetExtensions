@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CmdParamReader.cs" />
     <Compile Include="MultiValueParamReader.cs" />
     <Compile Include="ParamReader.cs" />
     <Compile Include="PowerShellParamReader.cs" />

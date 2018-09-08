@@ -8,12 +8,12 @@ namespace XstarS
     /// 多值命令行参数解析器 <see cref="MultiValueParamReader"/>。
     /// 一个参数名能出现多次，之后也能接多个参数值。
     /// </summary>
-    public class MultiValueParamReader
+    public class MultiValueParamReader : ParamReader
     {
         /// <summary>
         /// 初始化 <see cref="MultiValueParamReader"/> 类的新实例。
         /// </summary>
-        public MultiValueParamReader() { }
+        public MultiValueParamReader() : base(null) { }
 
         /// <summary>
         /// 解析指定名称的多值有名参数。

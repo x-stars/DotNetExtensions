@@ -56,8 +56,7 @@ namespace XstarS.ComponentModel
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
         /// </returns>
         public bool Equals(Bindable<T> other) =>
-            other != null &&
-            EqualityComparer<T>.Default.Equals(this.value, other.value);
+            !(other is null) && EqualityComparer<T>.Default.Equals(this.value, other.value);
 
         /// <summary>
         /// 返回一个值，该值指示此实例和指定的对象是否表示相同的值。

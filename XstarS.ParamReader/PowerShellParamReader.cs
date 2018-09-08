@@ -66,7 +66,7 @@ namespace XstarS
         /// </returns>
         public bool Equals(PowerShellParamReader other)
         {
-            return other != null &&
+            return !(other is null) &&
                 EqualityComparer<string[]>.Default.Equals(this.arguments, other.arguments) &&
                 EqualityComparer<string[]>.Default.Equals(this.paramNames, other.paramNames) &&
                 EqualityComparer<string[]>.Default.Equals(this.switchNames, other.switchNames);

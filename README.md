@@ -117,11 +117,24 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 * 不支持一个参数名称后跟多个参数值的有名参数的解析。
 * 不支持多个同名的有名参数的解析。
 
-### 抽象类 `XstarS.MultiValueParamReader`
+### 类 `XstarS.MultiValueParamReader`
+
+继承 `XstarS.ParamReader` 类。
 
 默认的多值命令行参数解析器。一个参数名能出现多次，之后也能接多个参数值。
 
-目前为占位抽象类，有待实现。
+目前为占位类，有待实现。
+
+### 类 `XstarS.CmdParamReader`
+
+继承 `XstarS.ParamReader` 类。
+
+命令提示符 (CMD) 风格的命令行参数解析器，参数名称忽略大小写，有名参数名称与参数值用冒号 ":" 分隔。
+
+* 支持多个同名的有名参数的解析。
+* 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
+* 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
+* 不支持一个参数名称后跟多个参数值的有名参数的解析。
 
 ### 类 `XstarS.PowerShellParamReader`
 
