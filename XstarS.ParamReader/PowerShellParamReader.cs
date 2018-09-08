@@ -64,11 +64,13 @@ namespace XstarS
         /// 如果此实例和 <paramref name="other"/> 的初始化参数相同，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
         /// </returns>
-        public bool Equals(PowerShellParamReader other) =>
-            !(other is null) &&
-            EqualityComparer<string[]>.Default.Equals(this.arguments, other.arguments) &&
-            EqualityComparer<string[]>.Default.Equals(this.paramNames, other.paramNames) &&
-            EqualityComparer<string[]>.Default.Equals(this.switchNames, other.switchNames);
+        public bool Equals(PowerShellParamReader other)
+        {
+            return other != null &&
+                EqualityComparer<string[]>.Default.Equals(this.arguments, other.arguments) &&
+                EqualityComparer<string[]>.Default.Equals(this.paramNames, other.paramNames) &&
+                EqualityComparer<string[]>.Default.Equals(this.switchNames, other.switchNames);
+        }
 
         /// <summary>
         /// 返回一个值，该值指示此实例和指定的对象是否相等。
@@ -78,8 +80,10 @@ namespace XstarS
         /// 如果 <paramref name="obj"/> 是 <see cref="PowerShellParamReader"/> 的实例，且初始化参数相同，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
         /// </returns>
-        public override bool Equals(object obj) =>
-            this.Equals(obj as PowerShellParamReader);
+        public override bool Equals(object obj)
+        {
+            return this.Equals(obj as PowerShellParamReader);
+        }
 
         /// <summary>
         /// 返回此实例的哈希代码。

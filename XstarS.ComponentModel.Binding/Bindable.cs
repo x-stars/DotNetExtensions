@@ -56,7 +56,7 @@ namespace XstarS.ComponentModel
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
         /// </returns>
         public bool Equals(Bindable<T> other) =>
-            !(other is null) &&
+            other != null &&
             EqualityComparer<T>.Default.Equals(this.value, other.value);
 
         /// <summary>
