@@ -7,12 +7,12 @@ namespace XstarS.Collections.Generic
     /// <summary>
     /// 提供 <see cref="IList{T}"/> 的扩展方法的静态类。
     /// </summary>
-    public static class ListExtension
+    public static class ListExtensions
     {
         /// <summary>
         /// 将指定集合的元素添加到 <see cref="IList{T}"/> 的末尾。
         /// </summary>
-        /// <typeparam name="T"><see cref="IList{T}"/> 中元素的类型。</typeparam>
+        /// <typeparam name="T"><paramref name="source"/> 中的元素的类型。</typeparam>
         /// <param name="source"><see cref="IList{T}"/> 实例，扩展方法源。</param>
         /// <param name="collection">
         /// 应将其元素添加到 <see cref="IList{T}"/> 的末尾的集合。
@@ -27,7 +27,7 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 将指定集合的元素插入到 <see cref="IList{T}"/> 的的指定索引处。
         /// </summary>
-        /// <typeparam name="T"><see cref="IList{T}"/> 中元素的类型。</typeparam>
+        /// <typeparam name="T"><paramref name="source"/> 中的元素的类型。</typeparam>
         /// <param name="source"><see cref="IList{T}"/> 实例，扩展方法源。</param>
         /// <param name="index">应在此处插入新元素的从零开始的索引。</param>
         /// <param name="collection">
@@ -52,7 +52,7 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 从 <see cref="IList{T}"/> 中移除一定范围的元素。
         /// </summary>
-        /// <typeparam name="T"><see cref="IList{T}"/> 中元素的类型。</typeparam>
+        /// <typeparam name="T"><paramref name="source"/> 中的元素的类型。</typeparam>
         /// <param name="source"><see cref="IList{T}"/> 实例，扩展方法源。</param>
         /// <param name="index">要移除的元素范围的从零开始的起始索引。</param>
         /// <param name="count">要移除的元素数。</param>

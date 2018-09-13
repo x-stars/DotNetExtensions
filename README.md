@@ -19,7 +19,8 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 继承 `System.Collections.Generic.List<T>` 类。
 
-可进行相等比较的泛型列表，通过遍历每个元素进行相等比较实现列表的相等比较。
+可进行相等比较的泛型列表。
+通过遍历每个元素进行相等比较实现列表的相等比较。
 
 重写了 `Equals(object)`、`GetHashCode()` 和 `ToString()` 方法，
 实现了 `System.IEquatable<T>` 接口，并定义了 `==` 和 `!=` 运算符。
@@ -28,10 +29,29 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 继承 `System.Collections.Generic.Dictionary<T>` 类。
 
-可进行相等比较的泛型字典，通过遍历每个元素并对其键和值进行相等比较实现字典的相等比较。
+可进行相等比较的泛型字典。
+通过遍历每个元素并对其键和值进行相等比较实现字典的相等比较。
 
 重写了 `Equals(object)`、`GetHashCode()` 和 `ToString()` 方法，
 实现了 `System.IEquatable<T>` 接口，并定义了 `==` 和 `!=` 运算符。
+
+### 泛型类 `XstarS.Collections.Generic.IndexedLinkedList<T>`
+
+继承 `System.Collections.Generic.LinkedList<T>` 类。
+
+能够通过索引访问并支持相等比较的双重链接列表。
+通过遍历元素并计数实现按索引值访问，通过遍历每个元素进行相等比较实现列表的相等比较。
+
+相比于 `System.Collections.Generic.LinkedList<T>`，
+新增实现了 `System.Collections.Generic.IList<T>` 和
+`System.Collections.Generic.IReadOnlyList<T>` 两个泛型集合接口。
+
+重写了 `Equals(object)`、`GetHashCode()` 和 `ToString()` 方法，
+实现了 `System.IEquatable<T>` 接口，并定义了 `==` 和 `!=` 运算符。
+
+### 静态类 `XstarS.Collections.Generic.EnumerableExtension`
+
+提供 `System.Collections.Generic.IEnumerable<T>` 的扩展方法的静态类。
 
 ### 静态类 `XstarS.Collections.Generic.ListExtension`
 

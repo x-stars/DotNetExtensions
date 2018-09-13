@@ -7,7 +7,7 @@ namespace XstarS.Collections.Generic
     /// <summary>
     /// 提供泛型集合 <see cref="IEnumerable{T}"/> 的相等比较的方法，通过遍历每个元素进行比较。
     /// </summary>
-    /// <typeparam name="T">集合中元素的类型。</typeparam>
+    /// <typeparam name="T">集合中的元素的类型。</typeparam>
     public class CollectionEqualityComparer<T> : EqualityComparer<IEnumerable<T>>
     {
         /// <summary>
@@ -29,16 +29,18 @@ namespace XstarS.Collections.Generic
             if ((x is null) && (y is null)) { return true; }
             if ((x is null) ^ (y is null)) { return false; }
 
-            bool isEqual = true;
-            var xIter = x.GetEnumerator();
-            var yIter = y.GetEnumerator();
-            var comparer = EqualityComparer<T>.Default;
-            while (xIter.MoveNext() & yIter.MoveNext())
+            using (IEnumerator<T>
+                xIter = x.GetEnumerator(),
+                yIter = y.GetEnumerator())
             {
-                if (!comparer.Equals(xIter.Current, yIter.Current))
-                { isEqual = false; break; }
+                var comparer = EqualityComparer<T>.Default;
+                while (xIter.MoveNext() & yIter.MoveNext())
+                {
+                    if (!comparer.Equals(xIter.Current, yIter.Current))
+                    { return false; }
+                }
+                return true;
             }
-            return isEqual;
         }
 
         /// <summary>

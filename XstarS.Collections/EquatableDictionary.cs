@@ -12,8 +12,8 @@ namespace XstarS.Collections.Generic
     /// </summary>
     /// <typeparam name="TKey">字典中的键的类型。</typeparam>
     /// <typeparam name="TValue">字典中的值的类型。</typeparam>
-    public class EquatableDictionary<TKey, TValue> :
-        Dictionary<TKey, TValue>, IEquatable<EquatableDictionary<TKey, TValue>>
+    public class EquatableDictionary<TKey, TValue> : Dictionary<TKey, TValue>,
+        IEquatable<EquatableDictionary<TKey, TValue>>
     {
         /// <summary>
         /// 初始化 <see cref="EquatableDictionary{TKey, TValue}"/> 类的新实例，
@@ -112,18 +112,20 @@ namespace XstarS.Collections.Generic
             if (other is null) { return false; }
             if (this.Count != other.Count) { return false; }
 
-            bool isEqual = true;
-            var keyComparer = EqualityComparer<TKey>.Default;
-            var valueComparer = EqualityComparer<TValue>.Default;
-            var thisIter = this.GetEnumerator();
-            var otherIter = other.GetEnumerator();
-            while (thisIter.MoveNext() & otherIter.MoveNext())
+            using (IEnumerator<KeyValuePair<TKey, TValue>>
+                thisIter = this.GetEnumerator(),
+                otherIter = other.GetEnumerator())
             {
-                if (!keyComparer.Equals(thisIter.Current.Key, otherIter.Current.Key) ||
-                    !valueComparer.Equals(thisIter.Current.Value, otherIter.Current.Value))
-                { isEqual = false; break; }
+                var keyComparer = EqualityComparer<TKey>.Default;
+                var valueComparer = EqualityComparer<TValue>.Default;
+                while (thisIter.MoveNext() & otherIter.MoveNext())
+                {
+                    if (!keyComparer.Equals(thisIter.Current.Key, otherIter.Current.Key) ||
+                        !valueComparer.Equals(thisIter.Current.Value, otherIter.Current.Value))
+                    { return false; }
+                }
+                return true;
             }
-            return isEqual;
         }
 
         /// <summary>

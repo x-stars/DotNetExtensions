@@ -47,16 +47,18 @@ namespace XstarS.Collections.Generic
             if (other is null) { return false; }
             if (this.Count != other.Count) { return false; }
 
-            bool isEqual = true;
-            var comparer = EqualityComparer<T>.Default;
-            var thisIter = this.GetEnumerator();
-            var otherIter = other.GetEnumerator();
-            while (thisIter.MoveNext() & otherIter.MoveNext())
+            using (IEnumerator<T>
+                thisIter = this.GetEnumerator(),
+                otherIter = other.GetEnumerator())
             {
-                if (!comparer.Equals(thisIter.Current, otherIter.Current))
-                { isEqual = false; break; }
+                var comparer = EqualityComparer<T>.Default;
+                while (thisIter.MoveNext() & otherIter.MoveNext())
+                {
+                    if (!comparer.Equals(thisIter.Current, otherIter.Current))
+                    { return false; }
+                }
+                return true;
             }
-            return isEqual;
         }
 
         /// <summary>

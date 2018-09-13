@@ -44,10 +44,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CollectionEqualityComparer.cs" />
+    <Compile Include="EnumerableExtensions.cs" />
     <Compile Include="EquatableDictionary.cs" />
     <Compile Include="EquatableList.cs" />
-    <Compile Include="ListExtension.cs" />
-    <Compile Include="DictionaryExtension.cs" />
+    <Compile Include="IndexedLinkedList.cs" />
+    <Compile Include="ListExtensions.cs" />
+    <Compile Include="DictionaryExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

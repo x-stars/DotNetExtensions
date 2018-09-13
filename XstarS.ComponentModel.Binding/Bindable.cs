@@ -26,13 +26,13 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 使用默认值初始化 <see cref="Bindable{T}"/> 类的新实例。
         /// </summary>
-        public Bindable() => this.value = default(T);
+        public Bindable() : base() => this.value = default(T);
 
         /// <summary>
         /// 使用指定的值初始化 <see cref="Bindable{T}"/> 类的新实例。
         /// </summary>
         /// <param name="value">一个 <typeparamref name="T"/> 类型的对象。</param>
-        public Bindable(T value) => this.value = value;
+        public Bindable(T value) : base() => this.value = value;
 
         /// <summary>
         /// 当前 <see cref="Bindable{T}"/> 实例用于数据绑定的值。
