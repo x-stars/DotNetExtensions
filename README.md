@@ -11,6 +11,28 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 > 根据 .NET 习惯，泛型集合命名空间 `System.Collections.Generic` 的内容置于 System.Collections 程序集；
 > 而非泛型集合命名空间 `System.Collections` 的内容则置于 System.Collections.NonGeneric 程序集。
 
+### 泛型类 `XstarS.Collections.Generic.CollectionEqualityComparer<T>`
+
+提供泛型集合 `System.Collections.Generic.IEnumberable<T>` 的相等比较的方法，通过遍历每个元素进行比较。
+
+### 泛型类 `XstarS.Collections.Generic.EquatableList<T>`
+
+继承 `System.Collections.Generic.List<T>` 类。
+
+可进行相等比较的泛型列表，通过遍历每个元素进行相等比较实现列表的相等比较。
+
+重写了 `Equals(object)`、`GetHashCode()` 和 `ToString()` 方法，
+实现了 `System.IEquatable<T>` 接口，并定义了 `==` 和 `!=` 运算符。
+
+### 泛型类 `XstarS.Collections.Generic.EquatableDictionary<T>`
+
+继承 `System.Collections.Generic.Dictionary<T>` 类。
+
+可进行相等比较的泛型字典，通过遍历每个元素并对其键和值进行相等比较实现字典的相等比较。
+
+重写了 `Equals(object)`、`GetHashCode()` 和 `ToString()` 方法，
+实现了 `System.IEquatable<T>` 接口，并定义了 `==` 和 `!=` 运算符。
+
 ### 静态类 `XstarS.Collections.Generic.ListExtension`
 
 提供 `System.Collections.Generic.IList<T>` 的扩展方法的静态类。

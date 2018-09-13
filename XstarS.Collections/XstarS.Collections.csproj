@@ -43,6 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CollectionEqualityComparer.cs" />
+    <Compile Include="EquatableDictionary.cs" />
+    <Compile Include="EquatableList.cs" />
     <Compile Include="ListExtension.cs" />
     <Compile Include="DictionaryExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
