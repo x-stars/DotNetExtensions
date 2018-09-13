@@ -13,7 +13,7 @@ namespace XstarS
     /// 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
     /// 不支持一个参数名称后跟多个参数值的有名参数的解析。
     /// </remarks>
-    public class CmdParamReader : ParamReader, IEquatable<CmdParamReader>
+    public class CmdParamReader : ParamReader
     {
         /// <summary>
         /// 待解析的参数列表。
@@ -46,50 +46,6 @@ namespace XstarS
             this.switchNames = switchNames ?? new string[0];
             this.paramNames = paramNames ?? new string[0];
             this.stringComparer = StringComparer.InvariantCultureIgnoreCase;
-        }
-
-        /// <summary>
-        /// 返回一个值，该值指示此实例和指定的 <see cref="CmdParamReader"/> 对象是否相等。
-        /// </summary>
-        /// <param name="other">要与此实例比较的 <see cref="CmdParamReader"/> 对象。</param>
-        /// <returns>
-        /// 如果此实例和 <paramref name="other"/> 的初始化参数相同，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
-        /// </returns>
-        public bool Equals(CmdParamReader other)
-        {
-            return !(other is null) &&
-                EqualityComparer<string[]>.Default.Equals(this.arguments, other.arguments) &&
-                EqualityComparer<string[]>.Default.Equals(this.paramNames, other.paramNames) &&
-                EqualityComparer<string[]>.Default.Equals(this.switchNames, other.switchNames);
-        }
-
-        /// <summary>
-        /// 返回一个值，该值指示此实例和指定的对象是否相等。
-        /// </summary>
-        /// <param name="obj">要与此实例比较的对象。</param>
-        /// <returns>
-        /// 如果 <paramref name="obj"/> 是 <see cref="CmdParamReader"/> 的实例，且初始化参数相同，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
-        /// </returns>
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as CmdParamReader);
-        }
-
-        /// <summary>
-        /// 返回此实例的哈希代码。
-        /// </summary>
-        /// <returns>32 位有符号整数哈希代码。</returns>
-        public override int GetHashCode()
-        {
-            var hashCode = 714043901;
-            hashCode = hashCode * -1521134295 + base.GetHashCode();
-            hashCode = hashCode * -1521134295 + EqualityComparer<string[]>.Default.GetHashCode(this.arguments);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string[]>.Default.GetHashCode(this.paramNames);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string[]>.Default.GetHashCode(this.switchNames);
-            hashCode = hashCode * -1521134295 + EqualityComparer<IEqualityComparer<string>>.Default.GetHashCode(this.stringComparer);
-            return hashCode;
         }
 
         /// <summary>
@@ -168,29 +124,5 @@ namespace XstarS
         {
             throw new NotImplementedException();
         }
-
-        /// <summary>
-        /// 指示两 <see cref="CmdParamReader"/> 对象是否相等。
-        /// </summary>
-        /// <param name="reader1">第一个对象。</param>
-        /// <param name="reader2">第二个对象。</param>
-        /// <returns>
-        /// 如果 <paramref name="reader1"/> 和 <paramref name="reader2"/> 的初始化参数相同，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
-        /// </returns>
-        public static bool operator ==(CmdParamReader reader1, CmdParamReader reader2) =>
-            EqualityComparer<CmdParamReader>.Default.Equals(reader1, reader2);
-
-        /// <summary>
-        /// 指示两 <see cref="CmdParamReader"/> 对象是否不等。
-        /// </summary>
-        /// <param name="reader1">第一个对象。</param>
-        /// <param name="reader2">第二个对象。</param>
-        /// <returns>
-        /// 如果 <paramref name="reader1"/> 和 <paramref name="reader2"/> 的初始化参数不同，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
-        /// </returns>
-        public static bool operator !=(CmdParamReader reader1, CmdParamReader reader2) =>
-            !(reader1 == reader2);
     }
 }
