@@ -4,6 +4,18 @@
 
 C# 底层面向对象练习作品，同时也可用作自己开发时的实用库。
 
+## 程序集 XstarS
+
+对应 System 程序集，系统基础相关。
+
+### 泛型类 `XstarS.LazyArray<T>`
+
+延迟初始化对象 `System.Lazy<T>` 的索引访问支持。
+
+实现 `System.Collections.Generic.IReadOnlyList<T>` 接口，内部元素不可修改。
+
+可通过 `Dispose(int)` 方法释放指定索引处的对象，将其重置为值创建之前的 `System.Func<T>` 委托。
+
 ## 程序集 XstarS.Collections
 
 对应 System.Collections 程序集，泛型集合相关。
@@ -49,15 +61,15 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 重写了 `Equals(object)`、`GetHashCode()` 和 `ToString()` 方法，
 实现了 `System.IEquatable<T>` 接口，并定义了 `==` 和 `!=` 运算符。
 
-### 静态类 `XstarS.Collections.Generic.EnumerableExtension`
+### 静态类 `XstarS.Collections.Generic.EnumerableExtensions`
 
 提供 `System.Collections.Generic.IEnumerable<T>` 的扩展方法的静态类。
 
-### 静态类 `XstarS.Collections.Generic.ListExtension`
+### 静态类 `XstarS.Collections.Generic.ListExtensions`
 
 提供 `System.Collections.Generic.IList<T>` 的扩展方法的静态类。
 
-### 静态类 `XstarS.Collections.Generic.DictionaryExtension`
+### 静态类 `XstarS.Collections.Generic.DictionaryExtensions`
 
 提供 `System.Collections.Generic.IDictionary<TKey, TValue>` 的扩展方法的静态类。
 
