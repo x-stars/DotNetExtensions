@@ -137,13 +137,15 @@ namespace XstarS.Collections.Generic
                 thisIter = this.GetEnumerator(),
                 otherIter = other.GetEnumerator())
             {
+                bool thisHasNext, otherHasNext = true;
                 var comparer = EqualityComparer<T>.Default;
-                while (thisIter.MoveNext() & otherIter.MoveNext())
+                while ((thisHasNext = thisIter.MoveNext()) &
+                    (otherHasNext = otherIter.MoveNext()))
                 {
                     if (!comparer.Equals(thisIter.Current, otherIter.Current))
                     { return false; }
                 }
-                return true;
+                return !(thisHasNext ^ otherHasNext);
             }
         }
 

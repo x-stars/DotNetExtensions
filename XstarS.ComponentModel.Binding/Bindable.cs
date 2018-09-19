@@ -46,7 +46,7 @@ namespace XstarS.ComponentModel
             get => this.value;
             set => this.SetProperty(ref this.value, value);
         }
-        
+
         /// <summary>
         /// 返回一个值，该值指示此实例和指定的 <see cref="Bindable{T}"/> 对象是否表示相同的值。
         /// </summary>

@@ -33,13 +33,15 @@ namespace XstarS.Collections.Generic
                 xIter = x.GetEnumerator(),
                 yIter = y.GetEnumerator())
             {
+                bool xHasNext, yHasNext = true;
                 var comparer = EqualityComparer<T>.Default;
-                while (xIter.MoveNext() & yIter.MoveNext())
+                while ((xHasNext = xIter.MoveNext()) &
+                    (yHasNext = yIter.MoveNext()))
                 {
                     if (!comparer.Equals(xIter.Current, yIter.Current))
                     { return false; }
                 }
-                return true;
+                return !(xHasNext ^ yHasNext);
             }
         }
 
