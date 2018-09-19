@@ -10,7 +10,7 @@ namespace XstarS
     /// 延迟初始化对象 <see cref="Lazy{T}"/> 的索引访问支持。
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class LazyArray<T> : IReadOnlyList<T>, IDisposable
+    public class LazyArray<T> : IReadOnlyList<T>, IEquatable<LazyArray<T>>, IDisposable
     {
         /// <summary>
         /// 初始化对象 <see cref="Lazy{T}"/> 的数组。
