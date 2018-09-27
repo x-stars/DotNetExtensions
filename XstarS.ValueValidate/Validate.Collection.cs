@@ -30,6 +30,31 @@ namespace XstarS
         }
 
         /// <summary>
+        /// 验证集合中元素的数量是否在指定范围内。
+        /// </summary>
+        /// <typeparam name="T">待验证的集合中的元素的类型。</typeparam>
+        /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
+        /// <param name="minCount">集合允许的最小元素数量。</param>
+        /// <param name="maxCount">集合允许的最大元素数量。</param>
+        /// <param name="message">自定义抛出异常的消息。</param>
+        /// <returns><paramref name="source"/> 本身。</returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="source"/> 的值的元素数量不在
+        /// <paramref name="minCount"/> 和 <paramref name="maxCount"/> 之间。
+        /// </exception>
+        public static IValidate<IEnumerable<T>> CountIsInRange<T>(this IValidate<IEnumerable<T>> source,
+            int minCount, int maxCount,
+            string message = null)
+        {
+            if ((source.Value.Count() < minCount) || (source.Value.Count() > maxCount))
+            {
+                ThrowHelper.ThrowArgumentException(source.Name, message);
+            }
+
+            return source;
+        }
+
+        /// <summary>
         /// 验证集合中是否包含指定元素。
         /// </summary>
         /// <typeparam name="T">待验证的集合中的元素的类型。</typeparam>
