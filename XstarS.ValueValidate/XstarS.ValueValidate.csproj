@@ -4,14 +4,14 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E29BB8E6-B6AE-47DA-AB01-75C5E512CCB2}</ProjectGuid>
+    <ProjectGuid>{B1B22882-67EA-41E6-95CE-1F77154BCC73}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>XstarS</RootNamespace>
-    <AssemblyName>XstarS</AssemblyName>
+    <AssemblyName>XstarS.ValueValidate</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
+    <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,7 +21,8 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Debug\XstarS.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
+    <DocumentationFile>bin\Debug\XstarS.ValueValidate.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -30,7 +31,8 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\XstarS.xml</DocumentationFile>
+    <LangVersion>latest</LangVersion>
+    <DocumentationFile>bin\Release\XstarS.ValueValidate.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -43,8 +45,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LazyArray.cs" />
+    <Compile Include="IValidate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ThrowHelper.cs" />
+    <Compile Include="Validate.Class.cs" />
+    <Compile Include="Validate.Collection.cs" />
+    <Compile Include="Validate.cs" />
+    <Compile Include="Validate.Enum.cs" />
+    <Compile Include="Validate.Generic.cs" />
+    <Compile Include="Validate.Nullable.cs" />
+    <Compile Include="Validate.Number.cs" />
+    <Compile Include="Validate.Path.cs" />
+    <Compile Include="Validate.String.cs" />
+    <Compile Include="Validate.Struct.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
