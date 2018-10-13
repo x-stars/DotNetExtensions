@@ -8,10 +8,9 @@ using System.Text;
 namespace XstarS.Collections.Generic
 {
     /// <summary>
-    /// 表示能够通过索引访问并支持相等比较的双重链接列表。
+    /// 表示能够通过索引访问的双重链接列表。
     /// </summary>
-    public class IndexedLinkedList<T> : LinkedList<T>,
-        IList, IList<T>, IReadOnlyList<T>, IEquatable<IndexedLinkedList<T>>
+    public class IndexedLinkedList<T> : LinkedList<T>, IList, IList<T>, IReadOnlyList<T>
     {
         /// <summary>
         /// 初始化为空的 <see cref="IndexedLinkedList{T}"/> 类的新实例。
@@ -37,8 +36,7 @@ namespace XstarS.Collections.Generic
         /// <param name="context">
         /// 一个 <see cref="StreamingContext"/> 结构
         /// 包含与 <see cref="IndexedLinkedList{T}"/> 关联的序列化流的源和目标。</param>
-        protected IndexedLinkedList(SerializationInfo info, StreamingContext context) :
-            base(info, context) { }
+        protected IndexedLinkedList(SerializationInfo info, StreamingContext context) : base(info, context) { }
 
         /// <summary>
         /// 获取或设置指定索引处的元素。
@@ -49,46 +47,8 @@ namespace XstarS.Collections.Generic
         /// 或 <paramref name="index"/> 大于或等于 <see cref="LinkedList{T}.Count"/>。</exception>
         public T this[int index]
         {
-            get
-            {
-                if ((index < 0) || (index > this.Count - 1))
-                { throw new ArgumentOutOfRangeException(nameof(index)); }
-
-                if (index < this.Count / 2)
-                {
-                    var node = this.First;
-                    for (int i = 0; i < index; i++)
-                    { node = node.Next; }
-                    return node.Value;
-                }
-                else
-                {
-                    var node = this.Last;
-                    for (int i = this.Count - 1; i > index; i--)
-                    { node = node.Previous; }
-                    return node.Value;
-                }
-            }
-            set
-            {
-                if ((index < 0) || (index > this.Count - 1))
-                { throw new ArgumentOutOfRangeException(nameof(index)); }
-
-                if (index < this.Count / 2)
-                {
-                    var node = this.First;
-                    for (int i = 0; i < index; i++)
-                    { node = node.Next; }
-                    node.Value = value;
-                }
-                else
-                {
-                    var node = this.Last;
-                    for (int i = this.Count - 1; i > index; i--)
-                    { node = node.Previous; }
-                    node.Value = value;
-                }
-            }
+            get => this.NodeAt(index).Value;
+            set => this.NodeAt(index).Value = value;
         }
 
         /// <summary>
@@ -121,74 +81,6 @@ namespace XstarS.Collections.Generic
         bool IList.IsFixedSize => false;
 
         /// <summary>
-        /// 返回一个值，该值指示此实例和指定的 <see cref="IndexedLinkedList{T}"/> 对象是否表示相同的值。
-        /// </summary>
-        /// <param name="other">要与此实例比较的 <see cref="IndexedLinkedList{T}"/> 对象。</param>
-        /// <returns>
-        /// 如果此实例和 <paramref name="other"/> 的所有元素均相等，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
-        /// </returns>
-        public bool Equals(IndexedLinkedList<T> other)
-        {
-            if (other is null) { return false; }
-            if (this.Count != other.Count) { return false; }
-
-            using (IEnumerator<T>
-                thisIter = this.GetEnumerator(),
-                otherIter = other.GetEnumerator())
-            {
-                bool thisHasNext, otherHasNext = true;
-                var comparer = EqualityComparer<T>.Default;
-                while ((thisHasNext = thisIter.MoveNext()) &
-                    (otherHasNext = otherIter.MoveNext()))
-                {
-                    if (!comparer.Equals(thisIter.Current, otherIter.Current))
-                    { return false; }
-                }
-                return !(thisHasNext ^ otherHasNext);
-            }
-        }
-
-        /// <summary>
-        /// 返回一个值，该值指示此实例和指定的对象是否表示相同的值。
-        /// </summary>
-        /// <param name="obj">要与此实例比较的对象。</param>
-        /// <returns>
-        /// 如果 <paramref name="obj"/> 是 <see cref="IndexedLinkedList{T}"/> 的实例，
-        /// 且所有元素均相等，则为 <see langword="true"/>；否则为 <see langword="false"/>。
-        /// </returns>
-        public override bool Equals(object obj)
-        {
-            return this.Equals(obj as IndexedLinkedList<T>);
-        }
-
-        /// <summary>
-        /// 返回此实例的哈希代码。
-        /// </summary>
-        /// <returns>32 位有符号整数哈希代码。</returns>
-        public override int GetHashCode()
-        {
-            int hashCode = 583264110;
-            var comparer = EqualityComparer<T>.Default;
-            foreach (var item in this)
-            { hashCode = hashCode * -1521134295 + comparer.GetHashCode(item); }
-            return hashCode;
-        }
-
-        /// <summary>
-        /// 返回 <see cref="IndexedLinkedList{T}"/> 的字符串表示形式。
-        /// </summary>
-        /// <returns><see cref="IndexedLinkedList{T}"/> 的字符串表示形式。</returns>
-        public override string ToString()
-        {
-            var collectionStringBuilder = new StringBuilder("{ ");
-            foreach (var item in this)
-            { collectionStringBuilder.Append($"{item.ToString()}, "); }
-            collectionStringBuilder.Append("}");
-            return collectionStringBuilder.ToString();
-        }
-
-        /// <summary>
         /// 将对象添加到 <see cref="IndexedLinkedList{T}"/> 的结尾处。
         /// </summary>
         /// <param name="item">要添加到 <see cref="IndexedLinkedList{T}"/> 末尾的对象。
@@ -196,6 +88,88 @@ namespace XstarS.Collections.Generic
         public void Add(T item)
         {
             this.AddLast(item);
+        }
+
+        /// <summary>
+        /// 将指定的新节点添加到 <see cref="IndexedLinkedList{T}"/> 的结尾处。
+        /// </summary>
+        /// <param name="node">要添加到 <see cref="IndexedLinkedList{T}"/> 末尾的链表节点。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="node"/> 为 <see langword="null"/>。</exception>
+        public void Add(LinkedListNode<T> node)
+        {
+            this.AddLast(node);
+        }
+
+        /// <summary>
+        /// 将指定链表中的所有元素添加到 <see cref="IList{T}"/> 的末尾。
+        /// </summary>
+        /// <param name="list">应将其元素添加到 <see cref="IList{T}"/> 的末尾的链表。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="list"/> 为 <see langword="null"/>。</exception>
+        public void AddRange(LinkedList<T> list)
+        {
+            if (list is null)
+            {
+                throw new ArgumentNullException(nameof(list));
+            }
+
+            var node = list.First;
+            while (!(node is null))
+            {
+                this.AddLast(node);
+                node = node.Next;
+            }
+        }
+
+        /// <summary>
+        /// 将指定链表中的所有元素添加到 <see cref="IList{T}"/> 的末尾。
+        /// </summary>
+        /// <param name="collection">应将其元素添加到 <see cref="IList{T}"/> 的末尾的集合。
+        /// 集合自身不能为 <see langword="null"/>，但它可以包含为 <see langword="null"/> 的元素。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="collection"/> 为 <see langword="null"/>。</exception>
+        public void AddRange(IEnumerable<T> collection)
+        {
+            if (collection is null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+
+            foreach (var item in collection)
+            {
+                this.AddLast(item);
+            }
+        }
+
+        /// <summary>
+        /// 创建 <see cref="IndexedLinkedList{T}"/> 中指定元素范围的浅表复制。
+        /// </summary>
+        /// <param name="index">范围开始处的从零开始的索引。</param>
+        /// <param name="count">范围中的元素数。</param>
+        /// <returns><see cref="IndexedLinkedList{T}"/> 中指定元素范围的浅表复制。</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> 和 <paramref name="count"/>
+        /// 不表示 <see cref="IndexedLinkedList{T}"/> 中元素的有效范围。</exception>
+        public IndexedLinkedList<T> GetRange(int index, int count)
+        {
+            if ((index < 0) || (index > this.Count - 1))
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+            if ((count < 0) || (index + count > this.Count))
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+
+            var list = new IndexedLinkedList<T>();
+            var node = this.NodeAt(index);
+            for (int i = 0; i < count; i++)
+            {
+                list.AddLast(node);
+                node = node.Next;
+            }
+            return list;
         }
 
         /// <summary>
@@ -212,8 +186,7 @@ namespace XstarS.Collections.Generic
             int index = 0;
             while (!(node is null))
             {
-                if (comparer.Equals(node.Value, item))
-                { return index; }
+                if (comparer.Equals(node.Value, item)) { return index; }
                 node = node.Next;
                 index++;
             }
@@ -224,31 +197,89 @@ namespace XstarS.Collections.Generic
         /// 将元素插入 <see cref="IndexedLinkedList{T}"/> 的指定索引处。
         /// </summary>
         /// <param name="index">应插入 <paramref name="item"/> 的从零开始的索引。</param>
-        /// <param name="item">要插入的对象。 对于引用类型，该值可以为 <see langword="null"/>。</param>
+        /// <param name="item">要插入的对象。对于引用类型，该值可以为 <see langword="null"/>。</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，
-        /// 或 <paramref name="index"/>> 大于 <see cref="LinkedList{T}.Count"/>。</exception>
+        /// 或 <paramref name="index"/> 大于 <see cref="LinkedList{T}.Count"/>。</exception>
         public void Insert(int index, T item)
         {
             if ((index < 0) || (index > this.Count))
-            { throw new ArgumentOutOfRangeException(nameof(index)); }
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
 
             if (index == this.Count)
             {
                 this.AddLast(item);
             }
-            else if (index < this.Count / 2)
+            else
             {
-                var node = this.First;
-                for (int i = 0; i < index; i++)
-                { node = node.Next; }
-                this.AddBefore(node, item);
+                this.AddBefore(this.NodeAt(index), item);
+            }
+        }
+
+        /// <summary>
+        /// 将指定链表中的所有节点插入 <see cref="IndexedLinkedList{T}"/> 的指定索引处。
+        /// </summary>
+        /// <param name="index">应插入 <paramref name="list"/> 的从零开始的索引。</param>
+        /// <param name="list">要插入的链表。</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，
+        /// 或 <paramref name="index"/> 大于 <see cref="LinkedList{T}.Count"/>。</exception>
+        public void InsertRange(int index, LinkedList<T> list)
+        {
+            if ((index < 0) || (index > this.Count))
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            if (index == this.Count)
+            {
+                var node = list.First;
+                while (!(node is null))
+                {
+                    this.AddLast(node);
+                    node = node.Next;
+                }
             }
             else
             {
-                var node = this.Last;
-                for (int i = this.Count - 1; i > index; i--)
-                { node = node.Previous; }
-                this.AddBefore(node, item);
+                var indexNode = this.NodeAt(index);
+                var node = list.First;
+                while (!(node is null))
+                {
+                    this.AddBefore(indexNode, node);
+                    node = node.Next;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 将指定集合中的所有元素插入 <see cref="IndexedLinkedList{T}"/> 的指定索引处。
+        /// </summary>
+        /// <param name="index">应插入 <paramref name="collection"/> 的从零开始的索引。</param>
+        /// <param name="collection">要插入的集合。</param>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，
+        /// 或 <paramref name="index"/> 大于 <see cref="LinkedList{T}.Count"/>。</exception>
+        public void InsertRange(int index, IEnumerable<T> collection)
+        {
+            if ((index < 0) || (index > this.Count))
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            if (index == this.Count)
+            {
+                foreach (var item in collection)
+                {
+                    this.AddLast(item);
+                }
+            }
+            else
+            {
+                var node = this.NodeAt(index);
+                foreach (var item in collection)
+                {
+                    this.AddBefore(node, item);
+                }
             }
         }
 
@@ -267,11 +298,47 @@ namespace XstarS.Collections.Generic
             while (!(node is null))
             {
                 if (comparer.Equals(node.Value, item))
-                { return index; }
+                {
+                    return index;
+                }
                 node = node.Previous;
                 index--;
             }
             return -1;
+        }
+
+        /// <summary>
+        /// 获取或设置指定索引处的链表节点 <see cref="LinkedListNode{T}"/>。
+        /// </summary>
+        /// <param name="index">要获取的节点的从零开始的索引。</param>
+        /// <returns>指定索引处的节点。</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，
+        /// 或 <paramref name="index"/> 大于或等于 <see cref="LinkedList{T}.Count"/>。</exception>
+        public LinkedListNode<T> NodeAt(int index)
+        {
+            if ((index < 0) || (index > this.Count - 1))
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            if (index < this.Count / 2)
+            {
+                var node = this.First;
+                for (int i = 0; i < index; i++)
+                {
+                    node = node.Next;
+                }
+                return node;
+            }
+            else
+            {
+                var node = this.Last;
+                for (int i = this.Count - 1; i > index; i--)
+                {
+                    node = node.Previous;
+                }
+                return node;
+            }
         }
 
         /// <summary>
@@ -283,21 +350,39 @@ namespace XstarS.Collections.Generic
         public void RemoveAt(int index)
         {
             if ((index < 0) || (index > this.Count - 1))
-            { throw new ArgumentOutOfRangeException(nameof(index)); }
-
-            if (index < this.Count / 2)
             {
-                var node = this.First;
-                for (int i = 0; i < index; i++)
-                { node = node.Next; }
-                this.Remove(node);
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
-            else
+
+            this.Remove(this.NodeAt(index));
+        }
+
+        /// <summary>
+        /// 从 <see cref="IndexedLinkedList{T}"/> 中移除一定范围的元素。
+        /// </summary>
+        /// <param name="index">要移除的元素范围的从零开始的起始索引。</param>
+        /// <param name="count">要移除的元素数。</param>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> 和 <paramref name="count"/>
+        /// 不表示 <see cref="IndexedLinkedList{T}"/> 中元素的有效范围。</exception>
+        public void RemoveRange(int index, int count)
+        {
+            if ((index < 0) || (index > this.Count - 1))
             {
-                var node = this.Last;
-                for (int i = this.Count - 1; i > index; i--)
-                { node = node.Previous; }
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+            if ((count < 0) || (index + count > this.Count))
+            {
+                throw new ArgumentOutOfRangeException(nameof(count));
+            }
+
+            var node = this.NodeAt(index);
+            var nextNode = node.Next;
+            for (int i = 0; i < count; i++)
+            {
                 this.Remove(node);
+                node = nextNode;
+                nextNode = node.Next;
             }
         }
 
@@ -355,29 +440,5 @@ namespace XstarS.Collections.Generic
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="index"/> 不是 <see cref="IList"/> 中的有效索引。</exception>
         void IList.RemoveAt(int index) => this.RemoveAt(index);
-
-        /// <summary>
-        /// 指示两 <see cref="IndexedLinkedList{T}"/> 对象是否相等。
-        /// </summary>
-        /// <param name="list1">第一个对象。</param>
-        /// <param name="list2">第二个对象。</param>
-        /// <returns>
-        /// 如果 <paramref name="list1"/> 与 <paramref name="list2"/> 的对应元素均相等，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
-        /// </returns>
-        public static bool operator ==(IndexedLinkedList<T> list1, IndexedLinkedList<T> list2) =>
-            EqualityComparer<IndexedLinkedList<T>>.Default.Equals(list1, list2);
-
-        /// <summary>
-        /// 指示两 <see cref="IndexedLinkedList{T}"/> 对象是否不相等。
-        /// </summary>
-        /// <param name="list1">第一个对象。</param>
-        /// <param name="list2">第二个对象。</param>
-        /// <returns>
-        /// 如果 <paramref name="list1"/> 与 <paramref name="list2"/> 的存在不相等的对应元素，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
-        /// </returns>
-        public static bool operator !=(IndexedLinkedList<T> list1, IndexedLinkedList<T> list2) =>
-            !(list1 == list2);
     }
 }

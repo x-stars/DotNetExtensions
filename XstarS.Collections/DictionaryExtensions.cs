@@ -23,7 +23,12 @@ namespace XstarS.Collections.Generic
             var keys = new List<TKey>(source.Count);
             var valueComparer = EqualityComparer<TValue>.Default;
             foreach (var item in source)
-            { if (valueComparer.Equals(item.Value, value)) { keys.Add(item.Key); } }
+            {
+                if (valueComparer.Equals(item.Value, value))
+                {
+                    keys.Add(item.Key);
+                }
+            }
             keys.TrimExcess();
             return keys;
         }

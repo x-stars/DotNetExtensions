@@ -8,7 +8,7 @@ namespace XstarS.IO
     /// <summary>
     /// 为文件系统信息 <see cref="FileSystemInfo"/> 类及其派生类提供扩展方法的静态类。
     /// </summary>
-    public static class FileSystemInfoExtension
+    public static class FileSystemInfoExtensions
     {
         /// <summary>
         /// 尝试返回指定 <see cref="DirectoryInfo"/> 中目录和文件的数组，该数组与给定的搜索条件匹配并使用某个值确定是否搜索子目录。
