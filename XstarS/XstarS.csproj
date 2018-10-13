@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="LazyArray.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Verbose.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

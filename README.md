@@ -16,6 +16,14 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 可通过 `Dispose(int)` 方法释放指定索引处的对象，将其重置为值创建之前的 `System.Func<T>` 委托。
 
+### 泛型类 `XstarS.Verbose<T>`
+
+变量的值发生读写时，自动输出相关信息。
+
+默认状态下，对 `Value` 属性进行读写操作时均会在控制台中输出相关信息。
+
+可通过修改 `OnValueRead` 和 `OnValueWrite` 委托自定义读写值时应执行的操作。
+
 ## 程序集 XstarS.Collections
 
 对应 System.Collections 程序集，泛型集合相关。
@@ -105,6 +113,8 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 则当服务端更改 `BindableData` 实例的 `Data` 属性时，将会通知客户端属性值发生更改。
 
 ### 泛型类 `XstarS.ComponentModel.Bindable<T>`
+
+继承 `XstarS.ComponentModel.BindableObject` 类。
 
 `System.ComponentModel.INotifyPropertyChanged` 接口的实现，用于实现数据绑定到用户控件的泛型类。
 

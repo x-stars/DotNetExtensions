@@ -50,6 +50,30 @@ namespace XstarS
         }
 
         /// <summary>
+        /// 验证字符串的长度是否在指定范围内。
+        /// </summary>
+        /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
+        /// <param name="minLength">字符串允许的最小长度。</param>
+        /// <param name="maxLength">字符串允许的最大长度。</param>
+        /// <param name="message">自定义抛出异常的消息。</param>
+        /// <returns><paramref name="source"/> 本身。</returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="source"/> 的长度不在
+        /// <paramref name="minLength"/> 和 <paramref name="maxLength"/> 之间。
+        /// </exception>
+        public static IValidate<string> LengthIsInRange(this IValidate<string> source,
+            int minLength, int maxLength,
+            string message = null)
+        {
+            if ((source.Value.Length < minLength) ||(source.Value.Length > maxLength))
+            {
+                ThrowHelper.ThrowArgumentException(source.Name, message, new IndexOutOfRangeException());
+            }
+
+            return source;
+        }
+
+        /// <summary>
         /// 验证字符串是否以指定字符串开始。
         /// </summary>
         /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
