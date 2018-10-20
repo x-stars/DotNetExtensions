@@ -13,6 +13,11 @@ namespace XstarS
     public class Verbose<T> : IEquatable<Verbose<T>>
     {
         /// <summary>
+        /// 未设置变量名称时使用的默认名称。
+        /// </summary>
+        protected static string DefaultName = "(NoName)";
+
+        /// <summary>
         /// 变量的值。
         /// </summary>
         private T value;
@@ -61,7 +66,7 @@ namespace XstarS
         /// </summary>
         public string Name
         {
-            get => this.name ?? "(NoName)";
+            get => this.name ?? Verbose<T>.DefaultName;
             set => this.name = value;
         }
 

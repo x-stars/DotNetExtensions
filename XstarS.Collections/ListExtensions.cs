@@ -86,5 +86,22 @@ namespace XstarS.Collections.Generic
         {
             for (int i = 0; i < count; i++) { source.RemoveAt(index); }
         }
+
+        /// <summary>
+        /// 将 <see cref="IList{T}"/> 中的元素随机重新排列。
+        /// </summary>
+        /// <typeparam name="T"><paramref name="source"/> 中的元素的类型。</typeparam>
+        /// <param name="source"><see cref="IList{T}"/> 实例，扩展方法源。</param>
+        public static void Shuffle<T>(this IList<T> source)
+        {
+            var randGen = new Random();
+            for (int i = 0; i < source.Count; i++)
+            {
+                int rand = randGen.Next(source.Count);
+                var temp = source[i];
+                source[i] = source[rand];
+                source[rand] = temp;
+            }
+        }
     }
 }
