@@ -45,7 +45,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CmdParamReader.cs" />
-    <Compile Include="MultiValueParamReader.cs" />
     <Compile Include="ParamReader.cs" />
     <Compile Include="PowerShellParamReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

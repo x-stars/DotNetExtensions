@@ -43,8 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="LazyArray.cs" />
+    <Compile Include="MathSp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemHelper.cs" />
+    <Compile Include="TimeSpanExtensions.cs" />
+    <Compile Include="TypeExtensions.cs" />
     <Compile Include="Verbose.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

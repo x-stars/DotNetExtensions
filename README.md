@@ -8,13 +8,21 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 对应 System 程序集，系统基础相关。
 
-### 泛型类 `XstarS.LazyArray<T>`
+### 静态类 `XstarS.SystemHelper`
 
-延迟初始化对象 `System.Lazy<T>` 的索引访问支持。
+提供框架基础级别的帮助方法。
 
-实现 `System.Collections.Generic.IReadOnlyList<T>` 接口，内部元素不可修改。
+### 静态类 `XstarS.MathSp`
 
-可通过 `Dispose(int)` 方法释放指定索引处的对象，将其重置为值创建之前的 `System.Func<T>` 委托。
+提供针对特殊情况进行优化的数学运算方法。
+
+### 静态类 `XstarS.TimeSpanExtensions`
+
+提供时间间隔 `System.TimeSpan` 的扩展方法。
+
+### 静态类 `XstarS.TypeExtensions`
+
+提供类型声明 `System.Type` 的扩展方法。
 
 ### 泛型类 `XstarS.Verbose<T>`
 
@@ -49,15 +57,15 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 ### 静态类 `XstarS.Collections.Generic.EnumerableExtensions`
 
-提供 `System.Collections.Generic.IEnumerable<T>` 的扩展方法的静态类。
+提供公开枚举数 `System.Collections.Generic.IEnumerable<T>` 的扩展方法。
 
 ### 静态类 `XstarS.Collections.Generic.ListExtensions`
 
-提供 `System.Collections.Generic.IList<T>` 的扩展方法的静态类。
+提供可索引访问的集合 `System.Collections.Generic.IList<T>` 的扩展方法。
 
 ### 静态类 `XstarS.Collections.Generic.DictionaryExtensions`
 
-提供 `System.Collections.Generic.IDictionary<TKey, TValue>` 的扩展方法的静态类。
+提供键/值对的集合 `System.Collections.Generic.IDictionary<TKey, TValue>` 的扩展方法。
 
 ## 程序集 XstarS.ComponentModel.Binding
 
@@ -144,7 +152,7 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 ### 静态类 `XstarS.IO.FileSystemInfoExtension`
 
-提供 `System.IO.FileSystemInfo` 及其派生类的扩展方法的静态类。
+提供文件系统信息 `System.IO.FileSystemInfo` 及其派生类的扩展方法。
 
 ## 程序集 XstarS.ParamReader
 
@@ -158,14 +166,6 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 * 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
 * 不支持一个参数名称后跟多个参数值的有名参数的解析。
 * 不支持多个同名的有名参数的解析。
-
-### 类 `XstarS.MultiValueParamReader`
-
-继承 `XstarS.ParamReader` 类。
-
-默认的多值命令行参数解析器。一个参数名能出现多次，之后也能接多个参数值。
-
-目前为占位类，有待实现。
 
 ### 类 `XstarS.CmdParamReader`
 
