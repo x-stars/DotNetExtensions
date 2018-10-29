@@ -39,7 +39,7 @@ namespace XstarS
         /// <param name="paramNames">所有有名参数名称列表。</param>
         /// <param name="switchNames">所有开关参数名称列表。</param>
         public CmdParamReader(string[] arguments,
-            string[] paramNames = null, string[] switchNames = null) : 
+            string[] paramNames = null, string[] switchNames = null) :
             base(arguments, true, paramNames, switchNames)
         {
             this.arguments = arguments ?? new string[0];
@@ -63,13 +63,17 @@ namespace XstarS
         {
             // 参数检查。
             if (paramName is null)
-            { throw new ArgumentNullException(nameof(paramName)); }
+            {
+                throw new ArgumentNullException(nameof(paramName));
+            }
 
             foreach (string argument in this.arguments)
             {
                 // 当前为指定有名参数的名称。
                 if (this.stringComparer.Equals(argument.Remove(argument.IndexOf(":")), paramName))
-                { return argument.Remove(argument.IndexOf(":")); }
+                {
+                    return argument.Remove(argument.IndexOf(":"));
+                }
             }
 
             return null;
@@ -90,23 +94,33 @@ namespace XstarS
         {
             // 参数检查。
             if (paramIndex < 0)
-            { throw new ArgumentOutOfRangeException(nameof(paramIndex)); }
+            {
+                throw new ArgumentOutOfRangeException(nameof(paramIndex));
+            }
 
             int currParamIndex = 0;
             foreach (string argument in this.arguments)
             {
                 // 当前为开关参数名称。
                 if (this.switchNames.Contains(argument, this.stringComparer))
-                { }
+                {
+                    ;
+                }
                 // 当前为有名参数名称。
                 else if (this.paramNames.Contains(argument.Remove(argument.IndexOf(":")), this.stringComparer))
-                { }
+                {
+                    ;
+                }
                 // 当前为对应位置的无名参数。
                 else if (currParamIndex == paramIndex)
-                { return argument.Remove(argument.IndexOf(":")); }
+                {
+                    return argument.Remove(argument.IndexOf(":"));
+                }
                 // 当前为其他位置的无名参数。
                 else
-                { currParamIndex++; }
+                {
+                    currParamIndex++;
+                }
             }
 
             return null;

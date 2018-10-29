@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace XstarS
 {
@@ -67,11 +65,8 @@ namespace XstarS
         /// <returns>此实例的字符串表达形式。</returns>
         public override string ToString()
         {
-            return $"{{ " +
-                $"{nameof(this.Name)} = {this.Name}" +
-                $", " +
-                $"{nameof(this.Value)} = {this.Value?.ToString()}" +
-                $" }}";
+            return $"{{ {nameof(this.Name)} = {this.Name}, " +
+                $"{nameof(this.Value)} = {this.Value} }}";
         }
     }
     

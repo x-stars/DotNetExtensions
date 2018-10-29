@@ -53,7 +53,7 @@ namespace XstarS
                 StringComparer.InvariantCultureIgnoreCase :
                 StringComparer.InvariantCulture;
         }
-        
+
         /// <summary>
         /// 解析指定名称的有名参数。
         /// </summary>
@@ -69,13 +69,17 @@ namespace XstarS
         {
             // 参数检查。
             if (paramName is null)
-            { throw new ArgumentNullException(nameof(paramName)); }
+            {
+                throw new ArgumentNullException(nameof(paramName));
+            }
 
             for (int i = 0; i < this.arguments.Length - 1; i++)
             {
                 // 当前为指定有名参数的名称。
                 if (this.stringComparer.Equals(this.arguments[i], paramName))
-                { return this.arguments[i + 1]; }
+                {
+                    return this.arguments[i + 1];
+                }
             }
 
             return null;
@@ -96,22 +100,32 @@ namespace XstarS
         {
             // 参数检查。
             if (paramIndex < 0)
-            { throw new ArgumentOutOfRangeException(nameof(paramIndex)); }
+            {
+                throw new ArgumentOutOfRangeException(nameof(paramIndex));
+            }
 
             for (int i = 0, currParamIndex = 0; i < this.arguments.Length; i++)
             {
                 // 当前为开关参数名称。
                 if (this.switchNames.Contains(this.arguments[i], this.stringComparer))
-                { }
+                {
+                    ;
+                }
                 // 当前为有名参数名称。
                 else if (this.paramNames.Contains(this.arguments[i], this.stringComparer))
-                { i++; }
+                {
+                    i++;
+                }
                 // 当前为对应位置的无名参数。
                 else if (currParamIndex == paramIndex)
-                { return this.arguments[i]; }
+                {
+                    return this.arguments[i];
+                }
                 // 当前为其他位置的无名参数。
                 else
-                { currParamIndex++; }
+                {
+                    currParamIndex++;
+                }
             }
 
             return null;
@@ -132,7 +146,9 @@ namespace XstarS
         {
             // 参数检查。
             if (switchName is null)
-            { throw new ArgumentNullException(nameof(switchName)); }
+            {
+                throw new ArgumentNullException(nameof(switchName));
+            }
 
             // 直接检查参数列表中是否包含指定开关参数。
             return this.arguments.Contains(switchName, this.stringComparer);

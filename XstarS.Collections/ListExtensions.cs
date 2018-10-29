@@ -5,7 +5,7 @@ using System.Linq;
 namespace XstarS.Collections.Generic
 {
     /// <summary>
-    /// 提供 <see cref="IList{T}"/> 的扩展方法的静态类。
+    /// 提供可索引访问的集合 <see cref="IList{T}"/> 的扩展方法。
     /// </summary>
     public static class ListExtensions
     {

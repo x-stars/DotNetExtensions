@@ -5,7 +5,7 @@ using System.Linq;
 namespace XstarS.Collections.Generic
 {
     /// <summary>
-    /// 提供 <see cref="IDictionary{TKey, TValue}"/> 的扩展方法的静态类。
+    /// 提供键/值对的集合 <see cref="IDictionary{TKey, TValue}"/> 的扩展方法。
     /// </summary>
     public static class DictionaryExtensions
     {
@@ -20,7 +20,7 @@ namespace XstarS.Collections.Generic
         public static ICollection<TKey> GetKeys<TKey, TValue>(
             this IDictionary<TKey, TValue> source, TValue value)
         {
-            var keys = new List<TKey>(source.Count);
+            var keys = new HashSet<TKey>();
             var valueComparer = EqualityComparer<TValue>.Default;
             foreach (var item in source)
             {

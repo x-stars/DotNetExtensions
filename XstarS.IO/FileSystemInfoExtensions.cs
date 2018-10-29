@@ -6,7 +6,7 @@ using System.Linq;
 namespace XstarS.IO
 {
     /// <summary>
-    /// 为文件系统信息 <see cref="FileSystemInfo"/> 类及其派生类提供扩展方法的静态类。
+    /// 为文件系统信息 <see cref="FileSystemInfo"/> 类及其派生类提供扩展方法。
     /// </summary>
     public static class FileSystemInfoExtensions
     {

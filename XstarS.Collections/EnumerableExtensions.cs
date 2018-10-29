@@ -6,7 +6,7 @@ using System.Text;
 namespace XstarS.Collections.Generic
 {
     /// <summary>
-    /// 提供 <see cref="IEnumerable{T}"/> 的扩展方法的静态类。
+    /// 提供公开枚举数 <see cref="IEnumerable{T}"/> 的扩展方法。
     /// </summary>
     public static class EnumerableExtensions
     {

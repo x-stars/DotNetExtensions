@@ -55,7 +55,7 @@ namespace XstarS
             this.switchNames = switchNames ?? new string[0];
             this.stringComparer = StringComparer.InvariantCultureIgnoreCase;
         }
-        
+
         /// <summary>
         /// 解析指定名称的有名参数。
         /// </summary>
@@ -75,18 +75,26 @@ namespace XstarS
         {
             // 参数检查。
             if (paramName is null)
-            { throw new ArgumentNullException(nameof(paramName)); }
+            {
+                throw new ArgumentNullException(nameof(paramName));
+            }
             else if (paramName.StartsWith("-"))
             {
                 if (paramName.Length < 2)
-                { throw new ArgumentException("TooShort", nameof(paramName)); }
+                {
+                    throw new ArgumentException("TooShort", nameof(paramName));
+                }
             }
             else
-            { throw new ArgumentException("NoPrefix", nameof(paramName)); }
+            {
+                throw new ArgumentException("NoPrefix", nameof(paramName));
+            }
 
             // 未省略参数名称。
             if (base.GetParam(paramName) is string paramValue)
-            { return paramValue; }
+            {
+                return paramValue;
+            }
             // 省略参数名称。
             else
             {
@@ -97,21 +105,33 @@ namespace XstarS
                     if (this.stringComparer.Equals(currParamName, paramName))
                     {
                         if (base.GetParam(currParamName) is string paramValueByName)
-                        { return paramValueByName; }
+                        {
+                            return paramValueByName;
+                        }
                         else if (base.GetParam(paramIndex) is string paramValueByIndex)
-                        { return paramValueByIndex; }
+                        {
+                            return paramValueByIndex;
+                        }
                         else
-                        { return null; }
+                        {
+                            return null;
+                        }
                     }
                     // 当前为其他有名参数。
                     else
                     {
                         if (base.GetParam(currParamName) is string paramValueByName)
-                        { }
+                        {
+                            ;
+                        }
                         else if (base.GetParam(paramIndex) is string paramValueByIndex)
-                        { paramIndex++; }
+                        {
+                            paramIndex++;
+                        }
                         else
-                        { return null; }
+                        {
+                            return null;
+                        }
                     }
                 }
             }
@@ -151,14 +171,20 @@ namespace XstarS
         {
             // 参数检查。
             if (switchName is null)
-            { throw new ArgumentNullException(nameof(switchName)); }
+            {
+                throw new ArgumentNullException(nameof(switchName));
+            }
             else if (switchName.StartsWith("-"))
             {
                 if (switchName.Length < 2)
-                { throw new ArgumentException("TooShort", nameof(switchName)); }
+                {
+                    throw new ArgumentException("TooShort", nameof(switchName));
+                }
             }
             else
-            { throw new ArgumentException("NoPrefix", nameof(switchName)); }
+            {
+                throw new ArgumentException("NoPrefix", nameof(switchName));
+            }
 
             // 解析开关参数。
             return base.GetSwitch(switchName);

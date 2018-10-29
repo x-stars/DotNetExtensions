@@ -54,7 +54,7 @@ namespace XstarS
             this.switchNames = switchNames ?? new string[0];
             this.stringComparer = StringComparer.InvariantCulture;
         }
-        
+
         /// <summary>
         /// 解析指定名称的有名参数。
         /// </summary>
@@ -73,7 +73,9 @@ namespace XstarS
         {
             // null 检查。
             if (paramName is null)
-            { throw new ArgumentNullException(nameof(paramName)); }
+            {
+                throw new ArgumentNullException(nameof(paramName));
+            }
 
             // 分隔同义名称。
             string[] alterParamNames = paramName.Split(',');
@@ -83,21 +85,31 @@ namespace XstarS
                 if (alterParamName.StartsWith("--"))
                 {
                     if (alterParamName.Length < 3)
-                    { throw new ArgumentException("LongNameTooShort", nameof(paramName)); }
+                    {
+                        throw new ArgumentException("LongNameTooShort", nameof(paramName));
+                    }
                 }
                 else if (alterParamName.StartsWith("-"))
                 {
                     if (alterParamName.Length < 2)
-                    { throw new ArgumentException("ShortNameTooShort", nameof(paramName)); }
+                    {
+                        throw new ArgumentException("ShortNameTooShort", nameof(paramName));
+                    }
                     else if (alterParamName.Length > 2)
-                    { throw new ArgumentException("ShortNameTooLong", nameof(paramName)); }
+                    {
+                        throw new ArgumentException("ShortNameTooLong", nameof(paramName));
+                    }
                 }
                 else
-                { throw new ArgumentException("NoPrefix", nameof(paramName)); }
+                {
+                    throw new ArgumentException("NoPrefix", nameof(paramName));
+                }
 
                 // 尝试解析有名参数。
                 if (base.GetParam(alterParamName) is string paramValue)
-                { return paramValue; }
+                {
+                    return paramValue;
+                }
             }
 
             // 全部解析失败。
@@ -119,22 +131,32 @@ namespace XstarS
         {
             // 参数检查。
             if (paramIndex < 0)
-            { throw new ArgumentOutOfRangeException(nameof(paramIndex)); }
+            {
+                throw new ArgumentOutOfRangeException(nameof(paramIndex));
+            }
 
             for (int i = 0, currParamIndex = 0; i < this.arguments.Length; i++)
             {
                 // 当前为有名参数名称。
                 if (this.paramNames.Contains(this.arguments[i], this.stringComparer))
-                { i++; }
+                {
+                    i++;
+                }
                 // 当前为开关参数名称。
                 else if (this.arguments[i].StartsWith("-"))
-                { }
+                {
+                    ;
+                }
                 // 当前为对应位置的无名参数。
                 else if (currParamIndex == paramIndex)
-                { return this.arguments[i]; }
+                {
+                    return this.arguments[i];
+                }
                 // 当前为其他位置的无名参数。
                 else
-                { currParamIndex++; }
+                {
+                    currParamIndex++;
+                }
             }
 
             return null;
@@ -158,7 +180,9 @@ namespace XstarS
         {
             // null 检查。
             if (switchName is null)
-            { throw new ArgumentNullException(nameof(switchName)); }
+            {
+                throw new ArgumentNullException(nameof(switchName));
+            }
 
             // 分隔同义名称。
             string[] alterSwitchNames = switchName.Split(',');
@@ -169,12 +193,16 @@ namespace XstarS
                 {
                     // 参数检查。
                     if (alterSwitchName.Length < 3)
-                    { throw new ArgumentException("LongNameTooShort", nameof(switchName)); }
+                    {
+                        throw new ArgumentException("LongNameTooShort", nameof(switchName));
+                    }
                     else
                     {
                         // 尝试解析长开关参数。
                         if (base.GetSwitch(alterSwitchName))
-                        { return true; }
+                        {
+                            return true;
+                        }
                     }
                 }
                 // 当前为短名称。
@@ -182,9 +210,13 @@ namespace XstarS
                 {
                     // 参数检查。
                     if (alterSwitchName.Length < 2)
-                    { throw new ArgumentException("ShortNameTooShort", nameof(switchName)); }
+                    {
+                        throw new ArgumentException("ShortNameTooShort", nameof(switchName));
+                    }
                     else if (alterSwitchName.Length > 2)
-                    { throw new ArgumentException("ShortNameTooLong", nameof(switchName)); }
+                    {
+                        throw new ArgumentException("ShortNameTooLong", nameof(switchName));
+                    }
                     else
                     {
                         // 尝试解析短开关参数。
@@ -193,11 +225,15 @@ namespace XstarS
                             arg.StartsWith("-") &&
                             !arg.StartsWith("--") &&
                             arg.Contains(alterSwitchName.Substring(1, 1))))
-                        { return true; }
+                        {
+                            return true;
+                        }
                     }
                 }
                 else
-                { throw new ArgumentException("NoPrefix", nameof(switchName)); }
+                {
+                    throw new ArgumentException("NoPrefix", nameof(switchName));
+                }
             }
 
             // 全部解析失败。
@@ -222,7 +258,9 @@ namespace XstarS
         {
             // null 检查。
             if (paramName is null)
-            { throw new ArgumentNullException(nameof(paramName)); }
+            {
+                throw new ArgumentNullException(nameof(paramName));
+            }
 
             var paramValueList = new List<string>();
             // 分隔同义名称。
@@ -233,27 +271,37 @@ namespace XstarS
                 if (alterParamName.StartsWith("--"))
                 {
                     if (alterParamName.Length < 3)
-                    { throw new ArgumentException("LongNameTooShort", nameof(paramName)); }
+                    {
+                        throw new ArgumentException("LongNameTooShort", nameof(paramName));
+                    }
                 }
                 else if (alterParamName.StartsWith("-"))
                 {
                     if (alterParamName.Length < 2)
-                    { throw new ArgumentException("ShortNameTooShort", nameof(paramName)); }
+                    {
+                        throw new ArgumentException("ShortNameTooShort", nameof(paramName));
+                    }
                     else if (alterParamName.Length > 2)
-                    { throw new ArgumentException("ShortNameTooLong", nameof(paramName)); }
+                    {
+                        throw new ArgumentException("ShortNameTooLong", nameof(paramName));
+                    }
                 }
                 else
-                { throw new ArgumentException("NoPrefix", nameof(paramName)); }
+                {
+                    throw new ArgumentException("NoPrefix", nameof(paramName));
+                }
 
                 // 尝试解析所有同名有名参数。
                 for (int i = 0; i < this.arguments.Length - 1; i++)
                 {
                     // 当前为指定有名参数的名称。
                     if (this.stringComparer.Equals(this.arguments[i], paramName))
-                    { paramValueList.Add(this.arguments[i + 1]); }
+                    {
+                        paramValueList.Add(this.arguments[i + 1]);
+                    }
                 }
             }
-            
+
             return paramValueList.ToArray();
         }
     }
