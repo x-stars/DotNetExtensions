@@ -39,8 +39,8 @@ namespace XstarS
         /// <param name="paramNames">所有有名参数名称列表。</param>
         /// <param name="switchNames">所有开关参数名称列表。</param>
         public CmdParamReader(string[] arguments,
-            string[] paramNames = null, string[] switchNames = null) :
-            base(arguments, true, paramNames, switchNames)
+            string[] paramNames = null, string[] switchNames = null)
+            : base(arguments, true, paramNames, switchNames)
         {
             this.arguments = arguments ?? new string[0];
             this.switchNames = switchNames ?? new string[0];

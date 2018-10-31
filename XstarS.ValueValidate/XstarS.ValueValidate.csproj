@@ -48,16 +48,16 @@
     <Compile Include="IValidate.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ThrowHelper.cs" />
-    <Compile Include="Validate.Class.cs" />
-    <Compile Include="Validate.Collection.cs" />
+    <Compile Include="Extensions\Validate.Class.cs" />
+    <Compile Include="Extensions\Validate.Collection.cs" />
     <Compile Include="Validate.cs" />
-    <Compile Include="Validate.Enum.cs" />
-    <Compile Include="Validate.Generic.cs" />
-    <Compile Include="Validate.Nullable.cs" />
-    <Compile Include="Validate.Number.cs" />
-    <Compile Include="Validate.Path.cs" />
-    <Compile Include="Validate.String.cs" />
-    <Compile Include="Validate.Struct.cs" />
+    <Compile Include="Extensions\Validate.Enum.cs" />
+    <Compile Include="Extensions\Validate.Generic.cs" />
+    <Compile Include="Extensions\Validate.Nullable.cs" />
+    <Compile Include="Extensions\Validate.Number.cs" />
+    <Compile Include="Extensions\Validate.Path.cs" />
+    <Compile Include="Extensions\Validate.String.cs" />
+    <Compile Include="Extensions\Validate.Struct.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -46,8 +46,8 @@ namespace XstarS
         /// <param name="paramNames">所有有名参数名称列表。</param>
         /// <param name="switchNames">所有开关参数名称列表。</param>
         public UnixShellParamReader(string[] arguments,
-            string[] paramNames = null, string[] switchNames = null) :
-            base(arguments, false, paramNames, switchNames)
+            string[] paramNames = null, string[] switchNames = null)
+            : base(arguments, false, paramNames, switchNames)
         {
             this.arguments = arguments ?? new string[0];
             this.paramNames = paramNames ?? new string[0];

@@ -32,6 +32,52 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 可通过修改 `OnValueRead` 和 `OnValueWrite` 委托自定义读写值时应执行的操作。
 
+### 类 `XstarS.ParamReader`
+
+默认的命令行参数解析器，作为命令行参数解析器的基类和默认实现。
+
+* 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
+* 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
+* 不支持一个参数名称后跟多个参数值的有名参数的解析。
+* 不支持多个同名的有名参数的解析。
+
+### 类 `XstarS.CmdParamReader`
+
+继承 `XstarS.ParamReader` 类。
+
+命令提示符 (CMD) 风格的命令行参数解析器，参数名称忽略大小写，有名参数名称与参数值用冒号 ":" 分隔。
+
+* 支持多个同名的有名参数的解析。
+* 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
+* 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
+* 不支持一个参数名称后跟多个参数值的有名参数的解析。
+
+### 类 `XstarS.PowerShellParamReader`
+
+继承 `XstarS.ParamReader` 类。
+
+PowerShell 风格的命令行参数解析器，参数名称忽略大小写。
+
+* 不支持无名参数的解析，但支持省略名称的有名参数的解析。
+* 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
+* 不支持一个参数名称后跟多个参数值的有名参数的解析。
+* 不支持多个同名的有名参数的解析。
+
+### 类 `XstarS.UnixShellParamReader`
+
+继承 `XstarS.ParamReader` 类。
+
+Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小写。
+
+* 支持连字符 "-" 后接多个开关参数的解析。
+* 暂不支持连字符 "-" 开头的参数值的解析。
+* 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
+* 不支持一个参数名称后跟多个参数值的有名参数的解析。
+
+### 静态类 `XstarS.IO.FileSystemInfoExtension`
+
+提供文件系统信息 `System.IO.FileSystemInfo` 及其派生类的扩展方法。
+
 ## 程序集 XstarS.Collections
 
 对应 System.Collections 程序集，泛型集合相关。
@@ -41,7 +87,7 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 ### 泛型类 `XstarS.Collections.Generic.SequenceEqualityComparer<T>`
 
-提供泛型集合 `System.Collections.Generic.IEnumberable<T>` 的元素序列的相等比较的方法。
+提供泛型集合 `System.Collections.Generic.IEnumberable<out T>` 的元素序列的相等比较的方法。
 
 ### 泛型类 `XstarS.Collections.Generic.IndexedLinkedList<T>`
 
@@ -53,11 +99,11 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 相比于 `System.Collections.Generic.LinkedList<T>`，
 新增实现了 `System.Collections.Generic.IList<T>` 和
-`System.Collections.Generic.IReadOnlyList<T>` 两个泛型集合接口。
+`System.Collections.Generic.IReadOnlyList<out T>` 两个泛型集合接口。
 
 ### 静态类 `XstarS.Collections.Generic.EnumerableExtensions`
 
-提供公开枚举数 `System.Collections.Generic.IEnumerable<T>` 的扩展方法。
+提供公开枚举数 `System.Collections.Generic.IEnumerable<out T>` 的扩展方法。
 
 ### 静态类 `XstarS.Collections.Generic.ListExtensions`
 
@@ -146,60 +192,6 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 直接更改实例的值将不会触发 `System.ComponentModel.INotifyPropertyChanged.PropertyChanged` 事件，
 并会替换 `System.ComponentModel.INotifyPropertyChanged.PropertyChanged` 事件委托，破坏绑定关系。
 
-## 程序集 XstarS.IO
-
-对应 System.IO 程序集，文件系统访问相关。
-
-### 静态类 `XstarS.IO.FileSystemInfoExtension`
-
-提供文件系统信息 `System.IO.FileSystemInfo` 及其派生类的扩展方法。
-
-## 程序集 XstarS.ParamReader
-
-提供若干命令行参数解析器。
-
-### 类 `XstarS.ParamReader`
-
-默认的命令行参数解析器，作为命令行参数解析器的基类和默认实现。
-
-* 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
-* 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
-* 不支持一个参数名称后跟多个参数值的有名参数的解析。
-* 不支持多个同名的有名参数的解析。
-
-### 类 `XstarS.CmdParamReader`
-
-继承 `XstarS.ParamReader` 类。
-
-命令提示符 (CMD) 风格的命令行参数解析器，参数名称忽略大小写，有名参数名称与参数值用冒号 ":" 分隔。
-
-* 支持多个同名的有名参数的解析。
-* 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
-* 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
-* 不支持一个参数名称后跟多个参数值的有名参数的解析。
-
-### 类 `XstarS.PowerShellParamReader`
-
-继承 `XstarS.ParamReader` 类。
-
-PowerShell 风格的命令行参数解析器，参数名称忽略大小写。
-
-* 不支持无名参数的解析，但支持省略名称的有名参数的解析。
-* 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
-* 不支持一个参数名称后跟多个参数值的有名参数的解析。
-* 不支持多个同名的有名参数的解析。
-
-### 类 `XstarS.UnixShellParamReader`
-
-继承 `XstarS.ParamReader` 类。
-
-Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小写。
-
-* 支持连字符 "-" 后接多个开关参数的解析。
-* 暂不支持连字符 "-" 开头的参数值的解析。
-* 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
-* 不支持一个参数名称后跟多个参数值的有名参数的解析。
-
 ## 程序集 XstarS.ValueValidate
 
 提供参数验证和抛出异常的方法。
@@ -224,11 +216,11 @@ Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小�
     // 且不以 "." 结尾。
 
     Validate.Value(param, nameof(param))    // 使用 XstarS.Validate.Value<T>(T, string) 方法，
-                                            // 创建一个 XstarS.IValidate<T> 接口的实例。
+                                            // 创建一个 XstarS.IValidate<out T> 接口的实例。
 
         .IsNotNull()                        // 验证参数不为 null，否则抛出 System.ArgumentNullException 异常。
 
-        .IsInRange("0", "9", "OutOfRange")  // 要求实现 System.IComparable<T> 接口，验证参数是否在指定范围内，
+        .IsInRange("0", "9", "OutOfRange")  // 要求实现 System.IComparable<in T> 接口，验证参数是否在指定范围内，
                                             // 否则抛出 System.ArgumentException 异常，并设定异常消息为 "OutOfRange"。
 
         .IsInKeys(keys)                     // 验证参数在键的集合中，否则抛出

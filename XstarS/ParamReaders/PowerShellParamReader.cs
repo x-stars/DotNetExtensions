@@ -47,8 +47,8 @@ namespace XstarS
         /// <param name="paramNames">所有有名参数名称列表，必选参数应在可选参数之前。</param>
         /// <param name="switchNames">所有开关参数名称列表。</param>
         public PowerShellParamReader(string[] arguments,
-            string[] paramNames = null, string[] switchNames = null) :
-            base(arguments, true, paramNames, switchNames)
+            string[] paramNames = null, string[] switchNames = null)
+            : base(arguments, true, paramNames, switchNames)
         {
             this.arguments = arguments ?? new string[0];
             this.paramNames = paramNames ?? new string[0];

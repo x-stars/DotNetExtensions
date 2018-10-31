@@ -12,8 +12,8 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 将指定集合的元素添加到 <see cref="IList{T}"/> 的末尾。
         /// </summary>
-        /// <typeparam name="T"><paramref name="source"/> 中的元素的类型。</typeparam>
-        /// <param name="source"><see cref="IList{T}"/> 实例，扩展方法源。</param>
+        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
         /// <param name="collection">
         /// 应将其元素添加到 <see cref="IList{T}"/> 的末尾的集合。
         /// 集合自身不能为 <see langword="null"/>，但它可以包含为 <see langword="null"/> 的元素。
@@ -28,8 +28,8 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 创建 <see cref="IList{T}"/> 中指定元素范围的浅表复制。
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="source"></param>
+        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
         /// <param name="index">范围开始处的从零开始的索引。</param>
         /// <param name="count">范围中的元素数。</param>
         /// <returns><see cref="IList{T}"/> 中指定元素范围的浅表复制。</returns>
@@ -50,8 +50,8 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 将指定集合的元素插入到 <see cref="IList{T}"/> 的的指定索引处。
         /// </summary>
-        /// <typeparam name="T"><paramref name="source"/> 中的元素的类型。</typeparam>
-        /// <param name="source"><see cref="IList{T}"/> 实例，扩展方法源。</param>
+        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
         /// <param name="index">应在此处插入新元素的从零开始的索引。</param>
         /// <param name="collection">
         /// 应将其元素添加到 <see cref="IList{T}"/> 的末尾的集合。
@@ -71,8 +71,8 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 从 <see cref="IList{T}"/> 中移除一定范围的元素。
         /// </summary>
-        /// <typeparam name="T"><paramref name="source"/> 中的元素的类型。</typeparam>
-        /// <param name="source"><see cref="IList{T}"/> 实例，扩展方法源。</param>
+        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
         /// <param name="index">要移除的元素范围的从零开始的起始索引。</param>
         /// <param name="count">要移除的元素数。</param>
         /// <exception cref="ArgumentOutOfRangeException">
@@ -88,10 +88,31 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
+        /// 确定 <see cref="IList{T}"/> 中特定项的所有索引。
+        /// </summary>
+        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
+        /// <param name="item">要在 <see cref="IList{T}"/> 中定位的对象。</param>
+        /// <returns><paramref name="source"/> 中所有与 <paramref name="item"/> 相等的元素的索引；
+        /// 若未在 <paramref name="source"/> 中找到 <paramref name="item"/>，则为空列表。</returns>
+        public static int[] IndicesOf<T>(this IList<T> source, T item)
+        {
+            var indices = new List<int>();
+            for (int i = 0; i < source.Count; i++)
+            {
+                if (EqualityComparer<T>.Default.Equals(source[i], item))
+                {
+                    indices.Add(i);
+                }
+            }
+            return indices.ToArray();
+        }
+
+        /// <summary>
         /// 将 <see cref="IList{T}"/> 中的元素随机重新排列。
         /// </summary>
-        /// <typeparam name="T"><paramref name="source"/> 中的元素的类型。</typeparam>
-        /// <param name="source"><see cref="IList{T}"/> 实例，扩展方法源。</param>
+        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
         public static void Shuffle<T>(this IList<T> source)
         {
             var randGen = new Random();
