@@ -6,15 +6,29 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 ## 程序集 XstarS
 
-对应 System 程序集，系统基础相关。
+对应 mscorlib 和 System 程序集，系统基础相关。
 
-### 静态类 `XstarS.SystemHelper`
+### 静态类 `XstarS.TestHelper`
 
-提供框架基础级别的帮助方法。
+提供用于程序测试的帮助方法。
 
 ### 静态类 `XstarS.MathSp`
 
 提供针对特殊情况进行优化的数学运算方法。
+
+### 静态类 `XstarS.ConsoleManager`
+
+提供窗口应用程序的控制台窗口管理方法。
+
+基于 Win32 API 调用。目前仅能使用标准输出流和标准错误流，无法使用标准输入流。
+
+### 静态类 `XstarS.GenericExtensions`
+
+提供类型无关的通用扩展方法。
+
+### 静态类 `XstarS.StringExtensions`
+
+提供字符串 `string` 的扩展方法。
 
 ### 静态类 `XstarS.TimeSpanExtensions`
 
@@ -23,6 +37,10 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 ### 静态类 `XstarS.TypeExtensions`
 
 提供类型声明 `System.Type` 的扩展方法。
+
+### 泛型类 `XstarS.ToStringComparer<T>`
+
+使用对象的 `ToString()` 方法实现的类型无关的通用比较器。
 
 ### 泛型类 `XstarS.Verbose<T>`
 
@@ -78,6 +96,10 @@ Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小�
 
 提供文件系统信息 `System.IO.FileSystemInfo` 及其派生类的扩展方法。
 
+### 静态类 `XstarS.Win32.SystemComponents`
+
+提供 Win32 系统组件相关的帮助方法。
+
 ## 程序集 XstarS.Collections
 
 对应 System.Collections 程序集，泛型集合相关。
@@ -103,15 +125,19 @@ Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小�
 
 ### 静态类 `XstarS.Collections.Generic.EnumerableExtensions`
 
-提供公开枚举数 `System.Collections.Generic.IEnumerable<out T>` 的扩展方法。
+提供泛型公开枚举数 `System.Collections.Generic.IEnumerable<out T>` 的扩展方法。
+
+### 静态类 `XstarS.Collections.Generic.CollectionExtensions`
+
+提供泛型集合 `System.Collections.Generic.ICollection<T>` 的扩展方法。
 
 ### 静态类 `XstarS.Collections.Generic.ListExtensions`
 
-提供可索引访问的集合 `System.Collections.Generic.IList<T>` 的扩展方法。
+提供可索引访问的泛型集合 `System.Collections.Generic.IList<T>` 的扩展方法。
 
 ### 静态类 `XstarS.Collections.Generic.DictionaryExtensions`
 
-提供键/值对的集合 `System.Collections.Generic.IDictionary<TKey, TValue>` 的扩展方法。
+提供键/值对的泛型集合 `System.Collections.Generic.IDictionary<TKey, TValue>` 的扩展方法。
 
 ## 程序集 XstarS.ComponentModel.Binding
 
@@ -202,7 +228,7 @@ Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小�
 
 ## 静态类 `XstarS.Validate`
 
-提供 `XstarS.IValidate<out T>` 接口实例的创建方法，以及参数验证和抛出异常的方法。
+提供 `XstarS.IValidate<out T>` 接口实例的工厂方法，以及参数验证和抛出异常的方法。
 
 参数验证过程全部通过 `XstarS.IValidate<out T>` 的扩展方法实现，以便设定各种泛型约束。
 每个验证方法均包含一个名为 `message` 的可选参数，可自定义异常消息。
