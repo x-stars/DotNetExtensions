@@ -72,7 +72,7 @@ namespace XstarS
                 // 当前为指定有名参数的名称。
                 if (this.stringComparer.Equals(argument.Remove(argument.IndexOf(":")), paramName))
                 {
-                    return argument.Remove(argument.IndexOf(":"));
+                    return argument.Substring(argument.IndexOf(":") + ":".Length);
                 }
             }
 
@@ -134,9 +134,28 @@ namespace XstarS
         /// 所有名称为 <paramref name="paramName"/> 的有名参数的参数值的数组；
         /// 不存在则返回空数组。
         /// </returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="paramName"/> 为 <see langword="null"/>。
+        /// </exception>
         public virtual string[] GetParams(string paramName)
         {
-            throw new NotImplementedException();
+            // 参数检查。
+            if (paramName is null)
+            {
+                throw new ArgumentNullException(nameof(paramName));
+            }
+
+            var paramValueList = new List<string>();
+            foreach (string argument in this.arguments)
+            {
+                // 当前为指定有名参数的名称。
+                if (this.stringComparer.Equals(argument.Remove(argument.IndexOf(":")), paramName))
+                {
+                    paramValueList.Add(argument.Substring(argument.IndexOf(":") + ":".Length));
+                }
+            }
+
+            return paramValueList.ToArray();
         }
     }
 }

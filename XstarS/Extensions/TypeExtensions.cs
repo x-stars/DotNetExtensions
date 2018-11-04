@@ -12,14 +12,14 @@ namespace XstarS
         /// <summary>
         /// 可以表示为字面常量的类型的集合。
         /// </summary>
-        private static readonly ICollection<Type> literalTypes;
+        private static readonly ICollection<Type> LiteralTypesField;
 
         /// <summary>
         /// 初始化 <see cref="TypeExtensions"/> 类的静态成员。
         /// </summary>
         static TypeExtensions()
         {
-            TypeExtensions.literalTypes = new HashSet<Type>()
+            TypeExtensions.LiteralTypesField = new HashSet<Type>()
             {
                 typeof(bool), typeof(byte), typeof(char), typeof(decimal), typeof(double),
                 typeof(float), typeof(int), typeof(long), typeof(sbyte), typeof(short),
@@ -31,7 +31,7 @@ namespace XstarS
         /// 可以表示为字面常量的类型的集合。
         /// </summary>
         public static ICollection<Type> LiteralTypes =>
-            new HashSet<Type>(TypeExtensions.literalTypes);
+            new HashSet<Type>(TypeExtensions.LiteralTypesField);
 
         /// <summary>
         /// 指示当前 <see cref="Type"/> 对象表示的类型是否为可以表示为字面常量的类型。
@@ -40,6 +40,6 @@ namespace XstarS
         /// <returns>若 <paramref name="source"/> 表示的类型为可以表示为字面常量的类型，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public static bool IsLiteral(this Type source) =>
-            TypeExtensions.literalTypes.Contains(source);
+            TypeExtensions.LiteralTypesField.Contains(source);
     }
 }

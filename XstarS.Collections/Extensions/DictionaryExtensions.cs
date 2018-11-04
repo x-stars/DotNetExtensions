@@ -5,7 +5,7 @@ using System.Linq;
 namespace XstarS.Collections.Generic
 {
     /// <summary>
-    /// 提供键/值对的集合 <see cref="IDictionary{TKey, TValue}"/> 的扩展方法。
+    /// 提供键/值对的泛型集合 <see cref="IDictionary{TKey, TValue}"/> 的扩展方法。
     /// </summary>
     public static class DictionaryExtensions
     {

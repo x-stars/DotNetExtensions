@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace XstarS
 {
     /// <summary>
-    /// 提供框架基础级别的帮助方法。
+    /// 提供用于程序测试的帮助方法。
     /// </summary>
-    public static class SystemHelper
+    public static class TestHelper
     {
         /// <summary>
         /// 返回指定子过程的运行指定次数的总时间。

@@ -5,26 +5,10 @@ using System.Linq;
 namespace XstarS.Collections.Generic
 {
     /// <summary>
-    /// 提供可索引访问的集合 <see cref="IList{T}"/> 的扩展方法。
+    /// 提供可索引访问的泛型集合 <see cref="IList{T}"/> 的扩展方法。
     /// </summary>
     public static class ListExtensions
     {
-        /// <summary>
-        /// 将指定集合的元素添加到 <see cref="IList{T}"/> 的末尾。
-        /// </summary>
-        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
-        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
-        /// <param name="collection">
-        /// 应将其元素添加到 <see cref="IList{T}"/> 的末尾的集合。
-        /// 集合自身不能为 <see langword="null"/>，但它可以包含为 <see langword="null"/> 的元素。
-        /// </param>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="collection"/> 为 <see langword="null"/>。</exception>
-        public static void AddRange<T>(this IList<T> source, IEnumerable<T> collection)
-        {
-            foreach (var item in collection) { source.Add(item); }
-        }
-
         /// <summary>
         /// 创建 <see cref="IList{T}"/> 中指定元素范围的浅表复制。
         /// </summary>

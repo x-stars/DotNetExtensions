@@ -18,6 +18,12 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 初始化 <see cref="SequenceEqualityComparer{T}"/> 类的新实例。
         /// </summary>
+        public SequenceEqualityComparer() : this(false) { }
+
+        /// <summary>
+        /// 初始化 <see cref="SequenceEqualityComparer{T}"/> 类的新实例，
+        /// 并指定进行比较时是否忽略集合的类型和比较元素时要使用的比较器。
+        /// </summary>
         /// <param name="ignoreType">指定进行比较时是否忽略集合的类型。</param>
         /// <param name="comparer">指定比较元素时要使用的比较器。</param>
         public SequenceEqualityComparer(

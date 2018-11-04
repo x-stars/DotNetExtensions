@@ -8,7 +8,7 @@ namespace XstarS
     /// <summary>
     /// 提供抛出异常的方法。
     /// </summary>
-    internal static partial class ThrowHelper
+    internal static class ThrowHelper
     {
         /// <summary>
         /// 抛出 <see cref="ArgumentException"/> 类型的异常。
