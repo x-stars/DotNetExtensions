@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace XstarS
 {
-    public static partial class Validate
+    static partial class Validate
     {
         /// <summary>
         /// 验证对象是否等于指定值。

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace XstarS
 {
-    public static partial class Validate
+    static partial class Validate
     {
         /// <summary>
         /// 验证对象是否不是一个空值（无参构造的结构的实例）。

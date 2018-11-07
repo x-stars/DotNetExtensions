@@ -2,7 +2,7 @@
 
 namespace XstarS
 {
-    public static partial class Validate
+    static partial class Validate
     {
         /// <summary>
         /// 验证对象是否不为 <see langword="null"/>。
