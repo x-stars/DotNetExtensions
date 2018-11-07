@@ -218,6 +218,18 @@ Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小�
 直接更改实例的值将不会触发 `System.ComponentModel.INotifyPropertyChanged.PropertyChanged` 事件，
 并会替换 `System.ComponentModel.INotifyPropertyChanged.PropertyChanged` 事件委托，破坏绑定关系。
 
+### 静态类 `XstarS.ComponentModel.BindingExtensions`
+
+提供数据绑定相关的扩展方法。
+
+目前提供与 `XstarS.ComponentModel.BindableObject` 几乎完全一致的扩展方法。
+
+在类实现 `System.ComponentModel.INotifyPropertyChanged` 接口后，
+即可在属性的 `set` 处直接调用 `SetProperty<T>(ref T, T, string)` 扩展方法以修改属性并触发属性更改事件。
+
+由于在类外部不能直接触发事件，扩展方法中的事件触发只能基于反射调用。
+反射调用可能存在性能问题，当绑定属性的数量较大时不建议采用此方案。
+
 ## 程序集 XstarS.ValueValidate
 
 提供参数验证和抛出异常的方法。
@@ -257,3 +269,11 @@ Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小�
                                             // 此方法也可使用正则表达式版本的 IsNotMatch(".$", "InvalidEnd") 方法实现。
 
     // ......
+
+## 程序集 XstarS.Windows
+
+对应 PresentationCore 和 PresentationFramework 程序集，WPF 相关。
+
+### 静态类 `XstarS.Windows.Controls.ControlExtensions`
+
+提供 WPF 用户控件 `System.Windows.Controls.Control` 及其派生类的扩展方法。

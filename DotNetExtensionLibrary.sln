@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XstarS", "XstarS\XstarS.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XstarS.ValueValidate", "XstarS.ValueValidate\XstarS.ValueValidate.csproj", "{B1B22882-67EA-41E6-95CE-1F77154BCC73}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XstarS.Windows", "XstarS.Windows\XstarS.Windows.csproj", "{3D03DA2F-3376-40B7-9092-0617EBD7D2FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{B1B22882-67EA-41E6-95CE-1F77154BCC73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B1B22882-67EA-41E6-95CE-1F77154BCC73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B1B22882-67EA-41E6-95CE-1F77154BCC73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D03DA2F-3376-40B7-9092-0617EBD7D2FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D03DA2F-3376-40B7-9092-0617EBD7D2FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D03DA2F-3376-40B7-9092-0617EBD7D2FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D03DA2F-3376-40B7-9092-0617EBD7D2FA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
