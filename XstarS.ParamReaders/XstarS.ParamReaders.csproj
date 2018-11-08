@@ -4,14 +4,13 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{1E06FD4C-5995-4245-9D74-3C277ACAB645}</ProjectGuid>
+    <ProjectGuid>{27B2433D-ED87-4920-B420-2E2633CABF3B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>XstarS.Collections.Generic</RootNamespace>
-    <AssemblyName>XstarS.Collections</AssemblyName>
+    <RootNamespace>XstarS</RootNamespace>
+    <AssemblyName>XstarS.ParamReaders</AssemblyName>
     <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -21,17 +20,16 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DocumentationFile>bin\Debug\XstarS.Collections.xml</DocumentationFile>
+    <DocumentationFile>bin\Debug\XstarS.ParamReaders.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
+    <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>bin\Release\XstarS.Collections.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\XstarS.ParamReaders.xml</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -44,14 +42,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Extensions\CollectionExtensions.cs" />
-    <Compile Include="Extensions\DictionaryExtensions.cs" />
-    <Compile Include="Extensions\EnumerableExtensions.cs" />
-    <Compile Include="IndexedLinkedList.cs" />
-    <Compile Include="Extensions\ListExtensions.cs" />
-    <Compile Include="SequenceEqualityComparer.cs" />
+    <Compile Include="CmdParamReader.cs" />
+    <Compile Include="ParamReader.cs" />
+    <Compile Include="PowerShellParamReader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UnixShellParamReader.cs" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

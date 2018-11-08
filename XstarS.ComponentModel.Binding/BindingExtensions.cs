@@ -21,11 +21,11 @@ namespace XstarS.ComponentModel
         /// <param name="propertyName">已更改属性的名称。</param>
         internal static void OnPropertyChanged(this INotifyPropertyChanged source, string propertyName)
         {
+            const BindingFlags NonPublicInstance = BindingFlags.Instance | BindingFlags.NonPublic;
             var t_source_if_PropertyChanged = source.GetType().GetField(
-                nameof(INotifyPropertyChanged.PropertyChanged), BindingFlags.Instance | BindingFlags.NonPublic);
-            var source_PropertyChanged = t_source_if_PropertyChanged.GetValue(source) as PropertyChangedEventHandler;
-            var t_PropertyChangedEventHandler_im_Invoke =
-                typeof(PropertyChangedEventHandler).GetMethod(nameof(PropertyChangedEventHandler.Invoke));
+                nameof(INotifyPropertyChanged.PropertyChanged), NonPublicInstance);
+            var source_PropertyChanged =
+                t_source_if_PropertyChanged.GetValue(source) as PropertyChangedEventHandler;
             source_PropertyChanged?.Invoke(source, new PropertyChangedEventArgs(propertyName));
         }
 

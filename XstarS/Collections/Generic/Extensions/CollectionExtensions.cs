@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace XstarS.Collections.Generic.Extensions
+namespace XstarS.Collections.Generic
 {
     /// <summary>
     /// 提供泛型集合 <see cref="ICollection{T}"/> 的扩展方法。

@@ -5,13 +5,13 @@ VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XstarS.ComponentModel.Binding", "XstarS.ComponentModel.Binding\XstarS.ComponentModel.Binding.csproj", "{D344D43C-E9C8-45DA-A307-1B5BB034297A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XstarS.Collections", "XstarS.Collections\XstarS.Collections.csproj", "{1E06FD4C-5995-4245-9D74-3C277ACAB645}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XstarS", "XstarS\XstarS.csproj", "{E29BB8E6-B6AE-47DA-AB01-75C5E512CCB2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XstarS.ValueValidate", "XstarS.ValueValidate\XstarS.ValueValidate.csproj", "{B1B22882-67EA-41E6-95CE-1F77154BCC73}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XstarS.Windows", "XstarS.Windows\XstarS.Windows.csproj", "{3D03DA2F-3376-40B7-9092-0617EBD7D2FA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XstarS.ParamReaders", "XstarS.ParamReaders\XstarS.ParamReaders.csproj", "{27B2433D-ED87-4920-B420-2E2633CABF3B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,6 @@ Global
 		{D344D43C-E9C8-45DA-A307-1B5BB034297A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D344D43C-E9C8-45DA-A307-1B5BB034297A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D344D43C-E9C8-45DA-A307-1B5BB034297A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1E06FD4C-5995-4245-9D74-3C277ACAB645}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1E06FD4C-5995-4245-9D74-3C277ACAB645}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1E06FD4C-5995-4245-9D74-3C277ACAB645}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1E06FD4C-5995-4245-9D74-3C277ACAB645}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E29BB8E6-B6AE-47DA-AB01-75C5E512CCB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E29BB8E6-B6AE-47DA-AB01-75C5E512CCB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E29BB8E6-B6AE-47DA-AB01-75C5E512CCB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -39,6 +35,10 @@ Global
 		{3D03DA2F-3376-40B7-9092-0617EBD7D2FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D03DA2F-3376-40B7-9092-0617EBD7D2FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D03DA2F-3376-40B7-9092-0617EBD7D2FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27B2433D-ED87-4920-B420-2E2633CABF3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27B2433D-ED87-4920-B420-2E2633CABF3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27B2433D-ED87-4920-B420-2E2633CABF3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27B2433D-ED87-4920-B420-2E2633CABF3B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

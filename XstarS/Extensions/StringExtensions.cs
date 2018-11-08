@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
-namespace XstarS.Extensions
+namespace XstarS
 {
     /// <summary>
     /// 提供字符串 <see cref="string"/> 的扩展方法。

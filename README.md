@@ -50,63 +50,6 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 可通过修改 `OnValueRead` 和 `OnValueWrite` 委托自定义读写值时应执行的操作。
 
-### 类 `XstarS.ParamReader`
-
-默认的命令行参数解析器，作为命令行参数解析器的基类和默认实现。
-
-* 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
-* 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
-* 不支持一个参数名称后跟多个参数值的有名参数的解析。
-* 不支持多个同名的有名参数的解析。
-
-### 类 `XstarS.CmdParamReader`
-
-继承 `XstarS.ParamReader` 类。
-
-命令提示符 (CMD) 风格的命令行参数解析器，参数名称忽略大小写，有名参数名称与参数值用冒号 ":" 分隔。
-
-* 支持多个同名的有名参数的解析。
-* 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
-* 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
-* 不支持一个参数名称后跟多个参数值的有名参数的解析。
-
-### 类 `XstarS.PowerShellParamReader`
-
-继承 `XstarS.ParamReader` 类。
-
-PowerShell 风格的命令行参数解析器，参数名称忽略大小写。
-
-* 不支持无名参数的解析，但支持省略名称的有名参数的解析。
-* 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
-* 不支持一个参数名称后跟多个参数值的有名参数的解析。
-* 不支持多个同名的有名参数的解析。
-
-### 类 `XstarS.UnixShellParamReader`
-
-继承 `XstarS.ParamReader` 类。
-
-Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小写。
-
-* 支持连字符 "-" 后接多个开关参数的解析。
-* 暂不支持连字符 "-" 开头的参数值的解析。
-* 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
-* 不支持一个参数名称后跟多个参数值的有名参数的解析。
-
-### 静态类 `XstarS.IO.FileSystemInfoExtension`
-
-提供文件系统信息 `System.IO.FileSystemInfo` 及其派生类的扩展方法。
-
-### 静态类 `XstarS.Win32.SystemComponents`
-
-提供 Win32 系统组件相关的帮助方法。
-
-## 程序集 XstarS.Collections
-
-对应 System.Collections 程序集，泛型集合相关。
-
-> 根据 .NET 习惯，泛型集合命名空间 `System.Collections.Generic` 的内容置于 System.Collections 程序集；
-> 而非泛型集合命名空间 `System.Collections` 的内容则置于 System.Collections.NonGeneric 程序集。
-
 ### 泛型类 `XstarS.Collections.Generic.SequenceEqualityComparer<T>`
 
 提供泛型集合 `System.Collections.Generic.IEnumberable<out T>` 的元素序列的相等比较的方法。
@@ -138,6 +81,14 @@ Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小�
 ### 静态类 `XstarS.Collections.Generic.DictionaryExtensions`
 
 提供键/值对的泛型集合 `System.Collections.Generic.IDictionary<TKey, TValue>` 的扩展方法。
+
+### 静态类 `XstarS.IO.FileSystemInfoExtension`
+
+提供文件系统信息 `System.IO.FileSystemInfo` 及其派生类的扩展方法。
+
+### 静态类 `XstarS.Win32.SystemComponents`
+
+提供 Win32 系统组件相关的帮助方法。
 
 ## 程序集 XstarS.ComponentModel.Binding
 
@@ -230,15 +181,61 @@ Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小�
 由于在类外部不能直接触发事件，扩展方法中的事件触发只能基于反射调用。
 反射调用可能存在性能问题，当绑定属性的数量较大时不建议采用此方案。
 
+## 程序集 XstarS.ParamReaders
+
+提供简易的命令行参数解析器，以及以此为基础的多种风格的命令行参数解析器。
+
+### 类 `XstarS.ParamReader`
+
+默认的命令行参数解析器，作为命令行参数解析器的基类和默认实现。
+
+* 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
+* 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
+* 不支持一个参数名称后跟多个参数值的有名参数的解析。
+* 不支持多个同名的有名参数的解析。
+
+### 类 `XstarS.CmdParamReader`
+
+继承 `XstarS.ParamReader` 类。
+
+命令提示符 (CMD) 风格的命令行参数解析器，参数名称忽略大小写，有名参数名称与参数值用冒号 ":" 分隔。
+
+* 支持多个同名的有名参数的解析。
+* 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
+* 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
+* 不支持一个参数名称后跟多个参数值的有名参数的解析。
+
+### 类 `XstarS.PowerShellParamReader`
+
+继承 `XstarS.ParamReader` 类。
+
+PowerShell 风格的命令行参数解析器，参数名称忽略大小写。
+
+* 不支持无名参数的解析，但支持省略名称的有名参数的解析。
+* 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
+* 不支持一个参数名称后跟多个参数值的有名参数的解析。
+* 不支持多个同名的有名参数的解析。
+
+### 类 `XstarS.UnixShellParamReader`
+
+继承 `XstarS.ParamReader` 类。
+
+Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小写。
+
+* 支持连字符 "-" 后接多个开关参数的解析。
+* 暂不支持连字符 "-" 开头的参数值的解析。
+* 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
+* 不支持一个参数名称后跟多个参数值的有名参数的解析。
+
 ## 程序集 XstarS.ValueValidate
 
 提供参数验证和抛出异常的方法。
 
-## 泛型接口 `XstarS.IValidate<out T>`
+### 泛型接口 `XstarS.IValidate<out T>`
 
 提供参数验证所需的数据，包括参数值 `Value` 和参数名 `Name`。
 
-## 静态类 `XstarS.Validate`
+### 静态类 `XstarS.Validate`
 
 提供 `XstarS.IValidate<out T>` 接口实例的工厂方法，以及参数验证和抛出异常的方法。
 

@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // 有关程序集的一般信息由以下
 // 控制。更改这些特性值可修改
 // 与程序集关联的信息。
-[assembly: AssemblyTitle("XstarS.Collections")]
-[assembly: AssemblyDescription("XstarS.Collections.dll")]
+[assembly: AssemblyTitle("XstarS.ParamReaders")]
+[assembly: AssemblyDescription("XstarS.ParamReaders.dll")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("XstarS")]
-[assembly: AssemblyProduct("XstarS.Collections")]
+[assembly: AssemblyProduct("XstarS.ParamReaders")]
 [assembly: AssemblyCopyright("Copyright © XstarS 2018")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -24,7 +24,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // 如果此项目向 COM 公开，则下列 GUID 用于类型库的 ID
-[assembly: Guid("1e06fd4c-5995-4245-9d74-3c277acab645")]
+[assembly: Guid("27b2433d-ed87-4920-b420-2e2633cabf3b")]
 
 // 程序集的版本信息由下列四个值组成: 
 //
