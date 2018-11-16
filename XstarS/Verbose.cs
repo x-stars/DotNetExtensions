@@ -7,7 +7,7 @@ namespace XstarS
     /// 提供读写详情自动输出的类。当变量的值发生读写时均会输出信息到控制台。
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class Verbose<T> : IEquatable<Verbose<T>>
+    public class Verbose<T>
     {
         /// <summary>
         /// 未设置变量名称时使用的默认名称。
@@ -82,73 +82,10 @@ namespace XstarS
         public Action<T, T, string> OnValueWrite { get; set; }
 
         /// <summary>
-        /// 返回一个值，该值指示此实例和指定的对象是否表示相同的值。
-        /// </summary>
-        /// <param name="obj">要与此实例比较的对象。</param>
-        /// <returns>
-        /// 如果 <paramref name="obj"/> 是 <see cref="Verbose{T}"/> 的实例，
-        /// 且 <see cref="Verbose{T}.Value"/> 和 <see cref="Verbose{T}.Name"/> 都相等，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
-        /// </returns>
-        public override bool Equals(object obj) => this.Equals(obj as Verbose<T>);
-
-        /// <summary>
-        /// 返回一个值，该值指示此实例和指定的 <see cref="Verbose{T}"/> 对象是否表示相同的值。
-        /// </summary>
-        /// <param name="other">要与此实例比较的 <see cref="Verbose{T}"/> 对象。</param>
-        /// <returns>
-        /// 如果此实例和 <paramref name="other"/> 的
-        /// <see cref="Verbose{T}.Value"/> 和 <see cref="Verbose{T}.Name"/> 都相等，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
-        /// </returns>
-        public bool Equals(Verbose<T> other) =>
-            !(other is null) &&
-            EqualityComparer<T>.Default.Equals(this.Value, other.Value) &&
-            this.Name == other.Name;
-
-        /// <summary>
-        /// 返回此实例的哈希代码。
-        /// </summary>
-        /// <returns>32 位有符号整数哈希代码。</returns>
-        public override int GetHashCode()
-        {
-            var hashCode = -1670801664;
-            hashCode = hashCode * -1521134295 + EqualityComparer<T>.Default.GetHashCode(this.Value);
-            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(this.Name);
-            return hashCode;
-        }
-
-        /// <summary>
         /// 返回表示当前 <see cref="Verbose{T}"/> 实例的字符串。
         /// </summary>
         /// <returns>当前 <see cref="Verbose{T}"/> 实例的名称和值的等效字符串表达形式。</returns>
         public override string ToString() => $"{this.Name}: {this.Value}";
-
-        /// <summary>
-        /// 指示两 <see cref="Verbose{T}"/> 对象是否相等。
-        /// </summary>
-        /// <param name="verbose1">第一个对象。</param>
-        /// <param name="verbose2">第二个对象。</param>
-        /// <returns>
-        /// 如果 <paramref name="verbose1"/> 和 <paramref name="verbose2"/> 的
-        /// <see cref="Verbose{T}.Value"/> 和 <see cref="Verbose{T}.Name"/> 都相等，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
-        /// </returns>
-        public static bool operator ==(Verbose<T> verbose1, Verbose<T> verbose2) =>
-            EqualityComparer<Verbose<T>>.Default.Equals(verbose1, verbose2);
-
-        /// <summary>
-        /// 指示两 <see cref="Verbose{T}"/> 对象是否不等。
-        /// </summary>
-        /// <param name="verbose1">第一个对象。</param>
-        /// <param name="verbose2">第二个对象。</param>
-        /// <returns>
-        /// 如果 <paramref name="verbose1"/> 和 <paramref name="verbose2"/> 的
-        /// <see cref="Verbose{T}.Value"/> 和 <see cref="Verbose{T}.Name"/> 不完全相等，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
-        /// </returns>
-        public static bool operator !=(Verbose<T> verbose1, Verbose<T> verbose2) =>
-            !(verbose1 == verbose2);
 
         /// <summary>
         /// 创建一个新的 <see cref="Verbose{T}"/> 对象，并将其初始化为指定的值。

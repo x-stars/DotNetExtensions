@@ -43,7 +43,7 @@ namespace XstarS
                 }
                 allTime += DateTime.Now - startTime;
             }
-            return allTime.Divide(times);
+            return new TimeSpan((long)(allTime.Ticks / times));
         }
     }
 }

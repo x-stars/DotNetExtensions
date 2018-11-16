@@ -37,7 +37,7 @@ namespace XstarS
         /// <see cref="UnixShellParamReader"/> 的新实例。
         /// </summary>
         /// <remarks><para>
-        /// 输入的参数名称列表用于解析无名参数；若无需解析无名参数，可不写。
+        /// 输入的参数名称列表用于解析无名参数；若无需解析无名参数，可留空。
         /// </para><para>
         /// 参数名称应带有作为提示符的连字符 "-" 和双连字符 "--"。
         /// 参数名称列表应同时包含长名称和短名称。
@@ -71,7 +71,7 @@ namespace XstarS
         /// </exception>
         public override string GetParam(string paramName)
         {
-            // null 检查。
+            // 参数检查。
             if (paramName is null)
             {
                 throw new ArgumentNullException(nameof(paramName));
@@ -178,7 +178,7 @@ namespace XstarS
         /// </exception>
         public override bool GetSwitch(string switchName)
         {
-            // null 检查。
+            // 参数检查。
             if (switchName is null)
             {
                 throw new ArgumentNullException(nameof(switchName));
@@ -256,7 +256,7 @@ namespace XstarS
         /// </exception>
         public virtual string[] GetParams(string paramName)
         {
-            // null 检查。
+            // 参数检查。
             if (paramName is null)
             {
                 throw new ArgumentNullException(nameof(paramName));

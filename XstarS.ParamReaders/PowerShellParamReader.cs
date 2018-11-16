@@ -37,7 +37,7 @@ namespace XstarS
         /// <see cref="PowerShellParamReader"/> 的新实例。
         /// </summary>
         /// <remarks><para>
-        /// 输入的参数名称列表用于解析省略参数名称的有名参数；若无需解析省略参数名称的有名参数，可不写。
+        /// 输入的参数名称列表用于解析省略参数名称的有名参数；若无需解析省略参数名称的有名参数，可留空。
         /// </para><para>
         /// 参数名称应带有作为提示符的连字符 "-"。
         /// 有名参数名称的顺序会影响省略参数名称的有名参数的解析，因此必选参数应在可选参数之前。
@@ -68,26 +68,12 @@ namespace XstarS
         /// <exception cref="ArgumentNullException">
         /// <paramref name="paramName"/> 为 <see langword="null"/>。
         /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="paramName"/> 不带参数提示符 "-" 或长度过短。
-        /// </exception>
         public override string GetParam(string paramName)
         {
             // 参数检查。
             if (paramName is null)
             {
                 throw new ArgumentNullException(nameof(paramName));
-            }
-            else if (paramName.StartsWith("-"))
-            {
-                if (paramName.Length < 2)
-                {
-                    throw new ArgumentException("TooShort", nameof(paramName));
-                }
-            }
-            else
-            {
-                throw new ArgumentException("NoPrefix", nameof(paramName));
             }
 
             // 未省略参数名称。
@@ -112,10 +98,6 @@ namespace XstarS
                         {
                             return paramValueByIndex;
                         }
-                        else
-                        {
-                            return null;
-                        }
                     }
                     // 当前为其他有名参数。
                     else
@@ -127,10 +109,6 @@ namespace XstarS
                         else if (base.GetParam(paramIndex) is string paramValueByIndex)
                         {
                             paramIndex++;
-                        }
-                        else
-                        {
-                            return null;
                         }
                     }
                 }
@@ -146,48 +124,11 @@ namespace XstarS
         /// <param name="paramIndex">要解析的无名参数在所有无名参数中的索引。</param>
         /// <returns><see cref="NotSupportedException"/> 异常。</returns>
         /// <exception cref="NotSupportedException">
-        /// 不支持此方法，总是抛出此异常。
+        /// 不支持此方法，总是抛出 <see cref="NotSupportedException"/> 异常。
         /// </exception>
         public override string GetParam(int paramIndex)
         {
             throw new NotSupportedException();
-        }
-
-        /// <summary>
-        /// 解析指定名称的开关参数。
-        /// </summary>
-        /// <param name="switchName">要解析的开关参数的名称。</param>
-        /// <returns>
-        /// 名称为 <paramref name="switchName"/> 的开关参数存在，
-        /// 为 <see langword="true"/>； 否则为 <see langword="false"/>。
-        /// </returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="switchName"/> 为 <see langword="null"/>。
-        /// </exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="switchName"/> 不带参数提示符 "-" 或长度过短。
-        /// </exception>
-        public override bool GetSwitch(string switchName)
-        {
-            // 参数检查。
-            if (switchName is null)
-            {
-                throw new ArgumentNullException(nameof(switchName));
-            }
-            else if (switchName.StartsWith("-"))
-            {
-                if (switchName.Length < 2)
-                {
-                    throw new ArgumentException("TooShort", nameof(switchName));
-                }
-            }
-            else
-            {
-                throw new ArgumentException("NoPrefix", nameof(switchName));
-            }
-
-            // 解析开关参数。
-            return base.GetSwitch(switchName);
         }
     }
 }

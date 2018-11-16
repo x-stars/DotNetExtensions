@@ -35,6 +35,9 @@ namespace XstarS
         /// <summary>
         /// 初始化 CMD 风格命令行参数解析器 <see cref="CmdParamReader"/> 的新实例。
         /// </summary>
+        /// <remarks>
+        /// 输入的参数名称列表用于解析无名参数；若无需解析无名参数，可留空。
+        /// </remarks>
         /// <param name="arguments">待解析的参数列表。</param>
         /// <param name="paramNames">所有有名参数名称列表。</param>
         /// <param name="switchNames">所有开关参数名称列表。</param>
@@ -114,7 +117,7 @@ namespace XstarS
                 // 当前为对应位置的无名参数。
                 else if (currParamIndex == paramIndex)
                 {
-                    return argument.Remove(argument.IndexOf(":"));
+                    return argument;
                 }
                 // 当前为其他位置的无名参数。
                 else
