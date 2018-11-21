@@ -22,6 +22,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Debug\XstarS.xml</DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
@@ -31,6 +32,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <DocumentationFile>bin\Release\XstarS.xml</DocumentationFile>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -49,16 +51,20 @@
     <Compile Include="Collections\Generic\Extensions\ListExtensions.cs" />
     <Compile Include="Collections\Generic\IndexedLinkedList.cs" />
     <Compile Include="Collections\Generic\SequenceEqualityComparer.cs" />
+    <Compile Include="Collections\SequenceEqualityComparer.cs" />
+    <Compile Include="Collections\ToStringComparer.cs" />
     <Compile Include="ConsoleManager.cs" />
     <Compile Include="Extensions\GenericExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="IO\Extensions\FileSystemInfoExtensions.cs" />
+    <Compile Include="Map.cs" />
     <Compile Include="MathSp.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomPrime.cs" />
     <Compile Include="TestHelper.cs" />
     <Compile Include="Extensions\TimeSpanExtensions.cs" />
     <Compile Include="Extensions\TypeExtensions.cs" />
-    <Compile Include="ToStringComparer.cs" />
+    <Compile Include="Collections\Generic\ToStringComparer.cs" />
     <Compile Include="Verbose.cs" />
     <Compile Include="Win32\SystemComponents.cs" />
   </ItemGroup>

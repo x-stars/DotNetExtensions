@@ -4,91 +4,21 @@
 
 C# 底层面向对象练习作品，同时也可用作自己开发时的实用库。
 
+工程结构和命名空间均仿照 .NET 框架库。
+
 ## 程序集 XstarS
 
 对应 mscorlib 和 System 程序集，系统基础相关。
 
-### 静态类 `XstarS.TestHelper`
+除提供系统基础相关的类型和扩展方法外，还包括了集合相关和 Win32 相关的内容。
 
-提供用于程序测试的帮助方法。
+目前包含的命名空间：
 
-### 静态类 `XstarS.MathSp`
-
-提供针对特殊情况进行优化的数学运算方法。
-
-### 静态类 `XstarS.ConsoleManager`
-
-提供窗口应用程序的控制台窗口管理方法。
-
-基于 Win32 API 调用。目前仅能使用标准输出流和标准错误流，无法使用标准输入流。
-
-### 静态类 `XstarS.GenericExtensions`
-
-提供类型无关的通用扩展方法。
-
-### 静态类 `XstarS.StringExtensions`
-
-提供字符串 `string` 的扩展方法。
-
-### 静态类 `XstarS.TimeSpanExtensions`
-
-提供时间间隔 `System.TimeSpan` 的扩展方法。
-
-### 静态类 `XstarS.TypeExtensions`
-
-提供类型声明 `System.Type` 的扩展方法。
-
-### 泛型类 `XstarS.ToStringComparer<T>`
-
-使用对象的 `ToString()` 方法实现的类型无关的通用比较器。
-
-### 泛型类 `XstarS.Verbose<T>`
-
-变量的值发生读写时，自动输出相关信息。
-
-默认状态下，对 `Value` 属性进行读写操作时均会在控制台中输出相关信息。
-
-可通过修改 `OnValueRead` 和 `OnValueWrite` 委托自定义读写值时应执行的操作。
-
-### 泛型类 `XstarS.Collections.Generic.SequenceEqualityComparer<T>`
-
-提供泛型集合 `System.Collections.Generic.IEnumberable<out T>` 的元素序列的相等比较的方法。
-
-### 泛型类 `XstarS.Collections.Generic.IndexedLinkedList<T>`
-
-继承 `System.Collections.Generic.LinkedList<T>` 类。
-
-能够通过索引访问的双重链接列表。通过遍历元素并计数实现按索引值访问。
-
-目前存在**严重性能问题**，暂无实用价值。
-
-相比于 `System.Collections.Generic.LinkedList<T>`，
-新增实现了 `System.Collections.Generic.IList<T>` 和
-`System.Collections.Generic.IReadOnlyList<out T>` 两个泛型集合接口。
-
-### 静态类 `XstarS.Collections.Generic.EnumerableExtensions`
-
-提供泛型公开枚举数 `System.Collections.Generic.IEnumerable<out T>` 的扩展方法。
-
-### 静态类 `XstarS.Collections.Generic.CollectionExtensions`
-
-提供泛型集合 `System.Collections.Generic.ICollection<T>` 的扩展方法。
-
-### 静态类 `XstarS.Collections.Generic.ListExtensions`
-
-提供可索引访问的泛型集合 `System.Collections.Generic.IList<T>` 的扩展方法。
-
-### 静态类 `XstarS.Collections.Generic.DictionaryExtensions`
-
-提供键/值对的泛型集合 `System.Collections.Generic.IDictionary<TKey, TValue>` 的扩展方法。
-
-### 静态类 `XstarS.IO.FileSystemInfoExtension`
-
-提供文件系统信息 `System.IO.FileSystemInfo` 及其派生类的扩展方法。
-
-### 静态类 `XstarS.Win32.SystemComponents`
-
-提供 Win32 系统组件相关的帮助方法。
+* `XstarS`
+* `XstarS.Collections`
+* `XstarS.Collections.Generic`
+* `XstarS.IO`
+* `XstarS.Win32`
 
 ## 程序集 XstarS.ComponentModel.Binding
 
@@ -223,7 +153,7 @@ PowerShell 风格的命令行参数解析器，参数名称忽略大小写。
 Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小写。
 
 * 支持连字符 "-" 后接多个开关参数的解析。
-* 暂不支持连字符 "-" 开头的参数值的解析。
+* 支持连字符 "-" 开头的参数值的解析。
 * 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
 * 不支持一个参数名称后跟多个参数值的有名参数的解析。
 
@@ -271,6 +201,7 @@ Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小�
 
 对应 PresentationCore 和 PresentationFramework 程序集，WPF 相关。
 
-### 静态类 `XstarS.Windows.Controls.ControlExtensions`
+目前包含的命名空间：
 
-提供 WPF 用户控件 `System.Windows.Controls.Control` 及其派生类的扩展方法。
+* `XstarS.Windows.Controls`
+* `XstarS.Windows.Media`

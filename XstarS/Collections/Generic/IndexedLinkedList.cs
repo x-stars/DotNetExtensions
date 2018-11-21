@@ -345,7 +345,7 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <param name="index">要移除的元素的从零开始的索引。</param>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，
-        /// 或 <paramref name="index"/>> 大于 <see cref="LinkedList{T}.Count"/>。</exception>
+        /// 或 <paramref name="index"/> 大于 <see cref="LinkedList{T}.Count"/>。</exception>
         public void RemoveAt(int index)
         {
             if ((index < 0) || (index > this.Count - 1))
