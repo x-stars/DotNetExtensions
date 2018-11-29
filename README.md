@@ -18,6 +18,7 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 * `XstarS.Collections`
 * `XstarS.Collections.Generic`
 * `XstarS.IO`
+* `XstarS.Reflection.Emit`
 * `XstarS.Win32`
 
 ## 程序集 XstarS.ComponentModel.Binding
@@ -26,7 +27,11 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 结合 System 程序集中的可绑定列表 `System.ComponentModel.BindingList<T>`，可实现便捷的数据绑定。
 
-### 抽象类 `XstarS.ComponentModel.BindableObject`
+### 方法提取
+
+将属性绑定的公用代码提取为方法，并在属性的 `set` 处调用，减少重复代码。
+
+#### 抽象类 `XstarS.ComponentModel.BindableObject`
 
 `System.ComponentModel.INotifyPropertyChanged` 接口的实现，用于实现数据绑定到用户控件的抽象类。
 
@@ -35,9 +40,26 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 `XstarS.ComponentModel.BindableObject` 为一抽象类，用法基于类的继承。
 
+#### 静态类 `XstarS.ComponentModel.BindingExtensions`
+
+提供数据绑定相关的扩展方法。
+
+目前提供与 `XstarS.ComponentModel.BindableObject` 几乎完全一致的扩展方法。
+
+在类（非显式）实现 `System.ComponentModel.INotifyPropertyChanged` 接口后，
+即可在属性的 `set` 处直接调用 `SetProperty<T>(ref T, T, string)` 扩展方法以修改属性并触发属性更改事件。
+
+由于在类外部不能直接触发事件，扩展方法中的事件触发只能基于反射调用。
+反射调用可能存在性能问题，当绑定属性的数量较大时不建议采用此方案。
+
+#### 方法使用说明
+
+两类的使用方法完全一致，都要求实现 `System.ComponentModel.INotifyPropertyChanged` 接口。
+当继承 `BindableObject` 类时，则不会调用 `BindingExtensions` 类中的扩展方法。
+
     using XstarS.ComponentModel;
 
-    public class BindableData : BindableObject
+    public class BindableData : BindableObject, INotifyPropertyChanged
     {
         private int data;
 
@@ -51,7 +73,11 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 若将上例中 `BindableData` 的实例的 `Data` 属性绑定到用户控件的某属性，
 则当服务端更改 `BindableData` 实例的 `Data` 属性时，将会通知客户端属性值发生更改。
 
-### 泛型类 `XstarS.ComponentModel.Bindable<T>`
+### 绑定值封装
+
+将用于绑定的值封装到一个类中，并在类的某个属性实现属性更改通知客户端。
+
+#### 泛型类 `XstarS.ComponentModel.Bindable<T>`
 
 继承 `XstarS.ComponentModel.BindableObject` 类。
 
@@ -61,6 +87,12 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 此时可考虑将要绑定到用户控件的属性设置为 `XstarS.ComponentModel.Bindable<T>` 类。
 
 `XstarS.ComponentModel.Bindable<T>` 内含一个 `Value` 属性，此属性更改时将会通知客户端。
+
+除初始化以外，不应直接给 `XstarS.ComponentModel.Bindable<T>` 实例赋值，建议可如上所示定义为一个只读自动属性。
+直接更改实例的值将不会触发 `System.ComponentModel.INotifyPropertyChanged.PropertyChanged` 事件，
+并会替换 `System.ComponentModel.INotifyPropertyChanged.PropertyChanged` 事件委托，破坏绑定关系。
+
+#### 封装类使用说明
 
     // ......
     using System.Windows;
@@ -95,21 +127,75 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 若将上例中 `Flag` 属性的 `Value` 属性绑定到用户控件的某属性，
 则当服务端更改 `Flag` 属性的 `Value` 属性时，将会通知客户端属性值发生更改。
 
-除初始化以外，不应直接给 `XstarS.ComponentModel.Bindable<T>` 实例赋值，建议可如上所示定义为一个只读自动属性。
-直接更改实例的值将不会触发 `System.ComponentModel.INotifyPropertyChanged.PropertyChanged` 事件，
-并会替换 `System.ComponentModel.INotifyPropertyChanged.PropertyChanged` 事件委托，破坏绑定关系。
+### 动态生成数据绑定派生类
 
-### 静态类 `XstarS.ComponentModel.BindingExtensions`
+定义一个原型基类或接口，通过 `System.Reflection.Emit` 命名空间提供的类来动态生成派生类，
+并在派生类的属性中实现数据绑定的相关代码。
 
-提供数据绑定相关的扩展方法。
+#### 泛型接口 `XstarS.ComponentModel.IBindingBuilder<out T>`
 
-目前提供与 `XstarS.ComponentModel.BindableObject` 几乎完全一致的扩展方法。
+提供从原型构造用于数据绑定的实例的方法。
 
-在类实现 `System.ComponentModel.INotifyPropertyChanged` 接口后，
-即可在属性的 `set` 处直接调用 `SetProperty<T>(ref T, T, string)` 扩展方法以修改属性并触发属性更改事件。
+`BindableOnly` 属性指定是否仅对有 `System.ComponentModel.BindableAttribute` 特性的属性构造绑定关系。
 
-由于在类外部不能直接触发事件，扩展方法中的事件触发只能基于反射调用。
-反射调用可能存在性能问题，当绑定属性的数量较大时不建议采用此方案。
+`CreateInstance()` 方法则构造一个基于 `T` 类型的派生类的实例，并根据 `BindableOnly` 属性的指示，实现某些属性的数据绑定。
+
+#### 泛型类 `XstarS.ComponentModel.BindingBuilder<T>`
+
+实现 `XstarS.ComponentModel.IBindingBuilder<out T>` 接口。
+
+提供从原型构造用于数据绑定的实例的方法的基类和工厂方法。
+
+通过 `Default` 属性，可构造一个默认的 `BindingBuilder<T>` 类的实例，使用此实例可构造 `T` 类型用于数据绑定的实例。
+
+#### 动态生成使用说明
+
+首先定义一个原型基类或接口，原型必须（非显式）实现 `System.ComponentModel.INotifyPropertyChanged` 接口。
+
+    using System.ComponentModel;
+
+    public interface IBindableData : INotifyPropertyChanged
+    {
+        int Value { get; set; }
+
+        [Bindable(true)]
+        int BindingValue { get; set; }
+    }
+
+注意，若定义的原型为一个类，则应将用于绑定的属性设置为 `virtual` 或 `abstract`，使得派生类的属性能够静态调用。
+
+> 若基类中的属性未定义为 `virtual` 或 `abstract`，则派生类的属性仅隐藏了基类的属性，并未重写。
+> 当派生类的实例声明为基类时，则会调用基类的属性。
+> 由于派生类为动态生成，若要调用仅隐藏未重写的属性或方法，则仅能动态调用。
+
+而后在设置绑定处通过 `Default` 属性生成 `BindingBuilder` 的实例，构造基于原型接口 `IBindableData` 的实例。
+
+    // ......
+    using System.Windows;
+    using XstarS.ComponentModel;
+    // ......
+
+    public class MainWindow : Window
+    {
+        // ......
+
+        public MainWindow()
+        {
+            // ......
+            var builder = BindingBuilder<IBindableData>.Default;
+            builder.BindableOnly = true;  // 为 true 时仅对有 Bindable 特性的属性构造绑定关系。
+            this.BindingData = builder.CreateInstance();
+            // ......
+        }
+
+        // ......
+
+        public IBindableData BindingData { get; }
+    }
+
+此时若更改 `MainWindow.BindingData.BindingValue` 属性会通知客户端属性发生更改，
+而更改 `MainWindow.BindingData.Value` 属性则不会。
+若将 `BindableOnly` 属性置为 `false` (默认值) ，则两属性都会在发生更改时通知客户端。
 
 ## 程序集 XstarS.ParamReaders
 

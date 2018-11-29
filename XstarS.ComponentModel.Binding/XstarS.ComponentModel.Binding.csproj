@@ -46,7 +46,13 @@
   <ItemGroup>
     <Compile Include="Bindable.cs" />
     <Compile Include="BindableObject.cs" />
+    <Compile Include="BindingBuilders\BindingBuilder.cs" />
+    <Compile Include="BindingBuilders\BindingBuildHelper.cs" />
     <Compile Include="BindingExtensions.cs" />
+    <Compile Include="BindingBuilders\ClassBindingBuilder.cs" />
+    <Compile Include="BindingBuilders\IBindingBuilder.cs" />
+    <Compile Include="BindingBuilders\InterfaceBindingBuilder.cs" />
+    <Compile Include="BindingBuilders\InternalBindingBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
