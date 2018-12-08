@@ -57,18 +57,20 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 两类的使用方法完全一致，都要求实现 `System.ComponentModel.INotifyPropertyChanged` 接口。
 当继承 `BindableObject` 类时，则不会调用 `BindingExtensions` 类中的扩展方法。
 
-    using XstarS.ComponentModel;
+``` C#
+using XstarS.ComponentModel;
 
-    public class BindableData : BindableObject, INotifyPropertyChanged
+public class BindableData : BindableObject, INotifyPropertyChanged
+{
+    private int data;
+
+    public int Data
     {
-        private int data;
-
-        public int Data
-        {
-            get => this.data;
-            set => this.SetProperty(ref this.data, value);
-        }
+        get => this.data;
+        set => this.SetProperty(ref this.data, value);
     }
+}
+```
 
 若将上例中 `BindableData` 的实例的 `Data` 属性绑定到用户控件的某属性，
 则当服务端更改 `BindableData` 实例的 `Data` 属性时，将会通知客户端属性值发生更改。
@@ -94,35 +96,37 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 #### 封装类使用说明
 
-    // ......
-    using System.Windows;
-    using XstarS.ComponentModel;
+``` C#
+// ......
+using System.Windows;
+using XstarS.ComponentModel;
+// ......
+
+public class MainWindow : Window
+{
     // ......
 
-    public class MainWindow : Window
+    public MainWindow()
     {
         // ......
-
-        public MainWindow()
-        {
-            // ......
-            this.Flag = false;
-            // ......
-        }
-
-        // ......
-
-        public Bindable<bool> Flag { get; }
-
-        // ......
-
-        private void Method()
-        {
-            this.Flag.Value = true; // 此时将会通知客户端属性值发生更改。
-        }
-
+        this.Flag = false;
         // ......
     }
+
+    // ......
+
+    public Bindable<bool> Flag { get; }
+
+    // ......
+
+    private void Method()
+    {
+        this.Flag.Value = true;  // 此时将会通知客户端属性值发生更改。
+    }
+
+    // ......
+}
+```
 
 若将上例中 `Flag` 属性的 `Value` 属性绑定到用户控件的某属性，
 则当服务端更改 `Flag` 属性的 `Value` 属性时，将会通知客户端属性值发生更改。
@@ -140,27 +144,30 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 `CreateInstance()` 方法则构造一个基于 `T` 类型的派生类的实例，并根据 `BindableOnly` 属性的指示，实现某些属性的数据绑定。
 
-#### 泛型类 `XstarS.ComponentModel.BindingBuilder<T>`
+#### 泛型抽象类 `XstarS.ComponentModel.BindingBuilder<T>`
 
 实现 `XstarS.ComponentModel.IBindingBuilder<out T>` 接口。
 
 提供从原型构造用于数据绑定的实例的方法的基类和工厂方法。
 
-通过 `Default` 属性，可构造一个默认的 `BindingBuilder<T>` 类的实例，使用此实例可构造 `T` 类型用于数据绑定的实例。
+通过 `Default` 或 `Bindable` 属性，可构造一个 `BindingBuilder<T>` 类的实例，
+调用此实例的 `CreateInstance()` 方法可构造 `T` 类型用于数据绑定的实例。
 
 #### 动态生成使用说明
 
 首先定义一个原型基类或接口，原型必须（非显式）实现 `System.ComponentModel.INotifyPropertyChanged` 接口。
 
-    using System.ComponentModel;
+``` C#
+using System.ComponentModel;
 
-    public interface IBindableData : INotifyPropertyChanged
-    {
-        int Value { get; set; }
+public interface IBindableData : INotifyPropertyChanged
+{
+    int Value { get; set; }
 
-        [Bindable(true)]
-        int BindingValue { get; set; }
-    }
+    [Bindable(true)]
+    int BindingValue { get; set; }
+}
+```
 
 注意，若定义的原型为一个类，则应将用于绑定的属性设置为 `virtual` 或 `abstract`，使得派生类的属性能够静态调用。
 
@@ -168,34 +175,38 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 > 当派生类的实例声明为基类时，则会调用基类的属性。
 > 由于派生类为动态生成，若要调用仅隐藏未重写的属性或方法，则仅能动态调用。
 
-而后在设置绑定处通过 `Default` 属性生成 `BindingBuilder` 的实例，构造基于原型接口 `IBindableData` 的实例。
+而后在设置绑定处通过 `Default` 或 `Bindable` 属性构造 `BindingBuilder<IBindableData>` 的实例，
+调用 `CreateInstance()` 方法构造基于原型接口 `IBindableData` 的实例。
 
-    // ......
-    using System.Windows;
-    using XstarS.ComponentModel;
+``` C#
+// ......
+using System.Windows;
+using XstarS.ComponentModel;
+// ......
+
+public class MainWindow : Window
+{
     // ......
 
-    public class MainWindow : Window
+    public MainWindow()
     {
         // ......
-
-        public MainWindow()
-        {
-            // ......
-            var builder = BindingBuilder<IBindableData>.Default;
-            builder.BindableOnly = true;  // 为 true 时仅对有 Bindable 特性的属性构造绑定关系。
-            this.BindingData = builder.CreateInstance();
-            // ......
-        }
-
+        //var builder = BindingBuilder<IBindableData>.Default;  // 对所有属性设置绑定。
+        var builder = BindingBuilder<IBindableData>.Bindable;   // 仅对 Bindable 属性设置绑定。
+        this.BindingData = builder.CreateInstance();
         // ......
-
-        public IBindableData BindingData { get; }
     }
 
-此时若更改 `MainWindow.BindingData.BindingValue` 属性会通知客户端属性发生更改，
-而更改 `MainWindow.BindingData.Value` 属性则不会。
-若将 `BindableOnly` 属性置为 `false` (默认值) ，则两属性都会在发生更改时通知客户端。
+    // ......
+
+    public IBindableData BindingData { get; }
+
+    // ......
+}
+```
+
+此时若更改 `MainWindow.BindingData` 的 `BindingValue` 属性会通知客户端属性发生更改，而更改 `Value` 属性则不会。
+若使用 `Default` 属性构造 `BindingBuilder<IBindableData>`，则两属性都会在发生更改时通知客户端。
 
 ## 程序集 XstarS.ParamReaders
 
@@ -260,28 +271,30 @@ Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小�
 
 ### 参数验证示例
 
-    using XstarS;
+``` C#
+using XstarS;
 
-    // 存在一个 string 型的名为 param 的参数。
-    // 现要求其以数字开头，并且包含在键的集合 keys 中，
-    // 且不以 "." 结尾。
+// 存在一个 string 型的名为 param 的参数。
+// 现要求其以数字开头，并且包含在键的集合 keys 中，
+// 且不以 "." 结尾。
 
-    Validate.Value(param, nameof(param))    // 使用 XstarS.Validate.Value<T>(T, string) 方法，
-                                            // 创建一个 XstarS.IValidate<out T> 接口的实例。
+Validate.Value(param, nameof(param))    // 使用 XstarS.Validate.Value<T>(T, string) 方法，
+                                        // 创建一个 XstarS.IValidate<out T> 接口的实例。
 
-        .IsNotNull()                        // 验证参数不为 null，否则抛出 System.ArgumentNullException 异常。
+    .IsNotNull()                        // 验证参数不为 null，否则抛出 System.ArgumentNullException 异常。
 
-        .IsInRange("0", "9", "OutOfRange")  // 要求实现 System.IComparable<in T> 接口，验证参数是否在指定范围内，
-                                            // 否则抛出 System.ArgumentException 异常，并设定异常消息为 "OutOfRange"。
+    .IsInRange("0", "9", "OutOfRange")  // 要求实现 System.IComparable<in T> 接口，验证参数是否在指定范围内，
+                                        // 否则抛出 System.ArgumentException 异常，并设定异常消息为 "OutOfRange"。
 
-        .IsInKeys(keys)                     // 验证参数在键的集合中，否则抛出
-                                            // System.Collections.Generic.KeyNotFoundException 异常。
+    .IsInKeys(keys)                     // 验证参数在键的集合中，否则抛出
+                                        // System.Collections.Generic.KeyNotFoundException 异常。
 
-        .NotEndsWith(".", "InvalidEnd");    // 验证字符串不以 "." 结尾，否则抛出 System.ArgumentException 异常，
-                                            // 并设定异常消息为 "InvalidEnd"。
-                                            // 此方法也可使用正则表达式版本的 IsNotMatch(".$", "InvalidEnd") 方法实现。
+    .NotEndsWith(".", "InvalidEnd");    // 验证字符串不以 "." 结尾，否则抛出 System.ArgumentException 异常，
+                                        // 并设定异常消息为 "InvalidEnd"。
+                                        // 此方法也可使用正则表达式版本的 IsNotMatch(".$", "InvalidEnd") 方法实现。
 
-    // ......
+// ......
+```
 
 ## 程序集 XstarS.Windows
 

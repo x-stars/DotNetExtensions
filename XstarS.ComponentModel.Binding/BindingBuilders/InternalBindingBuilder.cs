@@ -12,41 +12,31 @@ namespace XstarS.ComponentModel
         where T : class, INotifyPropertyChanged
     {
         /// <summary>
-        /// 用于数据绑定的动态类型的 <see cref="Type"/> 对象。
-        /// </summary>
-        private readonly IDictionary<bool, Type> bindableType;
-
-        /// <summary>
         /// 初始化 <see cref="InterfaceBindingBuilder{T}"/> 类的新实例。
         /// </summary>
-        protected InternalBindingBuilder()
+        /// <param name="bindableOnly">指示在构建用于数据绑定的动态类型时，
+        /// 是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。</param>
+        protected InternalBindingBuilder(bool bindableOnly)
         {
-            this.BindableOnly = false;
-            this.bindableType = new Dictionary<bool, Type>()
-            {
-                { false, null },
-                { true, null }
-            };
+            this.BindableOnly = bindableOnly;
+            this.BindableType = this.BuildType();
         }
 
         /// <summary>
         /// 指示在构建用于数据绑定的动态类型时，
         /// 是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。
         /// </summary>
-        public override bool BindableOnly { get; set; }
+        public override bool BindableOnly { get; }
 
         /// <summary>
         /// 用于数据绑定的动态类型的 <see cref="Type"/> 对象。
         /// </summary>
-        public override Type BindableType => this.bindableType[this.BindableOnly] ??
-            (this.bindableType[this.BindableOnly] = this.BuildType(this.BindableOnly));
+        public override Type BindableType { get; }
 
         /// <summary>
         /// 在派生类中重写时，构造用于数据绑定的动态类型。
         /// </summary>
-        /// <param name="bindableOnly">指示在构建用于数据绑定的动态类型时，
-        /// 是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。</param>
         /// <returns>构造完成的用于数据绑定的动态类型。</returns>
-        protected abstract Type BuildType(bool bindableOnly);
+        protected abstract Type BuildType();
     }
 }

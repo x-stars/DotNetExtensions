@@ -13,7 +13,7 @@ namespace XstarS.ComponentModel
         /// 指示在构建用于数据绑定的动态类型时，
         /// 是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。
         /// </summary>
-        bool BindableOnly { get; set; }
+        bool BindableOnly { get; }
 
         /// <summary>
         /// 返回一个构造完成的用于数据绑定的类型的实例。

@@ -16,10 +16,13 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 初始化 <see cref="ClassBindingBuilder{T}"/> 类的新实例。
         /// </summary>
+        /// <param name="bindableOnly">指示在构建用于数据绑定的动态类型时，
+        /// 是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。</param>
         /// <exception cref="ArgumentException"><typeparamref name="T"/>
         /// 不是含有 <see langword="public"/> 或 <see langword="protected"/>
         /// 访问级别的无参构造函数的非密封类。</exception>
-        public ClassBindingBuilder()
+        public ClassBindingBuilder(bool bindableOnly)
+            : base(bindableOnly)
         {
             if (!(typeof(T).IsClass && !typeof(T).IsSealed &&
                 typeof(T).GetConstructors(BindingFlags.Instance |
@@ -33,11 +36,11 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 构造用于数据绑定的动态类型。
         /// </summary>
-        /// <param name="bindableOnly">指示在构建用于数据绑定的动态类型时，
-        /// 是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。</param>
         /// <returns>构造完成的用于数据绑定的动态类型。</returns>
-        protected override Type BuildType(bool bindableOnly)
+        protected override Type BuildType()
         {
+            bool bindableOnly = this.BindableOnly;
+
             // 定义动态类型。
             var t_source = typeof(T);
             var asmName = t_source.ToString() + bindableOnly.ToString();
