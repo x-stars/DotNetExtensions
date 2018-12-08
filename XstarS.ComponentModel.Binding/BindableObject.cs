@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// <see cref="INotifyPropertyChanged"/> 接口的实现，用于实现数据绑定到用户控件的抽象类。
+    /// 提供属性发生更改时通知客户端的简单实现。
     /// </summary>
     public abstract class BindableObject : INotifyPropertyChanged
     {
@@ -33,7 +33,7 @@ namespace XstarS.ComponentModel
         /// 更改属性的值，并通知客户端属性发生更改。
         /// </summary>
         /// <remarks>
-        /// 请在属性的 <see langword="set"/> 处调用此方法，
+        /// 应在属性的 <see langword="set"/> 处调用此方法，
         /// 在更改属性值的同时触发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。
         /// </remarks>
         /// <typeparam name="T">属性的类型。</typeparam>
