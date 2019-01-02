@@ -56,6 +56,7 @@
     <Compile Include="ConsoleManager.cs" />
     <Compile Include="Extensions\GenericExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="IDeconstructable.cs" />
     <Compile Include="IO\Extensions\FileSystemInfoExtensions.cs" />
     <Compile Include="Map.cs" />
     <Compile Include="MathSp.cs" />
