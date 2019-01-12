@@ -17,6 +17,7 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 * `XstarS`
 * `XstarS.Collections`
 * `XstarS.Collections.Generic`
+* `XstarS.Diagnostics`
 * `XstarS.IO`
 * `XstarS.Reflection.Emit`
 * `XstarS.Win32`
@@ -57,10 +58,10 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 两类的使用方法完全一致，都要求实现 `System.ComponentModel.INotifyPropertyChanged` 接口。
 当继承 `BindableObject` 类时，则不会调用 `BindingExtensions` 类中的扩展方法。
 
-``` C#
+``` CSharp
 using XstarS.ComponentModel;
 
-public class BindableData : BindableObject, INotifyPropertyChanged
+public class BindableData : BindableObject
 {
     private int data;
 
@@ -96,7 +97,7 @@ public class BindableData : BindableObject, INotifyPropertyChanged
 
 #### 封装类使用说明
 
-``` C#
+``` CSharp
 // ......
 using System.Windows;
 using XstarS.ComponentModel;
@@ -157,7 +158,7 @@ public class MainWindow : Window
 
 首先定义一个原型基类或接口，原型必须（非显式）实现 `System.ComponentModel.INotifyPropertyChanged` 接口。
 
-``` C#
+``` CSharp
 using System.ComponentModel;
 
 public interface IBindableData : INotifyPropertyChanged
@@ -169,16 +170,17 @@ public interface IBindableData : INotifyPropertyChanged
 }
 ```
 
-注意，若定义的原型为一个类，则应将用于绑定的属性设置为 `virtual` 或 `abstract`，使得派生类的属性能够静态调用。
+注意，若定义的原型为一个类，则应将用于绑定的属性定义为 `virtual` 或 `abstract`，使得此属性能够在派生类中被重写。
+`BindingBuilder<T>` 不会对非 `virtual` 或 `abstract` 的属性生成绑定代码。
+同时，`PropertyChanged` 事件也应定义为 `abstract`，或是定义一个事件触发函数 `OnPropertyChanged(string)`，否则会导致无法正确构造派生类。
 
-> 若基类中的属性未定义为 `virtual` 或 `abstract`，则派生类的属性仅隐藏了基类的属性，并未重写。
-> 当派生类的实例声明为基类时，则会调用基类的属性。
-> 由于派生类为动态生成，若要调用仅隐藏未重写的属性或方法，则仅能动态调用。
+> 若基类中的属性或方法或未定义为 `virtual` 或 `abstract`，则在派生类仅隐藏了基类中对应的定义，并未重写。
+> 当派生类的实例声明为基类时，则会调用基类中定义的属性或方法。
 
 而后在设置绑定处通过 `Default` 或 `Bindable` 属性构造 `BindingBuilder<IBindableData>` 的实例，
 调用 `CreateInstance()` 方法构造基于原型接口 `IBindableData` 的实例。
 
-``` C#
+``` CSharp
 // ......
 using System.Windows;
 using XstarS.ComponentModel;
@@ -271,7 +273,7 @@ Unix / Linux Shell 风格的命令行参数解析器，参数名称区分大小�
 
 ### 参数验证示例
 
-``` C#
+``` CSharp
 using XstarS;
 
 // 存在一个 string 型的名为 param 的参数。

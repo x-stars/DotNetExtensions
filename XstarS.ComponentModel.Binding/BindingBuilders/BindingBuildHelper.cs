@@ -14,6 +14,17 @@ namespace XstarS.ComponentModel
     internal static class BindingBuildHelper
     {
         /// <summary>
+        /// 获取一个值，该值指示当前属性是否可以被重写。
+        /// </summary>
+        /// <param name="source">一个 <see cref="PropertyInfo"/> 类的对象。</param>
+        /// <returns>若 <paramref name="source"/> 可以被重写，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        public static bool IsOverridable(this PropertyInfo source) =>
+            source.CanRead ? (source.GetMethod.IsVirtual && !source.GetMethod.IsFinal) : (
+            source.CanWrite ? (source.SetMethod.IsVirtual && !source.SetMethod.IsFinal) : 
+            throw new InvalidProgramException());
+
+        /// <summary>
         /// 将新的自动属性的定义、字段、获取方法和设置方法添加到当前类型，并实现抽象基类或接口中定义的指定属性。
         /// </summary>
         /// <param name="source">一个 <see cref="TypeBuilder"/> 类的对象。</param>
@@ -223,6 +234,49 @@ namespace XstarS.ComponentModel
             return (ie_PropertyChanged, if_PropertyChanged,
                 im_add_PropertyChanged, im_remove_PropertyChanged,
                 im_OnPropertyChanged, im_SetProperty);
+        }
+
+        /// <summary>
+        /// 使用已有的 <code>OnPropertyChanged(string)</code> 方法，
+        /// 定义 <code>SetProperty(ref T, T, string)</code> 方法。
+        /// </summary>
+        /// <param name="source">一个 <see cref="TypeBuilder"/> 类的对象。</param>
+        /// <param name="methodOnPropertyChanged"><code>OnPropertyChanged(string)</code> 在基类中的实现。</param>
+        /// <returns>定义完成的 <code>SetProperty(ref T, T, string)</code> 方法。</returns>
+        public static MethodBuilder DefineSetPropertyMethod(this TypeBuilder source, MethodInfo methodOnPropertyChanged)
+        {
+            var im_SetProperty = source.DefineMethod("SetProperty",
+                MethodAttributes.Family | MethodAttributes.HideBySig);
+            {
+                var t_T = im_SetProperty.DefineGenericParameters("T")[0];
+                im_SetProperty.SetParameters(t_T.MakeByRefType(), t_T, typeof(string));
+                im_SetProperty.SetReturnType(typeof(void));
+                im_SetProperty.DefineParameter(1, ParameterAttributes.None, "item");
+                im_SetProperty.DefineParameter(2, ParameterAttributes.None, "value");
+                im_SetProperty.DefineParameter(3, ParameterAttributes.None, "propertyName");
+                var ilGen = im_SetProperty.GetILGenerator();
+                ilGen.Emit(OpCodes.Call, typeof(EqualityComparer<object>).GetMethod(
+                    $"get_{nameof(EqualityComparer<object>.Default)}", Type.EmptyTypes));
+                ilGen.Emit(OpCodes.Ldarg_1);
+                ilGen.Emit(OpCodes.Ldobj, t_T);
+                ilGen.Emit(OpCodes.Box, t_T);
+                ilGen.Emit(OpCodes.Ldarg_2);
+                ilGen.Emit(OpCodes.Box, t_T);
+                ilGen.Emit(OpCodes.Callvirt, typeof(EqualityComparer<object>).GetMethod(
+                    nameof(EqualityComparer<object>.Equals), new[] { typeof(object), typeof(object) }));
+                var endLoc = ilGen.DefineLabel();
+                ilGen.Emit(OpCodes.Brtrue_S, endLoc);
+                ilGen.Emit(OpCodes.Ldarg_1);
+                ilGen.Emit(OpCodes.Ldarg_2);
+                ilGen.Emit(OpCodes.Stobj, t_T);
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldarg_3);
+                ilGen.Emit(OpCodes.Callvirt, methodOnPropertyChanged);
+                ilGen.MarkLabel(endLoc);
+                ilGen.Emit(OpCodes.Ret);
+            }
+
+            return im_SetProperty;
         }
 
         /// <summary>

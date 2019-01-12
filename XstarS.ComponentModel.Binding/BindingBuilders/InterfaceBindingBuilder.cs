@@ -10,11 +10,12 @@ namespace XstarS.ComponentModel
     /// 提供从接口类型的原型构造用于数据绑定的实例的内部基类实现。
     /// </summary>
     /// <typeparam name="T">用于数据绑定的实例的原型类型。</typeparam>
-    internal class InterfaceBindingBuilder<T> : InternalBindingBuilder<T>
+    internal class InterfaceBindingBuilder<T> : BindingBuilder<T>
         where T : class, INotifyPropertyChanged
     {
         /// <summary>
-        /// 初始化 <see cref="InterfaceBindingBuilder{T}"/> 类的新实例。
+        /// 初始化 <see cref="InterfaceBindingBuilder{T}"/> 类的新实例，
+        /// 并指定是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。
         /// </summary>
         /// <param name="bindableOnly">指示在构建用于数据绑定的动态类型时，
         /// 是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。</param>
@@ -25,7 +26,7 @@ namespace XstarS.ComponentModel
         {
             if (!typeof(T).IsInterface)
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(T));
+                throw new ArgumentException("Not an interface.", nameof(T));
             }
         }
 
@@ -51,7 +52,7 @@ namespace XstarS.ComponentModel
             t_Bindable.DefineDefaultConstructor(MethodAttributes.Public);
 
             // 生成 PropertyChanged 事件。
-            var (_, _, _, _, _, im_SetProperty) = t_Bindable.DefinePropertyChangedEvent(true);
+            var im_SetProperty = t_Bindable.DefinePropertyChangedEvent(true).SetPropertyMethod;
 
             // 生成属性。
             foreach (var t_source_ip_Property in t_source.GetProperties())
