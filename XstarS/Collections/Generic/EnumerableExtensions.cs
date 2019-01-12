@@ -92,7 +92,10 @@ namespace XstarS.Collections.Generic
                 {
                     sequence.Add(collection.SequenceToString());
                 }
-                else { sequence.Add(item.ToString()); }
+                else
+                {
+                    sequence.Add(item.ToString());
+                }
             }
             return "{ " + string.Join(", ", sequence) + " }";
         }

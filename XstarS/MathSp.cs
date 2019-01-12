@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace XstarS
 {
@@ -14,6 +15,7 @@ namespace XstarS
         /// 在 Release 配置下会被优化为内联函数，与直接连续相乘效率一致。</remarks>
         /// <param name="value">要进行平方运算的 32 位有符号整数。</param>
         /// <returns>数字 <paramref name="value"/> 的平方（二次幂）。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Square(int value) => value * value;
 
         /// <summary>
@@ -23,6 +25,7 @@ namespace XstarS
         /// 在 Release 配置下会被优化为内联函数，与直接连续相乘效率一致。</remarks>
         /// <param name="value">要进行平方运算的双精度浮点数。</param>
         /// <returns>数字 <paramref name="value"/> 的平方（二次幂）。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Square(double value) => value * value;
 
         /// <summary>
@@ -32,6 +35,7 @@ namespace XstarS
         /// 在 Release 配置下会被优化为内联函数，与直接连续相乘效率一致。</remarks>
         /// <param name="value">要进行立方运算的 32 位有符号整数。</param>
         /// <returns>数字 <paramref name="value"/> 的立方（三次幂）。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int Cube(int value) => value * value * value;
 
         /// <summary>
@@ -41,6 +45,7 @@ namespace XstarS
         /// 在 Release 配置下会被优化为内联函数，与直接连续相乘效率一致。</remarks>
         /// <param name="value">要进行立方运算的双精度浮点数。</param>
         /// <returns>数字 <paramref name="value"/> 的立方（三次幂）。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static double Cube(double value) => value * value * value;
 
         /// <summary>
@@ -75,7 +80,7 @@ namespace XstarS
         /// 确定一个整数是否为质数。
         /// </summary>
         /// <param name="value">要判断是否为质数的 32 位整数。</param>
-        /// <returns>若 <paramref name="value"/> 时一个质数，
+        /// <returns>若 <paramref name="value"/> 是一个质数，
         /// 为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public static bool IsPrime(int value)
         {

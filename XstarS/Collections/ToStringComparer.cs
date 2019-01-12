@@ -40,8 +40,7 @@ namespace XstarS.Collections
         /// <param name="y">要比较的第二个对象。</param>
         /// <returns>一个指示 <paramref name="x"/> 与 <paramref name="y"/> 的大小关系的有符号整数，
         /// 大于为正，等于为零，小于为负。</returns>
-        public int Compare(object x, object y) =>
-            this.stringComparer.Compare(x?.ToString(), y?.ToString());
+        public int Compare(object x, object y) => this.stringComparer.Compare(x?.ToString(), y?.ToString());
 
         /// <summary>
         /// 使用两个对象的 <see cref="object.ToString()"/> 方法返回的值确定两个对象是否相等。
@@ -52,15 +51,13 @@ namespace XstarS.Collections
         /// 如果两个对象的 <see cref="object.ToString()"/> 方法返回的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
         /// </returns>
-        public new bool Equals(object x, object y)
-            => this.stringComparer.Equals(x?.ToString(), y?.ToString());
+        public new bool Equals(object x, object y) => this.stringComparer.Equals(x?.ToString(), y?.ToString());
 
         /// <summary>
         /// 获取对象的 <see cref="object.ToString()"/> 方法返回的值的哈希代码。
         /// </summary>
         /// <param name="obj">要为其获取哈希代码的对象。</param>
         /// <returns>对象的 <see cref="object.ToString()"/> 方法返回的值的哈希代码。</returns>
-        public int GetHashCode(object obj)
-            => this.stringComparer.GetHashCode(obj?.ToString());
+        public int GetHashCode(object obj) => this.stringComparer.GetHashCode(obj?.ToString());
     }
 }

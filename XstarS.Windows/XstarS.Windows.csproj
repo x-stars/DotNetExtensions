@@ -47,7 +47,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\Extensions\ControlExtensions.cs" />
+    <Compile Include="Controls\ControlExtensions.cs" />
     <Compile Include="Media\BitmapToImageSourceConveter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

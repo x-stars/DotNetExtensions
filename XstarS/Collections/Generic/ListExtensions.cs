@@ -102,10 +102,10 @@ namespace XstarS.Collections.Generic
             var randGen = new Random();
             for (int i = 0; i < source.Count; i++)
             {
-                int rand = randGen.Next(source.Count);
+                int r = randGen.Next(source.Count);
                 var temp = source[i];
-                source[i] = source[rand];
-                source[rand] = temp;
+                source[i] = source[r];
+                source[r] = temp;
             }
         }
     }

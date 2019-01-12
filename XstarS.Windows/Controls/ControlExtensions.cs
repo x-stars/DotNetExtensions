@@ -1,8 +1,4 @@
-﻿#if !CORE
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,17 +24,15 @@ namespace XstarS.Windows.Controls
                 throw new ArgumentNullException(nameof(source));
             }
 
-            var innerComWebBrowserFiledInfo = typeof(WebBrowser).GetField(
+            var if__axIWebBrowser2 = typeof(WebBrowser).GetField(
                 "_axIWebBrowser2", BindingFlags.Instance | BindingFlags.NonPublic);
-            if (innerComWebBrowserFiledInfo is null) { return; }
+            if (if__axIWebBrowser2 is null) { return; }
 
-            object innerComWebBrowser = innerComWebBrowserFiledInfo.GetValue(source);
-            if (innerComWebBrowser is null) { return; }
+            var _axIWebBrowser2 = if__axIWebBrowser2.GetValue(source);
+            if (_axIWebBrowser2 is null) { return; }
 
-            innerComWebBrowser.GetType().InvokeMember(
-                "Silent", BindingFlags.SetProperty, null, innerComWebBrowser, new object[] { supresses });
+            _axIWebBrowser2.GetType().InvokeMember(
+                "Silent", BindingFlags.SetProperty, null, _axIWebBrowser2, new object[] { supresses });
         }
     }
 }
-
-#endif

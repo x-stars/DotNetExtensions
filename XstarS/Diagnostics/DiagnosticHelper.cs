@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace XstarS
 {
     /// <summary>
-    /// 提供用于程序测试的帮助方法。
+    /// 提供用于程序诊断和测试的帮助方法。
     /// </summary>
-    public static class TestHelper
+    public static class DiagnosticHelper
     {
         /// <summary>
         /// 返回指定子过程的运行指定次数的总时间。
@@ -34,16 +31,19 @@ namespace XstarS
             }
 
             var allTime = new TimeSpan();
+            var sw = new Stopwatch();
             for (int i = 0; i < times; i++)
             {
-                var startTime = DateTime.Now;
+                sw.Reset();
+                sw.Start();
                 for (int j = 0; j < repeat; j++)
                 {
                     sub();
                 }
-                allTime += DateTime.Now - startTime;
+                sw.Stop();
+                allTime += sw.Elapsed;
             }
-            return new TimeSpan((long)(allTime.Ticks / times));
+            return new TimeSpan(allTime.Ticks / times);
         }
     }
 }
