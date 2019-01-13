@@ -53,7 +53,7 @@
     <Compile Include="Collections\Generic\SequenceEqualityComparer.cs" />
     <Compile Include="Collections\SequenceEqualityComparer.cs" />
     <Compile Include="Collections\ToStringComparer.cs" />
-    <Compile Include="ConsoleManager.cs" />
+    <Compile Include="Win32\ConsoleManager.cs" />
     <Compile Include="GenericExtensions.cs" />
     <Compile Include="StringExtensions.cs" />
     <Compile Include="IDeconstructable.cs" />
