@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace XstarS
+namespace XstarS.Diagnostics
 {
     /// <summary>
     /// 提供用于程序诊断和测试的帮助方法。

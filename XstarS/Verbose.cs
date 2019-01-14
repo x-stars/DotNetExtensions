@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace XstarS
 {
@@ -10,11 +9,6 @@ namespace XstarS
     public class Verbose<T>
     {
         /// <summary>
-        /// 未设置变量名称时使用的默认名称。
-        /// </summary>
-        protected static string DefaultName = "(NoName)";
-
-        /// <summary>
         /// 变量的值。
         /// </summary>
         private T value;
@@ -24,68 +18,63 @@ namespace XstarS
         private string name;
 
         /// <summary>
-        /// 使用默认值初始化 <see cref="Verbose{T}"/> 类的实例，
-        /// 并生成默认的 <see cref="Verbose{T}.OnValueRead"/> 和 <see cref="Verbose{T}.OnValueWrite"/>。
+        /// 使用默认值初始化 <see cref="Verbose{T}"/> 类的实例。
         /// </summary>
-        public Verbose()
-        {
-            this.OnValueRead = (value, name) => Console.WriteLine(
-                $"{typeof(T)} {name}: {value}");
-            this.OnValueWrite = (oldValue, newValue, name) => Console.WriteLine(
-                $"{typeof(T)} {name}: {oldValue} -> {newValue}");
-        }
+        public Verbose() { }
 
         /// <summary>
-        /// 使用变量的值和名称初始化 <see cref="Verbose{T}"/> 类的实例，
-        /// 并生成默认的 <see cref="Verbose{T}.OnValueRead"/> 和 <see cref="Verbose{T}.OnValueWrite"/>。
+        /// 使用变量的值和名称初始化 <see cref="Verbose{T}"/> 类的实例。
         /// </summary>
         /// <param name="value">变量的值。</param>
         /// <param name="name">变量的名称。</param>
-        public Verbose(T value, string name = null) : this()
+        public Verbose(T value, string name = null)
         {
+            this.name = name;
             this.Value = value;
-            this.Name = name;
         }
 
         /// <summary>
         /// 变量的值。
-        /// 当读取此属性时会执行 <see cref="Verbose{T}.OnValueRead"/>，
-        /// 当写入此属性时会执行 <see cref="Verbose{T}.OnValueWrite"/>。
+        /// 当读取此属性时会执行 <see cref="Verbose{T}.OnValueReading(T, string)"/>，
+        /// 当写入此属性时会执行 <see cref="Verbose{T}.OnValueWriting(T, T, string)"/>。
         /// </summary>
         public T Value
         {
-            get { this.OnValueRead?.Invoke(this.value, this.Name); return this.value; }
-            set { this.OnValueWrite?.Invoke(this.value, value, this.Name); this.value = value; }
+            get { this.OnValueReading(this.value, this.Name); return this.value; }
+            set { this.OnValueWriting(this.value, value, this.Name); this.value = value; }
         }
 
         /// <summary>
-        /// 变量的名称。若未设定，则返回 "(NoName)"。
+        /// 变量的名称。若未设定，则返回 <see cref="Verbose{T}.GetDefaultName"/> 的返回值。
         /// </summary>
         public string Name
         {
-            get => this.name ?? Verbose<T>.DefaultName;
+            get => this.name ?? this.GetDefaultName();
             set => this.name = value;
         }
 
         /// <summary>
-        /// 当读取当前实例的 <see cref="Verbose{T}.Value"/> 时发生。
-        /// 其中输入参数依次为变量的值和名称。
-        /// 默认将变量的类型、名称和值依次输出到控制台。
+        /// 获取未设置变量名称时使用的默认名称。
         /// </summary>
-        public Action<T, string> OnValueRead { get; set; }
+        /// <returns>未设置变量名称时使用的默认名称。</returns>
+        protected virtual string GetDefaultName() => "(NoName)";
+
+        /// <summary>
+        /// 当读取当前实例 <see cref="Verbose{T}.Value"/> 时发生。
+        /// </summary>
+        /// <param name="value"><see cref="Verbose{T}.Value"/> 的值。</param>
+        /// <param name="name"><see cref="Verbose{T}.Name"/> 的值。</param>
+        protected virtual void OnValueReading(T value, string name) =>
+            Console.WriteLine($"{typeof(T)} {name}: {value}");
 
         /// <summary>
         /// 当写入当前实例 <see cref="Verbose{T}.Value"/> 时发生。
-        /// 其中输入参数依次为变量的旧值、新值和名称。
-        /// 默认将变量的类型、名称、旧值和新值依次输出到控制台。
         /// </summary>
-        public Action<T, T, string> OnValueWrite { get; set; }
-
-        /// <summary>
-        /// 返回表示当前 <see cref="Verbose{T}"/> 实例的字符串。
-        /// </summary>
-        /// <returns>当前 <see cref="Verbose{T}"/> 实例的名称和值的等效字符串表达形式。</returns>
-        public override string ToString() => $"{this.Name}: {this.Value}";
+        /// <param name="oldValue"><see cref="Verbose{T}.Value"/> 的旧值。</param>
+        /// <param name="newValue"><see cref="Verbose{T}.Value"/> 的新值。</param>
+        /// <param name="name"><see cref="Verbose{T}.Name"/> 的值。</param>
+        protected virtual void OnValueWriting(T oldValue, T newValue, string name) =>
+            Console.WriteLine($"{typeof(T)} {name}: {oldValue} -> {newValue}");
 
         /// <summary>
         /// 创建一个新的 <see cref="Verbose{T}"/> 对象，并将其初始化为指定的值。
