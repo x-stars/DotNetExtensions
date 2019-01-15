@@ -27,9 +27,9 @@ namespace XstarS
         {
             TypeExtensions.LiteralTypesStorage = new HashSet<Type>()
             {
-                typeof(Boolean), typeof(Byte), typeof(Char), typeof(Decimal), typeof(Double),
-                typeof(Int16),typeof(Int32), typeof(Int64), typeof(SByte), typeof(Single),
-                typeof(String), typeof(UInt32), typeof(UInt16), typeof(UInt64)
+                typeof(Boolean), typeof(Byte), typeof(Char), typeof(Double), typeof(Int16),
+                typeof(Int32), typeof(Int64), typeof(SByte), typeof(Single), typeof(String),
+                typeof(UInt32), typeof(UInt16), typeof(UInt64)
             };
             TypeExtensions.NativeTypesStorage = new HashSet<Type>()
             {

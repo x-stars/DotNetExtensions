@@ -44,13 +44,16 @@ namespace XstarS
             // 指针包装相等比较函数。
             unsafe bool PointerValueEquals(Pointer x, Pointer y)
             {
+                // 空引用。
                 if ((x is null) && (y is null)) { return true; }
                 if ((x is null) ^ (y is null)) { return false; }
 
+                // 指针值比较。
                 if (Pointer.Unbox(x) != Pointer.Unbox(y))
                 {
                     return false;
                 }
+                // 指针类型比较。
                 else
                 {
                     var t_Pointer_im_GetPointerType = typeof(Pointer).GetMethod(
