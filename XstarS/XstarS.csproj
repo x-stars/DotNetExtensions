@@ -54,6 +54,7 @@
     <Compile Include="Collections\Generic\SequenceEqualityComparer.cs" />
     <Compile Include="Collections\SequenceEqualityComparer.cs" />
     <Compile Include="Collections\ToStringComparer.cs" />
+    <Compile Include="DeconstructableExtensions.cs" />
     <Compile Include="Reflection\ReflectionExtensions.cs" />
     <Compile Include="Win32\ConsoleManager.cs" />
     <Compile Include="ObjectExtensions.cs" />
