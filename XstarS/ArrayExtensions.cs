@@ -40,7 +40,7 @@ namespace XstarS
             var t_source = source.GetType();
             bool isMultiDim = source.Rank > 1;
             bool isNested = t_source.GetElementType().IsArray;
-            for (long i = 0; i < source.LongLength; i++)
+            for (long i = 0L; i < source.LongLength; i++)
             {
                 var xi = isMultiDim ? source.GetValue(source.IndexV2T(i)) : source.GetValue(i);
                 var yi = isMultiDim ? other.GetValue(other.IndexV2T(i)) : other.GetValue(i);
@@ -80,7 +80,7 @@ namespace XstarS
             {
                 throw new ArgumentNullException(nameof(source));
             }
-            if ((index < 0) || (index >= source.LongLength))
+            if ((index < 0L) || (index >= source.LongLength))
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
@@ -88,7 +88,7 @@ namespace XstarS
             var result = new int[source.Rank];
             for (int i = 0; i < source.Rank; i++)
             {
-                long scale = 1;
+                long scale = 1L;
                 for (int j = source.Rank - 1; j >= i + 1; j--)
                 {
                     scale *= source.GetLength(j);

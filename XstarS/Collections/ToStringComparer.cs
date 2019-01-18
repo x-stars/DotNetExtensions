@@ -30,6 +30,8 @@ namespace XstarS.Collections
         /// 初始化 <see cref="ToStringComparer"/> 类的新实例，并指定进行字符串比较时使用的比较器。
         /// </summary>
         /// <param name="comparer">进行字符串比较时使用的比较器。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="comparer"/> 为 <see langword="null"/>。</exception>
         public ToStringComparer(StringComparer comparer) => this.stringComparer = comparer;
 
         /// <summary>

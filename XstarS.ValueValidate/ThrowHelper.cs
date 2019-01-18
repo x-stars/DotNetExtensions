@@ -19,7 +19,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// 总是抛出 <see cref="ArgumentException"/> 类型的异常。
         /// </exception>
-        public static void ThrowArgumentException(string paramName = null,
+        internal static void ThrowArgumentException(string paramName = null,
             string message = null, Exception innerException = null)
         {
             message = message ?? new ArgumentException().Message;
@@ -34,7 +34,7 @@ namespace XstarS
         /// <exception cref="ArgumentNullException">
         /// 总是抛出 <see cref="ArgumentNullException"/> 类型的异常。
         /// </exception>
-        public static void ThrowArgumentNullException(string paramName = null,
+        internal static void ThrowArgumentNullException(string paramName = null,
             string message = null)
         {
             message = message ?? new ArgumentNullException().Message;
@@ -50,7 +50,7 @@ namespace XstarS
         /// <exception cref="ArgumentOutOfRangeException">
         /// 总是抛出 <see cref="ArgumentOutOfRangeException"/> 类型的异常。
         /// </exception>
-        public static void ThrowArgumentOutOfRangeException(string paramName = null,
+        internal static void ThrowArgumentOutOfRangeException(string paramName = null,
             object actualValue = null, string message = null)
         {
             message = message ?? new ArgumentOutOfRangeException().Message;
@@ -65,7 +65,7 @@ namespace XstarS
         /// <exception cref="IndexOutOfRangeException">
         /// 总是抛出 <see cref="IndexOutOfRangeException"/> 类型的异常。
         /// </exception>
-        public static void ThrowIndexOutOfRangeException(
+        internal static void ThrowIndexOutOfRangeException(
             string message = null, Exception innerException = null)
         {
             message = message ?? new IndexOutOfRangeException().Message;
@@ -80,7 +80,7 @@ namespace XstarS
         /// <exception cref="KeyNotFoundException">
         /// 总是抛出 <see cref="KeyNotFoundException"/> 类型的异常。
         /// </exception>
-        public static void ThrowKeyNotFoundException(
+        internal static void ThrowKeyNotFoundException(
             string message = null, Exception innerException = null)
         {
             message = message ?? new KeyNotFoundException().Message;
@@ -96,7 +96,7 @@ namespace XstarS
         /// <exception cref="FileNotFoundException">
         /// 总是抛出 <see cref="FileNotFoundException"/> 类型的异常。
         /// </exception>
-        public static void ThrowFileNotFoundException(string fileName = null,
+        internal static void ThrowFileNotFoundException(string fileName = null,
             string message = null, Exception innerException = null)
         {
             message = message ?? new FileNotFoundException().Message;
@@ -111,7 +111,7 @@ namespace XstarS
         /// <exception cref="DirectoryNotFoundException">
         /// 总是抛出 <see cref="DirectoryNotFoundException"/> 类型的异常。
         /// </exception>
-        public static void ThrowDirectoryNotFoundException(
+        internal static void ThrowDirectoryNotFoundException(
             string message = null, Exception innerException = null)
         {
             message = message ?? new DirectoryNotFoundException().Message;
