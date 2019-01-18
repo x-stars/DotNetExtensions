@@ -11,7 +11,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("XstarS")]
 [assembly: AssemblyProduct("XstarS.ValueValidate")]
-[assembly: AssemblyCopyright("Copyright © XstarS 2018")]
+[assembly: AssemblyCopyright("Copyright © XstarS 2018-2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
