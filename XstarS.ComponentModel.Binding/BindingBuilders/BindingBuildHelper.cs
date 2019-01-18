@@ -14,45 +14,179 @@ namespace XstarS.ComponentModel
     internal static class BindingBuildHelper
     {
         /// <summary>
+        /// 获取一个值，该值指示当前属性是否为抽象。
+        /// </summary>
+        /// <param name="source">一个 <see cref="PropertyInfo"/> 类的对象。</param>
+        /// <returns>若 <paramref name="source"/> 为抽象，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        internal static bool IsAbstract(this PropertyInfo source)
+        {
+            if (source is null) { throw new ArgumentNullException(nameof(source)); }
+
+            return
+                source.CanRead ? source.GetMethod.IsAbstract : (
+                source.CanWrite ? source.SetMethod.IsAbstract :
+                throw new InvalidProgramException());
+        }
+
+        /// <summary>
         /// 获取一个值，该值指示当前属性是否可以被重写。
         /// </summary>
         /// <param name="source">一个 <see cref="PropertyInfo"/> 类的对象。</param>
         /// <returns>若 <paramref name="source"/> 可以被重写，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool IsOverridable(this PropertyInfo source) =>
-            source.CanRead ? (source.GetMethod.IsVirtual && !source.GetMethod.IsFinal) : (
-            source.CanWrite ? (source.SetMethod.IsVirtual && !source.SetMethod.IsFinal) : 
-            throw new InvalidProgramException());
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        internal static bool IsOverridable(this PropertyInfo source)
+        {
+            if (source == null) { throw new ArgumentNullException(nameof(source)); }
+
+            return
+                source.CanRead ? (source.GetMethod.IsVirtual && !source.GetMethod.IsFinal) : (
+                source.CanWrite ? (source.SetMethod.IsVirtual && !source.SetMethod.IsFinal) :
+                throw new InvalidProgramException());
+        }
 
         /// <summary>
-        /// 将新的自动属性的定义、字段、获取方法和设置方法添加到当前类型，并实现抽象基类或接口中定义的指定属性。
+        /// 以指定的构造函数为基础，定义仅调用指定构造函数的构造函数，并添加到当前类型。
         /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类的对象。</param>
-        /// <param name="property">抽象基类或接口中属性的定义。</param>
+        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="constructor">作为基础的构造函数的定义。</param>
+        /// <param name="asPublic">指定是否将构造函数的访问级别定义为公共。</param>
+        /// <returns>定义完成的构造函数，仅调用 <paramref name="constructor"/> 构造函数。</returns>
+        /// <exception cref="ArgumentException"><paramref name="constructor"/> 的访问级别不为公共或保护。</exception>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        internal static ConstructorBuilder DefineDefaultConstructor(this TypeBuilder source,
+            ConstructorInfo constructor, bool asPublic = false)
+        {
+            // 参数检查。
+            if (source is null) { throw new ArgumentNullException(nameof(source)); }
+            if (constructor is null) { throw new ArgumentNullException(nameof(constructor)); }
+            if (!constructor.IsPublic && !constructor.IsFamily)
+            {
+                throw new ArgumentException(new ArgumentException().Message, nameof(constructor));
+            }
+
+            // 定义构造函数。
+            var constructorParameters = constructor.GetParameters();
+            var constructorAttributes = constructor.Attributes;
+            if (asPublic)
+            {
+                constructorAttributes &= ~MethodAttributes.MemberAccessMask;
+                constructorAttributes |= MethodAttributes.Public;
+            }
+            var ic_Constructor = source.DefineConstructor(
+                constructorAttributes, constructor.CallingConvention,
+                Array.ConvertAll(constructorParameters, param => param.ParameterType));
+            {
+                for (int i = 0; i < constructorParameters.Length; i++)
+                {
+                    var constructorParameter = constructorParameters[i];
+                    var parameter = ic_Constructor.DefineParameter(
+                        i + 1, constructorParameter.Attributes, constructorParameter.Name);
+                    if (constructorParameter.HasDefaultValue)
+                    {
+                        parameter.SetConstant(constructorParameter.DefaultValue);
+                    }
+                }
+                var ilGen = ic_Constructor.GetILGenerator();
+                ilGen.Emit(OpCodes.Ldarg_0);
+                for (int i = 0; i < constructorParameters.Length; i++)
+                {
+                    switch (i + 1)
+                    {
+                        case 1: ilGen.Emit(OpCodes.Ldarg_1); break;
+                        case 2: ilGen.Emit(OpCodes.Ldarg_2); break;
+                        case 3: ilGen.Emit(OpCodes.Ldarg_3); break;
+                        default: ilGen.Emit(OpCodes.Ldarg_S, i + 1); break;
+                    }
+                }
+                ilGen.Emit(OpCodes.Call, constructor);
+                ilGen.Emit(OpCodes.Ret);
+            }
+
+            return ic_Constructor;
+        }
+
+        /// <summary>
+        /// 以指定属性或索引器的定义为基础，将新的属性的定义、获取方法和设置方法添加到当前类型。
+        /// 并设定其仅抛出 <see cref="NotImplementedException"/> 异常。
+        /// </summary>
+        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="property">作为基础的属性或索引器的定义。</param>
+        /// <param name="newSlot">指定属性或索引器的相关方法是否应获取在 vtable 中获取一个新槽。
+        /// 当基类为接口时应为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
+        /// <returns>一个三元组，依次为属性或索引器的定义、获取方法和设置方法。</returns>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        internal static (PropertyBuilder Property, MethodBuilder GetMethod, MethodBuilder SetMethod)
+            DefineNotImplementedPropertyOrIndexer(this TypeBuilder source, PropertyInfo property, bool newSlot)
+        {
+            // 参数检查。
+            if (source is null) { throw new ArgumentNullException(nameof(source)); }
+            if (property is null) { throw new ArgumentNullException(nameof(property)); }
+
+            // 定义属性或构造器。
+            var ip_Property = source.DefineProperty(property.Name, property.Attributes, property.PropertyType,
+                Array.ConvertAll(property.GetIndexParameters(), param => param.ParameterType));
+            var im_get_Property = property.CanRead ?
+                source.DefineNotImplementedMethod(property.GetMethod, newSlot) : null;
+            var im_set_Property = property.CanWrite ?
+                source.DefineNotImplementedMethod(property.SetMethod, newSlot) : null;
+
+            return (ip_Property, im_get_Property, im_set_Property);
+        }
+
+        /// <summary>
+        /// 以指定属性的定义为基础，将新的自动属性的定义、字段、获取方法和设置方法添加到当前类型。
+        /// </summary>
+        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="property">作为基础的属性的定义。</param>
         /// <param name="newSlot">指定属性的相关方法是否应获取在 vtable 中获取一个新槽。
         /// 当基类为接口时应为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
         /// <returns>一个四元组，依次为属性的定义、字段、获取方法和设置方法。</returns>
-        public static (PropertyBuilder Property, FieldBuilder Field, MethodBuilder GetMethod, MethodBuilder SetMethod)
+        /// <exception cref="ArgumentException"><paramref name="property"/> 是一个索引器。</exception>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        internal static (PropertyBuilder Property, FieldBuilder Field, MethodBuilder GetMethod, MethodBuilder SetMethod)
             DefineDefaultProperty(this TypeBuilder source, PropertyInfo property, bool newSlot)
         {
+            // 参数检查。
+            if (source is null) { throw new ArgumentNullException(nameof(source)); }
+            if (property is null) { throw new ArgumentNullException(nameof(property)); }
+            if (property.GetIndexParameters().Length != 0)
+            {
+                throw new ArgumentException(new ArgumentException().Message, nameof(property));
+            }
+
             // 定义属性和字段。
-            var t_Property = property.PropertyType;
-            var ip_Property = source.DefineProperty(property.Name,
-                property.Attributes, t_Property, Type.EmptyTypes);
+            var propertyType = property.PropertyType;
+            var ip_Property = source.DefineProperty(property.Name, property.Attributes, propertyType,
+                Array.ConvertAll(property.GetIndexParameters(), param => param.ParameterType));
             var if_Property = source.DefineField($"<{property.Name}>__k_BackingField",
-                t_Property, FieldAttributes.Private);
+                propertyType, FieldAttributes.Private);
 
             // 定义属性的 get。
             var im_get_Property = (MethodBuilder)null;
             if (property.CanRead)
             {
-                var getMethodAttributes = property.GetMethod.Attributes;
+                var getMethod = property.GetMethod;
+                var getMethodAttributes = getMethod.Attributes;
+                var getMethodReturnParam = getMethod.ReturnParameter;
+                var getMethodParameters = getMethod.GetParameters();
                 getMethodAttributes &= ~MethodAttributes.Abstract;
                 getMethodAttributes |= MethodAttributes.Final;
                 if (!newSlot) { getMethodAttributes &= ~MethodAttributes.NewSlot; }
-                im_get_Property = source.DefineMethod(property.GetMethod.Name,
-                    getMethodAttributes, t_Property, Type.EmptyTypes);
+                im_get_Property = source.DefineMethod(getMethod.Name,
+                    getMethodAttributes, getMethodReturnParam.ParameterType,
+                    Array.ConvertAll(getMethodParameters, param => param.ParameterType));
                 {
+                    for (int i = 0; i < getMethodParameters.Length; i++)
+                    {
+                        var getMethodParameter = getMethodParameters[i];
+                        var parameter = im_get_Property.DefineParameter(i + 1,
+                            getMethodParameters[i].Attributes, getMethodParameters[i].Name);
+                    }
                     var ilGen = im_get_Property.GetILGenerator();
                     ilGen.Emit(OpCodes.Ldarg_0);
                     ilGen.Emit(OpCodes.Ldfld, if_Property);
@@ -65,14 +199,23 @@ namespace XstarS.ComponentModel
             var im_set_Property = (MethodBuilder)null;
             if (property.CanWrite)
             {
-                var setMethodAttributes = property.SetMethod.Attributes;
+                var setMethod = property.SetMethod;
+                var setMethodAttributes = setMethod.Attributes;
+                var setMethodReturnParam = setMethod.ReturnParameter;
+                var setMethodParameters = setMethod.GetParameters();
                 setMethodAttributes &= ~MethodAttributes.Abstract;
                 setMethodAttributes |= MethodAttributes.Final;
                 if (!newSlot) { setMethodAttributes &= ~MethodAttributes.NewSlot; }
-                im_set_Property = source.DefineMethod(property.SetMethod.Name,
-                    setMethodAttributes, typeof(void), new[] { t_Property });
+                im_set_Property = source.DefineMethod(setMethod.Name,
+                    setMethodAttributes, setMethodReturnParam.ParameterType,
+                    Array.ConvertAll(setMethodParameters, param => param.ParameterType));
                 {
-                    im_set_Property.DefineParameter(1, ParameterAttributes.None, "value");
+                    for (int i = 0; i < setMethodParameters.Length; i++)
+                    {
+                        var setMethodParameter = setMethodParameters[i];
+                        var parameter = im_set_Property.DefineParameter(i + 1,
+                            setMethodParameters[i].Attributes, setMethodParameters[i].Name);
+                    }
                     var ilGen = im_set_Property.GetILGenerator();
                     ilGen.Emit(OpCodes.Ldarg_0);
                     ilGen.Emit(OpCodes.Ldarg_1);
@@ -86,35 +229,56 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 将新的可绑定属性的定义、字段、获取方法和设置方法添加到当前类型，并实现抽象基类或接口中定义的指定属性。
+        /// 以指定属性的定义为基础，将新的可绑定属性的定义、字段、获取方法和设置方法添加到当前类型。
         /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类的对象。</param>
-        /// <param name="property">抽象基类或接口中属性的定义。</param>
-        /// <param name="methodSetProperty">定义完成的 <code>SetProperty(ref T, T, string)</code> 方法。</param>
+        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="property">作为哦基础的属性的定义。</param>
+        /// <param name="methodOnPropertyChanged">定义完成的 <code>SetProperty(ref T, T, string)</code> 方法。</param>
         /// <param name="newSlot">指定属性的相关方法是否应获取在 vtable 中获取一个新槽。
         /// 当基类为接口时应为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
         /// <returns>一个四元组，依次为属性的定义、字段、获取方法和设置方法。</returns>
-        public static (PropertyBuilder Property, FieldBuilder Field, MethodBuilder GetMethod, MethodBuilder SetMethod)
-            DefineBindableProperty(this TypeBuilder source, PropertyInfo property, MethodInfo methodSetProperty, bool newSlot)
+        /// <exception cref="ArgumentException"><paramref name="property"/> 是一个索引器。</exception>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        internal static (PropertyBuilder Property, FieldBuilder Field, MethodBuilder GetMethod, MethodBuilder SetMethod)
+            DefineBindableProperty(this TypeBuilder source, PropertyInfo property, MethodInfo methodOnPropertyChanged, bool newSlot)
         {
+            // 参数检查。
+            if (source is null) { throw new ArgumentNullException(nameof(source)); }
+            if (property is null) { throw new ArgumentNullException(nameof(property)); }
+            if (methodOnPropertyChanged is null) { throw new ArgumentNullException(nameof(methodOnPropertyChanged)); }
+            if (property.GetIndexParameters().Length != 0)
+            {
+                throw new ArgumentException(new ArgumentException().Message, nameof(property));
+            }
+
             // 定义属性和字段。
-            var t_Property = property.PropertyType;
-            var ip_Property = source.DefineProperty(property.Name,
-                property.Attributes, t_Property, Type.EmptyTypes);
-            var if_Property = source.DefineField($"<{property.Name}>k__BackingField",
-                t_Property, FieldAttributes.Private);
+            var propertyType = property.PropertyType;
+            var ip_Property = source.DefineProperty(property.Name, property.Attributes, propertyType,
+                Array.ConvertAll(property.GetIndexParameters(), param => param.ParameterType));
+            var if_Property = source.DefineField($"<{property.Name}>__k_BackingField",
+                propertyType, FieldAttributes.Private);
 
             // 定义属性的 get。
             var im_get_Property = (MethodBuilder)null;
             if (property.CanRead)
             {
-                var getMethodAttributes = property.GetMethod.Attributes;
+                var getMethod = property.GetMethod;
+                var getMethodAttributes = getMethod.Attributes;
+                var getMethodReturnParam = getMethod.ReturnParameter;
+                var getMethodParameters = getMethod.GetParameters();
                 getMethodAttributes &= ~MethodAttributes.Abstract;
                 getMethodAttributes |= MethodAttributes.Final;
                 if (!newSlot) { getMethodAttributes &= ~MethodAttributes.NewSlot; }
-                im_get_Property = source.DefineMethod(property.GetMethod.Name,
-                    getMethodAttributes, t_Property, Type.EmptyTypes);
+                im_get_Property = source.DefineMethod(getMethod.Name,
+                    getMethodAttributes, getMethodReturnParam.ParameterType,
+                    Array.ConvertAll(getMethod.GetParameters(), param => param.ParameterType));
                 {
+                    for (int i = 0; i < getMethodParameters.Length; i++)
+                    {
+                        var getMethodParameter = getMethodParameters[i];
+                        var parameter = im_get_Property.DefineParameter(i + 1,
+                            getMethodParameters[i].Attributes, getMethodParameters[i].Name);
+                    }
                     var ilGen = im_get_Property.GetILGenerator();
                     ilGen.Emit(OpCodes.Ldarg_0);
                     ilGen.Emit(OpCodes.Ldfld, if_Property);
@@ -127,22 +291,42 @@ namespace XstarS.ComponentModel
             var im_set_Property = (MethodBuilder)null;
             if (property.CanWrite)
             {
-                var setMethodAttributes = property.GetMethod.Attributes;
+                var setMethod = property.SetMethod;
+                var setMethodAttributes = setMethod.Attributes;
+                var setMethodReturnParam = setMethod.ReturnParameter;
+                var setMethodParameters = setMethod.GetParameters();
                 setMethodAttributes &= ~MethodAttributes.Abstract;
                 setMethodAttributes |= MethodAttributes.Final;
                 if (!newSlot) { setMethodAttributes &= ~MethodAttributes.NewSlot; }
-                im_set_Property = source.DefineMethod(property.SetMethod.Name,
-                    setMethodAttributes, typeof(void), new[] { t_Property });
+                im_set_Property = source.DefineMethod(setMethod.Name,
+                    setMethodAttributes, setMethodReturnParam.ParameterType,
+                    Array.ConvertAll(setMethodParameters, param => param.ParameterType));
                 {
-                    im_set_Property.DefineParameter(1, ParameterAttributes.None, "value");
+                    for (int i = 0; i < setMethodParameters.Length; i++)
+                    {
+                        var setMethodParameter = setMethodParameters[i];
+                        var parameter = im_set_Property.DefineParameter(i + 1,
+                            setMethodParameters[i].Attributes, setMethodParameters[i].Name);
+                    }
                     var ilGen = im_set_Property.GetILGenerator();
+                    var t_Comparer = typeof(EqualityComparer<>).MakeGenericType(propertyType);
+                    ilGen.Emit(OpCodes.Call, t_Comparer.GetMethod(
+                        $"get_{nameof(EqualityComparer<object>.Default)}", Type.EmptyTypes));
                     ilGen.Emit(OpCodes.Ldarg_0);
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    ilGen.Emit(OpCodes.Ldflda, if_Property);
+                    ilGen.Emit(OpCodes.Ldfld, if_Property);
                     ilGen.Emit(OpCodes.Ldarg_1);
+                    ilGen.Emit(OpCodes.Callvirt, t_Comparer.GetMethod(
+                        nameof(EqualityComparer<object>.Equals), new[] { propertyType, propertyType }));
+                    var endLoc = ilGen.DefineLabel();
+                    ilGen.Emit(OpCodes.Brtrue_S, endLoc);
+                    ilGen.Emit(OpCodes.Ldarg_0);
+                    ilGen.Emit(OpCodes.Ldarg_1);
+                    ilGen.Emit(OpCodes.Stfld, if_Property);
+                    ilGen.Emit(OpCodes.Ldarg_0);
                     ilGen.Emit(OpCodes.Ldstr, property.Name);
-                    ilGen.Emit(OpCodes.Call,
-                        methodSetProperty.MakeGenericMethod(t_Property));
+                    ilGen.Emit(methodOnPropertyChanged.IsVirtual ?
+                        OpCodes.Callvirt : OpCodes.Call, methodOnPropertyChanged);
+                    ilGen.MarkLabel(endLoc);
                     ilGen.Emit(OpCodes.Ret);
                     ip_Property.SetSetMethod(im_set_Property);
                 }
@@ -152,27 +336,156 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 将 <see cref="INotifyPropertyChanged.PropertyChanged"/>
-        /// 的默认事件的定义、委托、订阅方法、取消订阅方法和其它相关方法添加到当前类型，
-        /// 并实现抽象基类或接口中的定义。
+        /// 以指定事件的定义为基础，将新的事件的定义、委托、订阅方法和取消订阅方法添加到当前类型。
         /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类的对象。</param>
+        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="event">作为基础的事件的定义。</param>
         /// <param name="newSlot">指定事件的相关方法是否应获取在 vtable 中获取一个新槽。
         /// 当基类为接口时应为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
-        /// <returns>一个六元组，依次为事件定义、事件委托、订阅方法、取消订阅方法、触发方法和
-        /// <code>SetProperty(ref T, T, string)</code> 方法。</returns>
-        public static (EventBuilder Event, FieldBuilder Field, MethodBuilder AddOnMethod,
-            MethodBuilder RemoveOnMethod, MethodBuilder RaiseMethod, MethodBuilder SetPropertyMethod)
-            DefinePropertyChangedEvent(this TypeBuilder source, bool newSlot)
+        /// <returns>一个四元组，依次为事件定义、事件委托、订阅方法和取消订阅方法。</returns>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        internal static (EventBuilder Event, FieldBuilder Field, MethodBuilder AddOnMethod, MethodBuilder RemoveOnMethod)
+            DefineDefaultEvent(this TypeBuilder source, EventInfo @event, bool newSlot)
         {
-            // 定义事件及其相关方法。
-            var @event = typeof(INotifyPropertyChanged).GetEvent(
-                nameof(INotifyPropertyChanged.PropertyChanged));
-            var t_PropertyChanged = @event.EventHandlerType;
-            var (ie_PropertyChanged, if_PropertyChanged, im_add_PropertyChanged, im_remove_PropertyChanged) =
-                source.DefineDefaultEvent(@event, newSlot);
+            // 参数检查。
+            if (source is null) { throw new ArgumentNullException(nameof(source)); }
+            if (@event is null) { throw new ArgumentNullException(nameof(@event)); }
 
-            // 定义 OnPropertyChanged(string) 方法。
+            // 定义事件和委托。
+            var eventType = @event.EventHandlerType;
+            var ie_Event = source.DefineEvent(@event.Name, @event.Attributes, eventType);
+            var if_Event = source.DefineField(@event.Name, eventType, FieldAttributes.Private);
+
+            // 定义事件的 add。
+            var addMethod = @event.AddMethod;
+            var addMethodAttributes = addMethod.Attributes;
+            var addMethodReturnParam = addMethod.ReturnParameter;
+            var addMethodParameters = addMethod.GetParameters();
+            addMethodAttributes &= ~MethodAttributes.Abstract;
+            addMethodAttributes |= MethodAttributes.Final;
+            if (!newSlot) { addMethodAttributes &= ~MethodAttributes.NewSlot; }
+            var im_add_Event = source.DefineMethod(addMethod.Name,
+                addMethodAttributes, addMethodReturnParam.ParameterType,
+                Array.ConvertAll(addMethodParameters, param => param.ParameterType));
+            {
+                for (int i = 0; i < addMethodParameters.Length; i++)
+                {
+                    var addMethodParameter = addMethodParameters[i];
+                    var parameter = im_add_Event.DefineParameter(i + 1,
+                        addMethodParameter.Attributes, addMethodParameter.Name);
+                }
+                var ilGen = im_add_Event.GetILGenerator();
+                var v_0 = ilGen.DeclareLocal(eventType);
+                var v_1 = ilGen.DeclareLocal(eventType);
+                var v_2 = ilGen.DeclareLocal(eventType);
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldfld, if_Event);
+                ilGen.Emit(OpCodes.Stloc_0);
+                var startLoc = ilGen.DefineLabel();
+                ilGen.MarkLabel(startLoc);
+                ilGen.Emit(OpCodes.Ldloc_0);
+                ilGen.Emit(OpCodes.Stloc_1);
+                ilGen.Emit(OpCodes.Ldloc_1);
+                ilGen.Emit(OpCodes.Ldarg_1);
+                ilGen.Emit(OpCodes.Call, typeof(Delegate).GetMethod(
+                    nameof(Delegate.Combine),
+                    new[] { typeof(Delegate), typeof(Delegate) }));
+                ilGen.Emit(OpCodes.Castclass, eventType);
+                ilGen.Emit(OpCodes.Stloc_2);
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldflda, if_Event);
+                ilGen.Emit(OpCodes.Ldloc_2);
+                ilGen.Emit(OpCodes.Ldloc_1);
+                ilGen.Emit(OpCodes.Call, (
+                    from method in typeof(Interlocked).GetMethods()
+                    where method.Name == nameof(Interlocked.CompareExchange)
+                    && method.IsGenericMethod
+                    select method).First().MakeGenericMethod(eventType));
+                ilGen.Emit(OpCodes.Stloc_0);
+                ilGen.Emit(OpCodes.Ldloc_0);
+                ilGen.Emit(OpCodes.Ldloc_1);
+                ilGen.Emit(OpCodes.Bne_Un_S, startLoc);
+                ilGen.Emit(OpCodes.Ret);
+                ie_Event.SetAddOnMethod(im_add_Event);
+            }
+
+            // 定义事件的 remove。
+            var removeMethod = @event.RemoveMethod;
+            var removeMethodAttributes = removeMethod.Attributes;
+            var removeMethodReturnParam = removeMethod.ReturnParameter;
+            var removeMethodParameters = removeMethod.GetParameters();
+            removeMethodAttributes &= ~MethodAttributes.Abstract;
+            removeMethodAttributes |= MethodAttributes.Final;
+            if (!newSlot) { removeMethodAttributes &= ~MethodAttributes.NewSlot; }
+            var im_remove_Event = source.DefineMethod(removeMethod.Name,
+                removeMethodAttributes, removeMethodReturnParam.ParameterType,
+                Array.ConvertAll(removeMethodParameters, param => param.ParameterType));
+            {
+                for (int i = 0; i < removeMethodParameters.Length; i++)
+                {
+                    var removeMethodParameter = removeMethodParameters[i];
+                    var parameter = im_remove_Event.DefineParameter(i + 1,
+                        removeMethodParameters[i].Attributes, removeMethodParameters[i].Name);
+                }
+                var ilGen = im_remove_Event.GetILGenerator();
+                var v_0 = ilGen.DeclareLocal(eventType);
+                var v_1 = ilGen.DeclareLocal(eventType);
+                var v_2 = ilGen.DeclareLocal(eventType);
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldfld, if_Event);
+                ilGen.Emit(OpCodes.Stloc_0);
+                var startLoc = ilGen.DefineLabel();
+                ilGen.MarkLabel(startLoc);
+                ilGen.Emit(OpCodes.Ldloc_0);
+                ilGen.Emit(OpCodes.Stloc_1);
+                ilGen.Emit(OpCodes.Ldloc_1);
+                ilGen.Emit(OpCodes.Ldarg_1);
+                ilGen.Emit(OpCodes.Call, typeof(Delegate).GetMethod(
+                    nameof(Delegate.Remove),
+                    new[] { typeof(Delegate), typeof(Delegate) }));
+                ilGen.Emit(OpCodes.Castclass, eventType);
+                ilGen.Emit(OpCodes.Stloc_2);
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldflda, if_Event);
+                ilGen.Emit(OpCodes.Ldloc_2);
+                ilGen.Emit(OpCodes.Ldloc_1);
+                ilGen.Emit(OpCodes.Call, (
+                    from method in typeof(Interlocked).GetMethods()
+                    where method.Name == nameof(Interlocked.CompareExchange)
+                    && method.IsGenericMethod
+                    select method).First().MakeGenericMethod(eventType));
+                ilGen.Emit(OpCodes.Stloc_0);
+                ilGen.Emit(OpCodes.Ldloc_0);
+                ilGen.Emit(OpCodes.Ldloc_1);
+                ilGen.Emit(OpCodes.Bne_Un_S, startLoc);
+                ilGen.Emit(OpCodes.Ret);
+                ie_Event.SetRemoveOnMethod(im_remove_Event);
+            }
+
+            return (ie_Event, if_Event, im_add_Event, im_remove_Event);
+        }
+
+        /// <summary>
+        /// 使用已有的 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的委托，
+        /// 定义 <code>OnPropertyChanged(string)</code> 方法，并添加到当前类型。
+        /// </summary>
+        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="fieldPropertyChanged"><see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的委托。</param>
+        /// <returns>定义完成的 <code>OnPropertyChanged(string)</code> 方法。</returns>
+        /// <exception cref="ArgumentException"><paramref name="fieldPropertyChanged"/>
+        /// 不为 <see cref="PropertyChangedEventHandler"/> 类型。</exception>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        internal static MethodBuilder DefineOnPropertyChangedMethod(this TypeBuilder source, FieldInfo fieldPropertyChanged)
+        {
+            // 参数检查。
+            if (source is null) { throw new ArgumentNullException(nameof(source)); }
+            if (fieldPropertyChanged is null) { throw new ArgumentNullException(nameof(fieldPropertyChanged)); }
+            if (fieldPropertyChanged.FieldType != typeof(PropertyChangedEventHandler))
+            {
+                throw new ArgumentException(new ArgumentException().Message, nameof(fieldPropertyChanged));
+            }
+
+            // 定义方法。
             var im_OnPropertyChanged = source.DefineMethod(
                 $"On{nameof(INotifyPropertyChanged.PropertyChanged)}",
                 MethodAttributes.Family | MethodAttributes.HideBySig |
@@ -182,7 +495,7 @@ namespace XstarS.ComponentModel
                 im_OnPropertyChanged.DefineParameter(1, ParameterAttributes.None, "propertyName");
                 var ilGen = im_OnPropertyChanged.GetILGenerator();
                 ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.Emit(OpCodes.Ldfld, if_PropertyChanged);
+                ilGen.Emit(OpCodes.Ldfld, fieldPropertyChanged);
                 ilGen.Emit(OpCodes.Dup);
                 var invkLoc = ilGen.DefineLabel();
                 ilGen.Emit(OpCodes.Brtrue_S, invkLoc);
@@ -199,221 +512,61 @@ namespace XstarS.ComponentModel
                 ilGen.Emit(OpCodes.Ret);
             }
 
-            // 定义 SetProperty(ref T, T, string) 方法。
-            var im_SetProperty = source.DefineMethod("SetProperty",
-                MethodAttributes.Family | MethodAttributes.HideBySig);
-            {
-                var t_T = im_SetProperty.DefineGenericParameters("T")[0];
-                im_SetProperty.SetParameters(t_T.MakeByRefType(), t_T, typeof(string));
-                im_SetProperty.SetReturnType(typeof(void));
-                im_SetProperty.DefineParameter(1, ParameterAttributes.None, "item");
-                im_SetProperty.DefineParameter(2, ParameterAttributes.None, "value");
-                im_SetProperty.DefineParameter(3, ParameterAttributes.None, "propertyName");
-                var ilGen = im_SetProperty.GetILGenerator();
-                ilGen.Emit(OpCodes.Call, typeof(EqualityComparer<object>).GetMethod(
-                    $"get_{nameof(EqualityComparer<object>.Default)}", Type.EmptyTypes));
-                ilGen.Emit(OpCodes.Ldarg_1);
-                ilGen.Emit(OpCodes.Ldobj, t_T);
-                ilGen.Emit(OpCodes.Box, t_T);
-                ilGen.Emit(OpCodes.Ldarg_2);
-                ilGen.Emit(OpCodes.Box, t_T);
-                ilGen.Emit(OpCodes.Callvirt, typeof(EqualityComparer<object>).GetMethod(
-                    nameof(EqualityComparer<object>.Equals), new[] { typeof(object), typeof(object) }));
-                var endLoc = ilGen.DefineLabel();
-                ilGen.Emit(OpCodes.Brtrue_S, endLoc);
-                ilGen.Emit(OpCodes.Ldarg_1);
-                ilGen.Emit(OpCodes.Ldarg_2);
-                ilGen.Emit(OpCodes.Stobj, t_T);
-                ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.Emit(OpCodes.Ldarg_3);
-                ilGen.Emit(OpCodes.Callvirt, im_OnPropertyChanged);
-                ilGen.MarkLabel(endLoc);
-                ilGen.Emit(OpCodes.Ret);
-            }
-
-            return (ie_PropertyChanged, if_PropertyChanged,
-                im_add_PropertyChanged, im_remove_PropertyChanged,
-                im_OnPropertyChanged, im_SetProperty);
+            return im_OnPropertyChanged;
         }
 
         /// <summary>
-        /// 使用已有的 <code>OnPropertyChanged(string)</code> 方法，
-        /// 定义 <code>SetProperty(ref T, T, string)</code> 方法。
+        /// 以指定方法的定义为基础，定义仅抛出 <see cref="NotImplementedException"/> 异常的方法，并添加到当前类型。
         /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类的对象。</param>
-        /// <param name="methodOnPropertyChanged"><code>OnPropertyChanged(string)</code> 在基类中的实现。</param>
-        /// <returns>定义完成的 <code>SetProperty(ref T, T, string)</code> 方法。</returns>
-        public static MethodBuilder DefineSetPropertyMethod(this TypeBuilder source, MethodInfo methodOnPropertyChanged)
-        {
-            var im_SetProperty = source.DefineMethod("SetProperty",
-                MethodAttributes.Family | MethodAttributes.HideBySig);
-            {
-                var t_T = im_SetProperty.DefineGenericParameters("T")[0];
-                im_SetProperty.SetParameters(t_T.MakeByRefType(), t_T, typeof(string));
-                im_SetProperty.SetReturnType(typeof(void));
-                im_SetProperty.DefineParameter(1, ParameterAttributes.None, "item");
-                im_SetProperty.DefineParameter(2, ParameterAttributes.None, "value");
-                im_SetProperty.DefineParameter(3, ParameterAttributes.None, "propertyName");
-                var ilGen = im_SetProperty.GetILGenerator();
-                ilGen.Emit(OpCodes.Call, typeof(EqualityComparer<object>).GetMethod(
-                    $"get_{nameof(EqualityComparer<object>.Default)}", Type.EmptyTypes));
-                ilGen.Emit(OpCodes.Ldarg_1);
-                ilGen.Emit(OpCodes.Ldobj, t_T);
-                ilGen.Emit(OpCodes.Box, t_T);
-                ilGen.Emit(OpCodes.Ldarg_2);
-                ilGen.Emit(OpCodes.Box, t_T);
-                ilGen.Emit(OpCodes.Callvirt, typeof(EqualityComparer<object>).GetMethod(
-                    nameof(EqualityComparer<object>.Equals), new[] { typeof(object), typeof(object) }));
-                var endLoc = ilGen.DefineLabel();
-                ilGen.Emit(OpCodes.Brtrue_S, endLoc);
-                ilGen.Emit(OpCodes.Ldarg_1);
-                ilGen.Emit(OpCodes.Ldarg_2);
-                ilGen.Emit(OpCodes.Stobj, t_T);
-                ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.Emit(OpCodes.Ldarg_3);
-                ilGen.Emit(OpCodes.Callvirt, methodOnPropertyChanged);
-                ilGen.MarkLabel(endLoc);
-                ilGen.Emit(OpCodes.Ret);
-            }
-
-            return im_SetProperty;
-        }
-
-        /// <summary>
-        /// 将新的事件的定义、委托、订阅方法和取消订阅方法添加到当前类型，并实现抽象基类或接口中定义的指定事件。
-        /// </summary>
-        /// <remarks>
-        /// 当此事件在基类中有非抽象定义时，不应调用此方法。此时将无法重写事件相关方法，会导致其仅能动态调用。
-        /// </remarks>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类的对象。</param>
-        /// <param name="event">抽象基类或接口中事件的定义。</param>
-        /// <param name="newSlot">指定事件的相关方法是否应获取在 vtable 中获取一个新槽。
-        /// 当基类为接口时应为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
-        /// <returns>一个四元组，依次为事件定义、事件委托、订阅方法和取消订阅方法。</returns>
-        public static (EventBuilder Event, FieldBuilder Field, MethodBuilder AddOnMethod, MethodBuilder RemoveOnMethod)
-            DefineDefaultEvent(this TypeBuilder source, EventInfo @event, bool newSlot)
-        {
-            // 定义事件和委托。
-            var t_Event = @event.EventHandlerType;
-            var ie_Event = source.DefineEvent(@event.Name, @event.Attributes, t_Event);
-            var if_Event = source.DefineField(@event.Name, t_Event, FieldAttributes.Private);
-
-            // 定义事件的 add。
-            var addMethodAttributes = @event.AddMethod.Attributes;
-            addMethodAttributes &= ~MethodAttributes.Abstract;
-            addMethodAttributes |= MethodAttributes.Final;
-            if (!newSlot) { addMethodAttributes &= ~MethodAttributes.NewSlot; }
-            var im_add_Event = source.DefineMethod(@event.AddMethod.Name,
-                addMethodAttributes, typeof(void), new[] { t_Event });
-            {
-                im_add_Event.DefineParameter(1, ParameterAttributes.None, "value");
-                var ilGen = im_add_Event.GetILGenerator();
-                var v_0 = ilGen.DeclareLocal(t_Event);
-                var v_1 = ilGen.DeclareLocal(t_Event);
-                var v_2 = ilGen.DeclareLocal(t_Event);
-                ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.Emit(OpCodes.Ldfld, if_Event);
-                ilGen.Emit(OpCodes.Stloc_0);
-                var startLoc = ilGen.DefineLabel();
-                ilGen.MarkLabel(startLoc);
-                ilGen.Emit(OpCodes.Ldloc_0);
-                ilGen.Emit(OpCodes.Stloc_1);
-                ilGen.Emit(OpCodes.Ldloc_1);
-                ilGen.Emit(OpCodes.Ldarg_1);
-                ilGen.Emit(OpCodes.Call, typeof(Delegate).GetMethod(
-                    nameof(Delegate.Combine),
-                    new[] { typeof(Delegate), typeof(Delegate) }));
-                ilGen.Emit(OpCodes.Castclass, t_Event);
-                ilGen.Emit(OpCodes.Stloc_2);
-                ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.Emit(OpCodes.Ldflda, if_Event);
-                ilGen.Emit(OpCodes.Ldloc_2);
-                ilGen.Emit(OpCodes.Ldloc_1);
-                ilGen.Emit(OpCodes.Call, (
-                    from method in typeof(Interlocked).GetMethods()
-                    where method.Name == nameof(Interlocked.CompareExchange)
-                    && method.IsGenericMethod
-                    select method).First().MakeGenericMethod(t_Event));
-                ilGen.Emit(OpCodes.Stloc_0);
-                ilGen.Emit(OpCodes.Ldloc_0);
-                ilGen.Emit(OpCodes.Ldloc_1);
-                ilGen.Emit(OpCodes.Bne_Un_S, startLoc);
-                ilGen.Emit(OpCodes.Ret);
-                ie_Event.SetAddOnMethod(im_add_Event);
-            }
-
-            // 定义事件的 remove。
-            var removeMethodAttributes = @event.AddMethod.Attributes;
-            removeMethodAttributes &= ~MethodAttributes.Abstract;
-            removeMethodAttributes |= MethodAttributes.Final;
-            if (!newSlot) { removeMethodAttributes &= ~MethodAttributes.NewSlot; }
-            var im_remove_Event = source.DefineMethod(@event.RemoveMethod.Name,
-                removeMethodAttributes, typeof(void), new[] { t_Event });
-            {
-                im_remove_Event.DefineParameter(1, ParameterAttributes.None, "value");
-                var ilGen = im_remove_Event.GetILGenerator();
-                var v_0 = ilGen.DeclareLocal(t_Event);
-                var v_1 = ilGen.DeclareLocal(t_Event);
-                var v_2 = ilGen.DeclareLocal(t_Event);
-                ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.Emit(OpCodes.Ldfld, if_Event);
-                ilGen.Emit(OpCodes.Stloc_0);
-                var startLoc = ilGen.DefineLabel();
-                ilGen.MarkLabel(startLoc);
-                ilGen.Emit(OpCodes.Ldloc_0);
-                ilGen.Emit(OpCodes.Stloc_1);
-                ilGen.Emit(OpCodes.Ldloc_1);
-                ilGen.Emit(OpCodes.Ldarg_1);
-                ilGen.Emit(OpCodes.Call, typeof(Delegate).GetMethod(
-                    nameof(Delegate.Remove),
-                    new[] { typeof(Delegate), typeof(Delegate) }));
-                ilGen.Emit(OpCodes.Castclass, t_Event);
-                ilGen.Emit(OpCodes.Stloc_2);
-                ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.Emit(OpCodes.Ldflda, if_Event);
-                ilGen.Emit(OpCodes.Ldloc_2);
-                ilGen.Emit(OpCodes.Ldloc_1);
-                ilGen.Emit(OpCodes.Call, (
-                    from method in typeof(Interlocked).GetMethods()
-                    where method.Name == nameof(Interlocked.CompareExchange)
-                    && method.IsGenericMethod
-                    select method).First().MakeGenericMethod(t_Event));
-                ilGen.Emit(OpCodes.Stloc_0);
-                ilGen.Emit(OpCodes.Ldloc_0);
-                ilGen.Emit(OpCodes.Ldloc_1);
-                ilGen.Emit(OpCodes.Bne_Un_S, startLoc);
-                ilGen.Emit(OpCodes.Ret);
-                ie_Event.SetRemoveOnMethod(im_remove_Event);
-            }
-
-            return (ie_Event, if_Event, im_add_Event, im_remove_Event);
-        }
-
-        /// <summary>
-        /// 定义仅抛出 <see cref="NotImplementedException"/> 异常的方法，并实现抽象基类或接口中定义的指定方法。
-        /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类的对象。</param>
-        /// <param name="method">抽象基类或接口中方法的定义。</param>
+        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="method">作为基础的方法的定义。</param>
         /// <param name="newSlot">指定方法是否应获取在 vtable 中获取一个新槽。
         /// 当基类为接口时应为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
         /// <returns>定义完成的方法，仅抛出 <see cref="NotImplementedException"/> 异常。</returns>
-        public static MethodBuilder DefineNotImplementedMethod(this TypeBuilder source, MethodInfo method, bool newSlot)
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        internal static MethodBuilder DefineNotImplementedMethod(this TypeBuilder source, MethodInfo method, bool newSlot)
         {
-            var parameters = method.GetParameters();
+            // 参数检查。
+            if (source is null) { throw new ArgumentNullException(nameof(source)); }
+            if (method is null) { throw new ArgumentNullException(nameof(method)); }
+
+            // 定义方法。
             var methodAttributes = method.Attributes;
+            var methodGenericParams = method.GetGenericArguments();
+            var methodReturnParam = method.ReturnParameter;
+            var methodParameters = method.GetParameters();
             methodAttributes &= ~MethodAttributes.Abstract;
             methodAttributes |= MethodAttributes.Final;
             if (!newSlot) { methodAttributes &= ~MethodAttributes.NewSlot; }
             var im_Method = source.DefineMethod(method.Name,
-                methodAttributes, method.ReturnType,
-                parameters.ToList().ConvertAll(param => param.ParameterType).ToArray());
+                methodAttributes, methodReturnParam.ParameterType,
+                Array.ConvertAll(methodParameters, param => param.ParameterType));
             {
-
-                for (int i = 0; i < parameters.Length; i++)
+                // 泛型参数。
+                if (methodGenericParams.Length != 0)
                 {
-                    var parameter = parameters[i];
-                    im_Method.DefineParameter(i + 1, parameter.Attributes, parameter.Name);
+                    var genericParams = im_Method.DefineGenericParameters(
+                        Array.ConvertAll(methodGenericParams, param => param.Name));
+                    for (int i = 0; i < methodGenericParams.Length; i++)
+                    {
+                        var methodGenericParam = methodGenericParams[i];
+                        var genericParam = genericParams[i];
+                        genericParam.SetGenericParameterAttributes(
+                            methodGenericParam.GenericParameterAttributes);
+                    }
                 }
+                // 普通参数。
+                for (int i = 0; i < methodParameters.Length; i++)
+                {
+                    var methodParameter = methodParameters[i];
+                    var parameter = im_Method.DefineParameter(
+                        i + 1, methodParameter.Attributes, methodParameter.Name);
+                    if (methodParameter.HasDefaultValue)
+                    {
+                        parameter.SetConstant(methodParameter.DefaultValue);
+                    }
+                }
+                // 生成 IL 代码。
                 var ilGen = im_Method.GetILGenerator();
                 ilGen.Emit(OpCodes.Newobj,
                     typeof(NotImplementedException).GetConstructor(Type.EmptyTypes));
@@ -422,5 +575,5 @@ namespace XstarS.ComponentModel
 
             return im_Method;
         }
-    }
+   }
 }

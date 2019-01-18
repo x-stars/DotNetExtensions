@@ -48,6 +48,7 @@
     <Compile Include="BindableObject.cs" />
     <Compile Include="BindingBuilders\BindingBuilder.cs" />
     <Compile Include="BindingBuilders\BindingBuildHelper.cs" />
+    <Compile Include="BindingBuilders\ReflectionHelper.cs" />
     <Compile Include="BindingExtensions.cs" />
     <Compile Include="BindingBuilders\ClassBindingBuilder.cs" />
     <Compile Include="BindingBuilders\IBindingBuilder.cs" />

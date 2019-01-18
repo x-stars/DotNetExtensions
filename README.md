@@ -19,6 +19,7 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 * `XstarS.Collections.Generic`
 * `XstarS.Diagnostics`
 * `XstarS.IO`
+* `XstarS.Reflection`
 * `XstarS.Reflection.Emit`
 * `XstarS.Win32`
 
@@ -27,6 +28,12 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 包含 `System.ComponentModel.INotifyPropertyChanged` 接口的若干实现，用于属性绑定到用户控件。
 
 结合 System 程序集中的可绑定列表 `System.ComponentModel.BindingList<T>`，可实现便捷的数据绑定。
+
+目前提供三种实现方案：方法提取、绑定值封装、动态生成数据绑定派生类。三种方案各有优缺点，目前各自的建议使用场景：
+
+* 方法提取：在属性值不由一个字段决定时使用；较为自由，但代码量也会相应较大。
+* 绑定值封装：在要设置数据绑定的属性较少，或各个属性之间不成结构时使用。
+* 动态生成数据绑定派生类：在要设置数据绑定的属性较多，或各个属性之间能形成结构时使用。
 
 ### 方法提取
 
@@ -55,26 +62,58 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 #### 方法使用说明
 
-两类的使用方法完全一致，都要求实现 `System.ComponentModel.INotifyPropertyChanged` 接口。
+两类的使用方法完全一致，其中 `XstarS.ComponentModel.BindingExtensions`
+要求使用扩展方法的类实现 `System.ComponentModel.INotifyPropertyChanged` 接口。
 当继承 `BindableObject` 类时，则不会调用 `BindingExtensions` 类中的扩展方法。
 
 ``` CSharp
+#if EXT
+using System.ComponentModel;
+#else
 using XstarS.ComponentModel;
+#endif
 
-public class BindableData : BindableObject
+public class BindableRectangle :
+#if EXT
+    INotifyPropertyChanged
+#else
+    BindableObject
+#endif
 {
-    private int data;
+    private double width;
+    private double height;
 
-    public int Data
+    public double Width
     {
-        get => this.data;
-        set => this.SetProperty(ref this.data, value);
+        get => this.width;
+
+        set
+        {
+            this.SetProperty(ref this.width, value);
+            this.OnPropertyChanged(nameof(this.Size));
+        }
+    }
+
+    public double Height
+    {
+        get => this.height;
+
+        set
+        {
+            this.SetProperty(ref this.height, value);
+            this.OnPropertyChanged(nameof(this.Size));
+        }
+    }
+
+    public double Size
+    {
+        get => this.width * this.height;
     }
 }
 ```
 
-若将上例中 `BindableData` 的实例的 `Data` 属性绑定到用户控件的某属性，
-则当服务端更改 `BindableData` 实例的 `Data` 属性时，将会通知客户端属性值发生更改。
+若将上例中 `BindableRectangle` 的实例的任意属性绑定到用户控件的某属性，
+则当服务端更改 `BindableData` 实例的属性时，将会通知客户端属性值发生更改。
 
 ### 绑定值封装
 
@@ -143,7 +182,9 @@ public class MainWindow : Window
 
 `BindableOnly` 属性指定是否仅对有 `System.ComponentModel.BindableAttribute` 特性的属性构造绑定关系。
 
-`CreateInstance()` 方法则构造一个基于 `T` 类型的派生类的实例，并根据 `BindableOnly` 属性的指示，实现某些属性的数据绑定。
+`CreateInstance()` 方法构造一个基于 `T` 类型的派生类的实例，并根据 `BindableOnly` 属性的指示，实现某些属性的数据绑定。
+
+`CreateInstance(object[])` 方法以指定参数构造一个基于 `T` 类型的派生类的实例，并根据 `BindableOnly` 属性的指示，实现某些属性的数据绑定。
 
 #### 泛型抽象类 `XstarS.ComponentModel.BindingBuilder<T>`
 
@@ -152,11 +193,12 @@ public class MainWindow : Window
 提供从原型构造用于数据绑定的实例的方法的基类和工厂方法。
 
 通过 `Default` 或 `Bindable` 属性，可构造一个 `BindingBuilder<T>` 类的实例，
-调用此实例的 `CreateInstance()` 方法可构造 `T` 类型用于数据绑定的实例。
+调用此实例的 `CreateInstance()` 或 `CreateInstance(object[])` 方法可构造 `T` 类型用于数据绑定的实例。
 
 #### 动态生成使用说明
 
-首先定义一个原型基类或接口，原型必须（非显式）实现 `System.ComponentModel.INotifyPropertyChanged` 接口。
+首先定义一个原型基类或接口，原型必须实现 `System.ComponentModel.INotifyPropertyChanged` 接口。
+若原型为一个类，应包含 `public` 或 `protected` 访问级别的构造函数。
 
 ``` CSharp
 using System.ComponentModel;
@@ -170,9 +212,9 @@ public interface IBindableData : INotifyPropertyChanged
 }
 ```
 
-注意，若定义的原型为一个类，则应将用于绑定的属性定义为 `virtual` 或 `abstract`，使得此属性能够在派生类中被重写。
+注意，若定义的原型为一个类 (`class`)，则应将用于绑定的属性定义为 `virtual` 或 `abstract`，使得此属性能够在派生类中被重写。
 `BindingBuilder<T>` 不会对非 `virtual` 或 `abstract` 的属性生成绑定代码。
-同时，`PropertyChanged` 事件也应定义为 `abstract`，或是定义一个事件触发函数 `OnPropertyChanged(string)`，否则会导致无法正确构造派生类。
+同时，`PropertyChanged` 事件也应定义为 `abstract`，或是定义一个事件触发函数 `void OnPropertyChanged(string)`，否则会导致无法正确构造派生类。
 
 > 若基类中的属性或方法或未定义为 `virtual` 或 `abstract`，则在派生类仅隐藏了基类中对应的定义，并未重写。
 > 当派生类的实例声明为基类时，则会调用基类中定义的属性或方法。

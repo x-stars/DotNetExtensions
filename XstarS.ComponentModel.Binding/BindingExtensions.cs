@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
@@ -14,18 +15,45 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 触发属性改变事件。
         /// </summary>
-        /// <remarks>
+        /// <remarks><para>
         /// 基于反射调用，可能存在性能问题。
-        /// </remarks>
+        /// </para><para>
+        /// 当前对象最好应该直接实现 <see cref="INotifyPropertyChanged"/> 接口，
+        /// 便于搜寻 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的委托。
+        /// 若当前对象的类型显式实现 <see cref="INotifyPropertyChanged"/> 接口，或接口实现在基类中，
+        /// 则会循环向下搜索第一个类型为 <see cref="PropertyChangedEventHandler"/> 的实例字段，将其作为事件委托。
+        /// </para></remarks>
         /// <param name="source">一个实现 <see cref="INotifyPropertyChanged"/> 接口的对象。</param>
         /// <param name="propertyName">已更改属性的名称。</param>
-        internal static void OnPropertyChanged(this INotifyPropertyChanged source, string propertyName)
+        public static void OnPropertyChanged(this INotifyPropertyChanged source, string propertyName)
         {
-            const BindingFlags NonPublicInstance = BindingFlags.Instance | BindingFlags.NonPublic;
-            var t_source_if_PropertyChanged = source.GetType().GetField(
-                nameof(INotifyPropertyChanged.PropertyChanged), NonPublicInstance);
+            // 搜寻当前类型中名为的 PropertyChanged 且类型为 PropertyChangedEventHandler 的字段。
+            var t_source = source.GetType();
+            var t_source_if_PropertyChanged = t_source.GetField(
+                nameof(INotifyPropertyChanged.PropertyChanged),
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            if (t_source_if_PropertyChanged?.FieldType != typeof(PropertyChangedEventHandler))
+            {
+                t_source_if_PropertyChanged = null;
+            }
+
+            // 搜索失败则从当前类型开始向基类方向逐层搜索类型为 PropertyChangedEventHandler 的字段。
+            if (t_source_if_PropertyChanged is null)
+            {
+                for (var t_base = t_source; !(t_base is null); t_base = t_base.BaseType)
+                {
+                    t_source_if_PropertyChanged = (
+                        from field in t_base.GetFields(
+                            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                        where field.FieldType == typeof(PropertyChangedEventHandler)
+                        select field).FirstOrDefault();
+                    if (!(t_source_if_PropertyChanged is null)) { break; }
+                }
+            }
+
+            // 获取事件委托字段的值，并调用委托。
             var source_PropertyChanged =
-                t_source_if_PropertyChanged.GetValue(source) as PropertyChangedEventHandler;
+                t_source_if_PropertyChanged?.GetValue(source) as PropertyChangedEventHandler;
             source_PropertyChanged?.Invoke(source, new PropertyChangedEventArgs(propertyName));
         }
 
@@ -37,6 +65,11 @@ namespace XstarS.ComponentModel
         /// 在更改属性值的同时触发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。
         /// </para><para>
         /// 基于反射调用，可能存在性能问题。
+        /// </para><para>
+        /// 当前对象最好应该直接实现 <see cref="INotifyPropertyChanged"/> 接口，
+        /// 便于搜寻 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的委托。
+        /// 若当前对象的类型显式实现 <see cref="INotifyPropertyChanged"/> 接口，或接口实现在基类中，
+        /// 则会循环向下搜索第一个类型为 <see cref="PropertyChangedEventHandler"/> 的实例字段，将其作为事件委托。
         /// </para></remarks>
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="source">一个 <see cref="INotifyPropertyChanged"/> 接口的对象。</param>
