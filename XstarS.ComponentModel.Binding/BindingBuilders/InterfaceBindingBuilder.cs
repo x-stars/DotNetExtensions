@@ -39,7 +39,7 @@ namespace XstarS.ComponentModel
             // 定义动态类型。
             var t_source = typeof(T);
             var asmName = t_source.ToString() + this.BindableOnly.ToString();
-            var a_Bindable = AppDomain.CurrentDomain.DefineDynamicAssembly(
+            var a_Bindable = AssemblyBuilder.DefineDynamicAssembly(
                 new AssemblyName(asmName), AssemblyBuilderAccess.Run);
             var m_Bindable = a_Bindable.DefineDynamicModule($"{asmName}.dll");
             var t_Bindable = m_Bindable.DefineType($"Bindable{t_source.Name}",
@@ -96,7 +96,7 @@ namespace XstarS.ComponentModel
                 }
             }
 
-            return t_Bindable.CreateType();
+            return t_Bindable.CreateTypeInfo();
         }
     }
 }

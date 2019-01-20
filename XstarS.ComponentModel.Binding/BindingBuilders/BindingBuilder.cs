@@ -6,7 +6,7 @@ namespace XstarS.ComponentModel
     /// <summary>
     /// 提供从原型构造用于数据绑定的实例的基类实现。
     /// </summary>
-    /// <typeparam name="T">用于数据绑定的实例的原型类型，应为非密封类或接口。</typeparam>
+    /// <typeparam name="T">用于数据绑定的实例的原型类型，应为接口或非密封类。</typeparam>
     public abstract class BindingBuilder<T> : IBindingBuilder<T>
         where T : class, INotifyPropertyChanged
     {
@@ -121,7 +121,7 @@ namespace XstarS.ComponentModel
         /// <paramref name="args"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="MissingMethodException"><typeparamref name="T"/>
         /// 不包含与 <paramref name="args"/> 相匹配的构造函数。</exception>
-        /// <exception cref="MissingMethodException"><typeparamref name="T"/>
+        /// <exception cref="MethodAccessException"><typeparamref name="T"/>
         /// 与 <paramref name="args"/> 相匹配的构造函数的访问级别过低。</exception>
         public T CreateInstance(params object[] args) =>
             Activator.CreateInstance(this.BindableType, args) as T;
