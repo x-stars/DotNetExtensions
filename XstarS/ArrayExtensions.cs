@@ -21,9 +21,11 @@ namespace XstarS
         public static bool ArrayEquals(this Array source, Array other,
             IEqualityComparer comparer = null)
         {
-            // 空引用。
-            if ((source is null) && (other is null)) { return true; }
+            // 引用比较。
+            if (object.ReferenceEquals(source, other)) { return true; }
             if ((source is null) ^ (other is null)) { return false; }
+            // 类型不同。
+            if (source.GetType() != other.GetType()) { return false; }
             // 大小不等。
             if (source.Rank != other.Rank) { return false; }
             if (source.LongLength != other.LongLength) { return false; }

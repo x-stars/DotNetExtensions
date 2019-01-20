@@ -49,7 +49,7 @@ namespace XstarS.Collections.Generic
         /// </returns>
         public bool Equals(IEnumerable<T> x, IEnumerable<T> y)
         {
-            if ((x is null) && (y is null)) { return true; }
+            if (object.ReferenceEquals(x, y)) { return true; }
             if ((x is null) ^ (y is null)) { return false; }
 
             if (!this.IgnoreType && (x.GetType() != y.GetType())) { return false; }
@@ -57,15 +57,15 @@ namespace XstarS.Collections.Generic
                 (xc.Count != yc.Count)) { return false; }
 
             using (IEnumerator<T>
-                xIter = x.GetEnumerator(),
-                yIter = y.GetEnumerator())
+                xEtor = x.GetEnumerator(),
+                yEtor = y.GetEnumerator())
             {
-                bool xHasNext, yHasNext = true;
+                bool xHasNext, yHasNext;
                 var comparer = this.comparer;
-                while ((xHasNext = xIter.MoveNext()) &
-                    (yHasNext = yIter.MoveNext()))
+                while ((xHasNext = xEtor.MoveNext()) &
+                    (yHasNext = yEtor.MoveNext()))
                 {
-                    if (!comparer.Equals(xIter.Current, yIter.Current))
+                    if (!comparer.Equals(xEtor.Current, yEtor.Current))
                     {
                         return false;
                     }

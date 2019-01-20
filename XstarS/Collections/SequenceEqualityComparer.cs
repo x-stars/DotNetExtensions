@@ -51,7 +51,7 @@ namespace XstarS.Collections
         /// 不为 <see cref="IEnumerable"/> 接口的对象。</exception>
         public new bool Equals(object x, object y)
         {
-            if ((x is null) && (y is null)) { return true; }
+            if (object.ReferenceEquals(x, y)) { return true; }
             if ((x is null) ^ (y is null)) { return false; }
 
             if ((x is IEnumerable xe) && (y is IEnumerable ye))
@@ -60,14 +60,14 @@ namespace XstarS.Collections
                 if ((xe is ICollection xc) && (ye is ICollection yc) &&
                     (xc.Count != yc.Count)) { return false; }
 
-                var xIter = xe.GetEnumerator();
-                var yIter = ye.GetEnumerator();
-                bool xHasNext, yHasNext = true;
+                var xEtor = xe.GetEnumerator();
+                var yEtor = ye.GetEnumerator();
+                bool xHasNext, yHasNext;
                 var comparer = this.comparer;
-                while ((xHasNext = xIter.MoveNext()) &
-                    (yHasNext = yIter.MoveNext()))
+                while ((xHasNext = xEtor.MoveNext()) &
+                    (yHasNext = yEtor.MoveNext()))
                 {
-                    if (!comparer.Equals(xIter.Current, yIter.Current))
+                    if (!comparer.Equals(xEtor.Current, yEtor.Current))
                     {
                         return false;
                     }

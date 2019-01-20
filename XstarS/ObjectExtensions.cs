@@ -33,8 +33,8 @@ namespace XstarS
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public static bool ValueEquals(this object source, object other)
         {
-            // 空引用。
-            if ((source is null) && (other is null)) { return true; }
+            // 引用比较。
+            if (object.ReferenceEquals(source, other)) { return true; }
             if ((source is null) ^ (other is null)) { return false; }
             // 类型不同。
             if (source.GetType() != other.GetType()) { return false; }
@@ -44,8 +44,8 @@ namespace XstarS
             // 指针包装相等比较函数。
             unsafe bool PointerValueEquals(Pointer x, Pointer y)
             {
-                // 空引用。
-                if ((x is null) && (y is null)) { return true; }
+                // 引用比较。
+                if (object.ReferenceEquals(x, y)) { return true; }
                 if ((x is null) ^ (y is null)) { return false; }
 
                 // 指针值比较。
@@ -67,10 +67,11 @@ namespace XstarS
             // 数组相等比较函数。
             bool ArrayValueEquals(Array x, Array y)
             {
-                // 空引用。
-                if ((x is null) && (y is null)) { return true; }
+                // 引用比较。
+                if (object.ReferenceEquals(x, y)) { return true; }
                 if ((x is null) ^ (y is null)) { return false; }
-
+                // 类型不同。
+                if (x.GetType() != y.GetType()) { return false; }
                 // 大小不等。
                 if (x.Rank != y.Rank) { return false; }
                 if (x.LongLength != y.LongLength) { return false; }
