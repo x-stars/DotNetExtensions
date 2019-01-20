@@ -56,6 +56,7 @@
     <Compile Include="ComponentModel\TestTypes\BindingExtensionsTestTypes.cs" />
     <Compile Include="ObjectExtensionsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ParamReadersTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

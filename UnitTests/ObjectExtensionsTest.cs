@@ -39,13 +39,12 @@ namespace XstarS
         }
 
         [TestMethod]
-        public void ValueEquals_RandomByTime_ReturnsFalse()
+        public void ValueEquals_KeyValuePair_ReturnsTrue()
         {
-            var o1 = new Random();
-            Thread.Sleep(1000);
-            var o2 = new Random();
-            Assert.IsFalse(o1.Equals(o2));
-            Assert.IsFalse(o1.ValueEquals(o2));
+            var o1 = new KeyValuePair<string, int>("0", 0);
+            var o2 = new KeyValuePair<string, int>("0", 0);
+            Assert.IsTrue(o1.Equals(o2));
+            Assert.IsTrue(o1.ValueEquals(o2));
         }
 
         [TestMethod]

@@ -9,7 +9,7 @@ namespace XstarS.ComponentModel
     public class BindingExtensionsTest
     {
         [TestMethod]
-        public void PropertyChanged_Common_CallsHandler()
+        public void PropertyChanged_CommonImplement_CallsHandler()
         {
             var i = 0;
             var o = new BindingValue<int>();
@@ -19,7 +19,7 @@ namespace XstarS.ComponentModel
         }
 
         [TestMethod]
-        public void PropertyChanged_Explicit_CallsHandler()
+        public void PropertyChanged_ExplicitImplement_CallsHandler()
         {
             var i = 0;
             var o = new ExplicitBindingValue<int>();
@@ -29,7 +29,7 @@ namespace XstarS.ComponentModel
         }
 
         [TestMethod]
-        public void PropertyChanged_Derived_CallsHandler()
+        public void PropertyChanged_BaseImplement_CallsHandler()
         {
             var i = 0;
             var o = new DerivedBindingValue<int>();

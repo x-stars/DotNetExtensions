@@ -40,6 +40,34 @@ namespace XstarS.ComponentModel
         }
 
         [TestMethod]
+        public void CreateInstance_InterfaceWithMethod_ThrowsWhenCallMethod()
+        {
+            var o = BindingBuilder<IDisposableBinding<object>>.Default.CreateInstance();
+            Assert.ThrowsException<NotImplementedException>(() => o.Dispose());
+        }
+
+        [TestMethod]
+        public void CreateInstance_ClassWithAbstractIndexer_ThrowsWhenCallIndexer()
+        {
+            var o = BindingBuilder<IndexedDisposableBindingBase<double>>.Default.CreateInstance();
+            Assert.ThrowsException<NotImplementedException>(() => o[0]);
+            Assert.ThrowsException<NotImplementedException>(() => o[0] = 0D);
+        }
+
+        [TestMethod]
+        public void CreateInstance_ClassWithMethod_WorksProperly()
+        {
+            object i1 = new object(), i2 = new object(), i3 = new object(), i4 = new object();
+            var o = BindingBuilder<DisposableBinding<object>>.Bindable.CreateInstance(i1, i2);
+            var l = new CloneableList<object>() { i3, i4 };
+            Assert.AreSame(o.Value, i1);
+            Assert.AreSame(o.BindableValue, i2);
+            o.Load(l);
+            Assert.AreSame(o.Value, i3);
+            Assert.AreSame(o.BindableValue, i4);
+        }
+
+        [TestMethod]
         public void PropertyChanged_Default_CallsHandlerTwice()
         {
             int i = 0;

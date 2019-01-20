@@ -67,18 +67,14 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 当继承 `BindableObject` 类时，则不会调用 `BindingExtensions` 类中的扩展方法。
 
 ``` CSharp
-#if EXT
 using System.ComponentModel;
-#else
 using XstarS.ComponentModel;
-#endif
 
 public class BindableRectangle :
-#if EXT
-    INotifyPropertyChanged
-#else
-    BindableObject
+#if !EXT
+    BindableObject,
 #endif
+    INotifyPropertyChanged
 {
     private double width;
     private double height;

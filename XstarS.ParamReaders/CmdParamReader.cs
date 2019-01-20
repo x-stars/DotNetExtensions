@@ -73,7 +73,8 @@ namespace XstarS
             foreach (string argument in this.arguments)
             {
                 // 当前为指定有名参数的名称。
-                if (this.stringComparer.Equals(argument.Remove(argument.IndexOf(":")), paramName))
+                if (argument.Contains(":") && this.stringComparer.Equals(
+                    argument.Remove(argument.IndexOf(":")), paramName))
                 {
                     return argument.Substring(argument.IndexOf(":") + ":".Length);
                 }
@@ -110,7 +111,8 @@ namespace XstarS
                     ;
                 }
                 // 当前为有名参数名称。
-                else if (this.paramNames.Contains(argument.Remove(argument.IndexOf(":")), this.stringComparer))
+                else if (argument.Contains(":") && this.paramNames.Contains(
+                    argument.Remove(argument.IndexOf(":")), this.stringComparer))
                 {
                     ;
                 }
@@ -152,7 +154,8 @@ namespace XstarS
             foreach (string argument in this.arguments)
             {
                 // 当前为指定有名参数的名称。
-                if (this.stringComparer.Equals(argument.Remove(argument.IndexOf(":")), paramName))
+                if (argument.Contains(":") && this.stringComparer.Equals(
+                    argument.Remove(argument.IndexOf(":")), paramName))
                 {
                     paramValueList.Add(argument.Substring(argument.IndexOf(":") + ":".Length));
                 }

@@ -50,7 +50,7 @@ namespace XstarS
         /// 所有 .NET 原生类型的集合。
         /// </summary>
         public static ICollection<Type> NativeTypes =>
-            new HashSet<Type>(TypeExtensions.LiteralTypesStorage);
+            new HashSet<Type>(TypeExtensions.NativeTypesStorage);
 
         /// <summary>
         /// 指示当前 <see cref="Type"/> 对象表示的类型是否为可以表示为字面常量的类型。

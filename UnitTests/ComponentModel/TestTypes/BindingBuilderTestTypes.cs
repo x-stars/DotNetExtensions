@@ -30,10 +30,19 @@ namespace XstarS.ComponentModel.TestTypes
 
         public abstract event PropertyChangedEventHandler PropertyChanged;
 
-        public void Dispose() => this.Value = default(T);
+        public void Dispose()
+        {
+            this.Value = default(T);
+            this.BindableValue = default(T);
+        }
 
-        public abstract TResult Convert<TResult>()
-            where TResult : DisposableBindingBase<T>, IEnumerable<T>;
+        public abstract void Load<TCollection>(TCollection collection)
+            where TCollection : List<T>, ICloneable;
+    }
+
+    public abstract class IndexedDisposableBindingBase<T> : DisposableBindingBase<T>
+    {
+        public abstract T this[int index] { get; set; }
     }
 
     public abstract class BadDisposableBindingBase<T> : DisposableBindingBase<T>
@@ -57,7 +66,11 @@ namespace XstarS.ComponentModel.TestTypes
 
         public override event PropertyChangedEventHandler PropertyChanged;
 
-        public override TResult Convert<TResult>() => this.Value as TResult;
+        public override void Load<TCollection>(TCollection collection)
+        {
+            this.Value = collection[0];
+            this.BindableValue = collection[1];
+        }
 
         public virtual void OnPropertyChanged(string propertyName) =>
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -76,5 +89,16 @@ namespace XstarS.ComponentModel.TestTypes
 
         [Bindable(true)]
         public sealed override T BindableValue { get; set; }
+    }
+
+    internal class CloneableList<T> : List<T>, ICloneable
+    {
+        public CloneableList() :base() { }
+
+        public CloneableList(int capacity) : base(capacity) { }
+
+        public CloneableList(IEnumerable<T> collection) : base(collection) { }
+
+        public object Clone() => new CloneableList<T>(this);
     }
 }
