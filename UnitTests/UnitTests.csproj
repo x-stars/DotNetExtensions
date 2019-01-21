@@ -73,6 +73,10 @@
       <Project>{b1b22882-67ea-41e6-95ce-1f77154bcc73}</Project>
       <Name>XstarS.ValueValidate</Name>
     </ProjectReference>
+    <ProjectReference Include="..\XstarS.Win32\XstarS.Win32.csproj">
+      <Project>{28ecdb39-b758-4319-9afe-2d7cd6f15768}</Project>
+      <Name>XstarS.Win32</Name>
+    </ProjectReference>
     <ProjectReference Include="..\XstarS.Windows\XstarS.Windows.csproj">
       <Project>{3d03da2f-3376-40b7-9092-0617ebd7d2fa}</Project>
       <Name>XstarS.Windows</Name>

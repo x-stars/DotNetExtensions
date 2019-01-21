@@ -1,8 +1,6 @@
-﻿#if !CORE
-
-using Microsoft.Win32;
-using System;
+﻿using System;
 using System.Security;
+using Microsoft.Win32;
 
 namespace XstarS.Win32
 {
@@ -198,5 +196,3 @@ namespace XstarS.Win32
         }
     }
 }
-
-#endif

@@ -1,6 +1,4 @@
-﻿#if !CORE
-
-using System;
+﻿using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Reflection;
@@ -120,5 +118,3 @@ namespace XstarS.Win32
         }
     }
 }
-
-#endif

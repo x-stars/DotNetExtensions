@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XstarS.ParamReaders", "Xsta
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTests", "UnitTests\UnitTests.csproj", "{27F84C15-FF36-412F-9736-1CE5CBF2A7A6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XstarS.Win32", "XstarS.Win32\XstarS.Win32.csproj", "{28ECDB39-B758-4319-9AFE-2D7CD6F15768}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{27F84C15-FF36-412F-9736-1CE5CBF2A7A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27F84C15-FF36-412F-9736-1CE5CBF2A7A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{27F84C15-FF36-412F-9736-1CE5CBF2A7A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28ECDB39-B758-4319-9AFE-2D7CD6F15768}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28ECDB39-B758-4319-9AFE-2D7CD6F15768}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28ECDB39-B758-4319-9AFE-2D7CD6F15768}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28ECDB39-B758-4319-9AFE-2D7CD6F15768}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
