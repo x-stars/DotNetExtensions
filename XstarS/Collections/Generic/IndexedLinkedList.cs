@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.Serialization;
 
 namespace XstarS.Collections.Generic
@@ -9,6 +8,7 @@ namespace XstarS.Collections.Generic
     /// <summary>
     /// 表示能够通过索引访问的双重链接列表。
     /// </summary>
+    [Serializable]
     public class IndexedLinkedList<T> : LinkedList<T>, IList, IList<T>, IReadOnlyList<T>
     {
         /// <summary>
@@ -41,7 +41,6 @@ namespace XstarS.Collections.Generic
         /// 获取或设置指定索引处的元素。
         /// </summary>
         /// <param name="index">要获取或设置的元素的从零开始的索引。</param>
-        /// <returns>指定索引处的元素。</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，
         /// 或 <paramref name="index"/> 大于或等于 <see cref="LinkedList{T}.Count"/>。</exception>
         public T this[int index]
@@ -51,10 +50,19 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
+        /// 获取一个值，该值指示 <see cref="IndexedLinkedList{T}"/> 是否为只读。
+        /// </summary>
+        protected bool IsReadOnly => false;
+
+        /// <summary>
+        /// 获取一个值，该值指示 <see cref="IndexedLinkedList{T}"/> 是否具有固定大小。
+        /// </summary>
+        protected bool IsFixedSize => false;
+
+        /// <summary>
         /// 获取或设置指定索引处的元素。
         /// </summary>
         /// <param name="index">要获取或设置的元素的从零开始的索引。</param>
-        /// <returns>指定索引处的元素。</returns>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="index"/> 不是 <see cref="IList"/> 中的有效索引。</exception>
         /// <exception cref="InvalidCastException">
@@ -68,16 +76,12 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 获取一个值，该值指示 <see cref="IList"/> 是否为只读。
         /// </summary>
-        /// <returns><see cref="IndexedLinkedList{T}"/> 不为只读，
-        /// 总是返回 <see langword="false"/>。</returns>
-        bool IList.IsReadOnly => false;
+        bool IList.IsReadOnly => this.IsReadOnly;
 
         /// <summary>
         /// 获取一个值，该值指示 <see cref="IList"/> 是否具有固定大小。
         /// </summary>
-        /// <returns><see cref="IndexedLinkedList{T}"/> 不为固定大小，
-        /// 总是返回 <see langword="false"/>。</returns>
-        bool IList.IsFixedSize => false;
+        bool IList.IsFixedSize => this.IsFixedSize;
 
         /// <summary>
         /// 将对象添加到 <see cref="IndexedLinkedList{T}"/> 的结尾处。

@@ -30,7 +30,7 @@ namespace XstarS
         public Verbose(T value, string name = null)
         {
             this.name = name;
-            this.Value = value;
+            this.value = value;
         }
 
         /// <summary>

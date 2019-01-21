@@ -46,7 +46,7 @@ namespace XstarS.Collections
         /// 如果两个集合的所有元素均相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
         /// </returns>
-        /// <exception cref="ArgumentException">
+        /// <exception cref="InvalidCastException">
         /// <paramref name="x"/> 或 <paramref name="y"/>
         /// 不为 <see cref="IEnumerable"/> 接口的对象。</exception>
         public new bool Equals(object x, object y)
@@ -76,7 +76,7 @@ namespace XstarS.Collections
             }
             else
             {
-                throw new ArgumentException();
+                return false;
             }
         }
 
