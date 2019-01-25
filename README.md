@@ -1,6 +1,6 @@
 ﻿# DotNetExtensionLibrary
 
-天南十字星 (XstarS) 的 .NET Framework 扩展库。
+天南十字星 (XstarS) 的 .NET 扩展库。
 
 C# 底层面向对象练习作品，同时也可用作自己开发时的实用库。
 
@@ -8,9 +8,7 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 ## 程序集 XstarS
 
-对应 mscorlib 和 System 程序集，系统基础相关。
-
-目前包含的命名空间：
+系统基础相关，目前包含的命名空间：
 
 * `XstarS`
 * `XstarS.Collections`
@@ -18,7 +16,6 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 * `XstarS.Diagnostics`
 * `XstarS.IO`
 * `XstarS.Reflection`
-* `XstarS.Reflection.Emit`
 
 ## 程序集 XstarS.ComponentModel.Binding
 
@@ -335,17 +332,13 @@ Validate.Value(param, nameof(param))    // 使用 XstarS.Validate.Value<T>(T, st
 
 ## 程序集 XstarS.Win32
 
-对应 Microsoft.Win32 命名空间，Win32 相关。
-
-目前包含的命名空间：
+Win32 相关，目前包含的命名空间：
 
 * `XstarS.Win32`
 
 ## 程序集 XstarS.Windows
 
-对应 PresentationCore 和 PresentationFramework 程序集，WPF 相关。
-
-目前包含的命名空间：
+WPF 相关，目前包含的命名空间：
 
 * `XstarS.Windows.Controls`
 * `XstarS.Windows.Media`

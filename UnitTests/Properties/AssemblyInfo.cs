@@ -1,20 +1,7 @@
-using System.Reflection;
-using System.Runtime.CompilerServices;
+﻿using System;
 using System.Runtime.InteropServices;
 
-[assembly: AssemblyTitle("XstarS.UnitTests")]
-[assembly: AssemblyDescription("XstarS.UnitTests.dll")]
-[assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("XstarS")]
-[assembly: AssemblyProduct("XstarS.UnitTests")]
-[assembly: AssemblyCopyright("Copyright © XstarS 2019")]
-[assembly: AssemblyTrademark("")]
-[assembly: AssemblyCulture("")]
-
+// 指示此程序集是否对 COM 可见。
 [assembly: ComVisible(false)]
-
-[assembly: Guid("27f84c15-ff36-412f-9736-1ce5cbf2a7a6")]
-
-// [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("4.0.0.0")]
-[assembly: AssemblyFileVersion("4.0.0.0")]
+// 如果此程序集对 COM 公开，则使用以下 GUID 作为类型库的 ID。
+[assembly: Guid("BA4F1AD2-DACC-4B0D-BBC8-771D83C32CED")]
