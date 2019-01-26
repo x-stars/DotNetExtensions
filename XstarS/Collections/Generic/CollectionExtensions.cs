@@ -14,15 +14,25 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <typeparam name="T"><see cref="ICollection{T}"/> 中的元素的类型。</typeparam>
         /// <param name="source">一个 <see cref="ICollection{T}"/> 对象。</param>
-        /// <param name="collection">
-        /// 应将其元素添加到 <see cref="ICollection{T}"/> 中的集合。
-        /// 集合自身不能为 <see langword="null"/>，但它可以包含为 <see langword="null"/> 的元素。
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="collection"/> 为 <see langword="null"/>。</exception>
+        /// <param name="collection"> 应将其元素添加到 <see cref="ICollection{T}"/> 中的集合。
+        /// 集合自身不能为 <see langword="null"/>，但它可以包含为 <see langword="null"/> 的元素。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>
+        /// 或 <paramref name="collection"/> 为 <see langword="null"/>。</exception>
         public static void AddRange<T>(this ICollection<T> source, IEnumerable<T> collection)
         {
-            foreach (var item in collection) { source.Add(item); }
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (collection is null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+
+            foreach (var item in collection)
+            {
+                source.Add(item);
+            }
         }
 
         /// <summary>
@@ -31,13 +41,24 @@ namespace XstarS.Collections.Generic
         /// <typeparam name="T"><see cref="ICollection{T}"/> 中的元素的类型。</typeparam>
         /// <param name="source">一个 <see cref="ICollection{T}"/> 对象。</param>
         /// <param name="collection">应从 <see cref="ICollection{T}"/> 中移除的元素的集合。
-        /// 集合自身不能为 <see langword="null"/>，但它可以包含为 <see langword="null"/> 的元素。
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="collection"/> 为 <see langword="null"/>。</exception>
+        /// 集合自身不能为 <see langword="null"/>，但它可以包含为 <see langword="null"/> 的元素。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>
+        /// 或 <paramref name="collection"/> 为 <see langword="null"/>。</exception>
         public static void RemoveRange<T>(this ICollection<T> source, IEnumerable<T> collection)
         {
-            foreach (var item in collection) { source.Remove(item); }
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (collection is null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+
+            foreach (var item in collection)
+            {
+                source.Remove(item);
+            }
         }
     }
 }

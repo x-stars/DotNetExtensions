@@ -25,17 +25,20 @@ namespace XstarS.ComponentModel
         /// </para></remarks>
         /// <param name="source">一个实现 <see cref="INotifyPropertyChanged"/> 接口的对象。</param>
         /// <param name="propertyName">已更改属性的名称。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
         public static void OnPropertyChanged(this INotifyPropertyChanged source, string propertyName)
         {
+            if (source is null) { throw new ArgumentNullException(nameof(source)); }
+
             // 搜寻当前类型中名为的 PropertyChanged 且类型为 PropertyChangedEventHandler 的字段。
             var t_source = source.GetType();
             var t_source_if_PropertyChanged = t_source.GetField(
                 nameof(INotifyPropertyChanged.PropertyChanged),
                 BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            if (t_source_if_PropertyChanged?.FieldType != typeof(PropertyChangedEventHandler))
-            {
-                t_source_if_PropertyChanged = null;
-            }
+            t_source_if_PropertyChanged =
+                t_source_if_PropertyChanged?.FieldType == typeof(PropertyChangedEventHandler) ?
+                t_source_if_PropertyChanged : null;
 
             // 搜索失败则从当前类型开始向基类方向逐层搜索类型为 PropertyChangedEventHandler 的字段。
             if (t_source_if_PropertyChanged is null)
@@ -76,9 +79,13 @@ namespace XstarS.ComponentModel
         /// <param name="item">属性对应的字段。</param>
         /// <param name="value">属性的新值，一般为 <see langword="value"/> 关键字。</param>
         /// <param name="propertyName">属性的名称，由编译器自动获取。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
         public static void SetProperty<T>(this INotifyPropertyChanged source, ref T item, T value,
             [CallerMemberName] string propertyName = null)
         {
+            if (source is null) { throw new ArgumentNullException(nameof(source)); }
+
             if (!EqualityComparer<T>.Default.Equals(item, value))
             {
                 item = value;

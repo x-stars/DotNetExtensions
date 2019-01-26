@@ -100,5 +100,71 @@ namespace XstarS
             }
             return result;
         }
+
+        /// <summary>
+        /// 返回一个新数组，此数组为当前数组和指定数组连接后的结果。
+        /// </summary>
+        /// <typeparam name="T"><paramref name="source"/> 中元素的类型。</typeparam>
+        /// <param name="source">一个包含 <typeparamref name="T"/> 类型元素的数组。</param>
+        /// <param name="other">要于当前数组连接的数组。</param>
+        /// <returns>一个新数组，此数组为当前数组和指定数组连接后的结果。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>
+        /// 或 <paramref name="other"/> 为 <see langword="null"/>。</exception>
+        public static T[] Concat<T>(this T[] source, T[] other)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (other is null)
+            {
+                throw new ArgumentNullException(nameof(other));
+            }
+
+            var result = new T[source.Length + other.Length];
+            Array.ConstrainedCopy(source, 0, result, 0, source.Length);
+            Array.ConstrainedCopy(other, 0, result, source.Length, other.Length);
+            return result;
+        }
+
+        /// <summary>
+        /// 返回一个新数组，此数组为多个指定数组顺序连接后的结果。
+        /// </summary>
+        /// <typeparam name="T"><paramref name="arrays"/> 包含的数组中元素的类型。</typeparam>
+        /// <param name="arrays">要顺序连接的多个 <typeparamref name="T"/> 类型元素数组的数组。</param>
+        /// <returns>一个新数组，此数组为多个指定数组顺序连接后的结果。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="arrays"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="arrays"/> 包含为 <see langword="null"/> 的数组。</exception>
+        public static T[] Concat<T>(params T[][] arrays)
+        {
+            if (arrays is null)
+            {
+                throw new ArgumentNullException(nameof(arrays));
+            }
+
+            int length = 0;
+            for (int i = 0; i < arrays.Length; i++)
+            {
+                var array = arrays[i];
+                if (array is null)
+                {
+                    throw new ArgumentException(
+                        new ArgumentException().Message, nameof(arrays));
+                }
+                length += array.Length;
+            }
+
+            var result = new T[length];
+            int index = 0;
+            for (int i = 0; i < arrays.Length; i++)
+            {
+                var array = arrays[i];
+                Array.ConstrainedCopy(array, 0, result, index, array.Length);
+                index += array.Length;
+            }
+            return result;
+        }
     }
 }

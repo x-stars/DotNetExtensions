@@ -58,8 +58,17 @@ namespace XstarS
         /// <param name="source">一个 <see cref="Type"/> 类型的对象。</param>
         /// <returns>若 <paramref name="source"/> 表示的类型为可以表示为字面常量的类型，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool IsLiteral(this Type source) =>
-            TypeExtensions.LiteralTypesStorage.Contains(source);
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        public static bool IsLiteral(this Type source)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            return TypeExtensions.LiteralTypesStorage.Contains(source);
+        }
 
         /// <summary>
         /// 指示当前 <see cref="Type"/> 对象表示的类型是否为 .NET 原生类型。
@@ -67,7 +76,16 @@ namespace XstarS
         /// <param name="source">一个 <see cref="Type"/> 类型的对象。</param>
         /// <returns>若 <paramref name="source"/> 表示的类型为 .NET 原生类型，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool IsNative(this Type source) =>
-            TypeExtensions.NativeTypesStorage.Contains(source);
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        public static bool IsNative(this Type source)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            return TypeExtensions.NativeTypesStorage.Contains(source);
+        }
     }
 }

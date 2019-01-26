@@ -17,9 +17,16 @@ namespace XstarS.Collections.Generic
         /// <param name="source">一个 <see cref="IDictionary{TKey, TValue}"/> 对象。</param>
         /// <param name="value">指定要查询的值。</param>
         /// <returns><paramref name="source"/> 中值为 <paramref name="value"/> 的键的集合。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
         public static ICollection<TKey> GetKeys<TKey, TValue>(
             this IDictionary<TKey, TValue> source, TValue value)
         {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
             var keys = new HashSet<TKey>();
             var valueComparer = EqualityComparer<TValue>.Default;
             foreach (var item in source)

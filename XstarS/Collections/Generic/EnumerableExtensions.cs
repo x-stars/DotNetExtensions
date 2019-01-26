@@ -17,10 +17,18 @@ namespace XstarS.Collections.Generic
         /// <param name="source">一个 <see cref="IEnumerable{T}"/> 对象。</param>
         /// <param name="value">要获取数量的对象。</param>
         /// <param name="comparer">指定用于进行相等比较的比较器。</param>
-        /// <returns><paramref name="source"/> 中与 <paramref name="value"/> 相等的对象的数量。</returns>
+        /// <returns><paramref name="source"/> 中与
+        /// <paramref name="value"/> 相等的对象的数量。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
         public static int CountOf<T>(this IEnumerable<T> source, T value,
             IEqualityComparer<T> comparer = null)
         {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
             int count = 0;
             comparer = comparer ?? EqualityComparer<T>.Default;
             foreach (var item in source)
@@ -42,9 +50,20 @@ namespace XstarS.Collections.Generic
         /// <param name="comparer">指定用于进行相等比较的比较器。</param>
         /// <returns><paramref name="source"/> 中包含在
         /// <paramref name="collection"/> 中的对象的数量。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>
+        /// 或 <paramref name="collection"/> 为 <see langword="null"/>。</exception>
         public static int CountOf<T>(this IEnumerable<T> source, IEnumerable<T> collection,
             IEqualityComparer<T> comparer = null)
         {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (collection is null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+
             int count = 0;
             comparer = comparer ?? EqualityComparer<T>.Default;
             foreach (var item in source)
@@ -65,8 +84,19 @@ namespace XstarS.Collections.Generic
         /// <param name="collection">要获取数量的多个对象。</param>
         /// <returns><paramref name="source"/> 中包含在
         /// <paramref name="collection"/> 中的对象的数量。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>
+        /// 或 <paramref name="collection"/> 为 <see langword="null"/>。</exception>
         public static int CountOf<T>(this IEnumerable<T> source, ICollection<T> collection)
         {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (collection is null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+
             int count = 0;
             foreach (var item in source)
             {
@@ -83,8 +113,15 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <param name="source">一个 <see cref="IEnumerable"/> 对象。</param>
         /// <returns>所有元素的字符串表达形式。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
         public static string SequenceToString(this IEnumerable source)
         {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
             var sequence = new List<string>();
             foreach (var item in source)
             {
