@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace XstarS
+﻿namespace XstarS
 {
     /// <summary>
     /// 提供参数的验证和对应异常的抛出所需的数据。

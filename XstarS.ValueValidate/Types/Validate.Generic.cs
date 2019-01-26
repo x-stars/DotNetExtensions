@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace XstarS
 {
-    static partial class Validate
+    partial class Validate
     {
         /// <summary>
         /// 验证对象是否等于指定值。
@@ -15,15 +15,14 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值不等于 <paramref name="value"/>。
-        /// </exception>
+        /// <paramref name="source"/> 的值不等于 <paramref name="value"/>。</exception>
         public static IValidate<T> EqualsTo<T>(this IValidate<T> source,
             T value,
             string message = null)
         {
             if (!EqualityComparer<T>.Default.Equals(source.Value, value))
             {
-                ThrowHelper.ThrowArgumentNullException(source.Name, message);
+                ThrowHelper.ThrowArgumentException(source.Name, message);
             }
 
             return source;
@@ -38,15 +37,14 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值等于 <paramref name="value"/>。
-        /// </exception>
+        /// <paramref name="source"/> 的值等于 <paramref name="value"/>。</exception>
         public static IValidate<T> NotEqualsTo<T>(this IValidate<T> source,
             T value,
             string message = null)
         {
             if (EqualityComparer<T>.Default.Equals(source.Value, value))
             {
-                ThrowHelper.ThrowArgumentNullException(source.Name, message);
+                ThrowHelper.ThrowArgumentException(source.Name, message);
             }
 
             return source;
@@ -60,8 +58,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 的值等于 <see langword="null"/>。
-        /// </exception>
+        /// <paramref name="source"/> 的值等于 <see langword="null"/>。</exception>
         public static IValidate<T> NotEqualsToNull<T>(this IValidate<T> source,
             string message = null)
         {
@@ -81,8 +78,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值不为 <typeparamref name="T"/> 类型的实例。
-        /// </exception>
+        /// <paramref name="source"/> 的值不为 <typeparamref name="T"/> 类型的实例。</exception>
         public static IValidate<object> IsInstanceOf<T>(this IValidate<object> source,
             string message = null)
         {
@@ -103,8 +99,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值不为 <paramref name="type"/> 类型的实例。
-        /// </exception>
+        /// <paramref name="source"/> 的值不为 <paramref name="type"/> 类型的实例。</exception>
         public static IValidate<object> IsInstanceOf(this IValidate<object> source,
             Type type,
             string message = null)
@@ -127,8 +122,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="condition"/> 返回 <see langword="false"/>。
-        /// </exception>
+        /// <paramref name="condition"/> 返回 <see langword="false"/>。</exception>
         public static IValidate<T> Meets<T>(this IValidate<T> source,
             bool condition,
             string message = null)
@@ -150,8 +144,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="predicate"/> 返回 <see langword="false"/>。
-        /// </exception>
+        /// <paramref name="predicate"/> 返回 <see langword="false"/>。</exception>
         public static IValidate<T> Meets<T>(this IValidate<T> source,
             Predicate<T> predicate,
             string message = null)
@@ -172,9 +165,8 @@ namespace XstarS
         /// <param name="collection">应该包含当前对象的集合。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
-        /// <exception cref="KeyNotFoundException">
-        /// <paramref name="source"/> 的值不在 <paramref name="collection"/> 中。
-        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="source"/> 的值不在 <paramref name="collection"/> 中。</exception>
         public static IValidate<T> IsInCollection<T>(this IValidate<T> source,
             IEnumerable<T> collection,
             string message = null)
@@ -195,9 +187,8 @@ namespace XstarS
         /// <param name="collection">不应包含当前对象的集合。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
-        /// <exception cref="KeyNotFoundException">
-        /// <paramref name="source"/> 的值在 <paramref name="collection"/> 中。
-        /// </exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="source"/> 的值在 <paramref name="collection"/> 中。</exception>
         public static IValidate<T> IsNotInCollection<T>(this IValidate<T> source,
             IEnumerable<T> collection,
             string message = null)
@@ -219,8 +210,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="KeyNotFoundException">
-        /// <paramref name="source"/> 的值不在 <paramref name="keys"/> 中。
-        /// </exception>
+        /// <paramref name="source"/> 的值不在 <paramref name="keys"/> 中。</exception>
         public static IValidate<T> IsInKeys<T>(this IValidate<T> source,
             IEnumerable<T> keys,
             string message = null)
@@ -242,10 +232,8 @@ namespace XstarS
         /// <param name="maxValue">允许的最大值。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="source"/> 的值不在
-        /// <paramref name="minValue"/> 和 <paramref name="maxValue"/> 之间。
-        /// </exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="source"/> 的值不在
+        /// <paramref name="minValue"/> 和 <paramref name="maxValue"/> 之间。</exception>
         public static IValidate<T> IsInRange<T>(this IValidate<T> source,
             T minValue, T maxValue,
             string message = null)

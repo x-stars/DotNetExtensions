@@ -2,7 +2,7 @@
 
 namespace XstarS
 {
-    static partial class Validate
+    partial class Validate
     {
         /// <summary>
         /// 验证整数是否在索引的有效范围内。
@@ -12,10 +12,8 @@ namespace XstarS
         /// <param name="endIndex">索引的结束值。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
-        /// <exception cref="IndexOutOfRangeException">
-        /// <paramref name="source"/> 的值不在
-        /// <paramref name="startIndex"/> 和 <paramref name="endIndex"/> 之间。
-        /// </exception>
+        /// <exception cref="IndexOutOfRangeException"><paramref name="source"/> 的值不在
+        /// <paramref name="startIndex"/> 和 <paramref name="endIndex"/> 之间。</exception>
         public static IValidate<int> IsInIndexRange(this IValidate<int> source,
             int startIndex, int endIndex,
             string message = null)
@@ -35,10 +33,8 @@ namespace XstarS
         /// <param name="count">集合的大小。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
-        /// <exception cref="IndexOutOfRangeException">
-        /// <paramref name="source"/> 的值不在
-        /// 0 和 <paramref name="count"/> - 1 之间。
-        /// </exception>
+        /// <exception cref="IndexOutOfRangeException"><paramref name="source"/>
+        /// 的值不在 0 和 <paramref name="count"/> - 1 之间。</exception>
         public static IValidate<int> IsInIndexRange(this IValidate<int> source,
             int count,
             string message = null)

@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace XstarS
 {
-    static partial class Validate
+    partial class Validate
     {
         /// <summary>
         /// 验证字符串是否不是空字符串 <see cref="string.Empty"/>。
@@ -15,8 +15,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值等于 <see cref="string.Empty"/>。
-        /// </exception>
+        /// <paramref name="source"/> 的值等于 <see cref="string.Empty"/>。</exception>
         public static IValidate<string> IsNotEmpty(this IValidate<string> source,
             string message = null)
         {
@@ -35,8 +34,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值由空白字符组成。
-        /// </exception>
+        /// <paramref name="source"/> 的值由空白字符组成。</exception>
         public static IValidate<string> IsNotWhiteSpace(this IValidate<string> source,
             string message = null)
         {
@@ -56,10 +54,8 @@ namespace XstarS
         /// <param name="maxLength">字符串允许的最大长度。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的长度不在
-        /// <paramref name="minLength"/> 和 <paramref name="maxLength"/> 之间。
-        /// </exception>
+        /// <exception cref="ArgumentException"><paramref name="source"/> 的长度不在
+        /// <paramref name="minLength"/> 和 <paramref name="maxLength"/> 之间。</exception>
         public static IValidate<string> LengthIsInRange(this IValidate<string> source,
             int minLength, int maxLength,
             string message = null)
@@ -80,8 +76,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值不以 <paramref name="value"/> 开始。
-        /// </exception>
+        /// <paramref name="source"/> 的值不以 <paramref name="value"/> 开始。</exception>
         public static IValidate<string> StartsWith(this IValidate<string> source,
             string value,
             string message = null)
@@ -102,8 +97,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值以 <paramref name="value"/> 开始。
-        /// </exception>
+        /// <paramref name="source"/> 的值以 <paramref name="value"/> 开始。</exception>
         public static IValidate<string> NotStartsWith(this IValidate<string> source,
             string value,
             string message = null)
@@ -124,8 +118,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值不以 <paramref name="value"/> 结束。
-        /// </exception>
+        /// <paramref name="source"/> 的值不以 <paramref name="value"/> 结束。</exception>
         public static IValidate<string> EndsWith(this IValidate<string> source,
             string value,
             string message = null)
@@ -146,8 +139,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值以 <paramref name="value"/> 结束。
-        /// </exception>
+        /// <paramref name="source"/> 的值以 <paramref name="value"/> 结束。</exception>
         public static IValidate<string> NotEndsWith(this IValidate<string> source,
             string value,
             string message = null)
@@ -168,8 +160,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值不包含 <paramref name="value"/>。
-        /// </exception>
+        /// <paramref name="source"/> 的值不包含 <paramref name="value"/>。</exception>
         public static IValidate<string> Contains(this IValidate<string> source,
             string value,
             string message = null)
@@ -190,8 +181,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值包含 <paramref name="value"/>。
-        /// </exception>
+        /// <paramref name="source"/> 的值包含 <paramref name="value"/>。</exception>
         public static IValidate<string> NotContains(this IValidate<string> source,
             string value,
             string message = null)
@@ -212,8 +202,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值不能匹配 <paramref name="regex"/>。
-        /// </exception>
+        /// <paramref name="source"/> 的值不能匹配 <paramref name="regex"/>。</exception>
         public static IValidate<string> IsMatch(this IValidate<string> source,
             Regex regex,
             string message = null)
@@ -234,8 +223,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值不能匹配 <paramref name="pattern"/>。
-        /// </exception>
+        /// <paramref name="source"/> 的值不能匹配 <paramref name="pattern"/>。</exception>
         public static IValidate<string> IsMatch(this IValidate<string> source,
             string pattern,
             string message = null)
@@ -251,8 +239,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值能够匹配 <paramref name="regex"/>。
-        /// </exception>
+        /// <paramref name="source"/> 的值能够匹配 <paramref name="regex"/>。</exception>
         public static IValidate<string> IsNotMatch(this IValidate<string> source,
             Regex regex,
             string message = null)
@@ -273,8 +260,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值能够匹配 <paramref name="pattern"/>。
-        /// </exception>
+        /// <paramref name="source"/> 的值能够匹配 <paramref name="pattern"/>。</exception>
         public static IValidate<string> IsNotMatch(this IValidate<string> source,
             string pattern,
             string message = null)

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace XstarS
 {
-    static partial class Validate
+    partial class Validate
     {
         /// <summary>
         /// 验证路径是否合法。

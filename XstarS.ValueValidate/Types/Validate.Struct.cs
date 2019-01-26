@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace XstarS
 {
-    static partial class Validate
+    partial class Validate
     {
         /// <summary>
         /// 验证对象是否不是一个空值（无参构造的结构的实例）。
@@ -13,8 +13,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="source"/> 的值为空值（无参构造的结构的实例）。
-        /// </exception>
+        /// <paramref name="source"/> 的值为空值（无参构造的结构的实例）。</exception>
         public static IValidate<T> IsNotEmpty<T>(this IValidate<T> source,
             string message = null)
             where T : struct

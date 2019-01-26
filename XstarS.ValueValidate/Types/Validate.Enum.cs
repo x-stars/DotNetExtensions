@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace XstarS
 {
-    static partial class Validate
+    partial class Validate
     {
         /// <summary>
         /// 验证枚举值是否是一个有效的枚举值。
@@ -14,8 +14,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <returns><paramref name="source"/> 本身。</returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="source"/> 的值不为有效的枚举值。
-        /// </exception>
+        /// <paramref name="source"/> 的值不为有效的枚举值。</exception>
         public static IValidate<T> IsValidEnum<T>(this IValidate<T> source,
             string message = null)
             where T : Enum

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace XstarS
 {
@@ -17,8 +16,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <param name="innerException">引发当前异常的异常。</param>
         /// <exception cref="ArgumentException">
-        /// 总是抛出 <see cref="ArgumentException"/> 类型的异常。
-        /// </exception>
+        /// 总是抛出 <see cref="ArgumentException"/> 类型的异常。</exception>
         internal static void ThrowArgumentException(string paramName = null,
             string message = null, Exception innerException = null)
         {
@@ -32,8 +30,7 @@ namespace XstarS
         /// <param name="paramName">引发异常的参数的名称。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <exception cref="ArgumentNullException">
-        /// 总是抛出 <see cref="ArgumentNullException"/> 类型的异常。
-        /// </exception>
+        /// 总是抛出 <see cref="ArgumentNullException"/> 类型的异常。</exception>
         internal static void ThrowArgumentNullException(string paramName = null,
             string message = null)
         {
@@ -48,8 +45,7 @@ namespace XstarS
         /// <param name="actualValue">参数的实际值。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// 总是抛出 <see cref="ArgumentOutOfRangeException"/> 类型的异常。
-        /// </exception>
+        /// 总是抛出 <see cref="ArgumentOutOfRangeException"/> 类型的异常。</exception>
         internal static void ThrowArgumentOutOfRangeException(string paramName = null,
             object actualValue = null, string message = null)
         {
@@ -63,8 +59,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <param name="innerException">引发当前异常的异常。</param>
         /// <exception cref="IndexOutOfRangeException">
-        /// 总是抛出 <see cref="IndexOutOfRangeException"/> 类型的异常。
-        /// </exception>
+        /// 总是抛出 <see cref="IndexOutOfRangeException"/> 类型的异常。</exception>
         internal static void ThrowIndexOutOfRangeException(
             string message = null, Exception innerException = null)
         {
@@ -78,8 +73,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <param name="innerException">引发当前异常的异常。</param>
         /// <exception cref="KeyNotFoundException">
-        /// 总是抛出 <see cref="KeyNotFoundException"/> 类型的异常。
-        /// </exception>
+        /// 总是抛出 <see cref="KeyNotFoundException"/> 类型的异常。</exception>
         internal static void ThrowKeyNotFoundException(
             string message = null, Exception innerException = null)
         {
@@ -94,8 +88,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <param name="innerException">引发当前异常的异常。</param>
         /// <exception cref="FileNotFoundException">
-        /// 总是抛出 <see cref="FileNotFoundException"/> 类型的异常。
-        /// </exception>
+        /// 总是抛出 <see cref="FileNotFoundException"/> 类型的异常。</exception>
         internal static void ThrowFileNotFoundException(string fileName = null,
             string message = null, Exception innerException = null)
         {
@@ -109,8 +102,7 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <param name="innerException">引发当前异常的异常。</param>
         /// <exception cref="DirectoryNotFoundException">
-        /// 总是抛出 <see cref="DirectoryNotFoundException"/> 类型的异常。
-        /// </exception>
+        /// 总是抛出 <see cref="DirectoryNotFoundException"/> 类型的异常。</exception>
         internal static void ThrowDirectoryNotFoundException(
             string message = null, Exception innerException = null)
         {

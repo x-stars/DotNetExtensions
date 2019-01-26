@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace XstarS
 {
@@ -35,11 +34,9 @@ namespace XstarS
         /// 返回一个值，该值指示此实例和指定的对象是否表示相同的值。
         /// </summary>
         /// <param name="obj">要与此实例比较的对象。</param>
-        /// <returns>
-        /// 如果 <paramref name="obj"/> 是 <see cref="IValidate{T}"/> 的实例，
+        /// <returns>如果 <paramref name="obj"/> 是 <see cref="IValidate{T}"/> 的实例，
         /// 且 <see cref="IValidate{T}.Value"/> 和 <see cref="IValidate{T}.Name"/> 属性都相等，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
-        /// </returns>
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public override bool Equals(object obj)
         {
             return (obj is IValidate<T> value) &&
