@@ -16,23 +16,6 @@ namespace XstarS
     public class UnixShellParamReader : ParamReader
     {
         /// <summary>
-        /// 待解析的参数列表。
-        /// </summary>
-        private readonly string[] arguments;
-        /// <summary>
-        /// 有名参数名称列表。
-        /// </summary>
-        private readonly string[] paramNames;
-        /// <summary>
-        /// 开关参数名称列表。
-        /// </summary>
-        private readonly string[] switchNames;
-        /// <summary>
-        /// 比较参数名称时采用的字符串比较器。
-        /// </summary>
-        private readonly IEqualityComparer<string> stringComparer;
-
-        /// <summary>
         /// 初始化 Unix / Linux Shell 风格命令行参数解析器
         /// <see cref="UnixShellParamReader"/> 的新实例。
         /// </summary>
@@ -47,13 +30,7 @@ namespace XstarS
         /// <param name="switchNames">所有开关参数名称列表。</param>
         public UnixShellParamReader(string[] arguments,
             string[] paramNames = null, string[] switchNames = null)
-            : base(arguments, false, paramNames, switchNames)
-        {
-            this.arguments = arguments ?? new string[0];
-            this.paramNames = paramNames ?? new string[0];
-            this.switchNames = switchNames ?? new string[0];
-            this.stringComparer = StringComparer.InvariantCulture;
-        }
+            : base(arguments, false, paramNames, switchNames) { }
 
         /// <summary>
         /// 解析指定名称的有名参数。
@@ -135,22 +112,22 @@ namespace XstarS
                 throw new ArgumentOutOfRangeException(nameof(paramIndex));
             }
 
-            for (int i = 0, currParamIndex = 0; i < this.arguments.Length; i++)
+            for (int i = 0, currParamIndex = 0; i < this.Arguments.Length; i++)
             {
                 // 当前为有名参数名称。
-                if (this.paramNames.Contains(this.arguments[i], this.stringComparer))
+                if (this.ParamNames.Contains(this.Arguments[i], this.NameComparer))
                 {
                     i++;
                 }
                 // 当前为开关参数名称。
-                else if (this.arguments[i].StartsWith("-"))
+                else if (this.Arguments[i].StartsWith("-"))
                 {
                     ;
                 }
                 // 当前为对应位置的无名参数。
                 else if (currParamIndex == paramIndex)
                 {
-                    return this.arguments[i];
+                    return this.Arguments[i];
                 }
                 // 当前为其他位置的无名参数。
                 else
@@ -220,10 +197,8 @@ namespace XstarS
                     else
                     {
                         // 尝试解析短开关参数。
-                        if (this.arguments.Any(
-                            arg =>
-                            arg.StartsWith("-") &&
-                            !arg.StartsWith("--") &&
+                        if (this.Arguments.Any(arg =>
+                            arg.StartsWith("-") && !arg.StartsWith("--") &&
                             arg.Contains(alterSwitchName.Substring(1, 1))))
                         {
                             return true;
@@ -262,7 +237,7 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(paramName));
             }
 
-            var paramValueList = new List<string>();
+            var paramValues = new List<string>();
             // 分隔同义名称。
             string[] alterParamNames = paramName.Split(',');
             foreach (string alterParamName in alterParamNames)
@@ -292,17 +267,17 @@ namespace XstarS
                 }
 
                 // 尝试解析所有同名有名参数。
-                for (int i = 0; i < this.arguments.Length - 1; i++)
+                for (int i = 0; i < this.Arguments.Length - 1; i++)
                 {
                     // 当前为指定有名参数的名称。
-                    if (this.stringComparer.Equals(this.arguments[i], paramName))
+                    if (this.NameComparer.Equals(this.Arguments[i], paramName))
                     {
-                        paramValueList.Add(this.arguments[i + 1]);
+                        paramValues.Add(this.Arguments[i + 1]);
                     }
                 }
             }
 
-            return paramValueList.ToArray();
+            return paramValues.ToArray();
         }
     }
 }

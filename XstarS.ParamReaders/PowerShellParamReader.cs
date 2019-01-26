@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace XstarS
 {
@@ -15,23 +13,6 @@ namespace XstarS
     /// </remarks>
     public class PowerShellParamReader : ParamReader
     {
-        /// <summary>
-        /// 待解析的参数列表。
-        /// </summary>
-        private readonly string[] arguments;
-        /// <summary>
-        /// 有名参数名称列表。
-        /// </summary>
-        private readonly string[] paramNames;
-        /// <summary>
-        /// 开关参数名称列表。
-        /// </summary>
-        private readonly string[] switchNames;
-        /// <summary>
-        /// 比较参数名称时采用的字符串比较器。
-        /// </summary>
-        private readonly IEqualityComparer<string> stringComparer;
-
         /// <summary>
         /// 初始化 PowerShell 风格命令行参数解析器
         /// <see cref="PowerShellParamReader"/> 的新实例。
@@ -48,13 +29,7 @@ namespace XstarS
         /// <param name="switchNames">所有开关参数名称列表。</param>
         public PowerShellParamReader(string[] arguments,
             string[] paramNames = null, string[] switchNames = null)
-            : base(arguments, true, paramNames, switchNames)
-        {
-            this.arguments = arguments ?? new string[0];
-            this.paramNames = paramNames ?? new string[0];
-            this.switchNames = switchNames ?? new string[0];
-            this.stringComparer = StringComparer.InvariantCultureIgnoreCase;
-        }
+            : base(arguments, true, paramNames, switchNames) { }
 
         /// <summary>
         /// 解析指定名称的有名参数。
@@ -85,10 +60,10 @@ namespace XstarS
             else
             {
                 int paramIndex = 0;
-                foreach (string currParamName in this.paramNames)
+                foreach (string currParamName in this.ParamNames)
                 {
                     // 当前为指定有名参数。
-                    if (this.stringComparer.Equals(currParamName, paramName))
+                    if (this.NameComparer.Equals(currParamName, paramName))
                     {
                         if (base.GetParam(currParamName) is string paramValueByName)
                         {

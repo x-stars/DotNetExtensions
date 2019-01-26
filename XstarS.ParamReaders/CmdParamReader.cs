@@ -16,23 +16,6 @@ namespace XstarS
     public class CmdParamReader : ParamReader
     {
         /// <summary>
-        /// 待解析的参数列表。
-        /// </summary>
-        private readonly string[] arguments;
-        /// <summary>
-        /// 有名参数名称列表。
-        /// </summary>
-        private readonly string[] paramNames;
-        /// <summary>
-        /// 开关参数名称列表。
-        /// </summary>
-        private readonly string[] switchNames;
-        /// <summary>
-        /// 比较参数名称时采用的字符串比较器。
-        /// </summary>
-        private readonly IEqualityComparer<string> stringComparer;
-
-        /// <summary>
         /// 初始化 CMD 风格命令行参数解析器 <see cref="CmdParamReader"/> 的新实例。
         /// </summary>
         /// <remarks>
@@ -43,13 +26,7 @@ namespace XstarS
         /// <param name="switchNames">所有开关参数名称列表。</param>
         public CmdParamReader(string[] arguments,
             string[] paramNames = null, string[] switchNames = null)
-            : base(arguments, true, paramNames, switchNames)
-        {
-            this.arguments = arguments ?? new string[0];
-            this.switchNames = switchNames ?? new string[0];
-            this.paramNames = paramNames ?? new string[0];
-            this.stringComparer = StringComparer.InvariantCultureIgnoreCase;
-        }
+            : base(arguments, true, paramNames, switchNames) { }
 
         /// <summary>
         /// 解析指定名称的有名参数。
@@ -70,10 +47,10 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(paramName));
             }
 
-            foreach (string argument in this.arguments)
+            foreach (string argument in this.Arguments)
             {
                 // 当前为指定有名参数的名称。
-                if (argument.Contains(":") && this.stringComparer.Equals(
+                if (argument.Contains(":") && this.NameComparer.Equals(
                     argument.Remove(argument.IndexOf(":")), paramName))
                 {
                     return argument.Substring(argument.IndexOf(":") + ":".Length);
@@ -103,16 +80,16 @@ namespace XstarS
             }
 
             int currParamIndex = 0;
-            foreach (string argument in this.arguments)
+            foreach (string argument in this.Arguments)
             {
                 // 当前为开关参数名称。
-                if (this.switchNames.Contains(argument, this.stringComparer))
+                if (this.SwitchNames.Contains(argument, this.NameComparer))
                 {
                     ;
                 }
                 // 当前为有名参数名称。
-                else if (argument.Contains(":") && this.paramNames.Contains(
-                    argument.Remove(argument.IndexOf(":")), this.stringComparer))
+                else if (argument.Contains(":") && this.ParamNames.Contains(
+                    argument.Remove(argument.IndexOf(":")), this.NameComparer))
                 {
                     ;
                 }
@@ -150,18 +127,18 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(paramName));
             }
 
-            var paramValueList = new List<string>();
-            foreach (string argument in this.arguments)
+            var paramValues = new List<string>();
+            foreach (string argument in this.Arguments)
             {
                 // 当前为指定有名参数的名称。
-                if (argument.Contains(":") && this.stringComparer.Equals(
+                if (argument.Contains(":") && this.NameComparer.Equals(
                     argument.Remove(argument.IndexOf(":")), paramName))
                 {
-                    paramValueList.Add(argument.Substring(argument.IndexOf(":") + ":".Length));
+                    paramValues.Add(argument.Substring(argument.IndexOf(":") + ":".Length));
                 }
             }
 
-            return paramValueList.ToArray();
+            return paramValues.ToArray();
         }
     }
 }
