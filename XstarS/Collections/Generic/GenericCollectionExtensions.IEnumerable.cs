@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace XstarS.Collections.Generic
 {
-    /// <summary>
-    /// 提供泛型公开枚举数 <see cref="IEnumerable{T}"/> 的扩展方法。
-    /// </summary>
-    public static class EnumerableExtensions
+    partial class GenericCollectionExtensions
     {
         /// <summary>
         /// 获取当前 <see cref="IEnumerable{T}"/> 对象中指定对象的数量。
@@ -29,8 +25,9 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(source));
             }
 
-            int count = 0;
             comparer = comparer ?? EqualityComparer<T>.Default;
+
+            int count = 0;
             foreach (var item in source)
             {
                 if (comparer.Equals(item, value))
@@ -64,8 +61,9 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(collection));
             }
 
-            int count = 0;
             comparer = comparer ?? EqualityComparer<T>.Default;
+
+            int count = 0;
             foreach (var item in source)
             {
                 if (collection.Contains(item, comparer))
@@ -106,35 +104,6 @@ namespace XstarS.Collections.Generic
                 }
             }
             return count;
-        }
-
-        /// <summary>
-        /// 返回当前 <see cref="IEnumerable"/> 对象的所有元素的字符串表达形式。
-        /// </summary>
-        /// <param name="source">一个 <see cref="IEnumerable"/> 对象。</param>
-        /// <returns>所有元素的字符串表达形式。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static string SequenceToString(this IEnumerable source)
-        {
-            if (source is null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            var sequence = new List<string>();
-            foreach (var item in source)
-            {
-                if (item is IEnumerable collection)
-                {
-                    sequence.Add(collection.SequenceToString());
-                }
-                else
-                {
-                    sequence.Add(item.ToString());
-                }
-            }
-            return "{ " + string.Join(", ", sequence) + " }";
         }
     }
 }

@@ -4,10 +4,7 @@ using System.Linq;
 
 namespace XstarS.Collections.Generic
 {
-    /// <summary>
-    /// 提供可索引访问的泛型集合 <see cref="IList{T}"/> 的扩展方法。
-    /// </summary>
-    public static class ListExtensions
+    partial class GenericCollectionExtensions
     {
         /// <summary>
         /// 创建 <see cref="IList{T}"/> 中指定元素范围的浅表复制。
