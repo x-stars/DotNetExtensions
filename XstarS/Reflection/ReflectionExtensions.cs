@@ -271,7 +271,7 @@ namespace XstarS.Reflection
         /// <paramref name="bindingAttr"/> 的所有方法的 <see cref="MethodInfo"/> 对象。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="AmbiguousMatchException">找到了多个满足条件的方法。</exception>
-        public static MethodInfo GetAccessibleEventMethod(this Type source, string name,
+        public static MethodInfo GetAccessibleMethod(this Type source, string name,
             BindingFlags bindingAttr = BindingFlags.Instance | BindingFlags.Static | BindingFlags.Public)
         {
             try

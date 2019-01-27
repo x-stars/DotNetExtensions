@@ -33,7 +33,8 @@ namespace XstarS
             this.SwitchNames = switchNames ?? new string[0];
             this.ParamNames = paramNames ?? new string[0];
             this.NameComparer = ignoreCase ?
-                StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+                StringComparer.InvariantCultureIgnoreCase :
+                StringComparer.InvariantCulture;
         }
 
         /// <summary>

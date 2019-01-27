@@ -176,7 +176,7 @@ namespace XstarS.Win32
             }
 
             /// <summary>
-            /// 获取或设置当前程序的内置网络浏览器运行的 Internet Explorer 的主要版本和渲染模式。
+            /// 获取当前程序的内置网络浏览器运行的 Internet Explorer 的主要版本和渲染模式。
             /// <see langword="null"/> 表示运行默认主要版本 (7) 和默认渲染模式 (000)。
             /// </summary>
             /// <exception cref="SecurityException">

@@ -32,8 +32,8 @@ namespace XstarS.ComponentModel.TestTypes
 
         public void Dispose()
         {
-            this.Value = default(T);
-            this.BindableValue = default(T);
+            this.Value = default;
+            this.BindableValue = default;
         }
 
         public abstract void Load<TCollection>(TCollection collection)
