@@ -7,6 +7,7 @@ namespace XstarS.ComponentModel
     /// 提供从原型构造用于数据绑定的实例的基类实现。
     /// </summary>
     /// <typeparam name="T">用于数据绑定的实例的原型类型，应为接口或非密封类。</typeparam>
+    [Serializable]
     public abstract class BindingBuilder<T> : IBindingBuilder<T>
         where T : class, INotifyPropertyChanged
     {

@@ -7,6 +7,7 @@ namespace XstarS.Collections
     /// <summary>
     /// 提供公开枚举数 <see cref="IEnumerable"/> 的元素序列的相等比较的方法。
     /// </summary>
+    [Serializable]
     public class SequenceEqualityComparer : IEqualityComparer
     {
         /// <summary>

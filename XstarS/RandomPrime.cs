@@ -5,6 +5,7 @@ namespace XstarS
     /// <summary>
     /// 伪随机质数生成器。
     /// </summary>
+    [Serializable]
     public class RandomPrime : Random
     {
         /// <summary>

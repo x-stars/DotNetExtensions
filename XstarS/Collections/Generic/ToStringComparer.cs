@@ -8,6 +8,7 @@ namespace XstarS.Collections.Generic
     /// 使用对象的 <see cref="object.ToString()"/> 方法实现的类型无关的通用比较器。
     /// </summary>
     /// <typeparam name="T">要进行比较的对象的类型。</typeparam>
+    [Serializable]
     public class ToStringComparer<T> : IEqualityComparer, IComparer, IEqualityComparer<T>, IComparer<T>
     {
         /// <summary>

@@ -6,6 +6,7 @@ namespace XstarS
     /// 提供读写详情自动输出的类。当变量的值发生读写时均会输出信息到控制台。
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [Serializable]
     public class Verbose<T>
     {
         /// <summary>

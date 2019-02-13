@@ -10,6 +10,7 @@ namespace XstarS.ComponentModel
     /// 提供从引用类型的原型构造用于数据绑定的实例的内部基类实现。
     /// </summary>
     /// <typeparam name="T">用于数据绑定的实例的原型类型。</typeparam>
+    [Serializable]
     internal class ClassBindingBuilder<T> : BindingBuilder<T>
         where T : class, INotifyPropertyChanged
     {

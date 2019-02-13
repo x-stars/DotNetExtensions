@@ -13,6 +13,7 @@ namespace XstarS
     /// 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
     /// 不支持一个参数名称后跟多个参数值的有名参数的解析。
     /// </remarks>
+    [Serializable]
     public class UnixShellParamReader : ParamReader
     {
         /// <summary>

@@ -8,6 +8,7 @@ namespace XstarS.ComponentModel
     /// <summary>
     /// 提供属性发生更改时通知客户端的简单实现。
     /// </summary>
+    [Serializable]
     public abstract class BindableObject : INotifyPropertyChanged
     {
         /// <summary>

@@ -8,6 +8,7 @@ namespace XstarS.Collections.Generic
     /// 提供泛型集合 <see cref="IEnumerable{T}"/> 的元素序列的相等比较的方法。
     /// </summary>
     /// <typeparam name="T">集合中的元素的类型。</typeparam>
+    [Serializable]
     public class SequenceEqualityComparer<T> : IEqualityComparer, IEqualityComparer<IEnumerable<T>>
     {
         /// <summary>

@@ -12,22 +12,6 @@ namespace XstarS.ComponentModel
     internal static class ReflectionHelper
     {
         /// <summary>
-        /// 将指定集合的元素添加到 <see cref="ICollection{T}"/> 中。
-        /// </summary>
-        /// <typeparam name="T"><see cref="ICollection{T}"/> 中的元素的类型。</typeparam>
-        /// <param name="source">一个 <see cref="ICollection{T}"/> 对象。</param>
-        /// <param name="collection">
-        /// 应将其元素添加到 <see cref="ICollection{T}"/> 中的集合。
-        /// 集合自身不能为 <see langword="null"/>，但它可以包含为 <see langword="null"/> 的元素。
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="collection"/> 为 <see langword="null"/>。</exception>
-        private static void AddRange<T>(this ICollection<T> source, IEnumerable<T> collection)
-        {
-            foreach (var item in collection) { source.Add(item); }
-        }
-
-        /// <summary>
         /// 使用指定绑定约束，搜索当前类型的外部派生类型能够直接访问的所有字段。
         /// </summary>
         /// <param name="source">一个 <see cref="Type"/> 类型的对象。</param>
@@ -293,9 +277,36 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
+        /// 将指定集合的元素添加到 <see cref="ICollection{T}"/> 中。
+        /// </summary>
+        /// <typeparam name="T"><see cref="ICollection{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="source">一个 <see cref="ICollection{T}"/> 对象。</param>
+        /// <param name="collection">应将其元素添加到 <see cref="ICollection{T}"/> 中的集合。
+        /// 集合自身不能为 <see langword="null"/>，但它可以包含为 <see langword="null"/> 的元素。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>
+        /// 或 <paramref name="collection"/> 为 <see langword="null"/>。</exception>
+        private static void AddRange<T>(this ICollection<T> source, IEnumerable<T> collection)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (collection is null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+
+            foreach (var item in collection)
+            {
+                source.Add(item);
+            }
+        }
+
+        /// <summary>
         /// 使用对象的 <see cref="object.ToString()"/> 方法实现的类型无关的通用比较器。
         /// </summary>
         /// <typeparam name="T">要进行比较的对象的类型。</typeparam>
+        [Serializable]
         private class ToStringComparer<T> : IEqualityComparer, IComparer, IEqualityComparer<T>, IComparer<T>
         {
             /// <summary>
