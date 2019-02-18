@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace XstarS
@@ -10,6 +8,33 @@ namespace XstarS
     [TestClass]
     public class ObjectExtensionsTest
     {
+        [TestMethod]
+        public void DeepClone_Int32Array_WorksProperly()
+        {
+            var o1 = new int[] { 1 };
+            var o2 = o1.Clone() as int[];
+            var o3 = o1.DeepClone() as int[];
+            o2[0] = 2;
+            o3[0] = 3;
+            Assert.AreEqual(o1[0], 1);
+            Assert.AreEqual(o2[0], 2);
+            Assert.AreEqual(o3[0], 3);
+        }
+
+        [TestMethod]
+        public void DeepClone_NestedInt32Array_WorksProperly()
+        {
+            var o1 = new int[][] { new int[] { 1 } };
+            var o2 = o1.Clone() as int[][];
+            var o3 = o1.DeepClone() as int[][];
+            o2[0][0] = 2;
+            o3[0][0] = 3;
+            Assert.AreNotEqual(o1[0][0], 1);
+            Assert.AreEqual(o1[0][0], 2);
+            Assert.AreEqual(o2[0][0], 2);
+            Assert.AreEqual(o3[0][0], 3);
+        }
+
         [TestMethod]
         public void ValueEquals_String_ReturnsTrue()
         {

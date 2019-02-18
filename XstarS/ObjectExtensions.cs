@@ -1,5 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Reflection;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace XstarS
 {
@@ -8,6 +11,112 @@ namespace XstarS
     /// </summary>
     public static class ObjectExtensions
     {
+        /// <summary>
+        /// 创建当前对象的浅表副本。
+        /// </summary>
+        /// <param name="source">一个 <see cref="object"/> 类型的对象。</param>
+        /// <returns><paramref name="source"/> 的浅表副本。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        public static object ShallowClone(this object source)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            var im_MemberwiseClone = typeof(object).GetMethod("MemberwiseClone",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            return im_MemberwiseClone.Invoke(source, new object[0]);
+        }
+
+        /// <summary>
+        /// 创建当前对象的深度副本。
+        /// </summary>
+        /// <param name="source">一个 <see cref="object"/> 类型的对象。</param>
+        /// <returns><paramref name="source"/> 的深度副本。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        public static object DeepClone(this object source)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            var result = source.ShallowClone();
+            var t_source = source.GetType();
+            // 原生类型，不做其他操作。
+            if (t_source.IsNative()) { }
+            // 数组类型，对每个（非指针）元素递归调用。
+            else if (t_source.IsArray)
+            {
+                if (!t_source.GetElementType().IsPointer)
+                {
+                    var array = result as Array;
+                    // 多维数组。
+                    if (array.Rank > 1)
+                    {
+                        for (long i = 0; i < array.LongLength; i++)
+                        {
+                            var a = array.IndexV2T(i);
+                            array.SetValue(array.GetValue(a)?.DeepClone(), a);
+                        }
+                    }
+                    // 一维数组。
+                    else
+                    {
+                        for (int i = 0; i < array.Length; i++)
+                        {
+                            array.SetValue(array.GetValue(i)?.DeepClone(), i);
+                        }
+                    }
+                }
+            }
+            // 其他类型，对每个（非指针）实例字段递归调用。
+            else
+            {
+                var t_source_if_Fields = t_source.GetFields(
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                foreach (var t_source_if_Field in t_source_if_Fields)
+                {
+                    if (!t_source_if_Field.FieldType.IsPointer)
+                    {
+                        t_source_if_Field.SetValue(result,
+                            t_source_if_Field.GetValue(result)?.DeepClone());
+                    }
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 返回当前对象二进制序列化后的字节数组表达形式。
+        /// </summary>
+        /// <param name="source">一个 <see cref="object"/> 类型的对象。</param>
+        /// <returns><paramref name="source"/> 二进制序列化后的字节数组表达形式。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="SerializationException"><paramref name="source"/>
+        /// 不带有 <see cref="SerializableAttribute"/> 特性。</exception>
+        public static byte[] ToByteArray(this object source)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            using (var stream = new MemoryStream())
+            {
+                var formatter = new BinaryFormatter();
+                formatter.Serialize(stream, source);
+                stream.Position = 0;
+                var result = new byte[stream.Length];
+                stream.Read(result, 0, (int)stream.Length);
+                return result;
+            }
+        }
+
         /// <summary>
         /// 返回当前对象的字符串表达形式。
         /// 若当前对象为 <see langword="null"/>，或 <see cref="object.ToString()"/>
@@ -144,7 +253,7 @@ namespace XstarS
                     return false;
                 }
             }
-            // 数组类型，依次比较每个值。
+            // 数组类型，对每个元素递归调用。
             else if (t_source.IsArray)
             {
                 if (!ArrayValueEquals(source as Array, other as Array))
@@ -152,7 +261,7 @@ namespace XstarS
                     return false;
                 }
             }
-            // 其他类型，对每个字段递归调用。
+            // 其他类型，对每个实例字段递归调用。
             else
             {
                 // 获取每个实例字段。
