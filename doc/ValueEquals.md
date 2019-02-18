@@ -1,4 +1,4 @@
-# .NET 对象的值相等比较
+﻿# .NET 对象的值相等比较
 
 本文叙述了通用的值相等比较方法 `System.Boolean XstarS.ObjectExtensions.ValueEquals(System.Object, System.Object)` 的实现原理。
 
@@ -90,7 +90,7 @@
 
 而通过反射获取指针数组的元素的值则会更加复杂。首先，由于指针不能转化为 `System.Object` 类型，因此不能使用动态类型调用索引器访问指针数组的元素（动态类型方法调用的返回值也是动态类型，而动态类型是一种特殊的引用类型），也不能使用 `System.Object System.Array.GetValue(System.Int32[])` 实例方法访问指针数组的元素（此方法的返回值类型为 `System.Object`）。
 
-反射得到的指针数组实际上有一种特殊的访问方法。所有数组类型都会生成一套无法直接访问公共方法（假设数组元素的类型为 `T`）：
+实际上，所有数组类型都会生成一套无法直接访问的公共方法（假设数组元素的类型为 `T`）：
 
 * `T Get(System.Int32...)`
 * `System.Void Set(System.Int32..., T)`
