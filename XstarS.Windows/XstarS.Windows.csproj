@@ -8,11 +8,11 @@
     <Authors>XstarS</Authors>
     <Description></Description>
     <Copyright>Copyright © XstarS 2018-2019</Copyright>
-    <PackageLicenseUrl>https://github.com/x-stars/DotNetExtensionLibrary/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/x-stars/DotNetExtensionLibrary</PackageProjectUrl>
     <PackageIconUrl></PackageIconUrl>
     <RepositoryUrl>https://github.com/x-stars/DotNetExtensionLibrary</RepositoryUrl>
-    <RepositoryType>Git</RepositoryType>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net47|AnyCPU'">
