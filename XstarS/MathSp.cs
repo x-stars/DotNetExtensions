@@ -49,34 +49,6 @@ namespace XstarS
         public static double Cube(double value) => value * value * value;
 
         /// <summary>
-        /// 返回数字的卡马克 (Carmack) 快速平方根算法的结果。
-        /// </summary>
-        /// <param name="value">要进行平方根运算的单精度浮点数。</param>
-        /// <returns><paramref name="value"/> 的快速平方根。</returns>
-        public static unsafe float CarmackSqrt(float value)
-        {
-            float f1 = value, f2 = value;
-            int* pi1 = (int*)&f1, pi2 = (int*)&f2;
-            *pi1 = 0x1FBCF800 + (*pi1 >> 1);
-            *pi2 = 0x5F3759DF - (*pi2 >> 1);
-            return 0.5F * (f1 + value * f2);
-        }
-
-        /// <summary>
-        /// 返回指定数字的卡马克 (Carmack) 快速平方根倒数算法的结果。
-        /// </summary>
-        /// <param name="value">要进行平方根运算的单精度浮点数。</param>
-        /// <returns><paramref name="value"/> 的快速平方根倒数。</returns>
-        public static unsafe float CarmackInvSqrt(float value)
-        {
-            float half = 0.5F * value;
-            int* pi = (int*)&value;
-            *pi = 0x5F3759DF - (*pi >> 1);
-            value = value * (1.5F - half * value * value);
-            return value;
-        }
-
-        /// <summary>
         /// 确定一个整数是否为质数。
         /// </summary>
         /// <param name="value">要判断是否为质数的 32 位整数。</param>

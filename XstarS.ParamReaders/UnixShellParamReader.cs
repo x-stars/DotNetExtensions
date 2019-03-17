@@ -113,7 +113,7 @@ namespace XstarS
                 throw new ArgumentOutOfRangeException(nameof(paramIndex));
             }
 
-            for (int i = 0, currParamIndex = 0; i < this.Arguments.Length; i++)
+            for (int i = 0, currParamIndex = 0; i < this.Arguments.Count; i++)
             {
                 // 当前为有名参数名称。
                 if (this.ParamNames.Contains(this.Arguments[i], this.NameComparer))
@@ -268,7 +268,7 @@ namespace XstarS
                 }
 
                 // 尝试解析所有同名有名参数。
-                for (int i = 0; i < this.Arguments.Length - 1; i++)
+                for (int i = 0; i < this.Arguments.Count - 1; i++)
                 {
                     // 当前为指定有名参数的名称。
                     if (this.NameComparer.Equals(this.Arguments[i], paramName))

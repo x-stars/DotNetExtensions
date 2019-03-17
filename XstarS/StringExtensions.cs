@@ -62,26 +62,21 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 枚举当前字符串的所有长度小于等于指定值的子字符串。
+        /// 枚举当前字符串的所有子字符串。
         /// </summary>
         /// <param name="source">一个 <see cref="string"/> 类型的对象。</param>
-        /// <param name="maxLength">指定最大子字符串长度，负数表示无限制。</param>
-        /// <returns><paramref name="source"/> 中所有长度小于等于
-        /// <paramref name="maxLength"/> 的子字符串。</returns>
+        /// <returns><paramref name="source"/> 中所有子字符串。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<string> EnumerateSubstrings(this string source, int maxLength = -1)
+        public static IEnumerable<string> EnumerateSubstrings(this string source)
         {
             if (source is null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
 
-            maxLength = (maxLength < 0) ? source.Length : maxLength;
-
             yield return string.Empty;
-            if (maxLength == 0) { yield break; }
-            for (int length = 1; length <= maxLength; length++)
+            for (int length = 1; length <= source.Length; length++)
             {
                 for (int index = 0; index < source.Length; index++)
                 {
@@ -104,7 +99,7 @@ namespace XstarS
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="length"/> 小于 0。</exception>
-        public static IEnumerable<string> EnumerateSubstringsLength(this string source, int length)
+        public static IEnumerable<string> EnumerateSubstrings(this string source, int length)
         {
             if (source is null)
             {
@@ -125,6 +120,44 @@ namespace XstarS
                 if (index + length <= source.Length)
                 {
                     yield return source.Substring(index, length);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 枚举当前字符串的所有长度在指定值之间的子字符串。
+        /// </summary>
+        /// <param name="source">一个 <see cref="string"/> 类型的对象。</param>
+        /// <param name="minLength">指定最小子字符串长度.</param>
+        /// <param name="maxLength">指定最大子字符串长度，负数表示无限制。</param>
+        /// <returns><paramref name="source"/> 中所有长度在 <paramref name="minLength"/>
+        /// 和 <paramref name="maxLength"/> 之间的子字符串。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<string> EnumerateSubstrings(this string source, int minLength, int maxLength)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (minLength < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(minLength));
+            }
+
+            maxLength = (maxLength < 0) ? source.Length : maxLength;
+
+            if (minLength == 0) { yield return string.Empty; }
+            if (maxLength == 0) { yield break; }
+            minLength = (minLength == 0) ? 1 : minLength;
+            for (int length = minLength; length <= maxLength; length++)
+            {
+                for (int index = 0; index < source.Length; index++)
+                {
+                    if (length + index <= source.Length)
+                    {
+                        yield return source.Substring(index, length);
+                    }
                 }
             }
         }

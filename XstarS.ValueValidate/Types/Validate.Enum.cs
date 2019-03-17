@@ -17,7 +17,7 @@ namespace XstarS
         /// <paramref name="source"/> 的值不为有效的枚举值。</exception>
         public static IValidate<T> IsValidEnum<T>(this IValidate<T> source,
             string message = null)
-            where T : Enum
+            where T : struct
         {
             if (typeof(T).GetCustomAttributes(false).Any(attr => attr is FlagsAttribute))
             {

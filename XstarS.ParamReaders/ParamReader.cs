@@ -30,9 +30,9 @@ namespace XstarS
         public ParamReader(string[] arguments, bool ignoreCase,
             string[] paramNames = null, string[] switchNames = null)
         {
-            this.Arguments = arguments ?? new string[0];
-            this.SwitchNames = switchNames ?? new string[0];
-            this.ParamNames = paramNames ?? new string[0];
+            this.Arguments = Array.AsReadOnly(arguments ?? Array.Empty<string>());
+            this.SwitchNames = Array.AsReadOnly(switchNames ?? Array.Empty<string>());
+            this.ParamNames = Array.AsReadOnly(paramNames ?? Array.Empty<string>());
             this.NameComparer = ignoreCase ?
                 StringComparer.InvariantCultureIgnoreCase :
                 StringComparer.InvariantCulture;
@@ -41,17 +41,17 @@ namespace XstarS
         /// <summary>
         /// 待解析的参数列表。
         /// </summary>
-        public string[] Arguments { get; }
+        public IReadOnlyList<string> Arguments { get; }
 
         /// <summary>
         /// 有名参数名称列表。
         /// </summary>
-        public string[] ParamNames { get; }
+        public IReadOnlyList<string> ParamNames { get; }
 
         /// <summary>
         /// 开关参数名称列表。
         /// </summary>
-        public string[] SwitchNames { get; }
+        public IReadOnlyList<string> SwitchNames { get; }
 
         /// <summary>
         /// 比较参数名称时采用的字符串比较器。
@@ -77,7 +77,7 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(paramName));
             }
 
-            for (int i = 0; i < this.Arguments.Length - 1; i++)
+            for (int i = 0; i < this.Arguments.Count - 1; i++)
             {
                 // 当前为指定有名参数的名称。
                 if (this.NameComparer.Equals(this.Arguments[i], paramName))
@@ -108,7 +108,7 @@ namespace XstarS
                 throw new ArgumentOutOfRangeException(nameof(paramIndex));
             }
 
-            for (int i = 0, currParamIndex = 0; i < this.Arguments.Length; i++)
+            for (int i = 0, currParamIndex = 0; i < this.Arguments.Count; i++)
             {
                 // 当前为开关参数名称。
                 if (this.SwitchNames.Contains(this.Arguments[i], this.NameComparer))

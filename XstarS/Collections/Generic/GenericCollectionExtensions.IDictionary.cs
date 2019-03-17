@@ -7,6 +7,30 @@ namespace XstarS.Collections.Generic
     partial class GenericCollectionExtensions
     {
         /// <summary>
+        /// 根据指定的键获取 <see cref="IDictionary{TKey, TValue}"/> 中对应值。
+        /// 若指定的键不存在，则将指定的键值对添加到 <see cref="IDictionary{TKey, TValue}"/> 中。
+        /// </summary>
+        /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
+        /// <typeparam name="TValue"><see cref="IDictionary{TKey, TValue}"/> 中的值的类型。</typeparam>
+        /// <param name="source">一个 <see cref="IDictionary{TKey, TValue}"/> 对象。</param>
+        /// <param name="key">要从 <see cref="IDictionary{TKey, TValue}"/> 中获取对应值的键。</param>
+        /// <param name="value">当指定的键不存在时，要添加到 <see cref="IDictionary{TKey, TValue}"/> 中的值。</param>
+        /// <returns>若 <paramref name="source"/> 中存在键 <paramref name="key"/>，
+        /// 则为 <paramref name="key"/> 对应的值；否则为 <paramref name="value"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        public static TValue GetValueOrAdd<TKey, TValue>(
+            this IDictionary<TKey, TValue> source, TKey key, TValue value)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            return source.ContainsKey(key) ? source[key] : (source[key] = value);
+        }
+
+        /// <summary>
         /// 根据指定的值获取 <see cref="IDictionary{TKey, TValue}"/> 中对应的所有键。
         /// </summary>
         /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
