@@ -172,6 +172,8 @@ public class MainWindow : Window
 
 `BindableOnly` 属性指定是否仅对有 `System.ComponentModel.BindableAttribute` 特性的属性构造绑定关系。
 
+`BindableType` 属性返回根据 `BindableOnly` 属性的指示构造完成的用于数据绑定的派生类型。
+
 `CreateInstance()` 方法构造一个基于 `T` 类型的派生类的实例，并根据 `BindableOnly` 属性的指示，实现某些属性的数据绑定。
 
 `CreateInstance(object[])` 方法以指定参数构造一个基于 `T` 类型的派生类的实例，并根据 `BindableOnly` 属性的指示，实现某些属性的数据绑定。

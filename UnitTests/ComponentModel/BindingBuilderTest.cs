@@ -10,16 +10,16 @@ namespace XstarS.ComponentModel
         [TestMethod]
         public void BindableType_InternalType_ThrowsException()
         {
-            Assert.ThrowsException<ArgumentException>(
+            Assert.ThrowsException<TypeAccessException>(
                 () => BindingBuilder<IInternalDisposableBinding<int>>.Default.BindableType);
-            Assert.ThrowsException<ArgumentException>(
+            Assert.ThrowsException<TypeAccessException>(
                 () => BindingBuilder<InternalDisposableBinding<string>>.Default.BindableType);
         }
 
         [TestMethod]
         public void BindableType_SealedClass_ThrowsException()
         {
-            Assert.ThrowsException<ArgumentException>(
+            Assert.ThrowsException<TypeAccessException>(
                 () => BindingBuilder<SealedDisposableBinding<string>>.Default.BindableType);
         }
 

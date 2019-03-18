@@ -15,9 +15,9 @@ namespace XstarS.ComponentModel.TestTypes
 
     public abstract class DisposableBindingBase<T> : IDisposableBinding<T>
     {
-        protected DisposableBindingBase() { }
+        public DisposableBindingBase() { }
 
-        protected DisposableBindingBase(T value, T bindableValue)
+        public DisposableBindingBase(T value, T bindableValue)
         {
             this.Value = value;
             this.BindableValue = bindableValue;
@@ -42,6 +42,8 @@ namespace XstarS.ComponentModel.TestTypes
 
     public abstract class IndexedDisposableBindingBase<T> : DisposableBindingBase<T>
     {
+        public IndexedDisposableBindingBase() { }
+
         public abstract T this[int index] { get; set; }
     }
 
