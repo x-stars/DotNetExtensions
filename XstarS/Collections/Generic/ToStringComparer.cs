@@ -14,7 +14,7 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 用于进行字符串比较的比较器。
         /// </summary>
-        private readonly StringComparer stringComparer;
+        private readonly StringComparer StringComparer;
 
         /// <summary>
         /// 初始化 <see cref="ToStringComparer{T}"/> 类的新实例。
@@ -25,7 +25,7 @@ namespace XstarS.Collections.Generic
         /// 初始化 <see cref="ToStringComparer{T}"/> 类的新实例，并指定进行字符串比较是是否忽略大小写。
         /// </summary>
         /// <param name="ignoreCase">指定进行字符串比较是是否忽略大小写。</param>
-        public ToStringComparer(bool ignoreCase) => this.stringComparer = ignoreCase ?
+        public ToStringComparer(bool ignoreCase) => this.StringComparer = ignoreCase ?
             StringComparer.InvariantCultureIgnoreCase : StringComparer.InvariantCulture;
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace XstarS.Collections.Generic
         /// <param name="comparer">进行字符串比较时使用的比较器。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="comparer"/> 为 <see langword="null"/>。</exception>
-        public ToStringComparer(StringComparer comparer) => this.stringComparer = comparer;
+        public ToStringComparer(StringComparer comparer) => this.StringComparer = comparer;
 
         /// <summary>
         /// 使用两个对象的 <see cref="object.ToString()"/> 方法返回的值进行比较，
@@ -44,7 +44,7 @@ namespace XstarS.Collections.Generic
         /// <param name="y">要比较的第二个对象。</param>
         /// <returns>一个指示 <paramref name="x"/> 与 <paramref name="y"/> 的大小关系的有符号整数，
         /// 大于为正，等于为零，小于为负。</returns>
-        public int Compare(T x, T y) => this.stringComparer.Compare(x?.ToString(), y?.ToString());
+        public int Compare(T x, T y) => this.StringComparer.Compare(x?.ToString(), y?.ToString());
 
         /// <summary>
         /// 使用两个对象的 <see cref="object.ToString()"/> 方法返回的值确定两个对象是否相等。
@@ -55,14 +55,14 @@ namespace XstarS.Collections.Generic
         /// 如果两个对象的 <see cref="object.ToString()"/> 方法返回的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
         /// </returns>
-        public bool Equals(T x, T y) => this.stringComparer.Equals(x?.ToString(), y?.ToString());
+        public bool Equals(T x, T y) => this.StringComparer.Equals(x?.ToString(), y?.ToString());
 
         /// <summary>
         /// 获取对象的 <see cref="object.ToString()"/> 方法返回的值的哈希代码。
         /// </summary>
         /// <param name="obj">要为其获取哈希代码的对象。</param>
         /// <returns>对象的 <see cref="object.ToString()"/> 方法返回的值的哈希代码。</returns>
-        public int GetHashCode(T obj) => this.stringComparer.GetHashCode(obj?.ToString());
+        public int GetHashCode(T obj) => this.StringComparer.GetHashCode(obj?.ToString());
 
         /// <summary>
         /// 使用两个对象的 <see cref="object.ToString()"/> 方法返回的值进行比较，

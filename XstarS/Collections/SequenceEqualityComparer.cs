@@ -13,7 +13,7 @@ namespace XstarS.Collections
         /// <summary>
         /// 比较集合中的元素时使用的比较器。
         /// </summary>
-        private readonly IEqualityComparer comparer;
+        private readonly IEqualityComparer ItemComparer;
 
         /// <summary>
         /// 初始化 <see cref="SequenceEqualityComparer"/> 类的新实例。
@@ -30,8 +30,14 @@ namespace XstarS.Collections
             bool ignoreType = false, IEqualityComparer comparer = null)
         {
             this.IgnoreType = ignoreType;
-            this.comparer = comparer ?? EqualityComparer<object>.Default;
+            this.ItemComparer = comparer ?? EqualityComparer<object>.Default;
         }
+
+        /// <summary>
+        /// 返回一个默认的 <see cref="SequenceEqualityComparer"/> 实例。
+        /// </summary>
+        public static SequenceEqualityComparer Default { get; } =
+            new SequenceEqualityComparer();
 
         /// <summary>
         /// 指示此比较器在进行比较时是否忽略集合本身的类型。
@@ -64,7 +70,7 @@ namespace XstarS.Collections
                 var xEtor = xe.GetEnumerator();
                 var yEtor = ye.GetEnumerator();
                 bool xHasNext, yHasNext;
-                var comparer = this.comparer;
+                var comparer = this.ItemComparer;
                 while ((xHasNext = xEtor.MoveNext()) &
                     (yHasNext = yEtor.MoveNext()))
                 {
@@ -96,7 +102,7 @@ namespace XstarS.Collections
             {
                 int hashCode = this.IgnoreType ?
                     this.GetType().GetHashCode() : obj.GetType().GetHashCode();
-                var comparer = this.comparer;
+                var comparer = this.ItemComparer;
                 foreach (var item in collection)
                 {
                     hashCode = hashCode * -1521134295 + comparer.GetHashCode(item);

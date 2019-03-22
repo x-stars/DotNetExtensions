@@ -9,12 +9,12 @@ namespace XstarS.Collections.Generic
     /// </summary>
     /// <typeparam name="T">集合中的元素的类型。</typeparam>
     [Serializable]
-    public class SequenceEqualityComparer<T> : IEqualityComparer, IEqualityComparer<IEnumerable<T>>
+    public class SequenceEqualityComparer<T> : EqualityComparer<IEnumerable<T>>
     {
         /// <summary>
         /// 比较集合中的元素时使用的比较器。
         /// </summary>
-        private readonly IEqualityComparer<T> comparer;
+        private readonly IEqualityComparer<T> ItemComparer;
 
         /// <summary>
         /// 初始化 <see cref="SequenceEqualityComparer{T}"/> 类的新实例。
@@ -31,8 +31,14 @@ namespace XstarS.Collections.Generic
             bool ignoreType = false, IEqualityComparer<T> comparer = null)
         {
             this.IgnoreType = ignoreType;
-            this.comparer = comparer ?? EqualityComparer<T>.Default;
+            this.ItemComparer = comparer ?? EqualityComparer<T>.Default;
         }
+
+        /// <summary>
+        /// 返回一个默认的 <see cref="SequenceEqualityComparer{T}"/> 实例。
+        /// </summary>
+        public static new SequenceEqualityComparer<T> Default { get; } =
+            new SequenceEqualityComparer<T>();
 
         /// <summary>
         /// 指示此比较器在进行比较时是否忽略集合本身的类型。
@@ -48,7 +54,7 @@ namespace XstarS.Collections.Generic
         /// 如果两个集合的所有元素均相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
         /// </returns>
-        public bool Equals(IEnumerable<T> x, IEnumerable<T> y)
+        public override bool Equals(IEnumerable<T> x, IEnumerable<T> y)
         {
             if (object.ReferenceEquals(x, y)) { return true; }
             if ((x is null) ^ (y is null)) { return false; }
@@ -62,7 +68,7 @@ namespace XstarS.Collections.Generic
                 yEtor = y.GetEnumerator())
             {
                 bool xHasNext, yHasNext;
-                var comparer = this.comparer;
+                var comparer = this.ItemComparer;
                 while ((xHasNext = xEtor.MoveNext()) &
                     (yHasNext = yEtor.MoveNext()))
                 {
@@ -80,42 +86,18 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <param name="obj">要为其获取哈希代码的 <see cref="IEnumerable{T}"/> 对象。</param>
         /// <returns><see cref="IEnumerable{T}"/> 对象遍历元素得到的哈希代码。</returns>
-        public int GetHashCode(IEnumerable<T> obj)
+        public override int GetHashCode(IEnumerable<T> obj)
         {
             if (obj is null) { return 0; }
 
             int hashCode = this.IgnoreType ?
                 this.GetType().GetHashCode() : obj.GetType().GetHashCode();
-            var comparer = this.comparer;
+            var comparer = this.ItemComparer;
             foreach (var item in obj)
             {
                 hashCode = hashCode * -1521134295 + comparer.GetHashCode(item);
             }
             return hashCode;
         }
-
-        /// <summary>
-        /// 确定两个 <see cref="IEnumerable{T}"/> 对象中所包含的元素是否均相等。
-        /// </summary>
-        /// <param name="x">要比较的第一个 <see cref="IEnumerable{T}"/> 对象。</param>
-        /// <param name="y">要比较的第二个 <see cref="IEnumerable{T}"/> 对象。</param>
-        /// <returns>
-        /// 如果两个集合的所有元素均相等，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。
-        /// </returns>
-        /// <exception cref="InvalidCastException"><paramref name="x"/>
-        /// 或 <paramref name="y"/> 不为 <see cref="IEnumerable{T}"/> 接口的对象。</exception>
-        bool IEqualityComparer.Equals(object x, object y)
-            => this.Equals((IEnumerable<T>)x, (IEnumerable<T>)y);
-
-        /// <summary>
-        /// 获取 <see cref="IEnumerable{T}"/> 对象遍历元素得到的哈希代码。
-        /// </summary>
-        /// <param name="obj">要为其获取哈希代码的 <see cref="IEnumerable{T}"/> 对象。</param>
-        /// <returns><see cref="IEnumerable{T}"/> 对象遍历元素得到的哈希代码。</returns>
-        /// <exception cref="InvalidCastException">
-        /// <paramref name="obj"/> 不为 <see cref="IEnumerable{T}"/> 接口的对象。</exception>
-        int IEqualityComparer.GetHashCode(object obj)
-            => this.GetHashCode((IEnumerable<T>)obj);
     }
 }
