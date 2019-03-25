@@ -12,7 +12,7 @@ namespace XstarS
     internal sealed class ValueEquatablePair : IEquatable<ValueEquatablePair>
     {
         /// <summary>
-        /// <see cref="Pointer"/> 的 <code>GetPointerType</code> 方法的静态委托调用。
+        /// <see cref="Pointer"/> 的 <code>GetPointerType()</code> 方法的静态委托调用。
         /// </summary>
         private static readonly Func<Pointer, Type> StaticGetPointerType =
             typeof(Pointer).GetMethod("GetPointerType",
@@ -111,13 +111,11 @@ namespace XstarS
             {
                 var value = (Pointer)this.Value;
                 var other = (Pointer)this.Other;
-                var compared = this.Compared;
 
-                return (Pointer.Unbox(value) == Pointer.Unbox(other)) ?
-                    new ValueEquatablePair(
+                return (Pointer.Unbox(value) == Pointer.Unbox(other)) &&
+                    this.PairValueEquals(
                         ValueEquatablePair.StaticGetPointerType(value),
-                        ValueEquatablePair.StaticGetPointerType(other),
-                        compared).ValueEquals : false;
+                        ValueEquatablePair.StaticGetPointerType(other));
             }
         }
 
@@ -131,7 +129,6 @@ namespace XstarS
             {
                 var value = (Array)this.Value;
                 var other = (Array)this.Other;
-                var compared = this.Compared;
 
                 // 大小不等。
                 if (value.Rank != other.Rank) { return false; }
@@ -151,12 +148,11 @@ namespace XstarS
                     var methodGet = typeArray.GetMethod("Get");
                     for (long i = 0; i < value.LongLength; i++)
                     {
-                        if (!new ValueEquatablePair(
+                        if (!this.PairValueEquals(
                             methodGet.Invoke(value, Array.ConvertAll(
                                 value.OffsetToIndices(i), index => (object)index)),
                             methodGet.Invoke(other, Array.ConvertAll(
-                                other.OffsetToIndices(i), index => (object)index)),
-                            compared).ValueEquals)
+                                other.OffsetToIndices(i), index => (object)index))))
                         {
                             return false;
                         }
@@ -168,10 +164,9 @@ namespace XstarS
                     bool isMultiDim = value.Rank > 1;
                     for (long i = 0; i < value.LongLength; i++)
                     {
-                        if (!new ValueEquatablePair(
+                        if (!this.PairValueEquals(
                             isMultiDim ? value.GetValue(value.OffsetToIndices(i)) : value.GetValue(i),
-                            isMultiDim ? other.GetValue(other.OffsetToIndices(i)) : other.GetValue(i),
-                            compared).ValueEquals)
+                            isMultiDim ? other.GetValue(other.OffsetToIndices(i)) : other.GetValue(i)))
                         {
                             return false;
                         }
@@ -191,38 +186,17 @@ namespace XstarS
             {
                 var value = this.Value;
                 var other = this.Other;
-                var compared = this.Compared;
-
-                // 类型不同。
-                if (value.GetType() != other.GetType()) { return false; }
-
-                var type = value.GetType();
-                // 获取每个实例字段。
-                var fields = type.GetFields(
-                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                // 依次递归比较每个字段。
-                foreach (var field in fields)
-                {
-                    if (!new ValueEquatablePair(field.GetValue(value),
-                        field.GetValue(other), compared).ValueEquals)
-                    {
-                        return false;
-                    }
-                }
 
                 // 递归进行基类的比较。
-                for (var baseType = type.BaseType;
-                    !(baseType is null);
-                    baseType = baseType.BaseType)
+                for (var type = value.GetType(); !(type is null); type = type.BaseType)
                 {
                     // 获取每个实例字段。
-                    var baseFields = baseType.GetFields(
+                    var fields = type.GetFields(BindingFlags.DeclaredOnly |
                         BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
                     // 依次递归比较每个字段。
-                    foreach (var baseField in baseFields)
+                    foreach (var field in fields)
                     {
-                        if (!new ValueEquatablePair(baseField.GetValue(value),
-                            baseField.GetValue(other), compared).ValueEquals)
+                        if (!this.PairValueEquals(field.GetValue(value), field.GetValue(other)))
                         {
                             return false;
                         }
@@ -231,6 +205,17 @@ namespace XstarS
                 return true;
             }
         }
+
+        /// <summary>
+        /// 确定指定的两个对象的所有字段的值（对数组则是所有元素的值）是否相等。
+        /// 将递归比较至字段（元素）为 .NET 基元类型或指针类型。
+        /// </summary>
+        /// <param name="value">要进行值相等比较的第一个对象。</param>
+        /// <param name="other">要进行值相等比较的第二个对象。</param>
+        /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的值相等，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        private bool PairValueEquals(object value, object other) =>
+            new ValueEquatablePair(value, other, this.Compared).ValueEquals;
 
         /// <summary>
         /// 确定当前实例与指定的 <see cref="ValueEquatablePair"/> 实例中包含的两个对象的引用是否相等。
