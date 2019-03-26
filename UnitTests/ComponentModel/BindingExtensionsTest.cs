@@ -14,8 +14,8 @@ namespace XstarS.ComponentModel
             var i = 0;
             var o = new BindingValue<int>();
             ((INotifyPropertyChanged)o).PropertyChanged += (sender, e) => i++;
-            o.Value++;
-            Assert.AreEqual(i, 1);
+            for (int j = 0; j < 1000; j++) { o.Value++; }
+            Assert.AreEqual(i, 1000);
         }
 
         [TestMethod]
@@ -24,8 +24,8 @@ namespace XstarS.ComponentModel
             var i = 0;
             var o = new ExplicitBindingValue<int>();
             ((INotifyPropertyChanged)o).PropertyChanged += (sender, e) => i++;
-            o.Value++;
-            Assert.AreEqual(i, 1);
+            for (int j = 0; j < 1000; j++) { o.Value++; }
+            Assert.AreEqual(i, 1000);
         }
 
         [TestMethod]
@@ -34,8 +34,8 @@ namespace XstarS.ComponentModel
             var i = 0;
             var o = new DerivedBindingValue<int>();
             ((INotifyPropertyChanged)o).PropertyChanged += (sender, e) => i++;
-            o.Value++;
-            Assert.AreEqual(i, 1);
+            for (int j = 0; j < 1000; j++) { o.Value++; }
+            Assert.AreEqual(i, 1000);
         }
     }
 }

@@ -8,56 +8,91 @@ using System.Runtime.CompilerServices;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供数据绑定相关的扩展方法。
+    /// 提供通过 <see cref="INotifyPropertyChanged"/> 接口实现的数据绑定的扩展方法。
     /// </summary>
     public static class BindingExtensions
     {
+        /// <summary>
+        /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件委托字段的缓存。
+        /// </summary>
+        private static readonly IDictionary<Type, FieldInfo> PropertyChangedFields =
+            new Dictionary<Type, FieldInfo>();
+
+        /// <summary>
+        /// 搜寻当前对象的 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件委托的字段。
+        /// </summary>
+        /// <param name="source">一个实现 <see cref="INotifyPropertyChanged"/> 接口的对象。</param>
+        /// <returns><paramref name="source"/> 的类型及其所有基类型中第一个名称为
+        /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 且类型为
+        /// <see cref="ProgressChangedEventHandler"/> 的字段；若不存在，
+        /// 则为第一个类型为 <see cref="ProgressChangedEventHandler"/> 的字段。</returns>
+        private static FieldInfo FindPropertyChangedField(this INotifyPropertyChanged source)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            var fieldsPropertyChanged = Enumerable.Empty<FieldInfo>();
+            for (var type = source.GetType(); !(type is null); type = type.BaseType)
+            {
+                fieldsPropertyChanged = fieldsPropertyChanged.Concat(type.GetFields(
+                    BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(
+                    field => field.FieldType == typeof(PropertyChangedEventHandler)));
+            }
+            return fieldsPropertyChanged.FirstOrDefault(
+                field => field.Name == nameof(INotifyPropertyChanged.PropertyChanged)) ??
+                fieldsPropertyChanged.FirstOrDefault();
+        }
+
+        /// <summary>
+        /// 获取当前对象的 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件委托。
+        /// </summary>
+        /// <param name="source">一个实现 <see cref="INotifyPropertyChanged"/> 接口的对象。</param>
+        /// <returns><paramref name="source"/> 的类型及其所有基类型中第一个名称为
+        /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 且类型为
+        /// <see cref="ProgressChangedEventHandler"/> 的字段的值；若不存在，
+        /// 则为第一个类型为 <see cref="ProgressChangedEventHandler"/> 的字段的值。</returns>
+        private static PropertyChangedEventHandler GetPropertyChangedDelegate(
+            this INotifyPropertyChanged source)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            var type = source.GetType();
+            var fieldPropertyChanged =
+                BindingExtensions.PropertyChangedFields.ContainsKey(type) ?
+                BindingExtensions.PropertyChangedFields[type] : (
+                BindingExtensions.PropertyChangedFields[type] = source.FindPropertyChangedField());
+            return fieldPropertyChanged?.GetValue(source) as PropertyChangedEventHandler;
+        }
+
         /// <summary>
         /// 触发属性改变事件。
         /// </summary>
         /// <remarks><para>
         /// 基于反射调用，可能存在性能问题。
         /// </para><para>
-        /// 当前对象最好应该直接实现 <see cref="INotifyPropertyChanged"/> 接口，
-        /// 便于搜寻 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的委托。
-        /// 若当前对象的类型显式实现 <see cref="INotifyPropertyChanged"/> 接口，或接口实现在基类中，
-        /// 则会循环向下搜索第一个类型为 <see cref="PropertyChangedEventHandler"/> 的实例字段，将其作为事件委托。
+        /// 将会向基类方向搜索类型为 <see cref="PropertyChangedEventHandler"/> 的实例字段，
+        /// 并将第一个名为 <see cref="INotifyPropertyChanged.PropertyChanged"/> 的字段将其作为事件委托；
+        /// 若不存在此名称的字段，则会将搜寻到的第一个字段作为事件委托。
         /// </para></remarks>
         /// <param name="source">一个实现 <see cref="INotifyPropertyChanged"/> 接口的对象。</param>
         /// <param name="propertyName">已更改属性的名称。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static void OnPropertyChanged(this INotifyPropertyChanged source, string propertyName)
+        public static void OnPropertyChanged(this INotifyPropertyChanged source,
+            [CallerMemberName] string propertyName = null)
         {
-            if (source is null) { throw new ArgumentNullException(nameof(source)); }
-
-            // 搜寻当前类型中名为的 PropertyChanged 且类型为 PropertyChangedEventHandler 的字段。
-            var t_source = source.GetType();
-            var t_source_if_PropertyChanged = t_source.GetField(
-                nameof(INotifyPropertyChanged.PropertyChanged),
-                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-            t_source_if_PropertyChanged =
-                t_source_if_PropertyChanged?.FieldType == typeof(PropertyChangedEventHandler) ?
-                t_source_if_PropertyChanged : null;
-
-            // 搜索失败则从当前类型开始向基类方向逐层搜索类型为 PropertyChangedEventHandler 的字段。
-            if (t_source_if_PropertyChanged is null)
+            if (source is null)
             {
-                for (var t_base = t_source; !(t_base is null); t_base = t_base.BaseType)
-                {
-                    t_source_if_PropertyChanged = (
-                        from field in t_base.GetFields(
-                            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
-                        where field.FieldType == typeof(PropertyChangedEventHandler)
-                        select field).FirstOrDefault();
-                    if (!(t_source_if_PropertyChanged is null)) { break; }
-                }
+                throw new ArgumentNullException(nameof(source));
             }
 
-            // 获取事件委托字段的值，并调用委托。
-            var source_PropertyChanged =
-                t_source_if_PropertyChanged?.GetValue(source) as PropertyChangedEventHandler;
-            source_PropertyChanged?.Invoke(source, new PropertyChangedEventArgs(propertyName));
+            source.GetPropertyChangedDelegate()?.Invoke(
+                source, new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>
@@ -81,10 +116,13 @@ namespace XstarS.ComponentModel
         /// <param name="propertyName">属性的名称，由编译器自动获取。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static void SetProperty<T>(this INotifyPropertyChanged source, ref T item, T value,
-            [CallerMemberName] string propertyName = null)
+        public static void SetProperty<T>(this INotifyPropertyChanged source,
+            ref T item, T value, [CallerMemberName] string propertyName = null)
         {
-            if (source is null) { throw new ArgumentNullException(nameof(source)); }
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
 
             if (!EqualityComparer<T>.Default.Equals(item, value))
             {
