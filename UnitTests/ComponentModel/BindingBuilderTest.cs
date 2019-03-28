@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XstarS.ComponentModel.TestTypes;
 
@@ -7,6 +10,48 @@ namespace XstarS.ComponentModel
     [TestClass]
     public class BindingBuilderTest
     {
+        [TestMethod]
+        public void BindableType_Singleton_IsThreadSafe()
+        {
+            int testCount = 1_000;
+
+            var builders = new BindingBuilder<DisposableBinding<object>>[testCount];
+            var builderTasks = new Task[testCount];
+            var builderHashCodes = new int[testCount];
+            for (int i = 0; i < testCount; i++)
+            {
+                var builderTask = new Task(state =>
+                {
+                    int index = (int)state;
+                    var builder = BindingBuilder<DisposableBinding<object>>.Default;
+                    builders[index] = builder;
+                    builderHashCodes[index] = RuntimeHelpers.GetHashCode(builder);
+                }, i);
+                builderTasks[i] = builderTask;
+                builderTask.Start();
+            }
+            Task.WaitAll(builderTasks);
+            Assert.IsTrue(builderHashCodes.All(hashCode => hashCode == builderHashCodes[0]));
+
+            var types = new Type[testCount];
+            var typeTasks = new Task[testCount];
+            var typeHashCodes = new int[testCount];
+            for (int i = 0; i < testCount; i++)
+            {
+                var typeTask = new Task(state =>
+                {
+                    int index = (int)state;
+                    var type = builders[index].BindableType;
+                    types[index] = type;
+                    typeHashCodes[index] = RuntimeHelpers.GetHashCode(type);
+                }, i);
+                typeTasks[i] = typeTask;
+                typeTask.Start();
+            }
+            Task.WaitAll(typeTasks);
+            Assert.IsTrue(typeHashCodes.All(hashCode => hashCode == typeHashCodes[0]));
+        }
+
         [TestMethod]
         public void BindableType_InternalType_ThrowsException()
         {

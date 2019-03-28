@@ -10,10 +10,16 @@ namespace XstarS.ComponentModel
     /// 提供从原型引用类型构造用于数据绑定的派生类型及其实例的内部实现。
     /// </summary>
     /// <typeparam name="T">用于数据绑定的类型的原型引用类型。</typeparam>
-    [Serializable]
     internal class ClassBindingBuilder<T> : BindingBuilder<T>
         where T : class, INotifyPropertyChanged
     {
+        /// <summary>
+        /// 初始化 <see cref="ClassBindingBuilder{T}"/> 类的新实例。
+        /// </summary>
+        /// <exception cref="TypeAccessException">
+        /// <typeparamref name="T"/> 不是公共非密封类。</exception>
+        internal ClassBindingBuilder() : this(false) { }
+
         /// <summary>
         /// 初始化 <see cref="ClassBindingBuilder{T}"/> 类的新实例，
         /// 并指定是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。
@@ -37,7 +43,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
         /// 但未定义公共或保护级别的 <code>void OnPropertyChanged(string)</code> 方法。</exception>
-        protected override Type BuildType()
+        protected override Type BuildBindableType()
         {
             // 定义动态类型。
             var baseType = typeof(T);
@@ -47,8 +53,8 @@ namespace XstarS.ComponentModel
             var module = assembly.DefineDynamicModule($"{asmName}.dll");
             var typeName = $"{baseType.Namespace}.Bindable{baseType.Name}" + (baseType.IsGenericType ?
                 $"<{string.Join<Type>(",", baseType.GetGenericArguments())}>".Replace(".", "-") : "");
-            var type = module.DefineType(typeName,
-                TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.BeforeFieldInit,
+            var type = module.DefineType(typeName, TypeAttributes.Class |
+                TypeAttributes.Public | TypeAttributes.Serializable | TypeAttributes.BeforeFieldInit,
                 baseType, baseType.GetInterfaces());
 
             // 生成构造函数。
