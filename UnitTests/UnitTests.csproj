@@ -18,6 +18,7 @@
   <ItemGroup>
     <ProjectReference Include="..\XstarS.ComponentModel.Binding\XstarS.ComponentModel.Binding.csproj" />
     <ProjectReference Include="..\XstarS.ParamReaders\XstarS.ParamReaders.csproj" />
+    <ProjectReference Include="..\XstarS.Reflection.Proxy\XstarS.Reflection.Proxy.csproj" />
     <ProjectReference Include="..\XstarS.ValueValidate\XstarS.ValueValidate.csproj" />
     <ProjectReference Include="..\XstarS\XstarS.csproj" />
   </ItemGroup>

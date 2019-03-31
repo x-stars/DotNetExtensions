@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Win32", "XstarS.Win3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Windows", "XstarS.Windows\XstarS.Windows.csproj", "{665560E7-547C-42EF-A1C7-2887E2089430}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Reflection.Proxy", "XstarS.Reflection.Proxy\XstarS.Reflection.Proxy.csproj", "{22963809-2D60-44CE-B7F4-8143E8D2AC48}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{665560E7-547C-42EF-A1C7-2887E2089430}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{665560E7-547C-42EF-A1C7-2887E2089430}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{665560E7-547C-42EF-A1C7-2887E2089430}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22963809-2D60-44CE-B7F4-8143E8D2AC48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22963809-2D60-44CE-B7F4-8143E8D2AC48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22963809-2D60-44CE-B7F4-8143E8D2AC48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22963809-2D60-44CE-B7F4-8143E8D2AC48}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
