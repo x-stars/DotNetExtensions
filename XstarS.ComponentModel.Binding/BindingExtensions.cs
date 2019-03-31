@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -15,26 +16,28 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件委托字段的缓存。
         /// </summary>
-        private static readonly IDictionary<Type, FieldInfo> PropertyChangedFields =
-            new Dictionary<Type, FieldInfo>();
+        private static readonly ConcurrentDictionary<Type, FieldInfo>
+            PropertyChangedFields = new ConcurrentDictionary<Type, FieldInfo>();
 
         /// <summary>
-        /// 搜寻当前对象的 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件委托的字段。
+        /// 搜寻当前类型的 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件委托的字段。
         /// </summary>
-        /// <param name="source">一个实现 <see cref="INotifyPropertyChanged"/> 接口的对象。</param>
-        /// <returns><paramref name="source"/> 的类型及其所有基类型中第一个名称为
+        /// <param name="bindingType">一个实现 <see cref="INotifyPropertyChanged"/> 接口的类型。</param>
+        /// <returns><paramref name="bindingType"/> 及其所有基类型中第一个名称为
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 且类型为
         /// <see cref="ProgressChangedEventHandler"/> 的字段；若不存在，
         /// 则为第一个类型为 <see cref="ProgressChangedEventHandler"/> 的字段。</returns>
-        private static FieldInfo FindPropertyChangedField(this INotifyPropertyChanged source)
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="bindingType"/> 为 <see langword="null"/>。</exception>
+        private static FieldInfo FindPropertyChangedField(Type bindingType)
         {
-            if (source is null)
+            if (bindingType is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(bindingType));
             }
 
             var fieldsPropertyChanged = Enumerable.Empty<FieldInfo>();
-            for (var type = source.GetType(); !(type is null); type = type.BaseType)
+            for (var type = bindingType; !(type is null); type = type.BaseType)
             {
                 fieldsPropertyChanged = fieldsPropertyChanged.Concat(type.GetFields(
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic).Where(
@@ -53,6 +56,8 @@ namespace XstarS.ComponentModel
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 且类型为
         /// <see cref="ProgressChangedEventHandler"/> 的字段的值；若不存在，
         /// 则为第一个类型为 <see cref="ProgressChangedEventHandler"/> 的字段的值。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
         private static PropertyChangedEventHandler GetPropertyChangedDelegate(
             this INotifyPropertyChanged source)
         {
@@ -63,18 +68,15 @@ namespace XstarS.ComponentModel
 
             var type = source.GetType();
             var fieldPropertyChanged =
-                BindingExtensions.PropertyChangedFields.ContainsKey(type) ?
-                BindingExtensions.PropertyChangedFields[type] : (
-                BindingExtensions.PropertyChangedFields[type] = source.FindPropertyChangedField());
+                BindingExtensions.PropertyChangedFields.GetOrAdd(
+                    type, BindingExtensions.FindPropertyChangedField);
             return fieldPropertyChanged?.GetValue(source) as PropertyChangedEventHandler;
         }
 
         /// <summary>
-        /// 触发属性改变事件。
+        /// 触发属性改变事件。基于反射调用，可能存在性能问题。
         /// </summary>
         /// <remarks><para>
-        /// 基于反射调用，可能存在性能问题。
-        /// </para><para>
         /// 将会向基类方向搜索类型为 <see cref="PropertyChangedEventHandler"/> 的实例字段，
         /// 并将第一个名为 <see cref="INotifyPropertyChanged.PropertyChanged"/> 的字段将其作为事件委托；
         /// 若不存在此名称的字段，则会将搜寻到的第一个字段作为事件委托。
@@ -96,13 +98,11 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 更改属性的值，并通知客户端属性发生更改。
+        /// 更改属性的值，并通知客户端属性发生更改。基于反射调用，可能存在性能问题。
         /// </summary>
         /// <remarks><para>
         /// 请在属性的 <see langword="set"/> 处调用此方法，
         /// 在更改属性值的同时触发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。
-        /// </para><para>
-        /// 基于反射调用，可能存在性能问题。
         /// </para><para>
         /// 当前对象最好应该直接实现 <see cref="INotifyPropertyChanged"/> 接口，
         /// 便于搜寻 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的委托。

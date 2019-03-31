@@ -1,6 +1,6 @@
 ﻿# 数据绑定类型构造器
 
-本文叙述了以原型类型为基础，自动构造可用于数据绑定的类型的构造器 `XstarS.ComponentModel.BindingBuilder<T>` 的实现原理和整体思路。
+本文叙述了以原型类型为基础，自动构造可用于数据绑定的类型的构造器 `XstarS.ComponentModel.IBindingBuilder<out T>` 的实现原理和整体思路。
 
 ## 数据绑定与 `INotifyPropertyChanged` 接口
 
@@ -32,7 +32,7 @@ protected virtual void OnPropertyChanged(string propertyName)
 
 ### `PropertyChanged` 事件的触发方法
 
-传统上，直接在属性的 `set` 处调用 `void OnPropertyChanged(string)` 方法即可。
+传统上，直接在属性的 `set` 处调用 `System.Void OnPropertyChanged(System.String)` 方法即可。
 
 ``` CSharp
 // ...
@@ -81,7 +81,7 @@ protected void SetProperty<T>(ref T item, T value,
 ```
 
 > `System.Runtime.CompilerServices.CallerMemberNameAttribute` 为 .NET Framework 4.5 中加入的新特性。
-> 当此特性用在 `string` 类型的可选参数上时，编译器将会自动给此参数输入**调用此方法的成员**的短名称（对于属性则是属性的名称）。
+> 当此特性用在 `System.String` 类型的可选参数上时，编译器将会自动给此参数输入**调用此方法的成员**的短名称（对于属性则是属性的名称）。
 > 详细请参见 <https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.compilerservices.callermembernameattribute>。
 
 定义此方法之后，属性的定义即可简化为如下所示。
@@ -136,7 +136,7 @@ public object AutoProperty { get; set; }
 
 .NET 主要有两项用于动态类型生成类型的技术：
 
-1. 基于动态编译技术的 CodeDOM（`Microsoft.(语言).(语言)CodeProvider` 类、`System。CodeDom` 命名空间）
+1. 基于动态编译技术的 CodeDOM（`Microsoft.(语言).(语言)CodeProvider` 类、`System.CodeDom` 命名空间）
 2. 基于 IL 指令发射技术的 Emit（`System.Reflection.Emit` 命名空间）
 
 关于两者各自的优缺点，已有相当数量的论述，本文不再详细比较。
@@ -151,7 +151,7 @@ public object AutoProperty { get; set; }
 | 生成速度 | 需要编译，稍慢             | 无需编译，较快             |
 | 技术难度 | 使用编程语言实现，较低     | 需要掌握 IL 汇编指令，较高 |
 
-`BindingBuilder<T>` 最终采用了 Emit 技术，原因如下：
+`IBindingBuilder<out T>` 最终采用了 Emit 技术，原因如下：
 
 * 生成的类型基于原型类型，有大量特性需要反射获取：
   * 将这些特性转换为特定于语言（C#）的特性的工作量较大；
@@ -163,7 +163,7 @@ public object AutoProperty { get; set; }
 1. 定义数据绑定类型，将原型类型设定为数据绑定类型的基类（若原型为类）或接口（若原型为接口）。
 2. 通过反射获取原型类型的所有成员。
 3. 定义构造函数，并指定其仅调用基类中的对应构造函数。
-4. 若 `PropertyChanged` 事件为抽象，则以标准模式实现此事件；若不为抽象，则搜索 `OnPropertyChanged` 方法。
+4. 若 `PropertyChanged` 事件未定义或为抽象，则以标准模式实现此事件；否则搜索 `OnPropertyChanged` 方法。
 5. 使用 `OnPropertyChanged` 方法，以数据绑定模式定义各属性，以重写原型类型中定义的属性。
 6. 实现原型类型中的其他抽象成员。
 7. 生成数据绑定类型。
@@ -176,7 +176,7 @@ public object AutoProperty { get; set; }
 
 ### 实现方法
 
-可以作为原型的类型可分为接口和非密封类两类，在定义数据绑定类型时，针对这两种原型类型的处理方法有着明显区别。
+可以作为原型的类型可分为接口和非密封类两类，在定义数据绑定类型时，针对这两种原型类型的处理方法有一定区别。
 
 | 成员     | 接口                            | 非密封类                                                    |
 | -------- | ------------------------------- | ----------------------------------------------------------- |
@@ -190,16 +190,18 @@ public object AutoProperty { get; set; }
 
 #### 工程结构设计
 
-由于在处理接口和非密封类时的处理方法差异较大，此处将其分为两个类处理，并将共通的代码定义为一个抽象类，同时作为工厂。
+为便于与反射框架协作，此处分别定义了泛型和非泛型的实现，并将共通的代码定义为一个抽象类。
 整体设计参照 `System.Collection.Generic.EqualityComparer<T>` 模式设计如下（命名空间 `XstarS.ComponentModel`）：
 
 * `IBindingBuilder<out T>`
-* `BindingBuilder<T>`
-  * `InterfaceBindingBuilder<T>`
-  * `ClassBindingBuilder<T>`
+* `BindingBuilderBase<T>`
+  * `BindingBuilder<T>`
+  * `ObjectBindingBuilder`
 
-`IBindingBuilder<out T>` 作为公共接口；`BindingBuilder<T>` 实现 `IBindingBuilder<out T>`接口，提供基类实现，并作为工厂；
-`InterfaceBindingBuilder<T>` 和 `ClassBindingBuilder<T>` 定义为内部类，继承 `BindingBuilder<T>` 类，针对各自特点定义动态类型。
+* `IBindingBuilder<out T>` 作为公共接口。
+* `BindingBuilderBase<T>` 实现 `IBindingBuilder<out T>`接口，提供基类实现。
+* `BindingBuilder<T>` 继承 `BindingBuilderBase<T>` 类，提供泛型实现。
+* `ObjectBindingBuilder` 继承 `BindingBuilderBase<System.Object>` 类，提供非泛型实现。
 
 #### 接口设计
 
@@ -209,10 +211,9 @@ using System.ComponentModel;
 
 namespace XstarS.ComponentModel
 {
-    public interface IBindingBuilder<out T>
-        where T : class, INotifyPropertyChanged
+    public interface IBindingBuilder<out T> where T : class
     {
-        bool BindableOnly { get; }
+        bool IsBindableOnly { get; }
         Type BindableType { get; }
         T CreateInstance();
         T CreateInstance(params object[] args);
@@ -232,11 +233,4 @@ namespace XstarS.ComponentModel
 
 #### 具体设计
 
-整个数据绑定类型构造器的具体设计请参见以下源代码，此处不再详述。
-
-* [IBindingBuilder.cs](../XstarS.ComponentModel.Binding/BindingBuilders/IBindingBuilder.cs)
-* [BindingBuilder.cs](../XstarS.ComponentModel.Binding/BindingBuilders/BindingBuilder.cs)
-* [InterfaceBindingBuilder.cs](../XstarS.ComponentModel.Binding/BindingBuilders/InterfaceBindingBuilder.cs)
-* [ClassBindingBuilder.cs](../XstarS.ComponentModel.Binding/BindingBuilders/ClassBindingBuilder.cs)
-* [BindingBuildHelper.cs](../XstarS.ComponentModel.Binding/BindingBuilders/BindingBuildHelper.cs)
-* [ReflectionHelper.cs](../XstarS.ComponentModel.Binding/BindingBuilders/ReflectionHelper.cs)
+整个数据绑定类型构造器的具体设计请参见 XstarS.ComponentModel.Binding 工程源代码，此处不再详述。

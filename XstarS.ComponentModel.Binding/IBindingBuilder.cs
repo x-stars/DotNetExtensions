@@ -7,14 +7,13 @@ namespace XstarS.ComponentModel
     /// 提供从原型类型构造用于数据绑定的派生类型及其实例的方法。
     /// </summary>
     /// <typeparam name="T">用于数据绑定的类型的原型类型，应为接口或非密封类。</typeparam>
-    public interface IBindingBuilder<out T>
-        where T : class, INotifyPropertyChanged
+    public interface IBindingBuilder<out T> where T : class
     {
         /// <summary>
         /// 指示在构建用于数据绑定的动态类型时，
         /// 是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。
         /// </summary>
-        bool BindableOnly { get; }
+        bool IsBindableOnly { get; }
 
         /// <summary>
         /// 用于数据绑定的派生类型的 <see cref="Type"/> 对象。

@@ -170,7 +170,7 @@ public class MainWindow : Window
 
 提供从原型构造用于数据绑定的实例的方法。
 
-`BindableOnly` 属性指定是否仅对有 `System.ComponentModel.BindableAttribute` 特性的属性构造绑定关系。
+`IsBindableOnly` 属性指定是否仅对有 `System.ComponentModel.BindableAttribute` 特性的属性构造绑定关系。
 
 `BindableType` 属性返回根据 `BindableOnly` 属性的指示构造完成的用于数据绑定的派生类型。
 
@@ -178,19 +178,14 @@ public class MainWindow : Window
 
 `CreateInstance(object[])` 方法以指定参数构造一个基于 `T` 类型的派生类的实例，并根据 `BindableOnly` 属性的指示，实现某些属性的数据绑定。
 
-#### 泛型抽象类 `XstarS.ComponentModel.BindingBuilder<T>`
+#### `XstarS.ComponentModel.IBindingBuilder<out T>` 具体实现
 
-实现 `XstarS.ComponentModel.IBindingBuilder<out T>` 接口。
-
-提供从原型构造用于数据绑定的实例的方法的基类和工厂方法。
-
-通过 `Default` 或 `Bindable` 属性，可构造一个 `BindingBuilder<T>` 类的实例，
-调用此实例的 `CreateInstance()` 或 `CreateInstance(object[])` 方法可构造 `T` 类型用于数据绑定的实例。
+泛型类 `XstarS.ComponentModel.BindingBuilder<T>` 和类 `XstarS.ComponentModel.ObjectBindingBuilder`，
+提供接口 `XstarS.ComponentModel.IBindingBuilder<out T>` 的工厂方法。
 
 #### 动态生成使用说明
 
-首先定义一个原型基类或接口，原型必须实现 `System.ComponentModel.INotifyPropertyChanged` 接口。
-若原型为一个类，应包含 `public` 或 `protected` 访问级别的构造函数。
+首先定义一个原型基类或接口，若原型为一个类，应包含 `public` 或 `protected` 访问级别的构造函数。
 
 ``` CSharp
 using System.ComponentModel;
@@ -206,12 +201,13 @@ public interface IBindableData : INotifyPropertyChanged
 
 注意，若定义的原型为一个类 (`class`)，则应将用于绑定的属性定义为 `virtual` 或 `abstract`，使得此属性能够在派生类中被重写。
 `BindingBuilder<T>` 不会对非 `virtual` 或 `abstract` 的属性生成绑定代码。
-同时，`PropertyChanged` 事件也应定义为 `abstract`，或是定义一个事件触发函数 `void OnPropertyChanged(string)`，否则会导致无法正确构造派生类。
+同时，若定义了 `PropertyChanged` 事件，应将其应定义为 `abstract`，
+或是定义一个事件触发函数 `System.Void OnPropertyChanged(System.String)`，否则会导致无法正确构造派生类。
 
 > 若基类中的属性或方法或未定义为 `virtual` 或 `abstract`，则在派生类仅隐藏了基类中对应的定义，并未重写。
 > 当派生类的实例声明为基类时，则会调用基类中定义的属性或方法。
 
-而后在设置绑定处通过 `Default` 或 `Bindable` 属性构造 `BindingBuilder<IBindableData>` 的实例，
+而后在设置绑定处通过 `Default` 或 `BindableOnly` 属性构造 `BindingBuilder<IBindableData>` 的实例，
 调用 `CreateInstance()` 方法构造基于原型接口 `IBindableData` 的实例。
 
 ``` CSharp
@@ -228,7 +224,7 @@ public class MainWindow : Window
     {
         // ......
         //var builder = BindingBuilder<IBindableData>.Default;  // 对所有属性设置绑定。
-        var builder = BindingBuilder<IBindableData>.Bindable;   // 仅对 Bindable 属性设置绑定。
+        var builder = BindingBuilder<IBindableData>.BindableOnly;   // 仅对 Bindable 属性设置绑定。
         this.BindingData = builder.CreateInstance();
         // ......
     }

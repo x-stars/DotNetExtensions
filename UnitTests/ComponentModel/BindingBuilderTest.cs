@@ -13,42 +13,28 @@ namespace XstarS.ComponentModel
         [TestMethod]
         public void BindableType_Singleton_IsThreadSafe()
         {
-            int testCount = 1_000;
+            int testCount = 10000;
 
             var builders = new BindingBuilder<DisposableBinding<object>>[testCount];
             var builderTasks = new Task[testCount];
             var builderHashCodes = new int[testCount];
-            for (int i = 0; i < testCount; i++)
+            Parallel.For(0, testCount, delegate (int index)
             {
-                var builderTask = new Task(state =>
-                {
-                    int index = (int)state;
-                    var builder = BindingBuilder<DisposableBinding<object>>.Default;
-                    builders[index] = builder;
-                    builderHashCodes[index] = RuntimeHelpers.GetHashCode(builder);
-                }, i);
-                builderTasks[i] = builderTask;
-                builderTask.Start();
-            }
-            Task.WaitAll(builderTasks);
+                var builder = BindingBuilder<DisposableBinding<object>>.Default;
+                builders[index] = builder;
+                builderHashCodes[index] = RuntimeHelpers.GetHashCode(builder);
+            });
             Assert.IsTrue(builderHashCodes.All(hashCode => hashCode == builderHashCodes[0]));
 
             var types = new Type[testCount];
             var typeTasks = new Task[testCount];
             var typeHashCodes = new int[testCount];
-            for (int i = 0; i < testCount; i++)
+            Parallel.For(0, testCount, delegate (int index)
             {
-                var typeTask = new Task(state =>
-                {
-                    int index = (int)state;
-                    var type = builders[index].BindableType;
-                    types[index] = type;
-                    typeHashCodes[index] = RuntimeHelpers.GetHashCode(type);
-                }, i);
-                typeTasks[i] = typeTask;
-                typeTask.Start();
-            }
-            Task.WaitAll(typeTasks);
+                var type = builders[index].BindableType;
+                types[index] = type;
+                typeHashCodes[index] = RuntimeHelpers.GetHashCode(type);
+            });
             Assert.IsTrue(typeHashCodes.All(hashCode => hashCode == typeHashCodes[0]));
         }
 
@@ -103,7 +89,7 @@ namespace XstarS.ComponentModel
         public void CreateInstance_ClassWithMethod_WorksProperly()
         {
             object i1 = new object(), i2 = new object(), i3 = new object(), i4 = new object();
-            var o = BindingBuilder<DisposableBinding<object>>.Bindable.CreateInstance(i1, i2);
+            var o = BindingBuilder<DisposableBinding<object>>.BindableOnly.CreateInstance(i1, i2);
             var l = new CloneableList<object>() { i3, i4 };
             Assert.AreSame(o.Value, i1);
             Assert.AreSame(o.BindableValue, i2);
@@ -126,7 +112,7 @@ namespace XstarS.ComponentModel
         public void PropertyChanged_BindableOnly_CallsHandlerOnce()
         {
             int i = 0;
-            var o = BindingBuilder<DisposableBindingBase<int>>.Bindable.CreateInstance();
+            var o = BindingBuilder<DisposableBindingBase<int>>.BindableOnly.CreateInstance();
             o.PropertyChanged += (sender, e) => i++;
             o.Value++; o.BindableValue++;
             Assert.AreEqual(i, 1);

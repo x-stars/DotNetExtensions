@@ -19,9 +19,9 @@ namespace XstarS.ComponentModel
         /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
         /// <param name="baseConstructor">作为基础的构造函数的定义。</param>
         /// <returns>定义完成的构造函数，仅调用 <paramref name="baseConstructor"/> 构造函数。</returns>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="baseConstructor"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        /// <exception cref="MethodAccessException">
+        /// <paramref name="baseConstructor"/> 的访问级别不为公共或保护。</exception>
         internal static ConstructorBuilder DefineDefaultConstructor(
             this TypeBuilder source, ConstructorInfo baseConstructor)
         {
@@ -34,9 +34,9 @@ namespace XstarS.ComponentModel
             {
                 throw new ArgumentNullException(nameof(baseConstructor));
             }
-            if (!baseConstructor.IsPublic && !baseConstructor.IsFamily)
+            if (!baseConstructor.IsInheritableInstance())
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseConstructor));
+                throw new MethodAccessException();
             }
 
             // 定义构造函数。
@@ -86,12 +86,12 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
         /// <param name="baseProperty">作为基础的属性的定义。</param>
-        /// <param name="newSlot">指定属性的相关方法是否应获取在 vtable 中获取一个新槽。
-        /// 当基类为接口时应为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
         /// <returns>定义完成的属性，仅抛出 <see cref="NotImplementedException"/> 异常。</returns>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        /// <exception cref="MethodAccessException">
+        /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
         internal static PropertyBuilder DefineNotImplementedProperty(
-            this TypeBuilder source, PropertyInfo baseProperty, bool newSlot)
+            this TypeBuilder source, PropertyInfo baseProperty)
         {
             // 参数检查。
             if (source is null)
@@ -102,6 +102,10 @@ namespace XstarS.ComponentModel
             {
                 throw new ArgumentNullException(nameof(baseProperty));
             }
+            if (!baseProperty.GetAccessors().All(accessor => accessor.IsOverridable()))
+            {
+                throw new MethodAccessException();
+            }
 
             // 定义属性或构造器。
             var property = source.DefineProperty(
@@ -109,12 +113,12 @@ namespace XstarS.ComponentModel
                 Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
             if (baseProperty.CanRead)
             {
-                var methodGet = source.DefineNotImplementedMethod(baseProperty.GetMethod, newSlot);
+                var methodGet = source.DefineNotImplementedMethod(baseProperty.GetMethod);
                 property.SetGetMethod(methodGet);
             }
             if (baseProperty.CanWrite)
             {
-                var methodSet = source.DefineNotImplementedMethod(baseProperty.SetMethod, newSlot);
+                var methodSet = source.DefineNotImplementedMethod(baseProperty.SetMethod);
                 property.SetSetMethod(methodSet);
             }
 
@@ -126,13 +130,13 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
         /// <param name="baseProperty">作为基础的属性的定义。</param>
-        /// <param name="newSlot">指定属性的相关方法是否应获取在 vtable 中获取一个新槽。
-        /// 当基类为接口时应为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
         /// <returns>一个二元组，依次为自动属性的定义及其对应的字段。</returns>
-        /// <exception cref="ArgumentException"><paramref name="baseProperty"/> 是一个索引器。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static (PropertyBuilder Property, FieldBuilder Field)
-            DefineDefaultProperty(this TypeBuilder source, PropertyInfo baseProperty, bool newSlot)
+        /// <exception cref="ArgumentException"><paramref name="baseProperty"/> 是一个索引器。</exception>
+        /// <exception cref="MethodAccessException">
+        /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
+        internal static (PropertyBuilder Property, FieldBuilder Field) DefineDefaultProperty(
+            this TypeBuilder source, PropertyInfo baseProperty)
         {
             // 参数检查。
             if (source is null)
@@ -145,12 +149,19 @@ namespace XstarS.ComponentModel
             }
             if (baseProperty.GetIndexParameters().Length != 0)
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseProperty));
+                throw new ArgumentException(
+                    new ArgumentException().Message, nameof(baseProperty));
             }
+            if (!baseProperty.GetAccessors().All(accessor => accessor.IsOverridable()))
+            {
+                throw new MethodAccessException();
+            }
+            bool newSlot = baseProperty.DeclaringType.IsInterface;
 
             // 定义属性和字段。
             var propertyType = baseProperty.PropertyType;
-            var property = source.DefineProperty(baseProperty.Name, baseProperty.Attributes, propertyType,
+            var property = source.DefineProperty(
+                baseProperty.Name, baseProperty.Attributes, propertyType,
                 Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
             var field = source.DefineField($"<{baseProperty.Name}>__k_BackingField",
                 propertyType, FieldAttributes.Private);
@@ -162,11 +173,10 @@ namespace XstarS.ComponentModel
                 var baseAttributes = baseMethodGet.Attributes;
                 var baseReturnParam = baseMethodGet.ReturnParameter;
                 var baseParameters = baseMethodGet.GetParameters();
-                baseAttributes &= ~MethodAttributes.Abstract;
-                baseAttributes |= MethodAttributes.Final;
-                if (!newSlot) { baseAttributes &= ~MethodAttributes.NewSlot; }
+                var attributes = baseAttributes & ~MethodAttributes.Abstract;
+                if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
                 var methodGet = source.DefineMethod(baseMethodGet.Name,
-                    baseAttributes, baseReturnParam.ParameterType,
+                    attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
@@ -190,11 +200,10 @@ namespace XstarS.ComponentModel
                 var baseAttributes = baseMethodSet.Attributes;
                 var baseReturnParam = baseMethodSet.ReturnParameter;
                 var baseParameters = baseMethodSet.GetParameters();
-                baseAttributes &= ~MethodAttributes.Abstract;
-                baseAttributes |= MethodAttributes.Final;
-                if (!newSlot) { baseAttributes &= ~MethodAttributes.NewSlot; }
+                var attributes = baseAttributes & ~MethodAttributes.Abstract;
+                if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
                 var methodSet = source.DefineMethod(baseMethodSet.Name,
-                    baseAttributes, baseReturnParam.ParameterType,
+                    attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
@@ -221,14 +230,13 @@ namespace XstarS.ComponentModel
         /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
         /// <param name="baseProperty">作为基础的属性的定义。</param>
         /// <param name="methodOnPropertyChanged"><code>void OnProperty(string)</code> 方法。</param>
-        /// <param name="newSlot">指定属性的相关方法是否应获取在 vtable 中获取一个新槽。
-        /// 当基类为接口时应为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
         /// <returns>一个二元组，依次为可绑定属性的定义及其对应的字段。</returns>
-        /// <exception cref="ArgumentException"><paramref name="baseProperty"/> 是一个索引器。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static (PropertyBuilder Property, FieldBuilder Field)
-            DefineBindableProperty(this TypeBuilder source,
-            PropertyInfo baseProperty, MethodInfo methodOnPropertyChanged, bool newSlot)
+        /// <exception cref="ArgumentException"><paramref name="baseProperty"/> 是一个索引器。</exception>
+        /// <exception cref="MethodAccessException">
+        /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
+        internal static (PropertyBuilder Property, FieldBuilder Field) DefineBindableProperty(
+            this TypeBuilder source, PropertyInfo baseProperty, MethodInfo methodOnPropertyChanged)
         {
             // 参数检查。
             if (source is null)
@@ -245,12 +253,19 @@ namespace XstarS.ComponentModel
             }
             if (baseProperty.GetIndexParameters().Length != 0)
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseProperty));
+                throw new ArgumentException(
+                    new ArgumentException().Message, nameof(baseProperty));
             }
+            if (!baseProperty.GetAccessors().All(accessor => accessor.IsOverridable()))
+            {
+                throw new MethodAccessException();
+            }
+            bool newSlot = baseProperty.DeclaringType.IsInterface;
 
             // 定义属性和字段。
             var propertyType = baseProperty.PropertyType;
-            var property = source.DefineProperty(baseProperty.Name, baseProperty.Attributes, propertyType,
+            var property = source.DefineProperty(
+                baseProperty.Name, baseProperty.Attributes, propertyType,
                 Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
             var field = source.DefineField($"<{baseProperty.Name}>__k_BackingField",
                 propertyType, FieldAttributes.Private);
@@ -262,11 +277,10 @@ namespace XstarS.ComponentModel
                 var baseAttributes = baseMethodGet.Attributes;
                 var baseReturnParam = baseMethodGet.ReturnParameter;
                 var baseParameters = baseMethodGet.GetParameters();
-                baseAttributes &= ~MethodAttributes.Abstract;
-                baseAttributes |= MethodAttributes.Final;
-                if (!newSlot) { baseAttributes &= ~MethodAttributes.NewSlot; }
+                var attributes = baseAttributes & ~MethodAttributes.Abstract;
+                if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
                 var methodGet = source.DefineMethod(baseMethodGet.Name,
-                    baseAttributes, baseReturnParam.ParameterType,
+                    attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseMethodGet.GetParameters(), param => param.ParameterType));
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
@@ -290,11 +304,10 @@ namespace XstarS.ComponentModel
                 var baseAttributes = baseMethodSet.Attributes;
                 var baseReturnParam = baseMethodSet.ReturnParameter;
                 var baseParameters = baseMethodSet.GetParameters();
-                baseAttributes &= ~MethodAttributes.Abstract;
-                baseAttributes |= MethodAttributes.Final;
-                if (!newSlot) { baseAttributes &= ~MethodAttributes.NewSlot; }
+                var attributes = baseAttributes & ~MethodAttributes.Abstract;
+                if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
                 var methodSet = source.DefineMethod(baseMethodSet.Name,
-                    baseAttributes, baseReturnParam.ParameterType,
+                    attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
@@ -305,8 +318,8 @@ namespace XstarS.ComponentModel
                 var ilGen = methodSet.GetILGenerator();
                 {
                     var typeEqualityComparer = typeof(EqualityComparer<>).MakeGenericType(propertyType);
-                    ilGen.Emit(OpCodes.Call, typeEqualityComparer.GetMethod(
-                        $"get_{nameof(EqualityComparer<object>.Default)}", Type.EmptyTypes));
+                    ilGen.Emit(OpCodes.Call, typeEqualityComparer.GetProperty(
+                        nameof(EqualityComparer<object>.Default), Type.EmptyTypes).GetMethod);
                     ilGen.Emit(OpCodes.Ldarg_0);
                     ilGen.Emit(OpCodes.Ldfld, field);
                     ilGen.Emit(OpCodes.Ldarg_1);
@@ -335,16 +348,28 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
         /// <param name="baseEvent">作为基础的事件的定义。</param>
-        /// <param name="newSlot">指定事件的相关方法是否应获取在 vtable 中获取一个新槽。
-        /// 当基类为接口时应为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
         /// <returns>一个二元组，依次为事件的定义及其对应的事件委托。</returns>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static (EventBuilder Event, FieldBuilder Field)
-            DefineDefaultEvent(this TypeBuilder source, EventInfo baseEvent, bool newSlot)
+        /// <exception cref="ArgumentNullException">
+        /// 存在为 <see langword="null"/> 的参数。</exception>
+        /// <exception cref="MethodAccessException">
+        /// <paramref name="baseEvent"/> 的方法无法在程序集外部重写。</exception>
+        internal static (EventBuilder Event, FieldBuilder Field) DefineDefaultEvent(
+            this TypeBuilder source, EventInfo baseEvent)
         {
             // 参数检查。
-            if (source is null) { throw new ArgumentNullException(nameof(source)); }
-            if (baseEvent is null) { throw new ArgumentNullException(nameof(baseEvent)); }
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (baseEvent is null)
+            {
+                throw new ArgumentNullException(nameof(baseEvent));
+            }
+            if (!baseEvent.AddMethod.IsOverridable())
+            {
+                throw new MethodAccessException();
+            }
+            bool newSlot = baseEvent.DeclaringType.IsInterface;
 
             // 定义事件和委托。
             var eventType = baseEvent.EventHandlerType;
@@ -357,11 +382,10 @@ namespace XstarS.ComponentModel
                 var baseAttributes = baseMethodAdd.Attributes;
                 var baseReturnParam = baseMethodAdd.ReturnParameter;
                 var baseParameters = baseMethodAdd.GetParameters();
-                baseAttributes &= ~MethodAttributes.Abstract;
-                baseAttributes |= MethodAttributes.Final;
-                if (!newSlot) { baseAttributes &= ~MethodAttributes.NewSlot; }
+                var attributes = baseAttributes & ~MethodAttributes.Abstract;
+                if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
                 var methodAdd = source.DefineMethod(baseMethodAdd.Name,
-                    baseAttributes, baseReturnParam.ParameterType,
+                    attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
@@ -392,11 +416,9 @@ namespace XstarS.ComponentModel
                     ilGen.Emit(OpCodes.Ldflda, field);
                     ilGen.Emit(OpCodes.Ldloc_2);
                     ilGen.Emit(OpCodes.Ldloc_1);
-                    ilGen.Emit(OpCodes.Call, (
-                        from method in typeof(Interlocked).GetMethods()
-                        where method.Name == nameof(Interlocked.CompareExchange)
-                        && method.IsGenericMethod
-                        select method).First().MakeGenericMethod(eventType));
+                    ilGen.Emit(OpCodes.Call, typeof(Interlocked).GetMethods().Where(
+                        method => method.Name == nameof(Interlocked.CompareExchange) &&
+                        method.IsGenericMethod).First().MakeGenericMethod(eventType));
                     ilGen.Emit(OpCodes.Stloc_0);
                     ilGen.Emit(OpCodes.Ldloc_0);
                     ilGen.Emit(OpCodes.Ldloc_1);
@@ -412,11 +434,10 @@ namespace XstarS.ComponentModel
                 var baseAttributes = baseMethodRemove.Attributes;
                 var baseReturnParam = baseMethodRemove.ReturnParameter;
                 var baseParameters = baseMethodRemove.GetParameters();
-                baseAttributes &= ~MethodAttributes.Abstract;
-                baseAttributes |= MethodAttributes.Final;
-                if (!newSlot) { baseAttributes &= ~MethodAttributes.NewSlot; }
+                var attributes = baseAttributes & ~MethodAttributes.Abstract;
+                if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
                 var methodRemove = source.DefineMethod(baseMethodRemove.Name,
-                    baseAttributes, baseReturnParam.ParameterType,
+                    attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
@@ -447,11 +468,9 @@ namespace XstarS.ComponentModel
                     ilGen.Emit(OpCodes.Ldflda, field);
                     ilGen.Emit(OpCodes.Ldloc_2);
                     ilGen.Emit(OpCodes.Ldloc_1);
-                    ilGen.Emit(OpCodes.Call, (
-                        from method in typeof(Interlocked).GetMethods()
-                        where method.Name == nameof(Interlocked.CompareExchange)
-                        && method.IsGenericMethod
-                        select method).First().MakeGenericMethod(eventType));
+                    ilGen.Emit(OpCodes.Call, typeof(Interlocked).GetMethods().Where(
+                        method => method.Name == nameof(Interlocked.CompareExchange) &&
+                        method.IsGenericMethod).First().MakeGenericMethod(eventType));
                     ilGen.Emit(OpCodes.Stloc_0);
                     ilGen.Emit(OpCodes.Ldloc_0);
                     ilGen.Emit(OpCodes.Ldloc_1);
@@ -472,9 +491,9 @@ namespace XstarS.ComponentModel
         /// <param name="fieldPropertyChanged">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的委托。</param>
         /// <returns>定义完成的 <code>void OnPropertyChanged(string)</code> 方法。</returns>
-        /// <exception cref="ArgumentException"><paramref name="fieldPropertyChanged"/>
-        /// 不为 <see cref="PropertyChangedEventHandler"/> 类型。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        /// <exception cref="FieldAccessException"><paramref name="fieldPropertyChanged"/>
+        /// 不为 <see cref="PropertyChangedEventHandler"/> 类型。</exception>
         internal static MethodBuilder DefineOnPropertyChangedMethod(
             this TypeBuilder source, FieldInfo fieldPropertyChanged)
         {
@@ -489,7 +508,7 @@ namespace XstarS.ComponentModel
             }
             if (fieldPropertyChanged.FieldType != typeof(PropertyChangedEventHandler))
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(fieldPropertyChanged));
+                throw new FieldAccessException();
             }
 
             // 定义方法。
@@ -523,16 +542,17 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 以指定方法的定义为基础，定义仅抛出 <see cref="NotImplementedException"/> 异常的方法，并添加到当前类型。
+        /// 以指定方法的定义为基础，将新的方法添加到当前类型，
+        /// 并设定其仅抛出 <see cref="NotImplementedException"/> 异常。
         /// </summary>
         /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
         /// <param name="baseMethod">作为基础的方法的定义。</param>
-        /// <param name="newSlot">指定方法是否应获取在 vtable 中获取一个新槽。
-        /// 当基类为接口时应为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
         /// <returns>定义完成的方法，仅抛出 <see cref="NotImplementedException"/> 异常。</returns>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        /// <exception cref="MethodAccessException">
+        /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         internal static MethodBuilder DefineNotImplementedMethod(
-            this TypeBuilder source, MethodInfo baseMethod, bool newSlot)
+            this TypeBuilder source, MethodInfo baseMethod)
         {
             // 参数检查。
             if (source is null)
@@ -543,22 +563,27 @@ namespace XstarS.ComponentModel
             {
                 throw new ArgumentNullException(nameof(baseMethod));
             }
+            if (!baseMethod.IsOverridable())
+            {
+                throw new MethodAccessException();
+            }
+            bool newSlot = baseMethod.DeclaringType.IsInterface;
 
             // 定义方法。
             var baseAttributes = baseMethod.Attributes;
             var baseGenericParams = baseMethod.GetGenericArguments();
             var baseReturnParam = baseMethod.ReturnParameter;
             var baseParameters = baseMethod.GetParameters();
-            baseAttributes &= ~MethodAttributes.Abstract;
-            baseAttributes |= MethodAttributes.Final;
-            if (!newSlot) { baseAttributes &= ~MethodAttributes.NewSlot; }
+            var attributes = baseAttributes & ~MethodAttributes.Abstract;
+            if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
             var method = source.DefineMethod(baseMethod.Name,
-                baseAttributes, baseReturnParam.ParameterType,
+                attributes, baseReturnParam.ParameterType,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));
             // 泛型参数。
             var genericParams = (baseGenericParams.Length == 0) ?
-                Array.Empty<GenericTypeParameterBuilder>() : method.DefineGenericParameters(
-                Array.ConvertAll(baseGenericParams, param => param.Name));
+                Array.Empty<GenericTypeParameterBuilder>() :
+                method.DefineGenericParameters(
+                    Array.ConvertAll(baseGenericParams, param => param.Name));
             for (int i = 0; i < baseGenericParams.Length; i++)
             {
                 var baseGenericParam = baseGenericParams[i];
