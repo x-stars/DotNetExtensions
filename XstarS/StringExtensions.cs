@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -59,6 +58,51 @@ namespace XstarS
                 source = source.Replace(match.Value, value);
             }
             return source;
+        }
+
+        /// <summary>
+        /// 使用满足指定条件的所有字符为分隔符将字符串拆分为多个子字符串。
+        /// </summary>
+        /// <param name="source">一个 <see cref="string"/> 类型的对象。</param>
+        /// <param name="isSeparator">判断字符是否为分隔字符的 <see cref="Predicate{T}"/> 委托。</param>
+        /// <param name="options">指定是否要忽略分隔得到的空子字符串。</param>
+        /// <returns><paramref name="source"/> 根据满足 <paramref name="isSeparator"/> 条件的字符分隔得到的子字符串，
+        /// 并根据 <paramref name="options"/> 的指示去除空字符串。</returns>
+        public static IEnumerable<string> Split(this string source,
+            Predicate<char> isSeparator, StringSplitOptions options = StringSplitOptions.None)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (isSeparator is null)
+            {
+                throw new ArgumentNullException(nameof(isSeparator));
+            }
+
+            var builder = new StringBuilder();
+            foreach (var c in source)
+            {
+                if (isSeparator(c))
+                {
+                    if ((builder.Length > 0) ||
+                        (options == StringSplitOptions.None))
+                    {
+                        yield return builder.ToString();
+                        builder.Clear();
+                    }
+                }
+                else
+                {
+                    builder.Append(c);
+                }
+            }
+            if ((builder.Length > 0) ||
+                (options == StringSplitOptions.None))
+            {
+                yield return builder.ToString();
+                builder.Clear();
+            }
         }
 
         /// <summary>
