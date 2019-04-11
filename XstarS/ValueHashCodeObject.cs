@@ -18,7 +18,7 @@ namespace XstarS
         public readonly object Value;
 
         /// <summary>
-        /// 当前计算得到的基于值的哈希函数的引用包装。
+        /// 基于值的哈希函数的引用包装。
         /// </summary>
         [NonSerialized]
         private StrongBox<int> HashCode;
@@ -39,20 +39,6 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 使用要获取基于值的哈希函数的对象以及当前的哈希函数和已经计算过的对象初始化
-        /// <see cref="ValueHashCodeObject"/> 类的新实例。
-        /// </summary>
-        /// <param name="value">要获取基于值的哈希函数的对象。</param>
-        /// <param name="hashCode">当前计算得到的基于值的哈希函数的引用包装。</param>
-        /// <param name="computed">已经计算过哈希函数的对象。</param>
-        public ValueHashCodeObject(object value,
-            StrongBox<int> hashCode, HashSet<object> computed) : this(value)
-        {
-            this.HashCode = hashCode;
-            this.Computed = computed;
-        }
-
-        /// <summary>
         /// 获取当前实例包含的对象基于所有字段的值（对数组则是所有元素的值）的哈希函数，
         /// 将递归计算至字段（元素）为 .NET 基元类型 (<see cref="Type.IsPrimitive"/>)、
         /// 字符串 <see cref="string"/> 或指针类型 (<see cref="Type.IsPointer"/>)。
@@ -62,8 +48,10 @@ namespace XstarS
         public int GetValueHashCode()
         {
             this.HashCode = new StrongBox<int>();
+
             this.AppendValueHashCode();
             int hashCode = this.HashCode.Value;
+
             this.HashCode = null;
             return hashCode;
         }
@@ -106,13 +94,14 @@ namespace XstarS
         /// </summary>
         /// <param name="value">要将其基于值的哈希函数追加到当前哈希函数的对象。</param>
         private void AppendValueHashCode(object value) =>
-            new ValueHashCodeObject(value, this.HashCode, this.Computed).AppendValueHashCode();
+            new ValueHashCodeObject(value) { HashCode = this.HashCode,
+                Computed = this.Computed }.AppendValueHashCode();
 
         /// <summary>
         /// 将当前实例包含的基元类型对象 (<see cref="Type.IsPrimitive"/>) 基于值的哈希函数附加到当前的哈希函数中。
         /// </summary>
         private void AppendPrimitiveValueHashCode() =>
-            this.AppendHashCode(this.Value.GetHashCode());
+            this.AppendHashCode((this.Value).GetHashCode());
 
         /// <summary>
         /// 将当前实例包含的字符串 <see cref="string"/> 基于值的哈希函数附加到当前的哈希函数中。

@@ -7,13 +7,13 @@ namespace XstarS
     public class ArrayExtensionsTest
     {
         [TestMethod]
-        public void RangeMapToArray_FiveLayers_ValueEqualsIndices()
+        public void InitializeArray_FiveLayers_ValueEqualsIndices()
         {
-            var array = 10.RangeMapToArray(
-                i1 => 10.RangeMapToArray(
-                    i2 => 10.RangeMapToArray(
-                        i3 => 10.RangeMapToArray(
-                            i4 => 10.RangeMapToArray(
+            var array = 10.InitializeArray(
+                i1 => 10.InitializeArray(
+                    i2 => 10.InitializeArray(
+                        i3 => 10.InitializeArray(
+                            i4 => 10.InitializeArray(
                                 i5 => new[] { i1, i2, i3, i4, i5 })))));
             for (int i = 0; i < 5; i++)
             {

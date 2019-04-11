@@ -16,7 +16,7 @@ namespace XstarS.Collections
         /// <returns><paramref name="source"/> 包含和递归包含的所有不可枚举的元素。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable EnumerateRecursive(this IEnumerable source)
+        public static IEnumerable EnumerateEnumerable(this IEnumerable source)
         {
             if (source is null)
             {
@@ -27,7 +27,7 @@ namespace XstarS.Collections
             {
                 if (item is IEnumerable collection)
                 {
-                    foreach (var innerItem in collection.EnumerateRecursive())
+                    foreach (var innerItem in collection.EnumerateEnumerable())
                     {
                         yield return innerItem;
                     }

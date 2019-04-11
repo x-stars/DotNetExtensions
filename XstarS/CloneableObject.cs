@@ -34,26 +34,9 @@ namespace XstarS
         /// 使用要创建副本的对象初始化 <see cref="CloneableObject"/> 类的新实例。
         /// </summary>
         /// <param name="value">要创建副本的对象。</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="value"/> 为 <see langword="null"/>。</exception>
         public CloneableObject(object value)
         {
-            this.Value = value ??
-                throw new ArgumentNullException(nameof(value));
-        }
-
-        /// <summary>
-        /// 使用要创建副本的对象和已经创建副本的对象初始化 <see cref="CloneableObject"/> 类的新实例。
-        /// </summary>
-        /// <param name="value">要创建副本的对象。</param>
-        /// <param name="cloned">已经创建副本的对象及其副本的
-        /// <see cref="IDictionary{TKey, TValue}"/> 对象。</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="value"/> 为 <see langword="null"/>。</exception>
-        private CloneableObject(object value,
-            Dictionary<object, object> cloned) : this(value)
-        {
-            this.Cloned = cloned;
+            this.Value = value;
         }
 
         /// <summary>
@@ -62,7 +45,10 @@ namespace XstarS
         /// <returns><see cref="CloneableObject.Value"/> 的浅表副本。</returns>
         public object ShallowClone()
         {
-            return CloneableObject.StaticMemberwiseClone(this.Value);
+            var value = this.Value;
+
+            return (value is null) ? null :
+                CloneableObject.StaticMemberwiseClone(value);
         }
 
         /// <summary>
@@ -71,19 +57,24 @@ namespace XstarS
         /// <returns><see cref="CloneableObject.Value"/> 的深度副本。</returns>
         public object DeepClone()
         {
-            // 创建当前对象的浅表副本。
             var value = this.Value;
-            var clone = this.ShallowClone();
             this.Cloned = this.Cloned ??
                 new Dictionary<object, object>(ReferenceEqualityComparer.Default);
-            this.Cloned.Add(value, clone);
+
+            // 对于已有副本的对象则直接返回其副本。
+            if (value is null) { return null; }
+            else if (this.Cloned.ContainsKey(value)) { return this.Cloned[value]; }
+
+            // 创建当前对象的浅表副本。
+            var clone = this.ShallowClone();
+            this.Cloned[value] = clone;
 
             // 根据当前对象的类型确定创建成员副本的方法。
             var type = value.GetType();
             if (type.IsPrimitive) { }
             else if (type == typeof(string)) { }
-            else if (type.IsArray) { this.DeepCloneArrayElements((Array)clone); }
-            else { this.DeepCloneObjectMembers(clone); }
+            else if (type.IsArray) { this.ArrayElementsDeepClone(); }
+            else { this.ObjectMembersDeepClone(); }
 
             // 返回当前对象的深层副本。
             this.Cloned = null;
@@ -91,63 +82,60 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 获取指定对象的深层副本。
+        /// 获取指定对象的深度副本。
         /// </summary>
-        /// <param name="value">要获取副本的对象。</param>
-        /// <returns><paramref name="value"/> 的副本。</returns>
-        private object GetDeepClone(object value)
-        {
-            if (value is null) { return null; }
-            var cloned = this.Cloned;
-            return cloned.ContainsKey(value) ? cloned[value] :
-                (cloned[value] = new CloneableObject(value, cloned).DeepClone());
-        }
+        /// <param name="value">要获取深度副本的对象。</param>
+        /// <returns><paramref name="value"/> 的深度副本。</returns>
+        private object DeepClone(object value) =>
+            new CloneableObject(value) { Cloned = this.Cloned }.DeepClone();
 
         /// <summary>
-        /// 将数组的每个元素替换为其深层副本。
+        /// 将当前实例包含的数组的浅表副本的每个元素替换为其深度副本。
         /// </summary>
-        /// <param name="array">要对每个元素创建深层副本的数组。</param>
-        private void DeepCloneArrayElements(Array array)
+        private void ArrayElementsDeepClone()
         {
+            var clone = (Array)this.Cloned[this.Value];
+
             // 仅创建非指针元素的副本。
-            if (!array.GetType().GetElementType().IsPointer)
+            if (!clone.GetType().GetElementType().IsPointer)
             {
-                // 一维数组，将每个元素替换为其副本。
-                if (array.Rank == 1)
+                // 一维数组，将每个元素替换为其深度副本。
+                if (clone.Rank == 1)
                 {
-                    for (long i = 0; i < array.LongLength; i++)
+                    for (long i = 0; i < clone.LongLength; i++)
                     {
-                        array.SetValue(this.GetDeepClone(array.GetValue(i)), i);
+                        clone.SetValue(this.DeepClone(clone.GetValue(i)), i);
                     }
                 }
-                // 多维数组，将其映射为一维数组，并将每个元素替换为其副本。
+                // 多维数组，将其映射为一维数组，并将每个元素替换为其深度副本。
                 else
                 {
-                    for (long i = 0; i < array.LongLength; i++)
+                    for (long i = 0; i < clone.LongLength; i++)
                     {
-                        var a = array.OffsetToIndices(i);
-                        array.SetValue(this.GetDeepClone(array.GetValue(a)), a);
+                        var a = clone.OffsetToIndices(i);
+                        clone.SetValue(this.DeepClone(clone.GetValue(a)), a);
                     }
                 }
             }
         }
 
         /// <summary>
-        /// 将对象的每个实例字段替换为其深层副本。
+        /// 将当前实例包含的对象的浅表副本的每个实例字段替换为其深度副本。
         /// </summary>
-        /// <param name="object">要对实例字段创建深层副本的对象。</param>
-        private void DeepCloneObjectMembers(object @object)
+        private void ObjectMembersDeepClone()
         {
-            for (var type = @object.GetType(); !(type is null); type = type.BaseType)
+            var clone = this.Cloned[this.Value];
+
+            for (var type = clone.GetType(); !(type is null); type = type.BaseType)
             {
-                // 将每个非指针实例字段的值替换为其副本。
+                // 将每个非指针实例字段的值替换为其深度副本。
                 var fields = type.GetFields(BindingFlags.DeclaredOnly |
                     BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public);
                 foreach (var field in fields)
                 {
                     if (!field.FieldType.IsPointer)
                     {
-                        field.SetValue(@object, this.GetDeepClone(field.GetValue(@object)));
+                        field.SetValue(clone, this.DeepClone(field.GetValue(clone)));
                     }
                 }
             }

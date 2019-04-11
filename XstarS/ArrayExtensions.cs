@@ -10,28 +10,6 @@ namespace XstarS
     public static class ArrayExtensions
     {
         /// <summary>
-        /// 获取数组中元素的声明类型。对于交错数组，将递归至数组元素的声明类型不为数组。
-        /// </summary>
-        /// <param name="source">一个数组。</param>
-        /// <returns><paramref name="source"/> 中元素的声明类型。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        internal static Type GetElementTypeRecursive(this Array source)
-        {
-            if (source is null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            var itemType = source.GetType().GetElementType();
-            while (itemType.IsArray)
-            {
-                itemType = itemType.GetElementType();
-            }
-            return itemType;
-        }
-
-        /// <summary>
         /// 将当前数组的指定偏移量转换为对应的多维索引。
         /// </summary>
         /// <param name="source">一个数组。</param>
@@ -53,18 +31,55 @@ namespace XstarS
                 throw new ArgumentOutOfRangeException(nameof(offset));
             }
 
+            var scale = 1L;
+            for (int i = 0; i < source.Rank; i++)
+            {
+                scale *= source.GetLength(i);
+            }
+
             var result = new int[source.Rank];
             for (int i = 0; i < source.Rank; i++)
             {
-                long scale = 1L;
-                for (int j = source.Rank - 1; j >= i + 1; j--)
-                {
-                    scale *= source.GetLength(j);
-                }
+                scale /= source.GetLength(i);
                 result[i] = (int)(offset / scale);
                 offset %= scale;
             }
             return result;
+        }
+
+        /// <summary>
+        /// 枚举数组中的每个元素。对于交错数组，将递归枚举至元素的声明类型不为数组。
+        /// </summary>
+        /// <param name="source">一个数组。</param>
+        /// <returns>数组元素的公开枚举数 <see cref="IEnumerable"/> 对象。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="NotSupportedException">
+        /// <paramref name="source"/> 的最内层元素为指针。</exception>
+        public static IEnumerable EnumerateArray(this Array source)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            if (source.GetType().GetElementType().IsArray)
+            {
+                foreach (Array array in source)
+                {
+                    foreach (var item in array.EnumerateArray())
+                    {
+                        yield return item;
+                    }
+                }
+            }
+            else
+            {
+                foreach (object item in source)
+                {
+                    yield return item;
+                }
+            }
         }
 
         /// <summary>
@@ -108,7 +123,7 @@ namespace XstarS
 
                 if (isJagged)
                 {
-                    if (!ArrayExtensions.ArrayEquals((Array)xi, (Array)yi))
+                    if (!ArrayExtensions.ArrayEquals((Array)xi, (Array)yi, comparer))
                     {
                         return false;
                     }
@@ -122,41 +137,6 @@ namespace XstarS
                 }
             }
             return true;
-        }
-
-        /// <summary>
-        /// 枚举数组中的每个元素。对于交错数组，将递归枚举至元素的声明类型不为数组。
-        /// </summary>
-        /// <param name="source">一个数组。</param>
-        /// <returns>数组元素的公开枚举数 <see cref="IEnumerable"/> 对象。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="NotSupportedException">
-        /// <paramref name="source"/> 的最内层元素为指针。</exception>
-        public static IEnumerable EnumerateArray(this Array source)
-        {
-            if (source is null)
-            {
-                throw new ArgumentNullException(nameof(source));
-            }
-
-            if (source.GetType().GetElementType().IsArray)
-            {
-                foreach (Array array in source)
-                {
-                    foreach (var item in array.EnumerateArray())
-                    {
-                        yield return item;
-                    }
-                }
-            }
-            else
-            {
-                foreach (object item in source)
-                {
-                    yield return item;
-                }
-            }
         }
 
         /// <summary>
@@ -176,7 +156,17 @@ namespace XstarS
         /// <paramref name="source"/> 的最内层元素为指针。</exception>
         public static Array Reshape(this Array source, params int[] lengths)
         {
-            var itemType = source.GetElementTypeRecursive();
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            var itemType = source.GetType().GetElementType();
+            while (itemType.IsArray)
+            {
+                itemType = itemType.GetElementType();
+            }
+
             if (itemType.IsPointer)
             {
                 throw new NotSupportedException();
@@ -230,7 +220,17 @@ namespace XstarS
         /// <paramref name="source"/> 的最内层元素为指针。</exception>
         public static Array ReshapeAsJagged(this Array source, params int[] lengths)
         {
-            var itemType = source.GetElementTypeRecursive();
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+
+            var itemType = source.GetType().GetElementType();
+            while (itemType.IsArray)
+            {
+                itemType = itemType.GetElementType();
+            }
+
             if (itemType.IsPointer)
             {
                 throw new NotSupportedException();
@@ -256,7 +256,7 @@ namespace XstarS
                     return product;
                 }
 
-                var result = (Array)null;
+                var result = default(Array);
                 var items = source.EnumerateArray().GetEnumerator();
                 var lastLengths = lengths;
                 var restLengths = new int[lastLengths.Length - 1];
@@ -323,7 +323,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 返回一个新数组，此数组为当前交错数组中包含的数组顺序连接降阶后的结果。
+        /// 返回一个新数组，此数组为当前交错数组中包含的数组顺序连接后的结果。
         /// </summary>
         /// <typeparam name="T"><paramref name="source"/> 包含的数组中元素的类型。</typeparam>
         /// <param name="source">一个包含 <typeparamref name="T"/> 类型元素数组的数组。</param>
@@ -332,7 +332,7 @@ namespace XstarS
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="source"/> 包含为 <see langword="null"/> 的数组。</exception>
-        public static T[] ReduceRank<T>(this T[][] source)
+        public static T[] Concat<T>(this T[][] source)
         {
             if (source is null)
             {
@@ -368,28 +368,28 @@ namespace XstarS
         /// </summary>
         /// <typeparam name="T">要创建的数组的元素的类型。</typeparam>
         /// <param name="source">一个 32 位有符号整数。</param>
-        /// <param name="indexMap">用于将索引转换到数组元素的转换器。</param>
+        /// <param name="indexConverter">用于将索引转换到数组元素的转换器。</param>
         /// <returns>长度为 <paramref name="source"/> 的数组，
-        /// 其中的每个元素由 <paramref name="indexMap"/> 转换索引得到。</returns>
+        /// 其中的每个元素由 <paramref name="indexConverter"/> 转换索引得到。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="indexMap"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="indexConverter"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="source"/> 小于 0。</exception>
-        public static T[] RangeMapToArray<T>(this int source, Converter<int, T> indexMap)
+        public static T[] InitializeArray<T>(this int source, Converter<int, T> indexConverter)
         {
             if (source < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(source));
             }
-            if (indexMap is null)
+            if (indexConverter is null)
             {
-                throw new ArgumentNullException(nameof(indexMap));
+                throw new ArgumentNullException(nameof(indexConverter));
             }
 
             var result = new T[source];
             for (int i = 0; i < source; i++)
             {
-                result[i] = indexMap(i);
+                result[i] = indexConverter(i);
             }
             return result;
         }
@@ -400,24 +400,24 @@ namespace XstarS
         /// </summary>
         /// <typeparam name="T">要创建的数组的元素的类型。</typeparam>
         /// <param name="source">一个 32 位有符号整数的数组。</param>
-        /// <param name="indicesMap">用于将索引转换到数组元素的转换器。</param>
+        /// <param name="indicesConverter">用于将索引转换到数组元素的转换器。</param>
         /// <returns>大小为 <paramref name="source"/> 的多维数组，
-        /// 其中的每个元素由 <paramref name="indicesMap"/> 转换索引得到。</returns>
+        /// 其中的每个元素由 <paramref name="indicesConverter"/> 转换索引得到。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/> 或
-        /// <paramref name="indicesMap"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="indicesConverter"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="source"/> 中没有任何元素。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="source"/> 中包含小于 0 的整数。</exception>
-        public static Array RangesMapToArray<T>(this int[] source, Converter<int[], T> indicesMap)
+        public static Array InitializeArray<T>(this int[] source, Converter<int[], T> indicesConverter)
         {
             if (source is null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
-            if (indicesMap is null)
+            if (indicesConverter is null)
             {
-                throw new ArgumentNullException(nameof(indicesMap));
+                throw new ArgumentNullException(nameof(indicesConverter));
             }
 
             if (source.Length == 0)
@@ -426,7 +426,7 @@ namespace XstarS
             }
             else if (source.Length == 1)
             {
-                return source[0].RangeMapToArray(index => indicesMap(new[] { index }));
+                return source[0].InitializeArray(index => indicesConverter(new[] { index }));
             }
             else
             {
@@ -434,7 +434,7 @@ namespace XstarS
                 for (long i = 0; i < result.LongLength; i++)
                 {
                     var a = result.OffsetToIndices(i);
-                    result.SetValue(indicesMap(a), a);
+                    result.SetValue(indicesConverter(a), a);
                 }
                 return result;
             }

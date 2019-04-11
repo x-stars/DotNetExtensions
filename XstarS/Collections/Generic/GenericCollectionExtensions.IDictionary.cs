@@ -19,7 +19,7 @@ namespace XstarS.Collections.Generic
         /// 则为 <paramref name="key"/> 对应的值；否则为 <paramref name="value"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static TValue GetValueOrAdd<TKey, TValue>(
+        public static TValue GetOrAdd<TKey, TValue>(
             this IDictionary<TKey, TValue> source, TKey key, TValue value)
         {
             if (source is null)

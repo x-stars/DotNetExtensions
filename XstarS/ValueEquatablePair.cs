@@ -47,18 +47,6 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 使用要进行值相等比较的两个对象和已经比较过的对象初始化 <see cref="ValueEquatablePair"/> 类的新实例。
-        /// </summary>
-        /// <param name="value">要进行值相等比较的第一个对象。</param>
-        /// <param name="other">要进行值相等比较的第二个对象。</param>
-        /// <param name="compared">已经比较过的 <see cref="ValueEquatablePair"/> 对象。</param>
-        private ValueEquatablePair(object value, object other,
-            HashSet<ValueEquatablePair> compared) : this(value, other)
-        {
-            this.Compared = compared;
-        }
-
-        /// <summary>
         /// 确定当前实例包含的两个对象的所有字段的值（对数组则是所有元素的值）是否相等。
         /// 将递归比较至字段（元素）为 .NET 基元类型 (<see cref="Type.IsPrimitive"/>)、
         /// 字符串 <see cref="string"/> 或指针类型 (<see cref="Type.IsPointer"/>)。
@@ -100,8 +88,8 @@ namespace XstarS
         /// <param name="other">要进行值相等比较的第二个对象。</param>
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        private bool PairValueEquals(object value, object other) =>
-            new ValueEquatablePair(value, other, this.Compared).ValueEquals();
+        private bool ValueEquals(object value, object other) =>
+            new ValueEquatablePair(value, other) { Compared = this.Compared }.ValueEquals();
 
         /// <summary>
         /// 确定当前实例包含的两个基元类型对象 (<see cref="Type.IsPrimitive"/>) 的值是否相等。
@@ -109,7 +97,8 @@ namespace XstarS
         /// <returns>若当前实例的 <see cref="ValueEquatablePair.Value"/> 和
         /// <see cref="ValueEquatablePair.Other"/> 的类型相同且值相等，
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        private bool PrimitiveValueEquals() => object.Equals(this.Value, this.Other);
+        private bool PrimitiveValueEquals() =>
+            object.Equals(this.Value, this.Other);
 
         /// <summary>
         /// 确定当前实例包含的两个字符串 <see cref="string"/> 的值是否相等。
@@ -117,7 +106,8 @@ namespace XstarS
         /// <returns>若当前实例的 <see cref="ValueEquatablePair.Value"/> 和
         /// <see cref="ValueEquatablePair.Other"/> 的值均为字符串 <see cref="string"/> 且值相等，
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        private bool StringValueEquals() => string.Equals((string)this.Value, (string)this.Other);
+        private bool StringValueEquals() =>
+            string.Equals((string)this.Value, (string)this.Other);
 
         /// <summary>
         /// 确定当前实例包含的两个指针包装 <see cref="Pointer"/> 的值是否相等。将比较指针的值和指针的类型。
@@ -165,7 +155,7 @@ namespace XstarS
                 var methodGet = typeArray.GetMethod("Get");
                 for (long i = 0; i < value.LongLength; i++)
                 {
-                    if (!this.PairValueEquals(
+                    if (!this.ValueEquals(
                         methodGet.Invoke(value, Array.ConvertAll(
                             value.OffsetToIndices(i), index => (object)index)),
                         methodGet.Invoke(other, Array.ConvertAll(
@@ -181,7 +171,7 @@ namespace XstarS
                 bool isMultiDim = value.Rank > 1;
                 for (long i = 0; i < value.LongLength; i++)
                 {
-                    if (!this.PairValueEquals(
+                    if (!this.ValueEquals(
                         isMultiDim ? value.GetValue(value.OffsetToIndices(i)) : value.GetValue(i),
                         isMultiDim ? other.GetValue(other.OffsetToIndices(i)) : other.GetValue(i)))
                     {
@@ -213,7 +203,7 @@ namespace XstarS
                 // 依次递归比较每个字段。
                 foreach (var field in fields)
                 {
-                    if (!this.PairValueEquals(field.GetValue(value), field.GetValue(other)))
+                    if (!this.ValueEquals(field.GetValue(value), field.GetValue(other)))
                     {
                         return false;
                     }
@@ -253,7 +243,7 @@ namespace XstarS
             /// <param name="obj">要获取包含的对象的哈希函数的 <see cref="ValueEquatablePair"/>。</param>
             /// <returns><paramref name="obj"/> 包含的对象基于引用的哈希函数。</returns>
             public override int GetHashCode(ValueEquatablePair obj) =>
-                RuntimeHelpers.GetHashCode(obj.Value) ^ RuntimeHelpers.GetHashCode(obj.Other);
+                RuntimeHelpers.GetHashCode(obj?.Value) * -1521134295 + RuntimeHelpers.GetHashCode(obj?.Other);
         }
     }
 }
