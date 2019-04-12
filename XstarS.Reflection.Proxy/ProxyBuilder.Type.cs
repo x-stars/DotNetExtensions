@@ -9,15 +9,15 @@ namespace XstarS.Reflection
     /// <summary>
     /// 提供从指定原型类型构造代理派生类型及其实例的方法。
     /// </summary>
-    public partial class ObjectProxyBuilder : ProxyBuilderBase<object>
+    public partial class ProxyBuilder : ProxyBuilderBase<object>
     {
         /// <summary>
-        /// 以指定类型为原型类型初始化 <see cref="ObjectProxyBuilder"/> 类的新实例。
+        /// 以指定类型为原型类型初始化 <see cref="ProxyBuilder"/> 类的新实例。
         /// </summary>
         /// <param name="type">作为原型类型的 <see cref="Type"/> 对象。</param>
         /// <exception cref="TypeAccessException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
-        internal ObjectProxyBuilder(Type type) : base()
+        internal ProxyBuilder(Type type) : base()
         {
             if (!(((type.IsClass && !type.IsSealed) || type.IsInterface) &&
                 type.IsVisible && !type.ContainsGenericParameters))

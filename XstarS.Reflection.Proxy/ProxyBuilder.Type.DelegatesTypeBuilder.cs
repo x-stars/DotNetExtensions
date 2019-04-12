@@ -6,17 +6,17 @@ using System.Reflection.Emit;
 
 namespace XstarS.Reflection
 {
-    public partial class ObjectProxyBuilder
+    public partial class ProxyBuilder
     {
         private class DelegatesTypeBuilder
         {
-            internal DelegatesTypeBuilder(ObjectProxyBuilder proxyBuilder)
+            internal DelegatesTypeBuilder(ProxyBuilder proxyBuilder)
             {
                 this.ProxyBuilder = proxyBuilder;
                 this.BuildDelegatesType();
             }
 
-            internal ObjectProxyBuilder ProxyBuilder { get; }
+            internal ProxyBuilder ProxyBuilder { get; }
 
             internal TypeBuilder DelegatesType { get; private set; }
 

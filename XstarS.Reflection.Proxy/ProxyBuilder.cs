@@ -13,24 +13,11 @@ namespace XstarS.Reflection
         /// </summary>
         /// <exception cref="TypeAccessException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
-        internal ProxyBuilder() : this(typeof(T)) { }
-
-        /// <summary>
-        /// 以指定类型为原型类型初始化 <see cref="ProxyBuilder{T}"/> 类的新实例。
-        /// </summary>
-        /// <param name="type">代理类型的原型类型的 <see cref="Type"/> 对象。</param>
-        /// <exception cref="InvalidCastException">
-        /// <paramref name="type"/> 类型的实例不能转换为 <typeparamref name="T"/> 类型。</exception>
-        /// <exception cref="TypeAccessException">
-        /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
-        internal ProxyBuilder(Type type) : base()
+        internal ProxyBuilder()
         {
-            if (!typeof(T).IsAssignableFrom(type))
-            {
-                throw new InvalidCastException();
-            }
+            var type = typeof(T);
             this.PrototypeType = type;
-            this.InternalBuilder = ObjectProxyBuilder.OfType(type);
+            this.InternalBuilder = ProxyBuilder.OfType(type);
         }
 
         /// <summary>
@@ -39,9 +26,9 @@ namespace XstarS.Reflection
         public Type PrototypeType { get; }
 
         /// <summary>
-        /// 用于构造代理类型的 <see cref="ObjectProxyBuilder"/> 对象。
+        /// 用于构造代理类型的 <see cref="ProxyBuilder"/> 对象。
         /// </summary>
-        internal ObjectProxyBuilder InternalBuilder { get; }
+        internal ProxyBuilder InternalBuilder { get; }
 
         /// <summary>
         /// 构造代理派生类型。

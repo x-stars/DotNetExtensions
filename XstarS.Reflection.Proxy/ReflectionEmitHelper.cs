@@ -243,6 +243,7 @@ namespace XstarS.Reflection
             {
                 throw new ArgumentNullException(nameof(baseMethod));
             }
+
             bool newSlot = baseMethod.DeclaringType.IsInterface;
 
             // 定义方法。
