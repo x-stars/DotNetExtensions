@@ -10,18 +10,18 @@ namespace XstarS.ComponentModel
     /// <summary>
     /// 提供从指定原型类型构造用于数据绑定的派生类型及其实例的方法。
     /// </summary>
-    public partial class ObjectBindingBuilder : BindingBuilderBase<object>
+    public partial class BindableBuilder : BindableBuilderBase<object>
     {
         /// <summary>
-        /// 以指定类型为原型类型初始化 <see cref="ObjectBindingBuilder"/> 类的新实例。
+        /// 以指定类型为原型类型初始化 <see cref="BindableBuilder"/> 类的新实例。
         /// </summary>
         /// <param name="type">用于数据绑定的类型的原型引用类型。</param>
         /// <exception cref="TypeAccessException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
-        internal ObjectBindingBuilder(Type type) : this(type, false) { }
+        internal BindableBuilder(Type type) : this(type, false) { }
 
         /// <summary>
-        /// 以指定类型为原型类型初始化 <see cref="ObjectBindingBuilder"/> 类的新实例，
+        /// 以指定类型为原型类型初始化 <see cref="BindableBuilder"/> 类的新实例，
         /// 并指定是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。
         /// </summary>
         /// <param name="type">用于数据绑定的类型的原型引用类型。</param>
@@ -29,7 +29,7 @@ namespace XstarS.ComponentModel
         /// 是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。</param>
         /// <exception cref="TypeAccessException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
-        internal ObjectBindingBuilder(Type type, bool bindableOnly) : base(bindableOnly)
+        internal BindableBuilder(Type type, bool bindableOnly) : base(bindableOnly)
         {
             if (!(((type.IsClass && !type.IsSealed) || type.IsInterface) &&
                 type.IsVisible && !type.ContainsGenericParameters))
@@ -45,6 +45,16 @@ namespace XstarS.ComponentModel
         public Type PrototypeType { get; }
 
         /// <summary>
+        /// 用于数据绑定的类型的 <see cref="TypeBuilder"/> 对象。
+        /// </summary>
+        internal TypeBuilder BindableDerivedType { get; private set; }
+
+        /// <summary>
+        /// <code>void OnPropertyChanged(string)</code> 方法的 <see cref="MethodInfo"/> 对象。
+        /// </summary>
+        internal MethodInfo OnPropertyChangedMethod { get; private set; }
+
+        /// <summary>
         /// 构造用于数据绑定的派生类型。
         /// </summary>
         /// <returns>构造完成的用于数据绑定的派生类型。</returns>
@@ -52,6 +62,25 @@ namespace XstarS.ComponentModel
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
         /// 但未定义公共或保护级别的 <code>void OnPropertyChanged(string)</code> 方法。</exception>
         protected override Type BuildBindableType()
+        {
+            // 定义用于数据绑定的类型。
+            this.DefineBindableType();
+
+            // 定义用于数据绑定的类型的各成员。
+            this.DefineConstructors();
+            this.DefinePropertyChangedEvent();
+            this.DefineProperties();
+            this.DefineEvents();
+            this.DefineMethods();
+
+            // 完成类型创建。
+            return this.BindableDerivedType.CreateTypeInfo();
+        }
+
+        /// <summary>
+        /// 定义用于数据绑定的派生类型。
+        /// </summary>
+        private void DefineBindableType()
         {
             var baseType = this.PrototypeType;
 
@@ -75,7 +104,7 @@ namespace XstarS.ComponentModel
                 baseType.GetGenericArguments(), genericArgument => genericArgument.ToString());
             var genericArgumentNames = Array.ConvertAll(
                 baseGenericArgumentNames, name => name.Replace('.', '-').Replace('+', '-'));
-            var typeName = (!(@namespace is null) ? $"{@namespace}." : "") + 
+            var typeName = (!(@namespace is null) ? $"{@namespace}." : "") +
                 $"<Bindable>{string.Join("-", typeNames)}" +
                 (baseType.IsGenericType ? $"<{string.Join(",", genericArgumentNames)}>" : "") +
                 $"({nameof(this.IsBindableOnly)}-{this.IsBindableOnly.ToString()})";
@@ -95,8 +124,18 @@ namespace XstarS.ComponentModel
                 TypeAttributes.Class | TypeAttributes.Public |
                 TypeAttributes.Serializable | TypeAttributes.BeforeFieldInit,
                 parent, interfaces);
+            this.BindableDerivedType = type;
+        }
 
-            // 生成构造函数。
+        /// <summary>
+        /// 定义用于数据绑定的派生类型的构造函数。
+        /// </summary>
+        private void DefineConstructors()
+        {
+            var baseType = this.PrototypeType;
+            var parent = !baseType.IsInterface ? baseType : typeof(object);
+            var type = this.BindableDerivedType;
+
             var instanceFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
             var baseConstructors = parent.GetConstructors(instanceFlags).Where(
                 constructor => constructor.IsInheritableInstance()).ToArray();
@@ -104,8 +143,18 @@ namespace XstarS.ComponentModel
             {
                 type.DefineDefaultConstructor(baseConstructor);
             }
+        }
 
-            // 生成 PropertyChanged 事件。
+        /// <summary>
+        /// 定义 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。
+        /// </summary>
+        private void DefinePropertyChangedEvent()
+        {
+            var baseType = this.PrototypeType;
+            var baseInterfaces = baseType.GetInterfaces();
+            var definedPropertyChanged = baseInterfaces.Contains(typeof(INotifyPropertyChanged));
+            var type = this.BindableDerivedType;
+
             var methodOnPropertyChanged = default(MethodInfo);
             // 未实现 INotifyPropertyChanged 接口。
             if (!definedPropertyChanged)
@@ -136,7 +185,7 @@ namespace XstarS.ComponentModel
                             Array.ConvertAll(method.GetParameters(), param => param.ParameterType),
                             new[] { typeof(string) })
                         && method.ReturnType == typeof(void)
-                        && method.IsInheritableInstance()
+                        && method.IsInheritableInstance() && !method.IsAbstract
                         select method).SingleOrDefault();
                     if (methodOnPropertyChanged is null)
                     {
@@ -144,9 +193,18 @@ namespace XstarS.ComponentModel
                     }
                 }
             }
+            this.OnPropertyChangedMethod = methodOnPropertyChanged;
+        }
 
+        /// <summary>
+        /// 定义用于数据绑定的派生类型的属性。
+        /// </summary>
+        private void DefineProperties()
+        {
+            var baseType = this.PrototypeType;
+            var type = this.BindableDerivedType;
+            var methodOnPropertyChanged = this.OnPropertyChangedMethod;
 
-            // 生成属性。
             foreach (var baseProperty in baseType.GetAccessibleProperties().Where(
                 property => property.GetAccessors(true).All(accessor => accessor.IsInheritableInstance())))
             {
@@ -179,8 +237,16 @@ namespace XstarS.ComponentModel
                     }
                 }
             }
+        }
 
-            // 生成其它事件。
+        /// <summary>
+        /// 定义用于数据绑定的派生类型的事件。
+        /// </summary>
+        private void DefineEvents()
+        {
+            var baseType = this.PrototypeType;
+            var type = this.BindableDerivedType;
+
             foreach (var baseEvent in baseType.GetAccessibleEvents().Where(
                 @event => @event.AddMethod.IsInheritableInstance()))
             {
@@ -192,8 +258,16 @@ namespace XstarS.ComponentModel
                     }
                 }
             }
+        }
 
-            // 生成方法，并指定其抛出 NotImplementedException 异常。
+        /// <summary>
+        /// 定义用于数据绑定的派生类型的方法。
+        /// </summary>
+        private void DefineMethods()
+        {
+            var baseType = this.PrototypeType;
+            var type = this.BindableDerivedType;
+
             foreach (var baseMethod in baseType.GetAccessibleMethods().Where(
                 method => method.IsInheritableInstance()))
             {
@@ -202,8 +276,6 @@ namespace XstarS.ComponentModel
                     type.DefineNotImplementedMethod(baseMethod);
                 }
             }
-
-            return type.CreateTypeInfo();
         }
     }
 }

@@ -11,7 +11,7 @@ namespace XstarS.ComponentModel
     /// <summary>
     /// 提供通过 <see cref="INotifyPropertyChanged"/> 接口实现的数据绑定的扩展方法。
     /// </summary>
-    public static class BindingExtensions
+    public static class BindableExtensions
     {
         /// <summary>
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件委托字段的缓存。
@@ -68,8 +68,8 @@ namespace XstarS.ComponentModel
 
             var type = source.GetType();
             var fieldPropertyChanged =
-                BindingExtensions.PropertyChangedFields.GetOrAdd(
-                    type, BindingExtensions.FindPropertyChangedField);
+                BindableExtensions.PropertyChangedFields.GetOrAdd(
+                    type, BindableExtensions.FindPropertyChangedField);
             return fieldPropertyChanged?.GetValue(source) as PropertyChangedEventHandler;
         }
 

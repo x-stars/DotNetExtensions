@@ -6,7 +6,7 @@ using XstarS.ComponentModel.TestTypes;
 namespace XstarS.ComponentModel
 {
     [TestClass]
-    public class BindingExtensionsTest
+    public class BindableExtensionsTest
     {
         [TestMethod]
         public void PropertyChanged_CommonImplement_CallsHandler()

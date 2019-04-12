@@ -42,7 +42,7 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 `XstarS.ComponentModel.BindableObject` 为一抽象类，用法基于类的继承。
 
-#### 静态类 `XstarS.ComponentModel.BindingExtensions`
+#### 静态类 `XstarS.ComponentModel.BindableExtensions`
 
 提供数据绑定相关的扩展方法。
 
@@ -56,9 +56,9 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 #### 方法使用说明
 
-两类的使用方法完全一致，其中 `XstarS.ComponentModel.BindingExtensions`
+两类的使用方法完全一致，其中 `XstarS.ComponentModel.BindableExtensions`
 要求使用扩展方法的类实现 `System.ComponentModel.INotifyPropertyChanged` 接口。
-当继承 `BindableObject` 类时，则不会调用 `BindingExtensions` 类中的扩展方法。
+当继承 `BindableObject` 类时，则不会调用 `BindableExtensions` 类中的扩展方法。
 
 ``` CSharp
 using System.ComponentModel;
@@ -166,7 +166,7 @@ public class MainWindow : Window
 定义一个原型基类或接口，通过 `System.Reflection.Emit` 命名空间提供的类来动态生成派生类，
 并在派生类的属性中实现数据绑定的相关代码。
 
-#### 泛型接口 `XstarS.ComponentModel.IBindingBuilder<out T>`
+#### 泛型接口 `XstarS.ComponentModel.IBindableBuilder<out T>`
 
 提供从原型构造用于数据绑定的实例的方法。
 
@@ -178,10 +178,10 @@ public class MainWindow : Window
 
 `CreateInstance(object[])` 方法以指定参数构造一个基于 `T` 类型的派生类的实例，并根据 `BindableOnly` 属性的指示，实现某些属性的数据绑定。
 
-#### `XstarS.ComponentModel.IBindingBuilder<out T>` 具体实现
+#### `XstarS.ComponentModel.IBindableBuilder<out T>` 具体实现
 
-泛型类 `XstarS.ComponentModel.BindingBuilder<T>` 和类 `XstarS.ComponentModel.ObjectBindingBuilder`，
-提供接口 `XstarS.ComponentModel.IBindingBuilder<out T>` 的工厂方法。
+泛型类 `XstarS.ComponentModel.BindableBuilder<T>` 和类 `XstarS.ComponentModel.ObjectBindableBuilder`，
+提供接口 `XstarS.ComponentModel.IBindableBuilder<out T>` 的工厂方法。
 
 #### 动态生成使用说明
 
@@ -200,14 +200,14 @@ public interface IBindableData : INotifyPropertyChanged
 ```
 
 注意，若定义的原型为一个类 (`class`)，则应将用于绑定的属性定义为 `virtual` 或 `abstract`，使得此属性能够在派生类中被重写。
-`BindingBuilder<T>` 不会对非 `virtual` 或 `abstract` 的属性生成绑定代码。
+`BindableBuilder<T>` 不会对非 `virtual` 或 `abstract` 的属性生成绑定代码。
 同时，若定义了 `PropertyChanged` 事件，应将其应定义为 `abstract`，
 或是定义一个事件触发函数 `System.Void OnPropertyChanged(System.String)`，否则会导致无法正确构造派生类。
 
 > 若基类中的属性或方法或未定义为 `virtual` 或 `abstract`，则在派生类仅隐藏了基类中对应的定义，并未重写。
 > 当派生类的实例声明为基类时，则会调用基类中定义的属性或方法。
 
-而后在设置绑定处通过 `Default` 或 `BindableOnly` 属性构造 `BindingBuilder<IBindableData>` 的实例，
+而后在设置绑定处通过 `Default` 或 `BindableOnly` 属性构造 `BindableBuilder<IBindableData>` 的实例，
 调用 `CreateInstance()` 方法构造基于原型接口 `IBindableData` 的实例。
 
 ``` CSharp
@@ -223,8 +223,8 @@ public class MainWindow : Window
     public MainWindow()
     {
         // ......
-        //var builder = BindingBuilder<IBindableData>.Default;  // 对所有属性设置绑定。
-        var builder = BindingBuilder<IBindableData>.BindableOnly;   // 仅对 Bindable 属性设置绑定。
+        //var builder = BindableBuilder<IBindableData>.Default;  // 对所有属性设置绑定。
+        var builder = BindableBuilder<IBindableData>.BindableOnly;   // 仅对 Bindable 属性设置绑定。
         this.BindingData = builder.CreateInstance();
         // ......
     }
@@ -238,7 +238,7 @@ public class MainWindow : Window
 ```
 
 此时若更改 `MainWindow.BindingData` 的 `BindingValue` 属性会通知客户端属性发生更改，而更改 `Value` 属性则不会。
-若使用 `Default` 属性构造 `BindingBuilder<IBindableData>`，则两属性都会在发生更改时通知客户端。
+若使用 `Default` 属性构造 `BindableBuilder<IBindableData>`，则两属性都会在发生更改时通知客户端。
 
 ## 程序集 XstarS.ParamReaders
 
