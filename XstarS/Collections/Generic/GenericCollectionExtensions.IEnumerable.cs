@@ -105,5 +105,30 @@ namespace XstarS.Collections.Generic
             }
             return count;
         }
+
+        /// <summary>
+        /// 对当前 <see cref="IEnumerable{T}"/> 对象中的每个元素执行指定操作。
+        /// </summary>
+        /// <typeparam name="T"><see cref="IEnumerable{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="source">一个 <see cref="IEnumerable{T}"/> 对象。</param>
+        /// <param name="action">要对 <see cref="IEnumerable{T}"/> 中每个元素执行的操作。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>
+        /// 或 <paramref name="action"/> 为 <see langword="null"/>。</exception>
+        public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            foreach (var item in source)
+            {
+                action(item);
+            }
+        }
     }
 }

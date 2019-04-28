@@ -103,7 +103,7 @@ namespace XstarS.Collections.Generic
         /// <returns>将 <paramref name="source"/> 的键和值反转后的结果。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static IDictionary<TValue, ICollection<TKey>> Invert<TKey, TValue>(
+        public static IDictionary<TValue, ICollection<TKey>> Inverse<TKey, TValue>(
             this IDictionary<TKey, TValue> source,
             IEqualityComparer<TValue> valueComparer = null)
         {

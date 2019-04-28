@@ -48,7 +48,7 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 目前提供与 `XstarS.ComponentModel.BindableObject` 几乎完全一致的扩展方法。
 
-在类（非显式）实现 `System.ComponentModel.INotifyPropertyChanged` 接口后，
+在类实现 `System.ComponentModel.INotifyPropertyChanged` 接口后，
 即可在属性的 `set` 处直接调用 `SetProperty<T>(ref T, T, string)` 扩展方法以修改属性并触发属性更改事件。
 
 由于在类外部不能直接触发事件，扩展方法中的事件触发只能基于反射调用。

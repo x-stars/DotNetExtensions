@@ -121,6 +121,52 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
+        /// 使用指定的比较器将 <see cref="IList{T}"/> 中的元素按指定键进行排序。
+        /// </summary>
+        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
+        /// <typeparam name="TKey"></typeparam>
+        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
+        /// <param name="keySelector">用于从元素中提取键的函数。</param>
+        /// <param name="comparer">用于比较排序的 <see cref="IComparer{T}"/> 对象。</param>
+        /// <exception cref="ArgumentNullException">
+        /// 存在为 <see langword="null"/> 的参数。</exception>
+        public static void Sort<T, TKey>(this IList<T> source,
+            Func<T, TKey> keySelector, IComparer<TKey> comparer = null)
+        {
+            if (source is null)
+            {
+                throw new ArgumentNullException(nameof(source));
+            }
+            if (keySelector is null)
+            {
+                throw new ArgumentNullException(nameof(keySelector));
+            }
+            if (comparer is null)
+            {
+                throw new ArgumentNullException(nameof(comparer));
+            }
+
+            comparer = comparer ?? Comparer<TKey>.Default;
+
+            var list = source.ToList();
+            source.Clear();
+            source.AddRange(list.OrderBy(keySelector, comparer));
+        }
+
+        /// <summary>
+        /// 使用指定的比较器将 <see cref="IList{T}"/> 中的元素进行排序。
+        /// </summary>
+        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
+        /// <param name="comparer">用于比较排序的 <see cref="IComparer{T}"/> 对象。</param>
+        /// <exception cref="ArgumentNullException">
+        /// 存在为 <see langword="null"/> 的参数。</exception>
+        internal static void Sort<T>(this IList<T> source, IComparer<T> comparer = null)
+        {
+            source.Sort(item => item, comparer);
+        }
+
+        /// <summary>
         /// 将 <see cref="IList{T}"/> 中的元素随机重新排列。
         /// </summary>
         /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
