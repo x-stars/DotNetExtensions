@@ -161,7 +161,7 @@ namespace XstarS.ComponentModel
             {
                 var baseEventPropertyChanged =
                     typeof(INotifyPropertyChanged).GetEvent(nameof(INotifyPropertyChanged.PropertyChanged));
-                var fieldPropertyChanged = type.DefineDefaultEvent(baseEventPropertyChanged).Field;
+                var fieldPropertyChanged = type.DefineDefaultEvent(baseEventPropertyChanged).Value;
                 methodOnPropertyChanged = type.DefineOnPropertyChangedMethod(fieldPropertyChanged);
             }
             // 已实现 INotifyPropertyChanged 接口。
@@ -172,7 +172,7 @@ namespace XstarS.ComponentModel
                 // 未实现 PropertyChanged 事件。
                 if (!(baseEventPropertyChanged is null) && baseEventPropertyChanged.AddMethod.IsAbstract)
                 {
-                    var fieldPropertyChanged = type.DefineDefaultEvent(baseEventPropertyChanged).Field;
+                    var fieldPropertyChanged = type.DefineDefaultEvent(baseEventPropertyChanged).Value;
                     methodOnPropertyChanged = type.DefineOnPropertyChangedMethod(fieldPropertyChanged);
                 }
                 // 已实现 PropertyChanged 事件。

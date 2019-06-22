@@ -130,12 +130,12 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
         /// <param name="baseProperty">作为基础的属性的定义。</param>
-        /// <returns>一个二元组，依次为自动属性的定义及其对应的字段。</returns>
+        /// <returns>一个键值对，键为自动属性的定义，值为其对应的字段。</returns>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="ArgumentException"><paramref name="baseProperty"/> 是一个索引器。</exception>
         /// <exception cref="MethodAccessException">
         /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
-        internal static (PropertyBuilder Property, FieldBuilder Field) DefineDefaultProperty(
+        internal static KeyValuePair<PropertyBuilder, FieldBuilder> DefineDefaultProperty(
             this TypeBuilder source, PropertyInfo baseProperty)
         {
             // 参数检查。
@@ -222,7 +222,7 @@ namespace XstarS.ComponentModel
                 property.SetSetMethod(methodSet);
             }
 
-            return (property, field);
+            return new KeyValuePair<PropertyBuilder, FieldBuilder>(property, field);
         }
 
         /// <summary>
@@ -231,12 +231,12 @@ namespace XstarS.ComponentModel
         /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
         /// <param name="baseProperty">作为基础的属性的定义。</param>
         /// <param name="methodOnPropertyChanged"><code>void OnProperty(string)</code> 方法。</param>
-        /// <returns>一个二元组，依次为可绑定属性的定义及其对应的字段。</returns>
+        /// <returns>一个键值对，键为可绑定属性的定义，值为其对应的字段。</returns>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="ArgumentException"><paramref name="baseProperty"/> 是一个索引器。</exception>
         /// <exception cref="MethodAccessException">
         /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
-        internal static (PropertyBuilder Property, FieldBuilder Field) DefineBindableProperty(
+        internal static KeyValuePair<PropertyBuilder, FieldBuilder> DefineBindableProperty(
             this TypeBuilder source, PropertyInfo baseProperty, MethodInfo methodOnPropertyChanged)
         {
             // 参数检查。
@@ -342,7 +342,7 @@ namespace XstarS.ComponentModel
                 property.SetSetMethod(methodSet);
             }
 
-            return (property, field);
+            return new KeyValuePair<PropertyBuilder, FieldBuilder>(property, field);
         }
 
         /// <summary>
@@ -350,12 +350,12 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
         /// <param name="baseEvent">作为基础的事件的定义。</param>
-        /// <returns>一个二元组，依次为事件的定义及其对应的事件委托。</returns>
+        /// <returns>一个键值对，键为事件的定义，值为其对应的事件委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// 存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="MethodAccessException">
         /// <paramref name="baseEvent"/> 的方法无法在程序集外部重写。</exception>
-        internal static (EventBuilder Event, FieldBuilder Field) DefineDefaultEvent(
+        internal static KeyValuePair<EventBuilder, FieldBuilder> DefineDefaultEvent(
             this TypeBuilder source, EventInfo baseEvent)
         {
             // 参数检查。
@@ -483,7 +483,7 @@ namespace XstarS.ComponentModel
                 }
             }
 
-            return (@event, field);
+            return new KeyValuePair<EventBuilder, FieldBuilder>(@event, field);
         }
 
         /// <summary>
