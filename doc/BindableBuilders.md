@@ -195,13 +195,13 @@ public object AutoProperty { get; set; }
 
 * `IBindableBuilder<out T>`
 * `BindableBuilderBase<T>`
+  * `BindableBuilder`
   * `BindableBuilder<T>`
-  * `ObjectBindableBuilder`
 
 * `IBindableBuilder<out T>` 作为公共接口。
 * `BindableBuilderBase<T>` 实现 `IBindableBuilder<out T>`接口，提供基类实现。
+* `BindableBuilder` 继承 `BindableBuilderBase<System.Object>` 类，提供非泛型实现。
 * `BindableBuilder<T>` 继承 `BindableBuilderBase<T>` 类，提供泛型实现。
-* `ObjectBindableBuilder` 继承 `BindableBuilderBase<System.Object>` 类，提供非泛型实现。
 
 #### 接口设计
 
