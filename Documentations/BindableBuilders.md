@@ -16,18 +16,17 @@
 由于此接口仅包含一个 `PropertyChanged` 事件，按照标准的事件定义方法，此处应定义 `PropertyChanged` 事件及事件的触发方法 `OnPropertyChanged`。
 
 ``` CSharp
-// ...
 using System.ComponentModel;
-// ...
 
-public event PropertyChangedEventHandler PropertyChanged;
-
-protected virtual void OnPropertyChanged(string propertyName)
+public class BindingData : INotifyPropertyChanged
 {
-    this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-}
+    public event PropertyChangedEventHandler PropertyChanged;
 
-// ...
+    protected virtual void OnPropertyChanged(string propertyName)
+    {
+        this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}
 ```
 
 ### `PropertyChanged` 事件的触发方法
@@ -35,27 +34,28 @@ protected virtual void OnPropertyChanged(string propertyName)
 传统上，直接在属性的 `set` 处调用 `System.Void OnPropertyChanged(System.String)` 方法即可。
 
 ``` CSharp
-// ...
 using System.Collections.Generic;
-// ...
+using System.ComponentModel;
 
-private string text;
-
-public string Text
+public class BindingData : INotifyPropertyChanged
 {
-    get => this.text;
+    private string text;
 
-    set
+    public string Text
     {
-        if (!EqualityComparer<string>.Default.Equals(this.text, value))
+        get => this.text;
+        set
         {
-            this.text = value;
-            this.OnPropertyChanged(nameof(this.Text));
+            if (!EqualityComparer<string>.Default.Equals(this.text, value))
+            {
+                this.text = value;
+                this.OnPropertyChanged(nameof(this.Text));
+            }
         }
     }
-}
 
-// ...
+    // Event and On-Event method.
+}
 ```
 
 > 为避免频繁触发事件造成性能浪费，仅在当前值与新值不相等时触发 `PropertyChanged` 事件。
@@ -63,41 +63,48 @@ public string Text
 但容易发现，以上 `set` 处的代码可直接封装成一个泛型方法，我们将其命名为 `SetProperty`。
 
 ``` CSharp
-// ...
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
-// ...
 
-protected void SetProperty<T>(ref T item, T value,
-    [CallerMemberName] string propertyName = null)
+public class BindingData : INotifyPropertyChanged
 {
-    if (!EqualityComparer<T>.Default.Equals(item, value))
+    // Other members.
+
+    protected void SetProperty<T>(ref T item, T value,
+        [CallerMemberName] string propertyName = null)
     {
-        item = value;
-        this.OnPropertyChanged(propertyName);
+        if (!EqualityComparer<T>.Default.Equals(item, value))
+        {
+            item = value;
+            this.OnPropertyChanged(propertyName);
+        }
     }
 }
-
-// ...
 ```
 
 > `System.Runtime.CompilerServices.CallerMemberNameAttribute` 为 .NET Framework 4.5 中加入的新特性。
 > 当此特性用在 `System.String` 类型的可选参数上时，编译器将会自动给此参数输入**调用此方法的成员**的短名称（对于属性则是属性的名称）。
-> 详细请参见 <https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.compilerservices.callermembernameattribute>。
+> 详细请参见微软提供的文档：[CallerMemberNameAttribute Class](https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.compilerservices.callermembernameattribute)。
 
 定义此方法之后，属性的定义即可简化为如下所示。
 
 ``` CSharp
-// ...
+using System.Collections.Generic;
+using System.ComponentModel;
 
-private string text;
-
-public string Text
+public class BindingData : INotifyPropertyChanged
 {
-    get => this.text;
-    set => this.SetProperty(ref this.text, value);
-}
+    private string text;
 
-// ...
+    public string Text
+    {
+        get => this.text;
+        set => this.SetProperty(ref this.text, value);
+    }
+
+    // Event and On-Event method.
+    // SetProperty method.
+}
 ```
 
 > 以上方法已经被封装为 `XstarS.ComponentModel.BindableObject` 抽象类。
@@ -107,29 +114,28 @@ public string Text
 以下是 C# 中实现属性的两种方法：
 
 ``` CSharp
-// ...
-
-// 传统属性的字段部分。
-private object legacyProperty;
-
-// 传统属性的属性部分。
-public object LegacyProperty
+public class Properties
 {
-    get => this.legacyProperty;
-    set => this.legacyProperty = value;
+    // 传统属性的字段部分。
+    private object legacyProperty;
+
+    // 传统属性的属性部分。
+    public object LegacyProperty
+    {
+        get => this.legacyProperty;
+        set => this.legacyProperty = value;
+    }
+
+    // 自动属性。
+    public object AutoProperty { get; set; }
 }
-
-// 自动属性。
-public object AutoProperty { get; set; }
-
-// ...
 ```
 
-以上两种实现属性的方法完全等效，使用自动属性可以大大减少代码里，降低维护难度。
+以上两种实现属性的方法完全等效，使用自动属性可以大大减少代码量，降低维护难度。
 但对于用于数据绑定的属性而言，由于属性的 `set` 处的代码并不仅仅是设定字段的新值，因此无法使用自动属性实现。
 
 针对此种情况，本文提出解决方案为：
-定义一个原型类型，原型类型的属性均定义为自动属性或抽象属性；
+定义一个原型类型，原型类型的属性均定义为虚自动属性或抽象属性；
 由代码动态生成基于原型类型的数据绑定类型，并在数据绑定类型中实现属性的值发生更改时触发 `OnPropertyChanged` 事件。
 
 ### .NET 动态类型生成技术
@@ -198,6 +204,8 @@ public object AutoProperty { get; set; }
   * `BindableBuilder`
   * `BindableBuilder<T>`
 
+其中：
+
 * `IBindableBuilder<out T>` 作为公共接口。
 * `BindableBuilderBase<T>` 实现 `IBindableBuilder<out T>`接口，提供基类实现。
 * `BindableBuilder` 继承 `BindableBuilderBase<System.Object>` 类，提供非泛型实现。
@@ -227,10 +235,11 @@ namespace XstarS.ComponentModel
 从程序集到类型，中间还包含一个称为模块的结构，一个程序集可以包含多个模块（但通常仅包含一个模块）。
 因此，定义动态类型要经过程序集、模块，再到类型的三个步骤。
 
-使用 `System.Reflection.Emit.AssemblyBuilder` 的静态方法 `DefineDynamicAssembly` 即在当前应用程序域 (AppDomain) 定义一个动态程序集，
+使用 `System.Reflection.Emit.AssemblyBuilder` 的静态方法 `DefineDynamicAssembly` 定义一个动态程序集，
 而后继续使用 `DefineDynamicModule` 和 `DefineType` 方法即可实现动态类型的定义。
-反射发出 Emit 的基础教程可参考 <https://docs.microsoft.com/zh-cn/dotnet/framework/reflection-and-codedom/emitting-dynamic-methods-and-assemblies>。
+
+> 反射发出 Emit 的基础教程可参考微软提供的文档：[发出动态方法和程序集](https://docs.microsoft.com/zh-cn/dotnet/framework/reflection-and-codedom/emitting-dynamic-methods-and-assemblies)。
 
 #### 具体设计
 
-整个数据绑定类型构造器的具体设计请参见 XstarS.ComponentModel.Binding 工程源代码，此处不再详述。
+整个数据绑定类型构造器的具体设计请参见 [XstarS.ComponentModel.Binding](../XstarS.ComponentModel.Binding) 工程源代码，此处不再详述。
