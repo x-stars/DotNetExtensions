@@ -139,18 +139,14 @@ public class MainWindow : Window
 
 提供从原型构造用于数据绑定的实例的方法。
 
-`IsBindableOnly` 属性指定是否仅对有 `System.ComponentModel.BindableAttribute` 特性的属性构造绑定关系。
+* `BindableType` 属性返回构造完成的用于数据绑定的派生类型。
+* `CreateInstance()` 方法构造一个 `BindableType` 的实例。
+* `CreateInstance(object[])` 方法以指定参数构造一个 `BindableType` 的实例。
 
-`BindableType` 属性返回根据 `BindableOnly` 属性的指示构造完成的用于数据绑定的派生类型。
+### `XstarS.ComponentModel.IBindableBuilder<out T>` 的实现
 
-`CreateInstance()` 方法构造一个基于 `T` 类型的派生类的实例，并根据 `BindableOnly` 属性的指示，实现某些属性的数据绑定。
-
-`CreateInstance(object[])` 方法以指定参数构造一个基于 `T` 类型的派生类的实例，并根据 `BindableOnly` 属性的指示，实现某些属性的数据绑定。
-
-### `XstarS.ComponentModel.IBindableBuilder<out T>` 具体实现
-
-泛型类 `XstarS.ComponentModel.BindableBuilder<T>` 和类 `XstarS.ComponentModel.ObjectBindableBuilder`，
-提供接口 `XstarS.ComponentModel.IBindableBuilder<out T>` 的工厂方法。
+* `BindableBuilder` 提供非泛型实现。
+* `BindableBuilder<T>` 提供泛型实现。
 
 ### 动态生成使用说明
 
@@ -162,8 +158,6 @@ using System.ComponentModel;
 public interface IBindableData : INotifyPropertyChanged
 {
     int Value { get; set; }
-
-    [Bindable(true)]
     int BindingValue { get; set; }
 }
 ```
@@ -176,8 +170,9 @@ public interface IBindableData : INotifyPropertyChanged
 > 若基类中的属性或方法或未定义为 `virtual` 或 `abstract`，则在派生类仅隐藏了基类中对应的定义，并未重写。
 > 当派生类的实例声明为基类时，则会调用基类中定义的属性或方法。
 
-而后在设置绑定处通过 `Default` 或 `BindableOnly` 属性构造 `BindableBuilder<IBindableData>` 的实例，
-调用 `CreateInstance()` 方法构造基于原型接口 `IBindableData` 的实例。
+而后在设置绑定处通过 `Default` 属性获取 `BindableBuilder<IBindableData>` 的默认实例，
+或是以自定义属性筛选条件通过 `Custom` 方法创建 `BindableBuilder<IBindableData>` 的自定义实例，
+再调用 `CreateInstance` 方法构造基于原型接口 `IBindableData` 的实例。
 
 ``` CSharp
 // ......
@@ -186,13 +181,14 @@ using XstarS.ComponentModel;
 
 public class MainWindow : Window
 {
-    // ......
-
     public MainWindow()
     {
-        //var builder = BindableBuilder<IBindableData>.Default;  // 对所有属性设置绑定。
-        var builder = BindableBuilder<IBindableData>.BindableOnly;   // 仅对 Bindable 属性设置绑定。
-        this.BindingData = builder.CreateInstance();
+        // 对所有可重写属性设置绑定。
+        var defaultBuilder = BindableBuilder<IBindableData>.Default;
+        // 仅对名称以 Binding 开头的属性设置绑定。
+        var customBuilder = BindableBuilder<IBindableData>.Custom(
+            prop => prop.Name.StartsWith("Binding"));
+        this.BindingData = customBuilder.CreateInstance();
         // ......
         this.InitializeComponent();
     }
@@ -204,4 +200,4 @@ public class MainWindow : Window
 ```
 
 此时若更改 `MainWindow.BindingData` 的 `BindingValue` 属性会通知客户端属性发生更改，而更改 `Value` 属性则不会。
-若使用 `Default` 属性构造 `BindableBuilder<IBindableData>`，则两属性都会在发生更改时通知客户端。
+若使用 `defaultBuilder` 创建 `IBindableData` 的实例，则两属性都会在发生更改时通知客户端。

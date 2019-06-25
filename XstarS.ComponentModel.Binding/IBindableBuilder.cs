@@ -10,12 +10,6 @@ namespace XstarS.ComponentModel
     public interface IBindableBuilder<out T> where T : class
     {
         /// <summary>
-        /// 指示在构建用于数据绑定的动态类型时，
-        /// 是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。
-        /// </summary>
-        bool IsBindableOnly { get; }
-
-        /// <summary>
         /// 用于数据绑定的派生类型的 <see cref="Type"/> 对象。
         /// </summary>
         /// <exception cref="MissingMethodException">

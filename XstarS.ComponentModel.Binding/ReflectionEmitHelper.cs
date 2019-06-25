@@ -157,7 +157,7 @@ namespace XstarS.ComponentModel
                 throw new MethodAccessException();
             }
 
-            bool newSlot = baseProperty.DeclaringType.IsInterface;
+            var newSlot = baseProperty.DeclaringType.IsInterface;
 
             // 定义属性和字段。
             var propertyType = baseProperty.PropertyType;
@@ -262,7 +262,7 @@ namespace XstarS.ComponentModel
                 throw new MethodAccessException();
             }
 
-            bool newSlot = baseProperty.DeclaringType.IsInterface;
+            var newSlot = baseProperty.DeclaringType.IsInterface;
 
             // 定义属性和字段。
             var propertyType = baseProperty.PropertyType;
@@ -372,7 +372,7 @@ namespace XstarS.ComponentModel
                 throw new MethodAccessException();
             }
 
-            bool newSlot = baseEvent.DeclaringType.IsInterface;
+            var newSlot = baseEvent.DeclaringType.IsInterface;
 
             // 定义事件和委托。
             var eventType = baseEvent.EventHandlerType;
@@ -571,7 +571,7 @@ namespace XstarS.ComponentModel
                 throw new MethodAccessException();
             }
 
-            bool newSlot = baseMethod.DeclaringType.IsInterface;
+            var newSlot = baseMethod.DeclaringType.IsInterface;
 
             // 定义方法。
             var baseAttributes = baseMethod.Attributes;

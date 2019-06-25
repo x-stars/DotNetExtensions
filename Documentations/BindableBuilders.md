@@ -221,7 +221,6 @@ namespace XstarS.ComponentModel
 {
     public interface IBindableBuilder<out T> where T : class
     {
-        bool IsBindableOnly { get; }
         Type BindableType { get; }
         T CreateInstance();
         T CreateInstance(params object[] args);

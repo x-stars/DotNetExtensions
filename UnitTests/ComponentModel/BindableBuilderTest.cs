@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,6 +12,10 @@ namespace XstarS.ComponentModel
     [TestClass]
     public class BindableBuilderTest
     {
+        private readonly Predicate<PropertyInfo> HasBindableAttribute =
+            prop => prop.GetCustomAttributes(false).Any(
+                attr => (attr is BindableAttribute bAttr) && bAttr.Bindable);
+
         [TestMethod]
         public void BindableType_Singleton_IsThreadSafe()
         {
@@ -89,7 +95,8 @@ namespace XstarS.ComponentModel
         public void CreateInstance_ClassWithMethod_WorksProperly()
         {
             object i1 = new object(), i2 = new object(), i3 = new object(), i4 = new object();
-            var o = BindableBuilder<DisposableBinding<object>>.BindableOnly.CreateInstance(i1, i2);
+            var o = BindableBuilder<DisposableBinding<object>>.Custom(
+                this.HasBindableAttribute).CreateInstance(i1, i2);
             var l = new CloneableList<object>() { i3, i4 };
             Assert.AreSame(o.Value, i1);
             Assert.AreSame(o.BindableValue, i2);
@@ -112,7 +119,8 @@ namespace XstarS.ComponentModel
         public void PropertyChanged_BindableOnly_CallsHandlerOnce()
         {
             int i = 0;
-            var o = BindableBuilder<DisposableBindingBase<int>>.BindableOnly.CreateInstance();
+            var o = BindableBuilder<DisposableBindingBase<int>>.Custom(
+                this.HasBindableAttribute).CreateInstance();
             o.PropertyChanged += (sender, e) => i++;
             o.Value++; o.BindableValue++;
             Assert.AreEqual(i, 1);

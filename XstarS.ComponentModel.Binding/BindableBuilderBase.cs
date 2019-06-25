@@ -17,25 +17,10 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 初始化 <see cref="BindableBuilderBase{T}"/> 类的新实例。
         /// </summary>
-        protected BindableBuilderBase() : this(false) { }
-
-        /// <summary>
-        /// 初始化 <see cref="BindableBuilderBase{T}"/> 类的新实例，
-        /// 并指定是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。
-        /// </summary>
-        /// <param name="bindableOnly">指示在构建用于数据绑定的动态类型时，
-        /// 是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。</param>
-        protected BindableBuilderBase(bool bindableOnly)
+        protected BindableBuilderBase()
         {
-            this.IsBindableOnly = bindableOnly;
             this.LazyBindableType = new Lazy<Type>(this.BuildBindableType);
         }
-
-        /// <summary>
-        /// 指示在构建用于数据绑定的动态类型时，
-        /// 是否仅对有 <see cref="BindableAttribute"/> 特性的属性设定数据绑定。
-        /// </summary>
-        public bool IsBindableOnly { get; }
 
         /// <summary>
         /// 用于数据绑定的派生类型的 <see cref="Type"/> 对象。
