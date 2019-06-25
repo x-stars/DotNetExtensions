@@ -5,21 +5,21 @@ using System.Reflection;
 namespace XstarS.Reflection
 {
     /// <summary>
-    /// 提供从原型类型和代理委托动态构造代理派生类型及其实例的方法。
+    /// 提供从原型类型和代理委托构造代理派生类型及其实例的方法。
     /// </summary>
     /// <typeparam name="T">代理类型的原型类型，应为接口或非密封类。</typeparam>
-    public class DynamicProxyBuilder<T> : ProxyBuilderBase<T> where T : class
+    public sealed class CustomProxyBuilder<T> : ProxyBuilderBase<T> where T : class
     {
         /// <summary>
-        /// 初始化 <see cref="DynamicProxyBuilder{T}"/> 类的新实例。
+        /// 初始化 <see cref="CustomProxyBuilder{T}"/> 类的新实例。
         /// </summary>
         /// <exception cref="TypeAccessException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
-        internal DynamicProxyBuilder()
+        public CustomProxyBuilder()
         {
             var type = typeof(T);
             this.PrototypeType = type;
-            this.InternalBuilder = DynamicProxyBuilder.Create(type);
+            this.InternalBuilder = new CustomProxyBuilder(type);
         }
 
         /// <summary>
@@ -28,53 +28,9 @@ namespace XstarS.Reflection
         public Type PrototypeType { get; }
 
         /// <summary>
-        /// 用于构造代理类型的 <see cref="DynamicProxyBuilder"/> 对象。
+        /// 用于构造代理类型的 <see cref="CustomProxyBuilder"/> 对象。
         /// </summary>
-        internal DynamicProxyBuilder InternalBuilder { get; }
-
-        /// <summary>
-        /// 以 <typeparamref name="T"/> 为原型类型创建一个 <see cref="DynamicProxyBuilder{T}"/> 类的实例。
-        /// </summary>
-        /// <returns>以 <typeparamref name="T"/> 为原型类型的
-        /// <see cref="DynamicProxyBuilder{T}"/> 类的实例。</returns>
-        /// <exception cref="TypeAccessException">
-        /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
-        public static DynamicProxyBuilder<T> Create() => new DynamicProxyBuilder<T>();
-
-        /// <summary>
-        /// 以 <typeparamref name="T"/> 为原型类型创建一个 <see cref="DynamicProxyBuilder{T}"/> 类的实例，
-        /// 并将指定 <see cref="OnInvokeHandler"/> 代理委托添加到所有可重写方法。
-        /// </summary>
-        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
-        /// <returns>以 <typeparamref name="T"/> 为原型类型的 <see cref="DynamicProxyBuilder{T}"/> 类的实例，
-        /// 其中 <paramref name="handler"/> 代理委托已添加到所有可重写方法。</returns>
-        /// <exception cref="TypeAccessException">
-        /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
-        public static DynamicProxyBuilder<T> Create(OnInvokeHandler handler)
-        {
-            var builder = DynamicProxyBuilder<T>.Create();
-            builder.AddOnInvoke(handler);
-            return builder;
-        }
-
-        /// <summary>
-        /// 以 <typeparamref name="T"/> 为原型类型创建一个 <see cref="DynamicProxyBuilder{T}"/> 类的实例，
-        /// 并根据指定规则将指定 <see cref="OnInvokeHandler"/> 代理委托添加到可重写方法。
-        /// </summary>
-        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
-        /// <param name="methodFilter">筛选要添加代理委托的方法的 <see cref="Predicate{T}"/> 委托。</param>
-        /// <returns>以 <typeparamref name="T"/> 为原型类型的 <see cref="DynamicProxyBuilder{T}"/> 类的实例，
-        /// 其中 <paramref name="handler"/> 代理委托已根据
-        /// <paramref name="methodFilter"/> 的指示添加到可重写方法。</returns>
-        /// <exception cref="TypeAccessException">
-        /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
-        public static DynamicProxyBuilder<T> Create(
-            OnInvokeHandler handler, Predicate<MethodInfo> methodFilter)
-        {
-            var builder = DynamicProxyBuilder<T>.Create();
-            builder.AddOnInvoke(handler, methodFilter);
-            return builder;
-        }
+        private CustomProxyBuilder InternalBuilder { get; }
 
         /// <summary>
         /// 将指定 <see cref="OnInvokeHandler"/> 代理委托添加到指定的可重写方法。

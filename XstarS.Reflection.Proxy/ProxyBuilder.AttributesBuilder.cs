@@ -6,11 +6,11 @@ using System.Reflection.Emit;
 
 namespace XstarS.Reflection
 {
-    public partial class ProxyBuilder
+    public sealed partial class ProxyBuilder
     {
-        private class AttributesTypeBuilder
+        private sealed class AttributesBuilder
         {
-            internal AttributesTypeBuilder(ProxyBuilder proxyBuilder)
+            internal AttributesBuilder(ProxyBuilder proxyBuilder)
             {
                 this.ProxyBuilder = proxyBuilder;
                 this.BuildAttributesType();
@@ -18,7 +18,7 @@ namespace XstarS.Reflection
 
             internal ProxyBuilder ProxyBuilder { get; }
 
-            internal TypeBuilder AttributesType { get; private set; }
+            internal TypeBuilder AttributesTypeBuilder { get; private set; }
 
             internal FieldBuilder[] OnMemberInvokeFields { get; private set; }
 
@@ -36,24 +36,24 @@ namespace XstarS.Reflection
                 this.DefineMethodAttributesTypes();
 
                 // 完成类型创建。
-                this.AttributesType.CreateTypeInfo();
+                this.AttributesTypeBuilder.CreateTypeInfo();
             }
 
             private void DefineAttributesType()
             {
-                var objectProxyType = this.ProxyBuilder.ObjectProxyType;
+                var objectProxyType = this.ProxyBuilder.ProxyTypeBuilder;
 
                 // 定义存储代理特性的类型。
                 var attributesType = objectProxyType.DefineNestedType($"<{nameof(Attribute)}>",
                     TypeAttributes.Class | TypeAttributes.NestedAssembly |
                     TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
-                this.AttributesType = attributesType;
+                this.AttributesTypeBuilder = attributesType;
             }
 
             private void DefineOnMemberInvokeFields()
             {
                 var baseType = this.ProxyBuilder.PrototypeType;
-                var attributesType = this.AttributesType;
+                var attributesType = this.AttributesTypeBuilder;
 
                 // 获取相关特性。
                 var onMemberInvokeAttributes =
@@ -109,8 +109,8 @@ namespace XstarS.Reflection
                 // 依次为每个方法定义代理特性存储类。
                 foreach (var baseMethod in baseMethods)
                 {
-                    var methodAttributesTypeBuilder = new MethodAttributesTypeBuilder(this, baseMethod);
-                    methodAttributesTypes[baseMethod] = methodAttributesTypeBuilder.MethodAttributesType;
+                    var methodAttributesTypeBuilder = new MethodAttributesBuilder(this, baseMethod);
+                    methodAttributesTypes[baseMethod] = methodAttributesTypeBuilder.MethodAttributesTypeBuilder;
                     methodsOnMethodInvokeFields[baseMethod] = methodAttributesTypeBuilder.OnMethodInvokeFields;
                 }
 
@@ -118,21 +118,21 @@ namespace XstarS.Reflection
                 this.MethodsOnMethodInvokeFields = methodsOnMethodInvokeFields;
             }
 
-            private class MethodAttributesTypeBuilder
+            private class MethodAttributesBuilder
             {
-                internal MethodAttributesTypeBuilder(
-                    AttributesTypeBuilder attributesTypeBuilder, MethodInfo baseMethod)
+                internal MethodAttributesBuilder(
+                    AttributesBuilder attributesTypeBuilder, MethodInfo baseMethod)
                 {
-                    this.AttributesTypeBuilder = attributesTypeBuilder;
+                    this.AttributesBuilder = attributesTypeBuilder;
                     this.BaseMethod = baseMethod;
                     this.BuildMethodAttributesType();
                 }
 
-                internal AttributesTypeBuilder AttributesTypeBuilder { get; }
+                internal AttributesBuilder AttributesBuilder { get; }
 
                 internal MethodInfo BaseMethod { get; }
 
-                internal TypeBuilder MethodAttributesType { get; private set; }
+                internal TypeBuilder MethodAttributesTypeBuilder { get; private set; }
 
                 internal FieldBuilder[] OnMethodInvokeFields { get; private set; }
 
@@ -147,7 +147,7 @@ namespace XstarS.Reflection
                     // 对于不包含方法代理特性的方法则直接返回空引用。
                     if (onMethodInvokeAttributes.Length == 0)
                     {
-                        this.MethodAttributesType = null;
+                        this.MethodAttributesTypeBuilder = null;
                         this.OnMethodInvokeFields = Array.Empty<FieldBuilder>();
                         return;
                     }
@@ -159,26 +159,26 @@ namespace XstarS.Reflection
                     this.DefineOnMethodInvokeFields();
 
                     // 完成类型创建。
-                    this.MethodAttributesType.CreateTypeInfo();
+                    this.MethodAttributesTypeBuilder.CreateTypeInfo();
                 }
 
                 private void DefineMethodAttributesType()
                 {
                     var baseMethod = this.BaseMethod;
-                    var attributesType = this.AttributesTypeBuilder.AttributesType;
+                    var attributesType = this.AttributesBuilder.AttributesTypeBuilder;
 
                     // 定义保存方法代理特性的类型。
                     var methodAttributesType = attributesType.DefineNestedType(
                         $"{baseMethod.Name}#{baseMethod.MethodHandle.Value.ToString()}",
                         TypeAttributes.Class | TypeAttributes.NestedAssembly |
                         TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
-                    this.MethodAttributesType = methodAttributesType;
+                    this.MethodAttributesTypeBuilder = methodAttributesType;
                 }
 
                 private void DefineOnMethodInvokeFields()
                 {
                     var baseMethod = this.BaseMethod;
-                    var methodAttributesType = this.MethodAttributesType;
+                    var methodAttributesType = this.MethodAttributesTypeBuilder;
 
                     // 获取相关特性。
                     var onMethodInvokeAttributes =

@@ -8,9 +8,9 @@ using System.Reflection.Emit;
 namespace XstarS.Reflection
 {
     /// <summary>
-    /// 提供从指定原型类型和代理委托动态构造代理派生类型及其实例的方法。
+    /// 提供从指定原型类型和代理委托构造代理派生类型及其实例的方法。
     /// </summary>
-    public class DynamicProxyBuilder : ProxyBuilderBase<object>
+    public sealed class CustomProxyBuilder : ProxyBuilderBase<object>
     {
         /// <summary>
         /// 用于 <see cref="InvokeDelegateOnMethodInvokeAttribute"/> 特性的
@@ -20,18 +20,19 @@ namespace XstarS.Reflection
             new ConcurrentDictionary<Guid, OnInvokeHandler>();
 
         /// <summary>
-        /// 以指定类型为原型类型初始化 <see cref="DynamicProxyBuilder"/> 类的新实例。
+        /// 以指定类型为原型类型初始化 <see cref="CustomProxyBuilder"/> 类的新实例。
         /// </summary>
         /// <param name="type">作为原型类型的 <see cref="Type"/> 对象，应为非抽象非密封类。</param>
         /// <exception cref="TypeAccessException">
         /// <paramref name="type"/> 不为公共非抽象非密封类。</exception>
-        internal DynamicProxyBuilder(Type type)
+        public CustomProxyBuilder(Type type)
         {
             if (!(((type.IsClass && !type.IsSealed) || type.IsInterface) &&
                 type.IsVisible && !type.ContainsGenericParameters))
             {
                 throw new TypeAccessException();
             }
+
             this.PrototypeType = type;
             this.InitializeBaseMethods();
         }
@@ -44,74 +45,27 @@ namespace XstarS.Reflection
         /// <summary>
         /// 原型类型中所有可在程序集外部重写的方法。
         /// </summary>
-        internal MethodInfo[] BaseMethods { get; private set; }
+        private MethodInfo[] BaseMethods { get; set; }
 
         /// <summary>
         /// 代理特性类型中方法对应的 <see cref="OnInvokeHandler"/> 代理委托的 <see cref="Guid"/>。
         /// </summary>
-        internal Dictionary<MethodInfo, List<Guid>> MethodHandlerGuids { get; private set; }
+        private IDictionary<MethodInfo, List<Guid>> MethodHandlerGuids { get; set; }
 
         /// <summary>
         /// 代理特性类型的 <see cref="TypeBuilder"/> 对象。
         /// </summary>
-        internal TypeBuilder CustomProxyBaseType { get; private set; }
+        private TypeBuilder ProxyBaseTypeBuilder { get; set; }
 
         /// <summary>
         /// 代理特性类型的 <see cref="Type"/> 对象。
         /// </summary>
-        internal Type ProxyBaseType { get; private set; }
+        private Type ProxyBaseType { get; set; }
 
         /// <summary>
         /// 用于构造代理类型的 <see cref="ProxyBuilder"/> 对象。
         /// </summary>
-        internal ProxyBuilder InternalBuilder { get; private set; }
-
-        /// <summary>
-        /// 以指定类型为原型类型创建一个 <see cref="DynamicProxyBuilder"/> 类的实例。
-        /// </summary>
-        /// <param name="type">作为原型类型的 <see cref="Type"/> 对象。</param>
-        /// <returns>以 <paramref name="type"/> 为原型类型的
-        /// <see cref="DynamicProxyBuilder"/> 类的实例。</returns>
-        /// <exception cref="TypeAccessException">
-        /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
-        public static DynamicProxyBuilder Create(Type type) => new DynamicProxyBuilder(type);
-
-        /// <summary>
-        /// 以指定类型为原型类型创建一个 <see cref="DynamicProxyBuilder"/> 类的实例，
-        /// 并将指定 <see cref="OnInvokeHandler"/> 代理委托添加到所有可重写方法。
-        /// </summary>
-        /// <param name="type">作为原型类型的 <see cref="Type"/> 对象。</param>
-        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
-        /// <returns>以 <paramref name="type"/> 为原型类型的 <see cref="DynamicProxyBuilder"/> 类的实例，
-        /// 其中 <paramref name="handler"/> 代理委托已添加到所有可重写方法。</returns>
-        /// <exception cref="TypeAccessException">
-        /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
-        public static DynamicProxyBuilder Create(Type type, OnInvokeHandler handler)
-        {
-            var builder = DynamicProxyBuilder.Create(type);
-            builder.AddOnInvoke(handler);
-            return builder;
-        }
-
-        /// <summary>
-        /// 以指定类型为原型类型创建一个 <see cref="DynamicProxyBuilder"/> 类的实例，
-        /// 并根据指定规则将指定 <see cref="OnInvokeHandler"/> 代理委托添加到可重写方法。
-        /// </summary>
-        /// <param name="type">作为原型类型的 <see cref="Type"/> 对象。</param>
-        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
-        /// <param name="methodFilter">筛选要添加代理委托的方法的 <see cref="Predicate{T}"/> 委托。</param>
-        /// <returns>以 <paramref name="type"/> 为原型类型的 <see cref="DynamicProxyBuilder"/> 类的实例，
-        /// 其中 <paramref name="handler"/> 代理委托已根据
-        /// <paramref name="methodFilter"/> 的指示添加到可重写方法。</returns>
-        /// <exception cref="TypeAccessException">
-        /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
-        public static DynamicProxyBuilder Create(
-            Type type, OnInvokeHandler handler, Predicate<MethodInfo> methodFilter)
-        {
-            var builder = DynamicProxyBuilder.Create(type);
-            builder.AddOnInvoke(handler, methodFilter);
-            return builder;
-        }
+        private ProxyBuilder InternalBuilder { get; set; }
 
         /// <summary>
         /// 获取被分配了指定 <see cref="Guid"/> 的 <see cref="OnInvokeHandler"/> 委托。
@@ -119,7 +73,7 @@ namespace XstarS.Reflection
         /// </summary>
         /// <param name="guid"><see cref="OnInvokeHandler"/> 委托对应的 <see cref="Guid"/>。</param>
         /// <returns>被分配了指定 <see cref="Guid"/> 的 <see cref="OnInvokeHandler"/> 委托。</returns>
-        public static OnInvokeHandler GetHandler(Guid guid) => DynamicProxyBuilder.Handlers[guid];
+        public static OnInvokeHandler GetHandler(Guid guid) => CustomProxyBuilder.Handlers[guid];
 
         /// <summary>
         /// 将指定 <see cref="OnInvokeHandler"/> 代理委托添加到指定的可重写方法。
@@ -151,7 +105,7 @@ namespace XstarS.Reflection
             }
 
             var handlerGuid = Guid.NewGuid();
-            DynamicProxyBuilder.Handlers[handlerGuid] = handler;
+            CustomProxyBuilder.Handlers[handlerGuid] = handler;
             this.MethodHandlerGuids[method].Add(handlerGuid);
         }
 
@@ -238,6 +192,18 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
+        /// 构造代理派生类型。
+        /// </summary>
+        /// <returns>构造完成的派生类型。</returns>
+        protected override Type BuildProxyType()
+        {
+            this.BuildProxyBaseType();
+
+            this.InternalBuilder = ProxyBuilder.Default(this.ProxyBaseType);
+            return this.InternalBuilder.ProxyType;
+        }
+
+        /// <summary>
         /// 初始化原型类型中可以重写的方法成员信息。
         /// </summary>
         private void InitializeBaseMethods()
@@ -260,7 +226,7 @@ namespace XstarS.Reflection
             this.DefineConstructors();
             this.DefineOverrideMethods();
 
-            this.ProxyBaseType = this.CustomProxyBaseType.CreateTypeInfo();
+            this.ProxyBaseType = this.ProxyBaseTypeBuilder.CreateTypeInfo();
         }
 
         /// <summary>
@@ -271,7 +237,7 @@ namespace XstarS.Reflection
             var baseType = this.PrototypeType;
 
             // 定义动态程序集。
-            var asmName = $"{baseType.ToString()}#{this.GetHashCode().ToString()}";
+            var asmName = $"{baseType.ToString()}(ProxyBase#{this.GetHashCode().ToString()})";
             var assembly = AssemblyBuilder.DefineDynamicAssembly(
                 new AssemblyName(asmName), AssemblyBuilderAccess.Run);
             var module = assembly.DefineDynamicModule($"{asmName}.dll");
@@ -290,9 +256,9 @@ namespace XstarS.Reflection
             var genericArgumentNames = Array.ConvertAll(
                 baseGenericArgumentNames, name => name.Replace('.', '-').Replace('+', '-'));
             var typeName = (!(@namespace is null) ? $"{@namespace}." : "") + 
-                $"{string.Join("-", typeNames)}" +
+                $"<ProxyBase>{string.Join("-", typeNames)}" +
                 (baseType.IsGenericType ? $"<{string.Join(",", genericArgumentNames)}>" : "") +
-                $"(Dynamic#{this.GetHashCode().ToString()})";
+                $"#{this.GetHashCode().ToString()}";
 
             // 获取原型类型信息。
             bool isInterface = baseType.IsInterface;
@@ -301,11 +267,11 @@ namespace XstarS.Reflection
                 baseType.GetInterfaces().Concat(new[] { baseType }).ToArray();
 
             // 定义动态类型。
-            var objectProxyType = module.DefineType(typeName,
-                TypeAttributes.Class | TypeAttributes.Public |
+            var customProxyBaseType = module.DefineType(typeName,
+                TypeAttributes.Class | TypeAttributes.Public | TypeAttributes.Abstract |
                 TypeAttributes.Serializable | TypeAttributes.BeforeFieldInit,
                 parent, interfaces);
-            this.CustomProxyBaseType = objectProxyType;
+            this.ProxyBaseTypeBuilder = customProxyBaseType;
         }
 
         /// <summary>
@@ -314,7 +280,7 @@ namespace XstarS.Reflection
         private void DefineConstructors()
         {
             var baseType = this.PrototypeType;
-            var objectProxyType = this.CustomProxyBaseType;
+            var objectProxyType = this.ProxyBaseTypeBuilder;
 
             bool isInterface = baseType.IsInterface;
             var parent = !isInterface ? baseType : typeof(object);
@@ -344,9 +310,11 @@ namespace XstarS.Reflection
         /// <summary>
         /// 定义添加 <see cref="InvokeDelegateOnMethodInvokeAttribute"/> 特性的方法，并重写原型类型中的对应方法。
         /// </summary>
+        /// <param name="baseMethod">
+        /// 要添加 <see cref="InvokeDelegateOnMethodInvokeAttribute"/> 特性的方法在原型类型中对应的方法。</param>
         private void DefineAttributesOverrideMethods(MethodInfo baseMethod)
         {
-            var objectProxyType = this.CustomProxyBaseType;
+            var objectProxyType = this.ProxyBaseTypeBuilder;
             var methodHandlerGuids = this.MethodHandlerGuids;
 
             var method = objectProxyType.DefineDefaultOverrideMethod(baseMethod);
@@ -359,18 +327,6 @@ namespace XstarS.Reflection
                     new object[] { handlerGuid.ToString() });
                 method.SetCustomAttribute(attribute);
             }
-        }
-
-        /// <summary>
-        /// 构造代理派生类型。
-        /// </summary>
-        /// <returns>构造完成的派生类型。</returns>
-        protected override Type BuildProxyType()
-        {
-            this.BuildProxyBaseType();
-
-            this.InternalBuilder = ProxyBuilder.Default(this.ProxyBaseType);
-            return this.InternalBuilder.ProxyType;
         }
     }
 }

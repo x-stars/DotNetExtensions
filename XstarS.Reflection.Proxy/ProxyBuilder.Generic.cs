@@ -6,7 +6,7 @@ namespace XstarS.Reflection
     /// 提供从原型类型构造用于代理派生类型及其实例的方法。
     /// </summary>
     /// <typeparam name="T">代理类型的原型类型，应为接口或非密封类。</typeparam>
-    public class ProxyBuilder<T> : ProxyBuilderBase<T> where T : class
+    public sealed class ProxyBuilder<T> : ProxyBuilderBase<T> where T : class
     {
         /// <summary>
         /// <see cref="ProxyBuilder{T}.Default"/> 的延迟初始化值。
@@ -19,7 +19,7 @@ namespace XstarS.Reflection
         /// </summary>
         /// <exception cref="TypeAccessException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
-        internal ProxyBuilder()
+        private ProxyBuilder()
         {
             var type = typeof(T);
             this.PrototypeType = type;
@@ -34,7 +34,7 @@ namespace XstarS.Reflection
         /// <summary>
         /// 用于构造代理类型的 <see cref="ProxyBuilder"/> 对象。
         /// </summary>
-        internal ProxyBuilder InternalBuilder { get; }
+        private ProxyBuilder InternalBuilder { get; }
 
         /// <summary>
         /// 返回一个默认的 <see cref="ProxyBuilder{T}"/> 类的实例。
