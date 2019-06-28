@@ -14,11 +14,10 @@ namespace XstarS.ComponentModel
     public sealed class BindableBuilder : BindableBuilderBase<object>
     {
         /// <summary>
-        /// 对所有可重写属性设置数据绑定的
-        /// <see cref="BindableBuilder"/> 类的实例的存储对象。
+        /// <see cref="BindableBuilder.Default(Type)"/> 的延迟初始化值。
         /// </summary>
         private static readonly ConcurrentDictionary<Type, Lazy<BindableBuilder>>
-            LazyDefaultOfTypes = new ConcurrentDictionary<Type, Lazy<BindableBuilder>>();
+            LazyDefaults = new ConcurrentDictionary<Type, Lazy<BindableBuilder>>();
 
         /// <summary>
         /// 以指定原型类型初始化 <see cref="BindableBuilder"/> 类的新实例。
@@ -100,7 +99,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="TypeAccessException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         public static BindableBuilder Default(Type type) =>
-            BindableBuilder.LazyDefaultOfTypes.GetOrAdd(type,
+            BindableBuilder.LazyDefaults.GetOrAdd(type,
                 newType => new Lazy<BindableBuilder>(
                     () => new BindableBuilder(newType))).Value;
 

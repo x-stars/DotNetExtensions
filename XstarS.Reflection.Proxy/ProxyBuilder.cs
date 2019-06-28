@@ -13,10 +13,10 @@ namespace XstarS.Reflection
     public sealed partial class ProxyBuilder : ProxyBuilderBase<object>
     {
         /// <summary>
-        /// <see cref="ProxyBuilder"/> 类的实例的存储对象。
+        /// <see cref="ProxyBuilder.Default(Type)"/> 的延迟初始化值。
         /// </summary>
         private static readonly ConcurrentDictionary<Type, Lazy<ProxyBuilder>>
-            LazyDefaultOfTypes = new ConcurrentDictionary<Type, Lazy<ProxyBuilder>>();
+            LazyDefaults = new ConcurrentDictionary<Type, Lazy<ProxyBuilder>>();
 
         /// <summary>
         /// 以指定类型为原型类型初始化 <see cref="ProxyBuilder"/> 类的新实例。
@@ -79,7 +79,7 @@ namespace XstarS.Reflection
         /// <exception cref="TypeAccessException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         public static ProxyBuilder Default(Type type) =>
-            ProxyBuilder.LazyDefaultOfTypes.GetOrAdd(type,
+            ProxyBuilder.LazyDefaults.GetOrAdd(type,
                 newType => new Lazy<ProxyBuilder>(
                     () => new ProxyBuilder(newType))).Value;
 

@@ -11,7 +11,7 @@ namespace XstarS.ComponentModel
     public sealed class BindableBuilder<T> : BindableBuilderBase<T> where T : class
     {
         /// <summary>
-        /// <see cref="BindableBuilder{T}.Default"/> 的延迟初始化对象。
+        /// <see cref="BindableBuilder{T}.Default"/> 的延迟初始化值。
         /// </summary>
         private static readonly Lazy<BindableBuilder<T>> LazyDefault =
             new Lazy<BindableBuilder<T>>(() => new BindableBuilder<T>());
