@@ -9,13 +9,14 @@ namespace XstarS
         /// <summary>
         /// 验证枚举值是否是一个有效的枚举值。
         /// </summary>
-        /// <typeparam name="T">待验证的参数的类型。</typeparam>
-        /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
+        /// <typeparam name="T">待验证的对象的类型。</typeparam>
+        /// <param name="valueInfo">要验证的对象的值和名称。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
-        /// <returns><paramref name="source"/> 本身。</returns>
+        /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="source"/> 的值不为有效的枚举值。</exception>
-        public static IValidate<T> IsValidEnum<T>(this IValidate<T> source,
+        /// <paramref name="valueInfo"/> 的值不为有效的枚举值。</exception>
+        public static IValueInfo<T> IsValidEnum<T>(
+            this IValueInfo<T> valueInfo,
             string message = null)
             where T : struct
         {
@@ -27,20 +28,20 @@ namespace XstarS
                 {
                     allValues |= Convert.ToInt64(value);
                 }
-                if ((allValues | Convert.ToInt64(source.Value)) != allValues)
+                if ((allValues | Convert.ToInt64(valueInfo.Value)) != allValues)
                 {
-                    ThrowHelper.ThrowArgumentOutOfRangeException(source.Name, source.Value, message);
+                    ThrowHelper.ThrowArgumentOutOfRangeException(valueInfo.Name, valueInfo.Value, message);
                 }
             }
             else
             {
-                if (!Enum.GetValues(typeof(T)).Cast<T>().Contains(source.Value))
+                if (!Enum.GetValues(typeof(T)).Cast<T>().Contains(valueInfo.Value))
                 {
-                    ThrowHelper.ThrowArgumentOutOfRangeException(source.Name, source.Value, message);
+                    ThrowHelper.ThrowArgumentOutOfRangeException(valueInfo.Name, valueInfo.Value, message);
                 }
             }
 
-            return source;
+            return valueInfo;
         }
     }
 }

@@ -10,170 +10,178 @@ namespace XstarS
         /// 验证对象是否等于指定值。
         /// </summary>
         /// <typeparam name="T">待验证的对象的类型。</typeparam>
-        /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
+        /// <param name="valueInfo">要验证的对象的值和名称。</param>
         /// <param name="value">对象应等于的值。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
-        /// <returns><paramref name="source"/> 本身。</returns>
+        /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值不等于 <paramref name="value"/>。</exception>
-        public static IValidate<T> EqualsTo<T>(this IValidate<T> source,
+        /// <paramref name="valueInfo"/> 的值不等于 <paramref name="value"/>。</exception>
+        public static IValueInfo<T> EqualsTo<T>(
+            this IValueInfo<T> valueInfo,
             T value,
             string message = null)
         {
-            if (!EqualityComparer<T>.Default.Equals(source.Value, value))
+            if (!EqualityComparer<T>.Default.Equals(valueInfo.Value, value))
             {
-                ThrowHelper.ThrowArgumentException(source.Name, message);
+                ThrowHelper.ThrowArgumentException(valueInfo.Name, message);
             }
 
-            return source;
+            return valueInfo;
         }
 
         /// <summary>
         /// 验证对象是否不等于指定值。
         /// </summary>
         /// <typeparam name="T">待验证的对象的类型。</typeparam>
-        /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
+        /// <param name="valueInfo">要验证的对象的值和名称。</param>
         /// <param name="value">对象不应等于的值。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
-        /// <returns><paramref name="source"/> 本身。</returns>
+        /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值等于 <paramref name="value"/>。</exception>
-        public static IValidate<T> NotEqualsTo<T>(this IValidate<T> source,
+        /// <paramref name="valueInfo"/> 的值等于 <paramref name="value"/>。</exception>
+        public static IValueInfo<T> NotEqualsTo<T>(
+            this IValueInfo<T> valueInfo,
             T value,
             string message = null)
         {
-            if (EqualityComparer<T>.Default.Equals(source.Value, value))
+            if (EqualityComparer<T>.Default.Equals(valueInfo.Value, value))
             {
-                ThrowHelper.ThrowArgumentException(source.Name, message);
+                ThrowHelper.ThrowArgumentException(valueInfo.Name, message);
             }
 
-            return source;
+            return valueInfo;
         }
 
         /// <summary>
         /// 验证对象是否不等于 <see langword="null"/>。
         /// </summary>
         /// <typeparam name="T">待验证的对象的类型。</typeparam>
-        /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
+        /// <param name="valueInfo">要验证的对象的值和名称。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
-        /// <returns><paramref name="source"/> 本身。</returns>
+        /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 的值等于 <see langword="null"/>。</exception>
-        public static IValidate<T> NotEqualsToNull<T>(this IValidate<T> source,
+        /// <paramref name="valueInfo"/> 的值等于 <see langword="null"/>。</exception>
+        public static IValueInfo<T> NotEqualsToNull<T>(
+            this IValueInfo<T> valueInfo,
             string message = null)
         {
-            if (object.Equals(source.Value, null))
+            if (object.Equals(valueInfo.Value, null))
             {
-                ThrowHelper.ThrowArgumentNullException(source.Name, message);
+                ThrowHelper.ThrowArgumentNullException(valueInfo.Name, message);
             }
 
-            return source;
+            return valueInfo;
         }
 
         /// <summary>
         /// 验证对象是否为指定类型的实例。
         /// </summary>
         /// <typeparam name="T">对象期望的类型。</typeparam>
-        /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
+        /// <param name="valueInfo">要验证的对象的值和名称。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
-        /// <returns><paramref name="source"/> 本身。</returns>
+        /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值不为 <typeparamref name="T"/> 类型的实例。</exception>
-        public static IValidate<object> IsInstanceOf<T>(this IValidate<object> source,
+        /// <paramref name="valueInfo"/> 的值不为 <typeparamref name="T"/> 类型的实例。</exception>
+        public static IValueInfo<object> IsInstanceOf<T>(
+            this IValueInfo<object> valueInfo,
             string message = null)
         {
-            if (!(source.Value is T))
+            if (!(valueInfo.Value is T))
             {
-                ThrowHelper.ThrowArgumentException(source.Name, message,
+                ThrowHelper.ThrowArgumentException(valueInfo.Name, message,
                     new InvalidCastException());
             }
 
-            return source;
+            return valueInfo;
         }
 
         /// <summary>
         /// 验证对象是否为指定类型的实例。
         /// </summary>
-        /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
+        /// <param name="valueInfo">要验证的对象的值和名称。</param>
         /// <param name="type">对象期望的类型。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
-        /// <returns><paramref name="source"/> 本身。</returns>
+        /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值不为 <paramref name="type"/> 类型的实例。</exception>
-        public static IValidate<object> IsInstanceOf(this IValidate<object> source,
+        /// <paramref name="valueInfo"/> 的值不为 <paramref name="type"/> 类型的实例。</exception>
+        public static IValueInfo<object> IsInstanceOf(
+            this IValueInfo<object> valueInfo,
             Type type,
             string message = null)
         {
-            if (!type.IsInstanceOfType(source.Value))
+            if (!type.IsInstanceOfType(valueInfo.Value))
             {
-                ThrowHelper.ThrowArgumentException(source.Name, message,
-                    new InvalidCastException());
+                ThrowHelper.ThrowArgumentException(
+                    valueInfo.Name, message, new InvalidCastException());
             }
 
-            return source;
+            return valueInfo;
         }
 
         /// <summary>
         /// 验证对象是否满足条件。
         /// </summary>
         /// <typeparam name="T">待验证的对象的类型。</typeparam>
-        /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
+        /// <param name="valueInfo">要验证的对象的值和名称。</param>
         /// <param name="condition">对象应满足的条件。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
-        /// <returns><paramref name="source"/> 本身。</returns>
+        /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="condition"/> 返回 <see langword="false"/>。</exception>
-        public static IValidate<T> Meets<T>(this IValidate<T> source,
+        public static IValueInfo<T> Meets<T>(
+            this IValueInfo<T> valueInfo,
             bool condition,
             string message = null)
         {
             if (condition)
             {
-                ThrowHelper.ThrowArgumentException(source.Name, message);
+                ThrowHelper.ThrowArgumentException(valueInfo.Name, message);
             }
 
-            return source;
+            return valueInfo;
         }
 
         /// <summary>
         /// 验证对象是否满足条件。
         /// </summary>
         /// <typeparam name="T">待验证的对象的类型。</typeparam>
-        /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
+        /// <param name="valueInfo">要验证的对象的值和名称。</param>
         /// <param name="predicate">对象应满足的条件。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
-        /// <returns><paramref name="source"/> 本身。</returns>
+        /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="predicate"/> 返回 <see langword="false"/>。</exception>
-        public static IValidate<T> Meets<T>(this IValidate<T> source,
+        public static IValueInfo<T> Meets<T>(
+            this IValueInfo<T> valueInfo,
             Predicate<T> predicate,
             string message = null)
         {
-            if (predicate(source.Value))
+            if (predicate(valueInfo.Value))
             {
-                ThrowHelper.ThrowArgumentException(source.Name, message);
+                ThrowHelper.ThrowArgumentException(valueInfo.Name, message);
             }
 
-            return source;
+            return valueInfo;
         }
 
         /// <summary>
         /// 验证对象是否包含在指定集合中。
         /// </summary>
         /// <typeparam name="T">待验证的对象的类型。</typeparam>
-        /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
+        /// <param name="valueInfo">要验证的对象的值和名称。</param>
         /// <param name="collection">应该包含当前对象的集合。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
-        /// <returns><paramref name="source"/> 本身。</returns>
+        /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值不在 <paramref name="collection"/> 中。</exception>
-        public static IValidate<T> IsInCollection<T>(this IValidate<T> source,
+        /// <paramref name="valueInfo"/> 的值不在 <paramref name="collection"/> 中。</exception>
+        public static IValueInfo<T> IsInCollection<T>(
+            this IValueInfo<T> valueInfo,
             IEnumerable<T> collection,
             string message = null)
         {
-            if (!collection.Contains(source.Value))
+            if (!collection.Contains(valueInfo.Value))
             {
-                ThrowHelper.ThrowArgumentException(source.Name, message);
+                ThrowHelper.ThrowArgumentException(valueInfo.Name, message);
             }
 
             return null;
@@ -183,19 +191,20 @@ namespace XstarS
         /// 验证对象是否不包含在指定集合中。
         /// </summary>
         /// <typeparam name="T">待验证的对象的类型。</typeparam>
-        /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
+        /// <param name="valueInfo">要验证的对象的值和名称。</param>
         /// <param name="collection">不应包含当前对象的集合。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
-        /// <returns><paramref name="source"/> 本身。</returns>
+        /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="source"/> 的值在 <paramref name="collection"/> 中。</exception>
-        public static IValidate<T> IsNotInCollection<T>(this IValidate<T> source,
+        /// <paramref name="valueInfo"/> 的值在 <paramref name="collection"/> 中。</exception>
+        public static IValueInfo<T> IsNotInCollection<T>(
+            this IValueInfo<T> valueInfo,
             IEnumerable<T> collection,
             string message = null)
         {
-            if (!collection.Contains(source.Value))
+            if (!collection.Contains(valueInfo.Value))
             {
-                ThrowHelper.ThrowArgumentException(source.Name, message);
+                ThrowHelper.ThrowArgumentException(valueInfo.Name, message);
             }
 
             return null;
@@ -205,47 +214,50 @@ namespace XstarS
         /// 验证对象是否包含在键的集合中。
         /// </summary>
         /// <typeparam name="T">待验证的对象的类型。</typeparam>
-        /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
+        /// <param name="valueInfo">要验证的对象的值和名称。</param>
         /// <param name="keys">应包含当前对象的键的集合。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
-        /// <returns><paramref name="source"/> 本身。</returns>
+        /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="KeyNotFoundException">
-        /// <paramref name="source"/> 的值不在 <paramref name="keys"/> 中。</exception>
-        public static IValidate<T> IsInKeys<T>(this IValidate<T> source,
+        /// <paramref name="valueInfo"/> 的值不在 <paramref name="keys"/> 中。</exception>
+        public static IValueInfo<T> IsInKeys<T>(
+            this IValueInfo<T> valueInfo,
             IEnumerable<T> keys,
             string message = null)
         {
-            if (!keys.Contains(source.Value))
+            if (!keys.Contains(valueInfo.Value))
             {
                 ThrowHelper.ThrowKeyNotFoundException(message);
             }
 
-            return source;
+            return valueInfo;
         }
 
         /// <summary>
         /// 验证对象是否在指定范围内。
         /// </summary>
         /// <typeparam name="T">待验证的对象的类型。</typeparam>
-        /// <param name="source">一个 <see cref="Validate{T}"/> 对象。</param>
+        /// <param name="valueInfo">要验证的对象的值和名称。</param>
         /// <param name="minValue">允许的最小值。</param>
         /// <param name="maxValue">允许的最大值。</param>
         /// <param name="message">自定义抛出异常的消息。</param>
-        /// <returns><paramref name="source"/> 本身。</returns>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="source"/> 的值不在
+        /// <returns><paramref name="valueInfo"/> 本身。</returns>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="valueInfo"/> 的值不在
         /// <paramref name="minValue"/> 和 <paramref name="maxValue"/> 之间。</exception>
-        public static IValidate<T> IsInRange<T>(this IValidate<T> source,
+        public static IValueInfo<T> IsInRange<T>(
+            this IValueInfo<T> valueInfo,
             T minValue, T maxValue,
             string message = null)
             where T : IComparable<T>
         {
-            if ((source.Value.CompareTo(minValue) < 0) ||
-                (source.Value.CompareTo(maxValue) > 0))
+            if ((valueInfo.Value.CompareTo(minValue) < 0) ||
+                (valueInfo.Value.CompareTo(maxValue) > 0))
             {
-                ThrowHelper.ThrowArgumentOutOfRangeException(source.Name, source.Value, message);
+                ThrowHelper.ThrowArgumentOutOfRangeException(
+                    valueInfo.Name, valueInfo.Value, message);
             }
 
-            return source;
+            return valueInfo;
         }
     }
 }

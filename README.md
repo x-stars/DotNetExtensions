@@ -38,9 +38,9 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 ## 程序集 XstarS.ValueValidate
 
-提供连续的参数验证和抛出异常的方法。
+提供连续的对象的值的验证和抛出异常的方法。
 
-原理和使用方法详述于[参数验证说明文档](Documentations/ValueValidate.md)中。
+原理和使用方法详述于[对象的值的验证说明文档](Documentations/ValueValidate.md)中。
 
 ## 程序集 XstarS.Win32
 
