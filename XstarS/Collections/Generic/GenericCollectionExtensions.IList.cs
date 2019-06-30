@@ -10,28 +10,28 @@ namespace XstarS.Collections.Generic
         /// 创建 <see cref="IList{T}"/> 中指定元素范围的浅表复制。
         /// </summary>
         /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
-        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
+        /// <param name="list">要获取元素的 <see cref="IList{T}"/> 对象。</param>
         /// <param name="index">范围开始处的从零开始的索引。</param>
         /// <param name="count">范围中的元素数。</param>
         /// <returns><see cref="IList{T}"/> 中指定元素范围的浅表复制。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="list"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="index"/> 小于 0。或 <paramref name="count"/> 小于 0。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="index"/> 和 <paramref name="count"/>
         /// 不表示 <see cref="IList{T}"/> 中元素的有效范围。</exception>
-        public static IList<T> GetRange<T>(this IList<T> source, int index, int count)
+        public static IList<T> GetRange<T>(this IList<T> list, int index, int count)
         {
-            if (source is null)
+            if (list is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(list));
             }
 
             var range = new List<T>(count);
             for (int i = 0; i < count; i++)
             {
-                range.Add(source[index + i]);
+                range.Add(list[index + i]);
             }
             return range;
         }
@@ -40,19 +40,19 @@ namespace XstarS.Collections.Generic
         /// 将指定集合的元素插入到 <see cref="IList{T}"/> 的的指定索引处。
         /// </summary>
         /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
-        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
+        /// <param name="list">要插入元素的 <see cref="IList{T}"/> 对象。</param>
         /// <param name="index">应在此处插入新元素的从零开始的索引。</param>
         /// <param name="collection">应将其元素添加到 <see cref="IList{T}"/> 的末尾的集合。
         /// 集合自身不能为 <see langword="null"/>，但它可以包含为 <see langword="null"/> 的元素。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="source"/>
+        /// <exception cref="ArgumentNullException"><paramref name="list"/>
         /// 或 <paramref name="collection"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IndexOutOfRangeException"><paramref name="index"/> 小于 0，
         /// 或 <paramref name="index"/> 大于 <see cref="ICollection{T}.Count"/>。</exception>
-        public static void InsertRange<T>(this IList<T> source, int index, IEnumerable<T> collection)
+        public static void InsertRange<T>(this IList<T> list, int index, IEnumerable<T> collection)
         {
-            if (source is null)
+            if (list is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(list));
             }
             if (collection is null)
             {
@@ -61,7 +61,7 @@ namespace XstarS.Collections.Generic
 
             foreach (var item in collection)
             {
-                source.Insert(index, item);
+                list.Insert(index, item);
                 index++;
             }
         }
@@ -70,25 +70,25 @@ namespace XstarS.Collections.Generic
         /// 从 <see cref="IList{T}"/> 中移除一定范围的元素。
         /// </summary>
         /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
-        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
+        /// <param name="list">要移除元素的 <see cref="IList{T}"/> 对象。</param>
         /// <param name="index">要移除的元素范围的从零开始的起始索引。</param>
         /// <param name="count">要移除的元素数。</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="list"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="index"/> 小于 0。或 <paramref name="count"/> 小于 0。</exception>
         /// <exception cref="ArgumentException"><paramref name="index"/>
         /// 和 <paramref name="count"/> 不表示 <see cref="IList{T}"/> 中元素的有效范围。</exception>
-        public static void RemoveRange<T>(this IList<T> source, int index, int count)
+        public static void RemoveRange<T>(this IList<T> list, int index, int count)
         {
-            if (source is null)
+            if (list is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(list));
             }
 
             for (int i = 0; i < count; i++)
             {
-                source.RemoveAt(index);
+                list.RemoveAt(index);
             }
         }
 
@@ -96,23 +96,23 @@ namespace XstarS.Collections.Generic
         /// 确定 <see cref="IList{T}"/> 中特定项的所有索引。
         /// </summary>
         /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
-        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
+        /// <param name="list">要获取索引的 <see cref="IList{T}"/> 对象。</param>
         /// <param name="item">要在 <see cref="IList{T}"/> 中定位的对象。</param>
-        /// <returns><paramref name="source"/> 中所有与 <paramref name="item"/> 相等的元素的索引；
-        /// 若未在 <paramref name="source"/> 中找到 <paramref name="item"/>，则为空列表。</returns>
+        /// <returns><paramref name="list"/> 中所有与 <paramref name="item"/> 相等的元素的索引；
+        /// 若未在 <paramref name="list"/> 中找到 <paramref name="item"/>，则为空列表。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static int[] IndicesOf<T>(this IList<T> source, T item)
+        /// <paramref name="list"/> 为 <see langword="null"/>。</exception>
+        public static int[] IndicesOf<T>(this IList<T> list, T item)
         {
-            if (source is null)
+            if (list is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(list));
             }
 
             var indices = new List<int>();
-            for (int i = 0; i < source.Count; i++)
+            for (int i = 0; i < list.Count; i++)
             {
-                if (EqualityComparer<T>.Default.Equals(source[i], item))
+                if (EqualityComparer<T>.Default.Equals(list[i], item))
                 {
                     indices.Add(i);
                 }
@@ -124,18 +124,18 @@ namespace XstarS.Collections.Generic
         /// 使用指定的比较器将 <see cref="IList{T}"/> 中的元素按指定键进行排序。
         /// </summary>
         /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
-        /// <typeparam name="TKey"></typeparam>
-        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
+        /// <typeparam name="TKey">作为排序基准的属性的类型。</typeparam>
+        /// <param name="list">要进行排序的 <see cref="IList{T}"/> 对象。</param>
         /// <param name="keySelector">用于从元素中提取键的函数。</param>
         /// <param name="comparer">用于比较排序的 <see cref="IComparer{T}"/> 对象。</param>
         /// <exception cref="ArgumentNullException">
         /// 存在为 <see langword="null"/> 的参数。</exception>
-        public static void Sort<T, TKey>(this IList<T> source,
+        public static void Sort<T, TKey>(this IList<T> list,
             Func<T, TKey> keySelector, IComparer<TKey> comparer = null)
         {
-            if (source is null)
+            if (list is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(list));
             }
             if (keySelector is null)
             {
@@ -148,45 +148,45 @@ namespace XstarS.Collections.Generic
 
             comparer = comparer ?? Comparer<TKey>.Default;
 
-            var list = source.ToList();
-            source.Clear();
-            source.AddRange(list.OrderBy(keySelector, comparer));
+            var listCopy = new List<T>(list);
+            list.Clear();
+            list.AddRange(listCopy.OrderBy(keySelector, comparer));
         }
 
         /// <summary>
         /// 使用指定的比较器将 <see cref="IList{T}"/> 中的元素进行排序。
         /// </summary>
         /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
-        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
+        /// <param name="list">要进行排序的 <see cref="IList{T}"/> 对象。</param>
         /// <param name="comparer">用于比较排序的 <see cref="IComparer{T}"/> 对象。</param>
         /// <exception cref="ArgumentNullException">
         /// 存在为 <see langword="null"/> 的参数。</exception>
-        internal static void Sort<T>(this IList<T> source, IComparer<T> comparer = null)
+        internal static void Sort<T>(this IList<T> list, IComparer<T> comparer = null)
         {
-            source.Sort(item => item, comparer);
+            list.Sort(item => item, comparer);
         }
 
         /// <summary>
         /// 将 <see cref="IList{T}"/> 中的元素随机重新排列。
         /// </summary>
         /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
-        /// <param name="source">一个 <see cref="IList{T}"/> 对象。</param>
+        /// <param name="list">要进行随机重排的 <see cref="IList{T}"/> 对象。</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static void Shuffle<T>(this IList<T> source)
+        /// <paramref name="list"/> 为 <see langword="null"/>。</exception>
+        public static void Shuffle<T>(this IList<T> list)
         {
-            if (source is null)
+            if (list is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(list));
             }
 
             var randGen = new Random();
-            for (int i = 0; i < source.Count; i++)
+            for (int i = 0; i < list.Count; i++)
             {
-                int r = randGen.Next(source.Count);
-                var temp = source[i];
-                source[i] = source[r];
-                source[r] = temp;
+                int r = randGen.Next(list.Count);
+                var temp = list[i];
+                list[i] = list[r];
+                list[r] = temp;
             }
         }
     }

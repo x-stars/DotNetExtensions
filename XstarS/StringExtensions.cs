@@ -13,67 +13,67 @@ namespace XstarS
         /// <summary>
         /// 返回一个新字符串，此字符串将当前字符串重复指定次数。
         /// </summary>
-        /// <param name="source">一个 <see cref="string"/> 类型的对象。</param>
+        /// <param name="text">要重复的字符串。</param>
         /// <param name="count">字符串重复的次数。</param>
-        /// <returns>将 <paramref name="source"/>
+        /// <returns>将 <paramref name="text"/>
         /// 重复 <paramref name="count"/> 次得到的新字符串。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="count"/> 小于 0。</exception>
-        public static string Repeat(this string source, int count) =>
-            new string('*', count).Replace("*", source);
+        public static string Repeat(this string text, int count) =>
+            new string('*', count).Replace("*", text);
 
         /// <summary>
         /// 指示当前字符串是否匹配指定正则表达式。
         /// </summary>
-        /// <param name="source">一个 <see cref="string"/> 类型的对象。</param>
+        /// <param name="text">要进行匹配的字符串。</param>
         /// <param name="pattern">要进行匹配的正则表达式模式。</param>
-        /// <returns>若 <paramref name="source"/> 匹配 <paramref name="pattern"/>，
+        /// <returns>若 <paramref name="text"/> 匹配 <paramref name="pattern"/>，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// 存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="pattern"/> 的正则表达式分析错误。</exception>
-        public static bool Matches(this string source, string pattern) =>
-            new Regex(pattern).IsMatch(source);
+        public static bool Matches(this string text, string pattern) =>
+            new Regex(pattern).IsMatch(text);
 
         /// <summary>
         /// 返回一个新字符串，此字符串中所有匹配指定正则表达式模式的子字符串都被替换为指定值。
         /// </summary>
-        /// <param name="source">一个 <see cref="string"/> 类型的对象。</param>
+        /// <param name="text">要进行替换的字符串。</param>
         /// <param name="pattern">指定要替换的正则表达式模式。</param>
         /// <param name="value">指定用于替换的新字符串。</param>
-        /// <returns><paramref name="source"/> 中所有匹配 <paramref name="pattern"/>
+        /// <returns><paramref name="text"/> 中所有匹配 <paramref name="pattern"/>
         /// 的子字符串被替换为 <paramref name="value"/> 得到的新字符串。</returns>
         /// <exception cref="ArgumentNullException">
         /// 存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="pattern"/> 的正则表达式分析错误。</exception>
-        public static string ReplaceMatches(this string source, string pattern, string value)
+        public static string ReplaceMatches(this string text, string pattern, string value)
         {
-            var matches = new Regex(pattern).Matches(source);
+            var matches = new Regex(pattern).Matches(text);
             foreach (Match match in matches)
             {
-                source = source.Replace(match.Value, value);
+                text = text.Replace(match.Value, value);
             }
-            return source;
+            return text;
         }
 
         /// <summary>
         /// 使用满足指定条件的所有字符为分隔符将字符串拆分为多个子字符串。
         /// </summary>
-        /// <param name="source">一个 <see cref="string"/> 类型的对象。</param>
+        /// <param name="text">要进行拆分的字符串。</param>
         /// <param name="isSeparator">判断字符是否为分隔字符的 <see cref="Predicate{T}"/> 委托。</param>
         /// <param name="options">指定是否要忽略分隔得到的空子字符串。</param>
-        /// <returns><paramref name="source"/> 根据满足 <paramref name="isSeparator"/> 条件的字符分隔得到的子字符串，
+        /// <returns><paramref name="text"/> 根据满足 <paramref name="isSeparator"/> 条件的字符分隔得到的子字符串，
         /// 并根据 <paramref name="options"/> 的指示去除空字符串。</returns>
-        public static IEnumerable<string> Split(this string source,
+        public static IEnumerable<string> Split(this string text,
             Predicate<char> isSeparator, StringSplitOptions options = StringSplitOptions.None)
         {
-            if (source is null)
+            if (text is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(text));
             }
             if (isSeparator is null)
             {
@@ -81,7 +81,7 @@ namespace XstarS
             }
 
             var builder = new StringBuilder();
-            foreach (var c in source)
+            foreach (var c in text)
             {
                 if (isSeparator(c))
                 {
@@ -108,25 +108,25 @@ namespace XstarS
         /// <summary>
         /// 枚举当前字符串的所有子字符串。
         /// </summary>
-        /// <param name="source">一个 <see cref="string"/> 类型的对象。</param>
-        /// <returns><paramref name="source"/> 中所有子字符串。</returns>
+        /// <param name="text">要进行枚举的字符串。</param>
+        /// <returns><paramref name="text"/> 中所有子字符串。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<string> EnumerateSubstrings(this string source)
+        /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<string> EnumerateSubstrings(this string text)
         {
-            if (source is null)
+            if (text is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(text));
             }
 
             yield return string.Empty;
-            for (int length = 1; length <= source.Length; length++)
+            for (int length = 1; length <= text.Length; length++)
             {
-                for (int index = 0; index < source.Length; index++)
+                for (int index = 0; index < text.Length; index++)
                 {
-                    if (length + index <= source.Length)
+                    if (length + index <= text.Length)
                     {
-                        yield return source.Substring(index, length);
+                        yield return text.Substring(index, length);
                     }
                 }
             }
@@ -135,19 +135,19 @@ namespace XstarS
         /// <summary>
         /// 枚举当前字符串的所有长度等于指定值的子字符串。
         /// </summary>
-        /// <param name="source">一个 <see cref="string"/> 类型的对象。</param>
+        /// <param name="text">要进行枚举的字符串。</param>
         /// <param name="length">指定子字符串长度。</param>
-        /// <returns><paramref name="source"/> 中所有长度等于
+        /// <returns><paramref name="text"/> 中所有长度等于
         /// <paramref name="length"/> 的子字符串。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="length"/> 小于 0。</exception>
-        public static IEnumerable<string> EnumerateSubstrings(this string source, int length)
+        public static IEnumerable<string> EnumerateSubstrings(this string text, int length)
         {
-            if (source is null)
+            if (text is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(text));
             }
             if (length < 0)
             {
@@ -159,11 +159,11 @@ namespace XstarS
                 yield return string.Empty;
                 yield break;
             }
-            for (int index = 0; index < source.Length; index++)
+            for (int index = 0; index < text.Length; index++)
             {
-                if (index + length <= source.Length)
+                if (index + length <= text.Length)
                 {
-                    yield return source.Substring(index, length);
+                    yield return text.Substring(index, length);
                 }
             }
         }
@@ -171,36 +171,36 @@ namespace XstarS
         /// <summary>
         /// 枚举当前字符串的所有长度在指定值之间的子字符串。
         /// </summary>
-        /// <param name="source">一个 <see cref="string"/> 类型的对象。</param>
+        /// <param name="text">要进行枚举的字符串。</param>
         /// <param name="minLength">指定最小子字符串长度.</param>
         /// <param name="maxLength">指定最大子字符串长度，负数表示无限制。</param>
-        /// <returns><paramref name="source"/> 中所有长度在 <paramref name="minLength"/>
+        /// <returns><paramref name="text"/> 中所有长度在 <paramref name="minLength"/>
         /// 和 <paramref name="maxLength"/> 之间的子字符串。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<string> EnumerateSubstrings(this string source, int minLength, int maxLength)
+        /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<string> EnumerateSubstrings(this string text, int minLength, int maxLength)
         {
-            if (source is null)
+            if (text is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(text));
             }
             if (minLength < 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(minLength));
             }
 
-            maxLength = (maxLength < 0) ? source.Length : maxLength;
+            maxLength = (maxLength < 0) ? text.Length : maxLength;
 
             if (minLength == 0) { yield return string.Empty; }
             if (maxLength == 0) { yield break; }
             minLength = (minLength == 0) ? 1 : minLength;
             for (int length = minLength; length <= maxLength; length++)
             {
-                for (int index = 0; index < source.Length; index++)
+                for (int index = 0; index < text.Length; index++)
                 {
-                    if (length + index <= source.Length)
+                    if (length + index <= text.Length)
                     {
-                        yield return source.Substring(index, length);
+                        yield return text.Substring(index, length);
                     }
                 }
             }

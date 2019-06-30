@@ -15,8 +15,8 @@ namespace XstarS.Reflection
         /// <summary>
         /// <see cref="ProxyBuilder.Default(Type)"/> 的延迟初始化值。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Lazy<ProxyBuilder>>
-            LazyDefaults = new ConcurrentDictionary<Type, Lazy<ProxyBuilder>>();
+        private static readonly ConcurrentDictionary<Type, Lazy<ProxyBuilder>> LazyDefaults =
+            new ConcurrentDictionary<Type, Lazy<ProxyBuilder>>();
 
         /// <summary>
         /// 以指定类型为原型类型初始化 <see cref="ProxyBuilder"/> 类的新实例。

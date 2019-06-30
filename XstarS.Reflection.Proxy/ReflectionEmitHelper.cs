@@ -14,25 +14,25 @@ namespace XstarS.Reflection
         /// <summary>
         /// 发出将指定索引处的参数加载到计算堆栈上的指令，并放到当前指令流中。
         /// </summary>
-        /// <param name="source">一个 <see cref="ILGenerator"/> 类的对象。</param>
+        /// <param name="ilGen">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
         /// <param name="position">要加载到计算堆栈的参数的索引。</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        internal static void EmitLdarg(this ILGenerator source, int position)
+        /// <paramref name="ilGen"/> 为 <see langword="null"/>。</exception>
+        internal static void EmitLdarg(this ILGenerator ilGen, int position)
         {
-            if (source is null)
+            if (ilGen is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(ilGen));
             }
 
             switch (position)
             {
-                case 0: source.Emit(OpCodes.Ldarg_0); break;
-                case 1: source.Emit(OpCodes.Ldarg_1); break;
-                case 2: source.Emit(OpCodes.Ldarg_2); break;
-                case 3: source.Emit(OpCodes.Ldarg_3); break;
+                case 0: ilGen.Emit(OpCodes.Ldarg_0); break;
+                case 1: ilGen.Emit(OpCodes.Ldarg_1); break;
+                case 2: ilGen.Emit(OpCodes.Ldarg_2); break;
+                case 3: ilGen.Emit(OpCodes.Ldarg_3); break;
                 default:
-                    source.Emit((position <= byte.MaxValue) ?
+                    ilGen.Emit((position <= byte.MaxValue) ?
                         OpCodes.Ldarg_S : OpCodes.Ldarg, position);
                     break;
             }
@@ -41,31 +41,31 @@ namespace XstarS.Reflection
         /// <summary>
         /// 发出将指定 32 位有符号整数加载到计算堆栈上的指令，并放到当前指令流中。
         /// </summary>
-        /// <param name="source">一个 <see cref="ILGenerator"/> 类的对象。</param>
+        /// <param name="ilGen">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
         /// <param name="value">要加载到计算堆栈的 32 位有符号整数的值。</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        internal static void EmitLdcI4(this ILGenerator source, int value)
+        /// <paramref name="ilGen"/> 为 <see langword="null"/>。</exception>
+        internal static void EmitLdcI4(this ILGenerator ilGen, int value)
         {
-            if (source is null)
+            if (ilGen is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(ilGen));
             }
 
             switch (value)
             {
-                case 0: source.Emit(OpCodes.Ldc_I4_0); break;
-                case 1: source.Emit(OpCodes.Ldc_I4_1); break;
-                case 2: source.Emit(OpCodes.Ldc_I4_2); break;
-                case 3: source.Emit(OpCodes.Ldc_I4_3); break;
-                case 4: source.Emit(OpCodes.Ldc_I4_4); break;
-                case 5: source.Emit(OpCodes.Ldc_I4_5); break;
-                case 6: source.Emit(OpCodes.Ldc_I4_6); break;
-                case 7: source.Emit(OpCodes.Ldc_I4_7); break;
-                case 8: source.Emit(OpCodes.Ldc_I4_8); break;
-                case -1: source.Emit(OpCodes.Ldc_I4_M1); break;
+                case 0: ilGen.Emit(OpCodes.Ldc_I4_0); break;
+                case 1: ilGen.Emit(OpCodes.Ldc_I4_1); break;
+                case 2: ilGen.Emit(OpCodes.Ldc_I4_2); break;
+                case 3: ilGen.Emit(OpCodes.Ldc_I4_3); break;
+                case 4: ilGen.Emit(OpCodes.Ldc_I4_4); break;
+                case 5: ilGen.Emit(OpCodes.Ldc_I4_5); break;
+                case 6: ilGen.Emit(OpCodes.Ldc_I4_6); break;
+                case 7: ilGen.Emit(OpCodes.Ldc_I4_7); break;
+                case 8: ilGen.Emit(OpCodes.Ldc_I4_8); break;
+                case -1: ilGen.Emit(OpCodes.Ldc_I4_M1); break;
                 default:
-                    source.Emit((value <= byte.MaxValue) ?
+                    ilGen.Emit((value <= byte.MaxValue) ?
                         OpCodes.Ldc_I4_S : OpCodes.Ldc_I4, value);
                     break;
             }
@@ -74,19 +74,19 @@ namespace XstarS.Reflection
         /// <summary>
         /// 以指定的构造函数为基础，定义仅调用指定构造函数的构造函数，并添加到当前类型。
         /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="type">要定义构造函数的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseConstructor">作为基础的构造函数的定义。</param>
         /// <returns>定义完成的构造函数，仅调用 <paramref name="baseConstructor"/> 构造函数。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseConstructor"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static ConstructorBuilder DefineDefaultConstructor(
-            this TypeBuilder source, ConstructorInfo baseConstructor)
+            this TypeBuilder type, ConstructorInfo baseConstructor)
         {
             // 参数检查。
-            if (source is null)
+            if (type is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(type));
             }
             if (baseConstructor is null)
             {
@@ -101,7 +101,7 @@ namespace XstarS.Reflection
             // 定义构造函数。
             var baseParameters = baseConstructor.GetParameters();
             var baseAttributes = baseConstructor.Attributes;
-            var constructor = source.DefineConstructor(
+            var constructor = type.DefineConstructor(
                 baseAttributes, baseConstructor.CallingConvention,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));
             {
@@ -131,19 +131,19 @@ namespace XstarS.Reflection
         /// <summary>
         /// 以指定的基类方法为基础，定义仅调用基类方法的新方法（签名不同），并添加到当前类型。
         /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseMethod">作为基础的基类方法的定义。</param>
         /// <returns>定义完成的签名不同的新方法，仅调用 <paramref name="baseMethod"/> 方法。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static MethodBuilder DefineBaseAccessMethod(
-            this TypeBuilder source, MethodInfo baseMethod)
+            this TypeBuilder type, MethodInfo baseMethod)
         {
             // 参数检查。
-            if (source is null)
+            if (type is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(type));
             }
             if (baseMethod is null)
             {
@@ -154,7 +154,7 @@ namespace XstarS.Reflection
             var baseGenericParams = baseMethod.GetGenericArguments();
             var baseReturnParam = baseMethod.ReturnParameter;
             var baseParameters = baseMethod.GetParameters();
-            var accessMethod = source.DefineMethod(
+            var accessMethod = type.DefineMethod(
                 $"<{baseMethod.DeclaringType.ToString()}>{baseMethod.Name}",
                 MethodAttributes.Family | MethodAttributes.HideBySig,
                 baseReturnParam.ParameterType,
@@ -225,19 +225,19 @@ namespace XstarS.Reflection
         /// <summary>
         /// 以指定的基类方法为基础，定义仅调用基类方法的重写方法，并添加到当前类型。
         /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseMethod">作为基础的基类方法的定义。</param>
         /// <returns>定义完成的重写方法，仅调用 <paramref name="baseMethod"/> 方法。</returns>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的访问级别不为公共或保护，或不可重写。</exception>
         internal static MethodBuilder DefineDefaultOverrideMethod(
-            this TypeBuilder source, MethodInfo baseMethod)
+            this TypeBuilder type, MethodInfo baseMethod)
         {
             // 参数检查。
-            if (source is null)
+            if (type is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(type));
             }
             if (baseMethod is null)
             {
@@ -253,7 +253,7 @@ namespace XstarS.Reflection
             var baseParameters = baseMethod.GetParameters();
             var attributes = baseAttributes & ~MethodAttributes.Abstract;
             if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
-            var overrideMethod = source.DefineMethod(baseMethod.Name,
+            var overrideMethod = type.DefineMethod(baseMethod.Name,
                 attributes, baseReturnParam.ParameterType,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));
             // 泛型参数。

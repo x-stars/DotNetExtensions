@@ -12,22 +12,22 @@ namespace XstarS.Collections
         /// <summary>
         /// 枚举当前 <see cref="IEnumerable"/> 对象的所有元素，将递归至元素类型不可枚举。
         /// </summary>
-        /// <param name="source">一个 <see cref="IEnumerable"/> 对象。</param>
-        /// <returns><paramref name="source"/> 包含和递归包含的所有不可枚举的元素。</returns>
+        /// <param name="enumerable">要进行枚举的 <see cref="IEnumerable"/> 对象。</param>
+        /// <returns><paramref name="enumerable"/> 包含和递归包含的所有不可枚举的元素。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable EnumerateEnumerable(this IEnumerable source)
+        /// <paramref name="enumerable"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable EnumerateEnumerable(this IEnumerable enumerable)
         {
-            if (source is null)
+            if (enumerable is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(enumerable));
             }
 
-            foreach (var item in source)
+            foreach (var item in enumerable)
             {
-                if (item is IEnumerable collection)
+                if (item is IEnumerable innerCollection)
                 {
-                    foreach (var innerItem in collection.EnumerateEnumerable())
+                    foreach (var innerItem in innerCollection.EnumerateEnumerable())
                     {
                         yield return innerItem;
                     }
@@ -42,23 +42,23 @@ namespace XstarS.Collections
         /// <summary>
         /// 返回当前 <see cref="IEnumerable"/> 对象的所有元素的字符串表达形式。
         /// </summary>
-        /// <param name="source">一个 <see cref="IEnumerable"/> 对象。</param>
-        /// <returns><paramref name="source"/> 的所有元素的字符串表达形式。</returns>
+        /// <param name="enumerable">要获取字符串表达形式的 <see cref="IEnumerable"/> 对象。</param>
+        /// <returns><paramref name="enumerable"/> 的所有元素的字符串表达形式。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static string SequenceToString(this IEnumerable source)
+        /// <paramref name="enumerable"/> 为 <see langword="null"/>。</exception>
+        public static string SequenceToString(this IEnumerable enumerable)
         {
-            if (source is null)
+            if (enumerable is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(enumerable));
             }
 
             var sequence = new List<string>();
-            foreach (var item in source)
+            foreach (var item in enumerable)
             {
-                if (item is IEnumerable collection)
+                if (item is IEnumerable innerCollection)
                 {
-                    sequence.Add(collection.SequenceToString());
+                    sequence.Add(innerCollection.SequenceToString());
                 }
                 else
                 {

@@ -16,19 +16,19 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 以指定的构造函数为基础，定义仅调用指定构造函数的构造函数，并添加到当前类型。
         /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="type">要定义构造函数的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseConstructor">作为基础的构造函数的定义。</param>
         /// <returns>定义完成的构造函数，仅调用 <paramref name="baseConstructor"/> 构造函数。</returns>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="MethodAccessException">
         /// <paramref name="baseConstructor"/> 的访问级别不为公共或保护。</exception>
         internal static ConstructorBuilder DefineDefaultConstructor(
-            this TypeBuilder source, ConstructorInfo baseConstructor)
+            this TypeBuilder type, ConstructorInfo baseConstructor)
         {
             // 参数检查。
-            if (source is null)
+            if (type is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(type));
             }
             if (baseConstructor is null)
             {
@@ -42,7 +42,7 @@ namespace XstarS.ComponentModel
             // 定义构造函数。
             var baseParameters = baseConstructor.GetParameters();
             var baseAttributes = baseConstructor.Attributes;
-            var constructor = source.DefineConstructor(
+            var constructor = type.DefineConstructor(
                 baseAttributes, baseConstructor.CallingConvention,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));
             for (int i = 0; i < baseParameters.Length; i++)
@@ -84,19 +84,19 @@ namespace XstarS.ComponentModel
         /// 以指定属性的定义为基础，将新的属性的定义、获取方法和设置方法添加到当前类型。
         /// 并设定其仅抛出 <see cref="NotImplementedException"/> 异常。
         /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseProperty">作为基础的属性的定义。</param>
         /// <returns>定义完成的属性，仅抛出 <see cref="NotImplementedException"/> 异常。</returns>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="MethodAccessException">
         /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
         internal static PropertyBuilder DefineNotImplementedProperty(
-            this TypeBuilder source, PropertyInfo baseProperty)
+            this TypeBuilder type, PropertyInfo baseProperty)
         {
             // 参数检查。
-            if (source is null)
+            if (type is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(type));
             }
             if (baseProperty is null)
             {
@@ -108,17 +108,17 @@ namespace XstarS.ComponentModel
             }
 
             // 定义属性或构造器。
-            var property = source.DefineProperty(
+            var property = type.DefineProperty(
                 baseProperty.Name, baseProperty.Attributes, baseProperty.PropertyType,
                 Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
             if (baseProperty.CanRead)
             {
-                var methodGet = source.DefineNotImplementedMethod(baseProperty.GetMethod);
+                var methodGet = type.DefineNotImplementedMethod(baseProperty.GetMethod);
                 property.SetGetMethod(methodGet);
             }
             if (baseProperty.CanWrite)
             {
-                var methodSet = source.DefineNotImplementedMethod(baseProperty.SetMethod);
+                var methodSet = type.DefineNotImplementedMethod(baseProperty.SetMethod);
                 property.SetSetMethod(methodSet);
             }
 
@@ -128,7 +128,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 以指定属性的定义为基础，将新的自动属性的定义、字段、获取方法和设置方法添加到当前类型。
         /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseProperty">作为基础的属性的定义。</param>
         /// <returns>一个键值对，键为自动属性的定义，值为其对应的字段。</returns>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
@@ -136,12 +136,12 @@ namespace XstarS.ComponentModel
         /// <exception cref="MethodAccessException">
         /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
         internal static KeyValuePair<PropertyBuilder, FieldBuilder> DefineDefaultProperty(
-            this TypeBuilder source, PropertyInfo baseProperty)
+            this TypeBuilder type, PropertyInfo baseProperty)
         {
             // 参数检查。
-            if (source is null)
+            if (type is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(type));
             }
             if (baseProperty is null)
             {
@@ -161,10 +161,10 @@ namespace XstarS.ComponentModel
 
             // 定义属性和字段。
             var propertyType = baseProperty.PropertyType;
-            var property = source.DefineProperty(
+            var property = type.DefineProperty(
                 baseProperty.Name, baseProperty.Attributes, propertyType,
                 Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
-            var field = source.DefineField($"<{baseProperty.Name}>__k_BackingField",
+            var field = type.DefineField($"<{baseProperty.Name}>__k_BackingField",
                 propertyType, FieldAttributes.Private);
 
             // 定义属性的 get。
@@ -176,7 +176,7 @@ namespace XstarS.ComponentModel
                 var baseParameters = baseMethodGet.GetParameters();
                 var attributes = baseAttributes & ~MethodAttributes.Abstract;
                 if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
-                var methodGet = source.DefineMethod(baseMethodGet.Name,
+                var methodGet = type.DefineMethod(baseMethodGet.Name,
                     attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
                 for (int i = 0; i < baseParameters.Length; i++)
@@ -203,7 +203,7 @@ namespace XstarS.ComponentModel
                 var baseParameters = baseMethodSet.GetParameters();
                 var attributes = baseAttributes & ~MethodAttributes.Abstract;
                 if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
-                var methodSet = source.DefineMethod(baseMethodSet.Name,
+                var methodSet = type.DefineMethod(baseMethodSet.Name,
                     attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
                 for (int i = 0; i < baseParameters.Length; i++)
@@ -228,7 +228,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 以指定属性的定义为基础，将新的可绑定属性的定义、字段、获取方法和设置方法添加到当前类型。
         /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseProperty">作为基础的属性的定义。</param>
         /// <param name="methodOnPropertyChanged"><code>void OnProperty(string)</code> 方法。</param>
         /// <returns>一个键值对，键为可绑定属性的定义，值为其对应的字段。</returns>
@@ -237,12 +237,12 @@ namespace XstarS.ComponentModel
         /// <exception cref="MethodAccessException">
         /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
         internal static KeyValuePair<PropertyBuilder, FieldBuilder> DefineBindableProperty(
-            this TypeBuilder source, PropertyInfo baseProperty, MethodInfo methodOnPropertyChanged)
+            this TypeBuilder type, PropertyInfo baseProperty, MethodInfo methodOnPropertyChanged)
         {
             // 参数检查。
-            if (source is null)
+            if (type is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(type));
             }
             if (baseProperty is null)
             {
@@ -266,10 +266,10 @@ namespace XstarS.ComponentModel
 
             // 定义属性和字段。
             var propertyType = baseProperty.PropertyType;
-            var property = source.DefineProperty(
+            var property = type.DefineProperty(
                 baseProperty.Name, baseProperty.Attributes, propertyType,
                 Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
-            var field = source.DefineField($"<{baseProperty.Name}>__k_BackingField",
+            var field = type.DefineField($"<{baseProperty.Name}>__k_BackingField",
                 propertyType, FieldAttributes.Private);
 
             // 定义属性的 get。
@@ -281,7 +281,7 @@ namespace XstarS.ComponentModel
                 var baseParameters = baseMethodGet.GetParameters();
                 var attributes = baseAttributes & ~MethodAttributes.Abstract;
                 if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
-                var methodGet = source.DefineMethod(baseMethodGet.Name,
+                var methodGet = type.DefineMethod(baseMethodGet.Name,
                     attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseMethodGet.GetParameters(), param => param.ParameterType));
                 for (int i = 0; i < baseParameters.Length; i++)
@@ -308,7 +308,7 @@ namespace XstarS.ComponentModel
                 var baseParameters = baseMethodSet.GetParameters();
                 var attributes = baseAttributes & ~MethodAttributes.Abstract;
                 if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
-                var methodSet = source.DefineMethod(baseMethodSet.Name,
+                var methodSet = type.DefineMethod(baseMethodSet.Name,
                     attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
                 for (int i = 0; i < baseParameters.Length; i++)
@@ -348,7 +348,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 以指定事件的定义为基础，将新的事件的定义、委托、订阅方法和取消订阅方法添加到当前类型。
         /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="type">要定义事件的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseEvent">作为基础的事件的定义。</param>
         /// <returns>一个键值对，键为事件的定义，值为其对应的事件委托。</returns>
         /// <exception cref="ArgumentNullException">
@@ -356,12 +356,12 @@ namespace XstarS.ComponentModel
         /// <exception cref="MethodAccessException">
         /// <paramref name="baseEvent"/> 的方法无法在程序集外部重写。</exception>
         internal static KeyValuePair<EventBuilder, FieldBuilder> DefineDefaultEvent(
-            this TypeBuilder source, EventInfo baseEvent)
+            this TypeBuilder type, EventInfo baseEvent)
         {
             // 参数检查。
-            if (source is null)
+            if (type is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(type));
             }
             if (baseEvent is null)
             {
@@ -376,8 +376,8 @@ namespace XstarS.ComponentModel
 
             // 定义事件和委托。
             var eventType = baseEvent.EventHandlerType;
-            var @event = source.DefineEvent(baseEvent.Name, baseEvent.Attributes, eventType);
-            var field = source.DefineField(baseEvent.Name, eventType, FieldAttributes.Private);
+            var @event = type.DefineEvent(baseEvent.Name, baseEvent.Attributes, eventType);
+            var field = type.DefineField(baseEvent.Name, eventType, FieldAttributes.Private);
 
             // 定义事件的 add。
             {
@@ -387,7 +387,7 @@ namespace XstarS.ComponentModel
                 var baseParameters = baseMethodAdd.GetParameters();
                 var attributes = baseAttributes & ~MethodAttributes.Abstract;
                 if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
-                var methodAdd = source.DefineMethod(baseMethodAdd.Name,
+                var methodAdd = type.DefineMethod(baseMethodAdd.Name,
                     attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
                 for (int i = 0; i < baseParameters.Length; i++)
@@ -439,7 +439,7 @@ namespace XstarS.ComponentModel
                 var baseParameters = baseMethodRemove.GetParameters();
                 var attributes = baseAttributes & ~MethodAttributes.Abstract;
                 if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
-                var methodRemove = source.DefineMethod(baseMethodRemove.Name,
+                var methodRemove = type.DefineMethod(baseMethodRemove.Name,
                     attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
                 for (int i = 0; i < baseParameters.Length; i++)
@@ -490,7 +490,7 @@ namespace XstarS.ComponentModel
         /// 使用已有的 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的委托，
         /// 定义 <code>OnPropertyChanged(string)</code> 方法，并添加到当前类型。
         /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="fieldPropertyChanged">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的委托。</param>
         /// <returns>定义完成的 <code>void OnPropertyChanged(string)</code> 方法。</returns>
@@ -498,12 +498,12 @@ namespace XstarS.ComponentModel
         /// <exception cref="FieldAccessException"><paramref name="fieldPropertyChanged"/>
         /// 不为 <see cref="PropertyChangedEventHandler"/> 类型。</exception>
         internal static MethodBuilder DefineOnPropertyChangedMethod(
-            this TypeBuilder source, FieldInfo fieldPropertyChanged)
+            this TypeBuilder type, FieldInfo fieldPropertyChanged)
         {
             // 参数检查。
-            if (source is null)
+            if (type is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(type));
             }
             if (fieldPropertyChanged is null)
             {
@@ -515,7 +515,7 @@ namespace XstarS.ComponentModel
             }
 
             // 定义方法。
-            var methodOnPropertyChanged = source.DefineMethod(
+            var methodOnPropertyChanged = type.DefineMethod(
                 $"On{nameof(INotifyPropertyChanged.PropertyChanged)}",
                 MethodAttributes.Family | MethodAttributes.HideBySig |
                 MethodAttributes.NewSlot | MethodAttributes.Virtual,
@@ -548,19 +548,19 @@ namespace XstarS.ComponentModel
         /// 以指定方法的定义为基础，将新的方法添加到当前类型，
         /// 并设定其仅抛出 <see cref="NotImplementedException"/> 异常。
         /// </summary>
-        /// <param name="source">一个 <see cref="TypeBuilder"/> 类型的对象。</param>
+        /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseMethod">作为基础的方法的定义。</param>
         /// <returns>定义完成的方法，仅抛出 <see cref="NotImplementedException"/> 异常。</returns>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="MethodAccessException">
         /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         internal static MethodBuilder DefineNotImplementedMethod(
-            this TypeBuilder source, MethodInfo baseMethod)
+            this TypeBuilder type, MethodInfo baseMethod)
         {
             // 参数检查。
-            if (source is null)
+            if (type is null)
             {
-                throw new ArgumentNullException(nameof(source));
+                throw new ArgumentNullException(nameof(type));
             }
             if (baseMethod is null)
             {
@@ -580,7 +580,7 @@ namespace XstarS.ComponentModel
             var baseParameters = baseMethod.GetParameters();
             var attributes = baseAttributes & ~MethodAttributes.Abstract;
             if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
-            var method = source.DefineMethod(baseMethod.Name,
+            var method = type.DefineMethod(baseMethod.Name,
                 attributes, baseReturnParam.ParameterType,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));
             // 泛型参数。

@@ -16,8 +16,8 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// <see cref="BindableBuilder.Default(Type)"/> 的延迟初始化值。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Lazy<BindableBuilder>>
-            LazyDefaults = new ConcurrentDictionary<Type, Lazy<BindableBuilder>>();
+        private static readonly ConcurrentDictionary<Type, Lazy<BindableBuilder>> LazyDefaults =
+            new ConcurrentDictionary<Type, Lazy<BindableBuilder>>();
 
         /// <summary>
         /// 以指定原型类型初始化 <see cref="BindableBuilder"/> 类的新实例。

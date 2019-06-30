@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供属性的封装，实现属性发生更改时通知客户端。
+    /// 提供属性的数据绑定封装，实现属性发生更改时通知客户端。
     /// </summary>
     /// <remarks><para>
     /// 设置绑定时，应绑定到 <see cref="Bindable{T}.Value"/>，而非实例本身。
@@ -19,9 +19,9 @@ namespace XstarS.ComponentModel
     public class Bindable<T> : BindableObject
     {
         /// <summary>
-        /// 当前 <see cref="Bindable{T}"/> 实例的值。
+        /// 当前 <see cref="Bindable{T}"/> 实例用于数据绑定的值。
         /// </summary>
-        private T value;
+        private T InternalValue;
 
         /// <summary>
         /// 使用默认值初始化 <see cref="Bindable{T}"/> 类的新实例。
@@ -35,7 +35,7 @@ namespace XstarS.ComponentModel
         public Bindable(T value) => this.Value = value;
 
         /// <summary>
-        /// 当前 <see cref="Bindable{T}"/> 实例的值。
+        /// 当前 <see cref="Bindable{T}"/> 实例用于数据绑定的值。
         /// </summary>
         /// <remarks>
         /// 设定绑定时，应绑定到此属性，而非实例本身。
@@ -43,12 +43,12 @@ namespace XstarS.ComponentModel
         /// </remarks>
         public T Value
         {
-            get => this.value;
-            set => this.SetProperty(ref this.value, value);
+            get => this.InternalValue;
+            set => this.SetProperty(ref this.InternalValue, value);
         }
 
         /// <summary>
-        /// 返回表示当前实例的值的字符串。
+        /// 返回当前实例用于数据绑定的值的字符串。
         /// </summary>
         /// <returns><see cref="Bindable{T}.Value"/> 的等效字符串表达形式。</returns>
         public override string ToString() => this.Value.ToString();
@@ -61,10 +61,10 @@ namespace XstarS.ComponentModel
         public static implicit operator Bindable<T>(T value) => new Bindable<T>(value);
 
         /// <summary>
-        /// 返回指定 <see cref="Bindable{T}"/> 对象的值。
+        /// 返回指定 <see cref="Bindable{T}"/> 对象用于数据绑定的值。
         /// </summary>
         /// <param name="bindable">一个 <see cref="Bindable{T}"/> 对象。</param>
-        /// <returns><paramref name="bindable"/> 的值。</returns>
+        /// <returns><paramref name="bindable"/> 用于数据绑定的值。</returns>
         public static implicit operator T(Bindable<T> bindable) => bindable.Value;
     }
 }
