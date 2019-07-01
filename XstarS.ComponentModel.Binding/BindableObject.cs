@@ -17,12 +17,12 @@ namespace XstarS.ComponentModel
         protected BindableObject() { }
 
         /// <summary>
-        /// 属性改变事件，在属性值更改时发生。
+        /// 在属性值更改时发生。
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// 触发属性改变事件。
+        /// 引发 <see cref="BindableObject.PropertyChanged"/> 事件。
         /// </summary>
         /// <param name="propertyName">已更改属性的名称，可由编译器自动获取。</param>
         protected virtual void OnPropertyChanged(
@@ -33,7 +33,7 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 更改属性的值，并通知客户端属性发生更改。
+        /// 更改属性的值，并引发 <see cref="BindableObject.PropertyChanged"/> 事件。
         /// </summary>
         /// <remarks>
         /// 应在属性的 <see langword="set"/> 处调用此方法，
