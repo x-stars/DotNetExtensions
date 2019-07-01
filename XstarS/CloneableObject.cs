@@ -59,7 +59,7 @@ namespace XstarS
         {
             var value = this.Value;
             this.Cloned = this.Cloned ??
-                new Dictionary<object, object>(ReferenceEqualityComparer.Default);
+                new Dictionary<object, object>(ReferenceEqualityComparer<object>.Default);
 
             // 对于已有副本的对象则直接返回其副本。
             if (value is null) { return null; }

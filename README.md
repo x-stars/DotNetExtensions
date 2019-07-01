@@ -13,6 +13,7 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 * `XstarS`
 * `XstarS.Collections`
 * `XstarS.Collections.Generic`
+* `XstarS.Collections.Specialized`
 * `XstarS.Diagnostics`
 * `XstarS.IO`
 * `XstarS.Reflection`

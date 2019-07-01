@@ -71,7 +71,7 @@ namespace XstarS
         {
             var value = this.Value;
             this.Computed = this.Computed ??
-                new HashSet<object>(ReferenceEqualityComparer.Default);
+                new HashSet<object>(ReferenceEqualityComparer<object>.Default);
 
             // 空引用。
             if (value is null) { return; }
