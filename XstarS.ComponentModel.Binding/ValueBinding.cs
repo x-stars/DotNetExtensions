@@ -81,7 +81,11 @@ namespace XstarS.ComponentModel
         /// 释放此实例占用的资源。
         /// 将取消当前实例对 <see cref="IBindingValue{T}.ValueChanged"/> 事件的订阅。
         /// </summary>
-        public void Dispose() => this.Dispose(true);
+        public void Dispose()
+        {
+            this.Dispose(true);
+            GC.SuppressFinalize(this);
+        }
 
         /// <summary>
         /// 释放此实例占用的非托管资源。并根据指示释放托管资源。

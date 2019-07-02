@@ -51,7 +51,7 @@ namespace XstarS.ComponentModel
         /// 返回当前实例用于数据绑定的值的字符串。
         /// </summary>
         /// <returns><see cref="Bindable{T}.Value"/> 的等效字符串表达形式。</returns>
-        public override string ToString() => this.Value.ToString();
+        public override string ToString() => this.Value?.ToString();
 
         /// <summary>
         /// 创建一个新的 <see cref="Bindable{T}"/> 对象，并将其值初始化为指定的值。
