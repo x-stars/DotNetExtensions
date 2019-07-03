@@ -9,68 +9,42 @@ namespace XstarS.ComponentModel
     /// 表示一个用于数据绑定的索引属性或数组索引。
     /// </summary>
     /// <typeparam name="T">用于数据绑定的索引对应的值的类型。</typeparam>
-    public class BindingIndex<T> : BindingValueBase<T>
+    public class BindingIndex<T> : BindingMember<T>
     {
         /// <summary>
-        /// 数据绑定应访问的索引器的默认名称。
+        /// <see cref="BindingIndex{T}.Indices"/> 的值。
         /// </summary>
-        protected const string DefaultIndexerName = "Item";
-
-        /// <summary>
-        /// 设置数据绑定时应绑定到的属性的默认名称。
-        /// </summary>
-        protected const string DefaultPropertyName = "Item[]";
-
-        /// <summary>
-        /// 使用包含数据绑定值的对象和应绑定到的属性名称以及索引信息初始化 <see cref="BindingIndex{T}"/> 类的新实例。
-        /// </summary>
-        /// <param name="instance">一个包含数据绑定值的对象。
-        /// 若用于双向数据绑定，应实现 <see cref="INotifyPropertyChanged"/> 接口。</param>
-        /// <param name="propertyName">设置数据绑定时应绑定到的属性名称。</param>
-        /// <param name="indexerName">数据绑定应访问的索引器的名称。</param>
-        /// <param name="indices">设置数据绑定时应绑定到的索引。</param>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        public BindingIndex(object instance, string propertyName, string indexerName, params object[] indices)
-            : base(instance, propertyName)
-        {
-            this.IndexerName = indexerName ?? throw new ArgumentNullException(nameof(indexerName));
-            this.Indices = indices ?? throw new ArgumentNullException(nameof(indices));
-        }
-
-        /// <summary>
-        /// 使用包含数据绑定值的对象和应绑定到的属性名称以及索引信息初始化 <see cref="BindingIndex{T}"/> 类的新实例。
-        /// </summary>
-        /// <param name="instance">一个包含数据绑定值的对象。
-        /// 若用于双向数据绑定，应实现 <see cref="INotifyPropertyChanged"/> 接口。</param>
-        /// <param name="propertyName">设置数据绑定时应绑定到的属性名称。</param>
-        /// <param name="indices">设置数据绑定时应绑定到的索引。</param>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        public BindingIndex(object instance, string propertyName, params object[] indices)
-            : this(instance, propertyName, BindingIndex<T>.DefaultIndexerName, indices) { }
+        private readonly object[] InternalIndices;
 
         /// <summary>
         /// 使用包含数据绑定值的对象和应绑定到的索引初始化 <see cref="BindingIndex{T}"/> 类的新实例。
         /// </summary>
-        /// <param name="instance">一个包含数据绑定值的对象。</param>
+        /// <param name="instance">一个包含数据绑定值的对象。
+        /// 若用于双向数据绑定，应实现 <see cref="INotifyPropertyChanged"/> 接口。</param>
         /// <param name="indices">设置数据绑定时应绑定到的索引。</param>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         public BindingIndex(object instance, params object[] indices)
-            : this(instance, BindingIndex<T>.DefaultPropertyName, indices) { }
+            : base(instance, "Item[]")
+        {
+            this.InternalIndices = indices ?? throw new ArgumentNullException(nameof(indices));
+        }
 
         /// <summary>
-        /// 应访问的索引器的名称。
+        /// 当前实例的 <see cref="IDisposable"/> 检查对象。
         /// </summary>
-        protected string IndexerName { get; }
+        /// <exception cref="ObjectDisposedException">当前实例已经被释放。</exception>
+        protected new BindingIndex<T> Disposable => (BindingIndex<T>)base.Disposable;
 
         /// <summary>
-        /// 访问索引器时使用的参数。
+        /// 访问索引值时使用的参数。
         /// </summary>
-        protected object[] Indices { get; }
+        protected object[] Indices => this.Disposable.InternalIndices;
 
         /// <summary>
-        /// 构造 <see cref="BindingValueBase{T}.GetValue"/> 委托。
+        /// 构造获取数据绑定值的委托。
         /// </summary>
-        /// <returns>构造完成的 <see cref="BindingValueBase{T}.GetValue"/> 委托。</returns>
+        /// <returns>构造完成的获取数据绑定值的委托。</returns>
+        /// <exception cref="MissingMemberException">无法正确构造获取数据绑定值的委托。</exception>
         protected override Func<T> BuildGetValue()
         {
             try
@@ -80,20 +54,21 @@ namespace XstarS.ComponentModel
                     i => (Expression)Expression.Constant(this.Indices[i])).ToArray();
                 var indexer = (this.Instance is Array) ?
                     Expression.ArrayAccess(instance, indices) :
-                    Expression.Property(instance, this.IndexerName, indices);
+                    Expression.Property(instance, "Item", indices);
                 var getValue = Expression.Lambda<Func<T>>(indexer);
                 return getValue.Compile();
             }
             catch (Exception)
             {
-                return null;
+                throw new MissingMemberException(this.Instance.GetType().ToString(), this.PropertyName);
             }
         }
 
         /// <summary>
-        /// 构造 <see cref="BindingValueBase{T}.SetValue"/> 委托。
+        /// 构造设置数据绑定值的委托。
         /// </summary>
-        /// <returns>构造完成的 <see cref="BindingValueBase{T}.SetValue"/> 委托。</returns>
+        /// <returns>构造完成的设置数据绑定值的委托。</returns>
+        /// <exception cref="MissingMemberException">无法正确构造设置数据绑定值的委托。</exception>
         protected override Func<T, T> BuildSetValue()
         {
             try
@@ -104,14 +79,14 @@ namespace XstarS.ComponentModel
                     i => (Expression)Expression.Constant(this.Indices[i])).ToArray();
                 var indexer = (this.Instance is Array) ?
                     Expression.ArrayAccess(instance, indices) :
-                    Expression.Property(instance, this.IndexerName, indices);
+                    Expression.Property(instance, "Item", indices);
                 var assign = Expression.Assign(indexer, newValue);
                 var setValue = Expression.Lambda<Func<T, T>>(assign, newValue);
                 return setValue.Compile();
             }
             catch (Exception)
             {
-                return null;
+                throw new MissingMemberException(this.Instance.GetType().ToString(), this.PropertyName);
             }
         }
     }

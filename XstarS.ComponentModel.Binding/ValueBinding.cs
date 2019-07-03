@@ -11,9 +11,29 @@ namespace XstarS.ComponentModel
     public class ValueBinding<TTarget, TSource> : IDisposable
     {
         /// <summary>
-        /// 指示当前实例占用的资源是否已经被释放。
+        /// <see cref="ValueBinding{TTarget, TSource}.Target"/> 的值。
         /// </summary>
-        private volatile bool IsDisposed = false;
+        private readonly IBindingValue<TTarget> InternalTarget;
+
+        /// <summary>
+        /// <see cref="ValueBinding{TTarget, TSource}.Source"/> 的值。
+        /// </summary>
+        private readonly IBindingValue<TSource> InternalSource;
+
+        /// <summary>
+        /// <see cref="ValueBinding{TTarget, TSource}.Direction"/> 的值。
+        /// </summary>
+        private readonly BindingDirection InternalDirection;
+
+        /// <summary>
+        /// <see cref="ValueBinding{TTarget, TSource}.Convert"/> 的值。
+        /// </summary>
+        private readonly Converter<TSource, TTarget> InternalConvert;
+
+        /// <summary>
+        /// <see cref="ValueBinding{TTarget, TSource}.ConvertBack"/> 的值。
+        /// </summary>
+        private readonly Converter<TTarget, TSource> InternalConvertBack;
 
         /// <summary>
         /// 使用数据绑定目标值、数据绑定源值、绑定方向和类型转换方法初始化
@@ -29,22 +49,22 @@ namespace XstarS.ComponentModel
         public ValueBinding(IBindingValue<TTarget> target, IBindingValue<TSource> source, BindingDirection direction,
             Converter<TSource, TTarget> convert, Converter<TTarget, TSource> convertBack)
         {
-            this.Target = target ?? throw new ArgumentNullException(nameof(target));
-            this.Source = source ?? throw new ArgumentNullException(nameof(source));
-            this.Direction = direction;
+            this.InternalTarget = target ?? throw new ArgumentNullException(nameof(target));
+            this.InternalSource = source ?? throw new ArgumentNullException(nameof(source));
+            this.InternalDirection = direction;
 
             switch (this.Direction)
             {
                 case BindingDirection.OneWay:
+                    this.InternalConvert = convert ?? throw new ArgumentNullException(nameof(convert));
+                    this.InternalConvertBack = convertBack;
                     this.Source.ValueChanged += this.Source_ValueChanged;
-                    this.Convert = convert ?? throw new ArgumentNullException(nameof(convert));
-                    this.ConvertBack = convertBack;
                     break;
                 case BindingDirection.TwoWay:
+                    this.InternalConvert = convert ?? throw new ArgumentNullException(nameof(convert));
+                    this.InternalConvertBack = convertBack ?? throw new ArgumentNullException(nameof(convertBack));
                     this.Source.ValueChanged += this.Source_ValueChanged;
                     this.Target.ValueChanged += this.Target_ValueChanged;
-                    this.Convert = convert ?? throw new ArgumentNullException(nameof(convert));
-                    this.ConvertBack = convertBack ?? throw new ArgumentNullException(nameof(convertBack));
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(direction));
@@ -53,29 +73,41 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
+        /// 指示当前实例占用的资源是否已经被释放。
+        /// </summary>
+        protected bool IsDisposed { get; private set; }
+
+        /// <summary>
+        /// 当前实例的 <see cref="IDisposable"/> 检查对象。
+        /// </summary>
+        /// <exception cref="ObjectDisposedException">当前实例已经被释放。</exception>
+        protected ValueBinding<TTarget, TSource> Disposable =>
+            this.IsDisposed ? throw new ObjectDisposedException(this.GetType().ToString()) : this;
+
+        /// <summary>
         /// 数据绑定目标值的 <see cref="IBindingValue{T}"/> 对象。
         /// </summary>
-        public IBindingValue<TTarget> Target { get; }
+        public IBindingValue<TTarget> Target => this.Disposable.InternalTarget;
 
         /// <summary>
         /// 数据绑定源值的 <see cref="IBindingValue{T}"/> 对象。
         /// </summary>
-        public IBindingValue<TSource> Source { get; }
+        public IBindingValue<TSource> Source => this.Disposable.InternalSource;
 
         /// <summary>
         /// 数据绑定源值到数据绑定目标值的绑定方向。
         /// </summary>
-        public BindingDirection Direction { get; }
+        public BindingDirection Direction => this.Disposable.InternalDirection;
 
         /// <summary>
         /// 从源值到目标值的类型转换方法的 <see cref="Converter{TInput, TOutput}"/> 委托。
         /// </summary>
-        protected Converter<TSource, TTarget> Convert { get; }
+        protected Converter<TSource, TTarget> Convert => this.Disposable.InternalConvert;
 
         /// <summary>
         /// 从目标值到源值的类型转换方法的 <see cref="Converter{TInput, TOutput}"/> 委托。
         /// </summary>
-        protected Converter<TTarget, TSource> ConvertBack { get; }
+        protected Converter<TTarget, TSource> ConvertBack => this.Disposable.InternalConvertBack;
 
         /// <summary>
         /// 释放此实例占用的资源。

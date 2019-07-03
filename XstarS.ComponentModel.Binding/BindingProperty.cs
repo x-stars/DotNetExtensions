@@ -8,7 +8,7 @@ namespace XstarS.ComponentModel
     /// 表示一个用于数据绑定的属性或字段。
     /// </summary>
     /// <typeparam name="T">用于数据绑定的属性或字段的类型。</typeparam>
-    public class BindingProperty<T> : BindingValueBase<T>
+    public class BindingProperty<T> : BindingMember<T>
     {
         /// <summary>
         /// 使用包含数据绑定值的对象和应绑定到的属性名称初始化 <see cref="BindingProperty{T}"/> 类的新实例。
@@ -21,9 +21,10 @@ namespace XstarS.ComponentModel
             : base(instance, propertyName) { }
 
         /// <summary>
-        /// 构造 <see cref="BindingValueBase{T}.GetValue"/> 委托。
+        /// 构造获取数据绑定值的委托。
         /// </summary>
-        /// <returns>构造完成的 <see cref="BindingValueBase{T}.GetValue"/> 委托。</returns>
+        /// <returns>构造完成的获取数据绑定值的委托。</returns>
+        /// <exception cref="MissingMemberException">无法正确构造获取数据绑定值的委托。</exception>
         protected override Func<T> BuildGetValue()
         {
             try
@@ -35,14 +36,15 @@ namespace XstarS.ComponentModel
             }
             catch (Exception)
             {
-                return null;
+                throw new MissingMemberException(this.Instance.GetType().ToString(), this.PropertyName);
             }
         }
 
         /// <summary>
-        /// 构造 <see cref="BindingValueBase{T}.SetValue"/> 委托。
+        /// 用于构造设置数据绑定值的委托。
         /// </summary>
-        /// <returns>构造完成的 <see cref="BindingValueBase{T}.SetValue"/> 委托。</returns>
+        /// <returns>构造完成的设置数据绑定值的委托。</returns>
+        /// <exception cref="MissingMemberException">无法正确构造设置数据绑定值的委托。</exception>
         protected override Func<T, T> BuildSetValue()
         {
             try
@@ -56,7 +58,7 @@ namespace XstarS.ComponentModel
             }
             catch (Exception)
             {
-                return null;
+                throw new MissingMemberException(this.Instance.GetType().ToString(), this.PropertyName);
             }
         }
     }
