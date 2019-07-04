@@ -16,9 +16,8 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值等于 <see cref="string.Empty"/>。</exception>
-        public static IValueInfo<string> IsNotEmpty(
-            this IValueInfo<string> valueInfo,
-            string message = null)
+        public static IValueInfo<string> IsNotNullOrEmpty(
+            this IValueInfo<string> valueInfo, string message = null)
         {
             if (valueInfo.Value.Length == 0)
             {
@@ -37,10 +36,9 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值由空白字符组成。</exception>
         public static IValueInfo<string> IsNotWhiteSpace(
-            this IValueInfo<string> valueInfo,
-            string message = null)
+            this IValueInfo<string> valueInfo, string message = null)
         {
-            if (valueInfo.Value.All(c => char.IsWhiteSpace(c)))
+            if (valueInfo.Value.All(char.IsWhiteSpace))
             {
                 ThrowHelper.ThrowArgumentException(valueInfo.Name, message);
             }
@@ -59,9 +57,7 @@ namespace XstarS
         /// <exception cref="ArgumentException"><paramref name="valueInfo"/> 的长度不在
         /// <paramref name="minLength"/> 和 <paramref name="maxLength"/> 之间。</exception>
         public static IValueInfo<string> LengthIsInRange(
-            this IValueInfo<string> valueInfo,
-            int minLength, int maxLength,
-            string message = null)
+            this IValueInfo<string> valueInfo, int minLength, int maxLength, string message = null)
         {
             if ((valueInfo.Value.Length < minLength) ||(valueInfo.Value.Length > maxLength))
             {
@@ -81,9 +77,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值不以 <paramref name="value"/> 开始。</exception>
         public static IValueInfo<string> StartsWith(
-            this IValueInfo<string> valueInfo,
-            string value,
-            string message = null)
+            this IValueInfo<string> valueInfo, string value, string message = null)
         {
             if (!valueInfo.Value.StartsWith(value))
             {
@@ -103,9 +97,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值以 <paramref name="value"/> 开始。</exception>
         public static IValueInfo<string> NotStartsWith(
-            this IValueInfo<string> valueInfo,
-            string value,
-            string message = null)
+            this IValueInfo<string> valueInfo, string value, string message = null)
         {
             if (!valueInfo.Value.StartsWith(value))
             {
@@ -125,9 +117,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值不以 <paramref name="value"/> 结束。</exception>
         public static IValueInfo<string> EndsWith(
-            this IValueInfo<string> valueInfo,
-            string value,
-            string message = null)
+            this IValueInfo<string> valueInfo, string value, string message = null)
         {
             if (!valueInfo.Value.EndsWith(value))
             {
@@ -147,9 +137,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值以 <paramref name="value"/> 结束。</exception>
         public static IValueInfo<string> NotEndsWith(
-            this IValueInfo<string> valueInfo,
-            string value,
-            string message = null)
+            this IValueInfo<string> valueInfo, string value, string message = null)
         {
             if (valueInfo.Value.EndsWith(value))
             {
@@ -169,9 +157,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值不包含 <paramref name="value"/>。</exception>
         public static IValueInfo<string> Contains(
-            this IValueInfo<string> valueInfo,
-            string value,
-            string message = null)
+            this IValueInfo<string> valueInfo, string value, string message = null)
         {
             if (!valueInfo.Value.Contains(value))
             {
@@ -191,9 +177,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值包含 <paramref name="value"/>。</exception>
         public static IValueInfo<string> NotContains(
-            this IValueInfo<string> valueInfo,
-            string value,
-            string message = null)
+            this IValueInfo<string> valueInfo, string value, string message = null)
         {
             if (valueInfo.Value.Contains(value))
             {
@@ -212,10 +196,8 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值不能匹配 <paramref name="regex"/>。</exception>
-        public static IValueInfo<string> IsMatch(
-            this IValueInfo<string> valueInfo,
-            Regex regex,
-            string message = null)
+        public static IValueInfo<string> Matches(
+            this IValueInfo<string> valueInfo, Regex regex, string message = null)
         {
             if (!regex.IsMatch(valueInfo.Value))
             {
@@ -234,12 +216,10 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值不能匹配 <paramref name="pattern"/>。</exception>
-        public static IValueInfo<string> IsMatch(
-            this IValueInfo<string> valueInfo,
-            string pattern,
-            string message = null)
+        public static IValueInfo<string> Matches(
+            this IValueInfo<string> valueInfo, string pattern, string message = null)
         {
-            return valueInfo.IsMatch(new Regex(pattern), message);
+            return valueInfo.Matches(new Regex(pattern), message);
         }
 
         /// <summary>
@@ -251,10 +231,8 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值能够匹配 <paramref name="regex"/>。</exception>
-        public static IValueInfo<string> IsNotMatch(
-            this IValueInfo<string> valueInfo,
-            Regex regex,
-            string message = null)
+        public static IValueInfo<string> NotMatches(
+            this IValueInfo<string> valueInfo, Regex regex, string message = null)
         {
             if (regex.IsMatch(valueInfo.Value))
             {
@@ -273,12 +251,10 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值能够匹配 <paramref name="pattern"/>。</exception>
-        public static IValueInfo<string> IsNotMatch(
-            this IValueInfo<string> valueInfo,
-            string pattern,
-            string message = null)
+        public static IValueInfo<string> NotMatches(
+            this IValueInfo<string> valueInfo, string pattern, string message = null)
         {
-            return valueInfo.IsNotMatch(new Regex(pattern), message);
+            return valueInfo.NotMatches(new Regex(pattern), message);
         }
     }
 }

@@ -16,8 +16,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值不为一个空集合。</exception>
         public static IValueInfo<IEnumerable<T>> IsEmpty<T>(
-            this IValueInfo<IEnumerable<T>> valueInfo,
-            string message = null)
+            this IValueInfo<IEnumerable<T>> valueInfo, string message = null)
         {
             if (valueInfo.Value.Any())
             {
@@ -37,8 +36,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值为一个空集合。</exception>
         public static IValueInfo<IEnumerable<T>> IsNotEmpty<T>(
-            this IValueInfo<IEnumerable<T>> valueInfo,
-            string message = null)
+            this IValueInfo<IEnumerable<T>> valueInfo, string message = null)
         {
             if (!valueInfo.Value.Any())
             {
@@ -60,9 +58,7 @@ namespace XstarS
         /// <exception cref="ArgumentException"><paramref name="valueInfo"/> 的值的元素数量不在
         /// <paramref name="minCount"/> 和 <paramref name="maxCount"/> 之间。</exception>
         public static IValueInfo<IEnumerable<T>> CountIsInRange<T>(
-            this IValueInfo<IEnumerable<T>> valueInfo,
-            int minCount, int maxCount,
-            string message = null)
+            this IValueInfo<IEnumerable<T>> valueInfo, int minCount, int maxCount, string message = null)
         {
             if ((valueInfo.Value.Count() < minCount) || (valueInfo.Value.Count() > maxCount))
             {
@@ -83,9 +79,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值不包含 <paramref name="value"/>。</exception>
         public static IValueInfo<IEnumerable<T>> Contains<T>(
-            this IValueInfo<IEnumerable<T>> valueInfo,
-            T value,
-            string message = null)
+            this IValueInfo<IEnumerable<T>> valueInfo, T value, string message = null)
         {
             if (!valueInfo.Value.Contains(value))
             {
@@ -106,9 +100,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值包含 <paramref name="value"/>。</exception>
         public static IValueInfo<IEnumerable<T>> NotContains<T>(
-            this IValueInfo<IEnumerable<T>> valueInfo,
-            T value,
-            string message = null)
+            this IValueInfo<IEnumerable<T>> valueInfo, T value, string message = null)
         {
             if (valueInfo.Value.Contains(value))
             {
@@ -128,8 +120,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值包含 <see langword="null"/>。</exception>
         public static IValueInfo<IEnumerable<T>> NotContainsNull<T>(
-            this IValueInfo<IEnumerable<T>> valueInfo,
-            string message = null)
+            this IValueInfo<IEnumerable<T>> valueInfo, string message = null)
             where T : class
         {
             return valueInfo.NotContains(null, message);
@@ -145,8 +136,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值包含 <see langword="null"/>。</exception>
         public static IValueInfo<IEnumerable<T?>> NotContainsNull<T>(
-            this IValueInfo<IEnumerable<T?>> valueInfo,
-            string message = null)
+            this IValueInfo<IEnumerable<T?>> valueInfo, string message = null)
             where T : struct
         {
             return valueInfo.NotContains(null, message);
@@ -162,12 +152,10 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException"><paramref name="valueInfo"/>
         /// 的值存在不满足<paramref name="predicate"/> 条件的元素。</exception>
-        public static IValueInfo<IEnumerable<T>> AllMeets<T>(
-            this IValueInfo<IEnumerable<T>> valueInfo,
-            Predicate<T> predicate,
-            string message = null)
+        public static IValueInfo<IEnumerable<T>> AllAreTrue<T>(
+            this IValueInfo<IEnumerable<T>> valueInfo, Predicate<T> predicate, string message = null)
         {
-            if (valueInfo.Value.Any(item => !predicate(item)))
+            if (!valueInfo.Value.All(item => predicate(item)))
             {
                 ThrowHelper.ThrowArgumentException(valueInfo.Name, message);
             }
@@ -185,12 +173,10 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException"><paramref name="valueInfo"/>
         /// 的值不存在满足 <paramref name="predicate"/> 条件的元素。</exception>
-        public static IValueInfo<IEnumerable<T>> AnyMeets<T>(
-            this IValueInfo<IEnumerable<T>> valueInfo,
-            Predicate<T> predicate,
-            string message = null)
+        public static IValueInfo<IEnumerable<T>> AnyIsTrue<T>(
+            this IValueInfo<IEnumerable<T>> valueInfo, Predicate<T> predicate, string message = null)
         {
-            if (valueInfo.Value.All(item => !predicate(item)))
+            if (!valueInfo.Value.Any(item => predicate(item)))
             {
                 ThrowHelper.ThrowArgumentException(valueInfo.Name, message);
             }

@@ -15,8 +15,7 @@ namespace XstarS
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="valueInfo"/> 的值为空值（无参构造的结构的实例）。</exception>
         public static IValueInfo<T> IsNotEmpty<T>(
-            this IValueInfo<T> valueInfo,
-            string message = null)
+            this IValueInfo<T> valueInfo, string message = null)
             where T : struct
         {
             if (EqualityComparer<T>.Default.Equals(valueInfo.Value, new T()))

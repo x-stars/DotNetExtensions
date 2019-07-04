@@ -22,7 +22,7 @@ C# 底层面向对象练习作品，同时也可用作自己开发时的实用�
 
 提供便捷的数据绑定接口实现方法，目前提供三种实现方案：方法提取、绑定值封装、动态生成数据绑定派生类。
 
-原理和使用方法详述于[数据绑定接口实现框架说明文档](Documentations/BindingFramework.md)中。
+原理和使用方法详述于[数据绑定接口实现框架说明文档](Documentations/BindableValue.md)中。
 
 ## 程序集 XstarS.ParamReaders
 

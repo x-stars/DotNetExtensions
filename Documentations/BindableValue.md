@@ -23,33 +23,13 @@
 
 `XstarS.ComponentModel.BindableObject` 为一抽象类，用法基于类的继承。
 
-### 静态类 `XstarS.ComponentModel.BindableExtensions`
-
-提供数据绑定相关的扩展方法。
-
-目前提供与 `XstarS.ComponentModel.BindableObject` 几乎完全一致的扩展方法。
-
-在类实现 `System.ComponentModel.INotifyPropertyChanged` 接口后，
-即可在属性的 `set` 处直接调用 `SetProperty<T>(ref T, T, string)` 扩展方法以修改属性并触发属性更改事件。
-
-由于在类外部不能直接触发事件，扩展方法中的事件触发只能基于反射调用。
-反射调用可能存在性能问题，当绑定属性的数量较大时不建议采用此方案。
-
 ### 方法使用说明
-
-两类的使用方法完全一致，其中 `XstarS.ComponentModel.BindableExtensions`
-要求使用扩展方法的类实现 `System.ComponentModel.INotifyPropertyChanged` 接口。
-当继承 `BindableObject` 类时，则不会调用 `BindableExtensions` 类中的扩展方法。
 
 ``` CSharp
 using System.ComponentModel;
 using XstarS.ComponentModel;
 
-public class BindableRectangle :
-#if !EXT
-    BindableObject,
-#endif
-    INotifyPropertyChanged
+public class BindableRectangle : BindableObject
 {
     private double width;
     private double height;
@@ -79,7 +59,8 @@ public class BindableRectangle :
 ```
 
 若将上例中 `BindableRectangle` 的实例的任意属性绑定到用户控件的某属性，
-则当服务端更改 `BindableData` 实例的属性时，将会通知客户端属性值发生更改。
+则当服务端更改 `BindableRectangle` 实例的 `Width` 或 `Height` 属性时，
+将会通知客户端 `Width` 或 `Height` 以及 `Size` 属性的值发生更改。
 
 ## 绑定值封装
 
@@ -122,7 +103,8 @@ public class MainWindow : Window
 
     private void Method()
     {
-        this.Flag.Value = true;  // 此时将会通知客户端属性值发生更改。
+        // 修改属性值并通知客户端属性值发生更改。
+        this.Flag.Value = true;
     }
 }
 ```

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Reflection;
 
@@ -11,11 +10,12 @@ namespace XstarS.Reflection
     public static class ReflectionExtensions
     {
         /// <summary>
-        /// 获取当前类型的默认值，即通过默认值表达式 <see langword="default"/> 获得的值。
+        /// 获取当前类型的默认值，即通过 <see langword="default"/> 表达式获得的值。
         /// </summary>
         /// <param name="type">要获取默认值的 <see cref="Type"/> 对象。</param>
         /// <returns><paramref name="type"/> 类型对应的默认值。</returns>
-        public static object DefaultValue(this Type type) => Default.Value(type);
+        public static object GetDefaultValue(this Type type) =>
+            type.IsValueType ? Activator.CreateInstance(type) : null;
 
         /// <summary>
         /// 检索当前类型可以访问的所有事件的集合。
@@ -73,11 +73,11 @@ namespace XstarS.Reflection
             var result = new List<TMemberInfo>(memberFinder(type));
             if (type.IsInterface)
             {
-                foreach (var iface in type.GetInterfaces())
+                foreach (var iType in type.GetInterfaces())
                 {
-                    if (iface.IsVisible)
+                    if (iType.IsVisible)
                     {
-                        result.AddRange(memberFinder(iface));
+                        result.AddRange(memberFinder(iType));
                     }
                 }
                 result.AddRange(memberFinder(typeof(object)));
