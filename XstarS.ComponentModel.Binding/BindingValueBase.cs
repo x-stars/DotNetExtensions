@@ -17,7 +17,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// <see cref="BindingValueBase{T}.SetValue"/> 的延迟初始化值。
         /// </summary>
-        private readonly Lazy<Func<T, T>> LazySetValue;
+        private readonly Lazy<Action<T>> LazySetValue;
 
         /// <summary>
         /// 初始化 <see cref="BindingValueBase{T}"/> 类的新实例。
@@ -26,7 +26,7 @@ namespace XstarS.ComponentModel
         {
             this.IsDisposed = false;
             this.LazyGetValue = new Lazy<Func<T>>(this.BuildGetValue);
-            this.LazySetValue = new Lazy<Func<T, T>>(this.BuildSetValue);
+            this.LazySetValue = new Lazy<Action<T>>(this.BuildSetValue);
         }
 
         /// <summary>
@@ -57,7 +57,13 @@ namespace XstarS.ComponentModel
         /// 用于设置数据绑定值的委托。
         /// </summary>
         /// <exception cref="MissingMemberException">无法正确构造设置数据绑定值的委托。</exception>
-        protected Func<T, T> SetValue => this.Disposable.LazySetValue.Value;
+        protected Action<T> SetValue => this.Disposable.LazySetValue.Value;
+
+        /// <summary>
+        /// 用于数据绑定的值。
+        /// </summary>
+        /// <exception cref="MissingMemberException">调用了未能正确构造数据绑定值访问器。</exception>
+        object IBindingValue.Value { get => this.Value; set => this.Value = (T)value; }
 
         /// <summary>
         /// 在数据绑定值更改时发生。
@@ -107,6 +113,6 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <returns>构造完成的设置数据绑定值的委托。</returns>
         /// <exception cref="MissingMemberException">无法正确构造设置数据绑定值的委托。</exception>
-        protected abstract Func<T, T> BuildSetValue();
+        protected abstract Action<T> BuildSetValue();
     }
 }

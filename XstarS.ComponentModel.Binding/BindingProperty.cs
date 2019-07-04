@@ -45,7 +45,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <returns>构造完成的设置数据绑定值的委托。</returns>
         /// <exception cref="MissingMemberException">无法正确构造设置数据绑定值的委托。</exception>
-        protected override Func<T, T> BuildSetValue()
+        protected override Action<T> BuildSetValue()
         {
             try
             {
@@ -53,7 +53,7 @@ namespace XstarS.ComponentModel
                 var newValue = Expression.Parameter(typeof(T));
                 var property = Expression.PropertyOrField(instance, this.PropertyName);
                 var assign = Expression.Assign(property, newValue);
-                var setValue = Expression.Lambda<Func<T, T>>(assign, newValue);
+                var setValue = Expression.Lambda<Action<T>>(assign, newValue);
                 return setValue.Compile();
             }
             catch (Exception)

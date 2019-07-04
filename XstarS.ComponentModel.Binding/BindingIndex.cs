@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Linq;
 using System.Linq.Expressions;
 
 namespace XstarS.ComponentModel
@@ -36,7 +35,7 @@ namespace XstarS.ComponentModel
         protected new BindingIndex<T> Disposable => (BindingIndex<T>)base.Disposable;
 
         /// <summary>
-        /// 访问索引值时使用的参数。
+        /// 设置数据绑定时应绑定到的索引。
         /// </summary>
         protected object[] Indices => this.Disposable.InternalIndices;
 
@@ -50,8 +49,7 @@ namespace XstarS.ComponentModel
             try
             {
                 var instance = Expression.Constant(this.Instance);
-                var indices = Enumerable.Range(0, this.Indices.Length).Select(
-                    i => (Expression)Expression.Constant(this.Indices[i])).ToArray();
+                var indices = Array.ConvertAll(this.Indices, Expression.Constant);
                 var indexer = (this.Instance is Array) ?
                     Expression.ArrayAccess(instance, indices) :
                     Expression.Property(instance, "Item", indices);
@@ -69,19 +67,18 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <returns>构造完成的设置数据绑定值的委托。</returns>
         /// <exception cref="MissingMemberException">无法正确构造设置数据绑定值的委托。</exception>
-        protected override Func<T, T> BuildSetValue()
+        protected override Action<T> BuildSetValue()
         {
             try
             {
                 var instance = Expression.Constant(this.Instance);
                 var newValue = Expression.Parameter(typeof(T));
-                var indices = Enumerable.Range(0, this.Indices.Length).Select(
-                    i => (Expression)Expression.Constant(this.Indices[i])).ToArray();
+                var indices = Array.ConvertAll(this.Indices, Expression.Constant);
                 var indexer = (this.Instance is Array) ?
                     Expression.ArrayAccess(instance, indices) :
                     Expression.Property(instance, "Item", indices);
                 var assign = Expression.Assign(indexer, newValue);
-                var setValue = Expression.Lambda<Func<T, T>>(assign, newValue);
+                var setValue = Expression.Lambda<Action<T>>(assign, newValue);
                 return setValue.Compile();
             }
             catch (Exception)
