@@ -35,7 +35,7 @@ namespace XstarS
         /// 存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="pattern"/> 的正则表达式分析错误。</exception>
-        public static bool Matches(this string text, string pattern) =>
+        public static bool IsMatch(this string text, string pattern) =>
             new Regex(pattern).IsMatch(text);
 
         /// <summary>

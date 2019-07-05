@@ -196,7 +196,7 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值不能匹配 <paramref name="regex"/>。</exception>
-        public static IValueInfo<string> Matches(
+        public static IValueInfo<string> IsMatch(
             this IValueInfo<string> valueInfo, Regex regex, string message = null)
         {
             if (!regex.IsMatch(valueInfo.Value))
@@ -216,10 +216,10 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值不能匹配 <paramref name="pattern"/>。</exception>
-        public static IValueInfo<string> Matches(
+        public static IValueInfo<string> IsMatch(
             this IValueInfo<string> valueInfo, string pattern, string message = null)
         {
-            return valueInfo.Matches(new Regex(pattern), message);
+            return valueInfo.IsMatch(new Regex(pattern), message);
         }
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值能够匹配 <paramref name="regex"/>。</exception>
-        public static IValueInfo<string> NotMatches(
+        public static IValueInfo<string> IsNotMatch(
             this IValueInfo<string> valueInfo, Regex regex, string message = null)
         {
             if (regex.IsMatch(valueInfo.Value))
@@ -251,10 +251,10 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值能够匹配 <paramref name="pattern"/>。</exception>
-        public static IValueInfo<string> NotMatches(
+        public static IValueInfo<string> IsNotMatch(
             this IValueInfo<string> valueInfo, string pattern, string message = null)
         {
-            return valueInfo.NotMatches(new Regex(pattern), message);
+            return valueInfo.IsNotMatch(new Regex(pattern), message);
         }
     }
 }

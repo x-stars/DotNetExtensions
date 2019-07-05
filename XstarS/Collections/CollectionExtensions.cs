@@ -25,9 +25,9 @@ namespace XstarS.Collections
 
             foreach (var item in enumerable)
             {
-                if (item is IEnumerable innerCollection)
+                if (item is IEnumerable innerEnumerable)
                 {
-                    foreach (var innerItem in innerCollection.EnumerateEnumerable())
+                    foreach (var innerItem in innerEnumerable.EnumerateEnumerable())
                     {
                         yield return innerItem;
                     }
@@ -56,13 +56,13 @@ namespace XstarS.Collections
             var sequence = new List<string>();
             foreach (var item in enumerable)
             {
-                if (item is IEnumerable innerCollection)
+                if (item is IEnumerable innerEnumerable)
                 {
-                    sequence.Add(innerCollection.SequenceToString());
+                    sequence.Add(innerEnumerable.SequenceToString());
                 }
                 else
                 {
-                    sequence.Add(item.ToString());
+                    sequence.Add(item?.ToString());
                 }
             }
             return "{ " + string.Join(", ", sequence) + " }";

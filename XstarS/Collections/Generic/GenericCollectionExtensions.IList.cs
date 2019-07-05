@@ -93,6 +93,35 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
+        /// 从 <see cref="IList{T}"/> 中移除所有满足指定条件的元素。
+        /// </summary>
+        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="list">要移除元素的 <see cref="IList{T}"/> 对象。</param>
+        /// <param name="match">要从 <see cref="IList{T}"/> 中移除的元素应满足的条件。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="list"/>
+        /// 或 <paramref name="match"/> 为 <see langword="null"/>。</exception>
+        public static void RemoveAll<T>(this IList<T> list, Predicate<T> match)
+        {
+            if (list is null)
+            {
+                throw new ArgumentNullException(nameof(list));
+            }
+            if (match is null)
+            {
+                throw new ArgumentNullException(nameof(match));
+            }
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (match(list[i]))
+                {
+                    list.RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        /// <summary>
         /// 确定 <see cref="IList{T}"/> 中特定项的所有索引。
         /// </summary>
         /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
@@ -161,7 +190,7 @@ namespace XstarS.Collections.Generic
         /// <param name="comparer">用于比较排序的 <see cref="IComparer{T}"/> 对象。</param>
         /// <exception cref="ArgumentNullException">
         /// 存在为 <see langword="null"/> 的参数。</exception>
-        internal static void Sort<T>(this IList<T> list, IComparer<T> comparer = null)
+        public static void Sort<T>(this IList<T> list, IComparer<T> comparer = null)
         {
             list.Sort(item => item, comparer);
         }

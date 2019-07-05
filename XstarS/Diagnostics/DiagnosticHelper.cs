@@ -12,7 +12,7 @@ namespace XstarS.Diagnostics
         /// 返回指定过程的执行指定次数的总时间。
         /// </summary>
         /// <param name="process">一个过程的 <see cref="Action"/> 委托。</param>
-        /// <param name="repeat">过程重复执行的次数，较高时测得的结果更准确。</param>
+        /// <param name="repeat">过程重复执行的次数。</param>
         /// <returns><paramref name="process"/> 执行 <paramref name="repeat"/> 次的总时间。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="process"/> 为 <see langword="null"/>。</exception>
@@ -45,7 +45,7 @@ namespace XstarS.Diagnostics
         /// </summary>
         /// <typeparam name="T">过程的返回值的类型。</typeparam>
         /// <param name="process">一个过程的 <see cref="Func{TResult}"/> 委托。</param>
-        /// <param name="repeat">过程重复执行的次数，较高时测得的结果更准确。</param>
+        /// <param name="repeat">过程重复执行的次数。</param>
         /// <returns><paramref name="process"/> 执行 <paramref name="repeat"/> 次的总时间。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="process"/> 为 <see langword="null"/>。</exception>

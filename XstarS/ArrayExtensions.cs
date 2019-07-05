@@ -65,9 +65,16 @@ namespace XstarS
 
             if (array.GetType().GetElementType().IsArray)
             {
-                foreach (Array innerArray in array)
+                foreach (var item in array)
                 {
-                    foreach (var item in innerArray.EnumerateArray())
+                    if (item is Array innerArray)
+                    {
+                        foreach (var innerItem in innerArray.EnumerateArray())
+                        {
+                            yield return innerItem;
+                        }
+                    }
+                    else
                     {
                         yield return item;
                     }
