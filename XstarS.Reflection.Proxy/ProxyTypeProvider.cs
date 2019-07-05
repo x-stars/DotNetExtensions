@@ -8,23 +8,23 @@ using System.Reflection.Emit;
 namespace XstarS.Reflection
 {
     /// <summary>
-    /// 提供从指定原型类型构造代理派生类型及其实例的方法。
+    /// 提供指定类型的代理派生类型，并提供创建此派生类型的实例的方法。
     /// </summary>
-    public sealed partial class ProxyBuilder : ProxyBuilderBase<object>
+    public sealed partial class ProxyTypeProvider : ProxyTypeProviderBase<object>
     {
         /// <summary>
-        /// <see cref="ProxyBuilder.Default(Type)"/> 的延迟初始化值。
+        /// <see cref="ProxyTypeProvider.Default(Type)"/> 的延迟初始化值。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Lazy<ProxyBuilder>> LazyDefaults =
-            new ConcurrentDictionary<Type, Lazy<ProxyBuilder>>();
+        private static readonly ConcurrentDictionary<Type, Lazy<ProxyTypeProvider>> LazyDefaults =
+            new ConcurrentDictionary<Type, Lazy<ProxyTypeProvider>>();
 
         /// <summary>
-        /// 以指定类型为原型类型初始化 <see cref="ProxyBuilder"/> 类的新实例。
+        /// 以原型类型初始化 <see cref="ProxyTypeProvider"/> 类的新实例。
         /// </summary>
-        /// <param name="type">作为原型类型的 <see cref="Type"/> 对象。</param>
+        /// <param name="type">原型类型，应为接口或非密封类。</param>
         /// <exception cref="TypeAccessException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
-        private ProxyBuilder(Type type) : base()
+        private ProxyTypeProvider(Type type) : base()
         {
             if (!(((type.IsClass && !type.IsSealed) || type.IsInterface) &&
                 type.IsVisible && !type.ContainsGenericParameters))
@@ -36,7 +36,7 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 代理类型的原型类型的 <see cref="Type"/> 对象。
+        /// 原型类型的 <see cref="Type"/> 对象。
         /// </summary>
         public Type PrototypeType { get; }
 
@@ -46,42 +46,42 @@ namespace XstarS.Reflection
         private MethodInfo[] BaseMethods { get; set; }
 
         /// <summary>
-        /// 代理类型的 <see cref="TypeBuilder"/> 对象。
+        /// 代理派生类型的 <see cref="TypeBuilder"/> 对象。
         /// </summary>
         private TypeBuilder ProxyTypeBuilder { get; set; }
 
         /// <summary>
-        /// 代理类型中用于访问原型类型中对应方法的方法。
+        /// 代理派生类型中用于访问原型类型中对应方法的方法。
         /// </summary>
         private IDictionary<MethodInfo, MethodBuilder> BaseAccessMethods { get; set; }
 
         /// <summary>
-        /// 代理类型中用于保存原型类型中定义的 <see cref="OnMemberInvokeAttribute"/> 特性的字段。
+        /// 代理派生类型中用于保存原型类型中定义的 <see cref="OnMemberInvokeAttribute"/> 特性的字段。
         /// </summary>
         private FieldBuilder[] OnMemberInvokeFields { get; set; }
 
         /// <summary>
-        /// 代理类型中用于保存原型类型中定义的 <see cref="OnMethodInvokeAttribute"/> 特性的字段。
+        /// 代理派生类型中用于保存原型类型中定义的 <see cref="OnMethodInvokeAttribute"/> 特性的字段。
         /// </summary>
         private IDictionary<MethodInfo, FieldBuilder[]> MethodsOnMethodInvokeFields { get; set; }
 
         /// <summary>
-        /// 代理类型中对应原型类型中方法的代理方法的 <see cref="MethodInvoker"/> 委托的字段。
+        /// 代理派生类型中对应原型类型中方法的代理方法的 <see cref="MethodInvoker"/> 委托的字段。
         /// </summary>
         private IDictionary<MethodInfo, FieldBuilder> ProxyDelegateFields { get; set; }
 
         /// <summary>
-        /// 获取以指定原型类型为基础的 <see cref="ProxyBuilder"/> 类的实例。
+        /// 获取以指定类型为原型类型的 <see cref="ProxyTypeProvider"/> 类的实例。
         /// </summary>
-        /// <param name="type">代理类型的原型类型的 <see cref="Type"/> 对象。</param>
+        /// <param name="type">原型类型的 <see cref="Type"/> 对象。</param>
         /// <returns>一个原型类型为 <paramref name="type"/> 的
-        /// <see cref="ProxyBuilder"/> 类的实例。</returns>
+        /// <see cref="ProxyTypeProvider"/> 类的实例。</returns>
         /// <exception cref="TypeAccessException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
-        public static ProxyBuilder Default(Type type) =>
-            ProxyBuilder.LazyDefaults.GetOrAdd(type,
-                newType => new Lazy<ProxyBuilder>(
-                    () => new ProxyBuilder(newType))).Value;
+        public static ProxyTypeProvider Default(Type type) =>
+            ProxyTypeProvider.LazyDefaults.GetOrAdd(type,
+                newType => new Lazy<ProxyTypeProvider>(
+                    () => new ProxyTypeProvider(newType))).Value;
 
         /// <summary>
         /// 构造代理派生类型。
@@ -92,10 +92,10 @@ namespace XstarS.Reflection
             // 初始化原型类型中可以被重写的方法。
             this.InitializeBaseMethods();
 
-            // 定义代理类型。
+            // 定义代理派生类型。
             this.DefineProxyType();
 
-            // 定义代理类型的各个成员。
+            // 定义代理派生类型的各个成员。
             this.DefineConstructors();
             this.DefineBaseAccessMethods();
             this.DefineAttributesType();
@@ -160,7 +160,7 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 以原型类型中构造函数为基础定义代理类型中的构造函数。
+        /// 以原型类型中构造函数为基础定义代理派生类型中的构造函数。
         /// </summary>
         private void DefineConstructors()
         {

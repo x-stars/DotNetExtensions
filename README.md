@@ -62,5 +62,5 @@ WPF 相关，目前包含的命名空间：
 
 除基础说明文档外，目前还包含部分功能设计文档可供参考：
 
-* [数据绑定类型构造器设计文档](Documentations/BindableBuilders.md)
+* [数据绑定类型提供对象设计文档](Documentations/BindableTypeProvider.md)
 * [对象的通用值相等比较方法设计文档](Documentations/ValueEquals.md)

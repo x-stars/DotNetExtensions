@@ -9,25 +9,26 @@ using System.Reflection.Emit;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供从指定原型类型构造用于数据绑定的派生类型及其实例的方法。
+    /// 提供指定类型的可绑定派生类型，并提供创建此派生类型的实例的方法。
     /// </summary>
-    public sealed class BindableBuilder : BindableBuilderBase<object>
+    public sealed class BindableTypeProvider : BindableTypeProviderBase<object>
     {
         /// <summary>
-        /// <see cref="BindableBuilder.Default(Type)"/> 的延迟初始化值。
+        /// <see cref="BindableTypeProvider.Default(Type)"/> 的延迟初始化值。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Lazy<BindableBuilder>> LazyDefaults =
-            new ConcurrentDictionary<Type, Lazy<BindableBuilder>>();
+        private static readonly ConcurrentDictionary<Type, Lazy<BindableTypeProvider>> LazyDefaults =
+            new ConcurrentDictionary<Type, Lazy<BindableTypeProvider>>();
 
         /// <summary>
-        /// 以指定原型类型初始化 <see cref="BindableBuilder"/> 类的新实例。
+        /// 以指定类型为原型类型初始化 <see cref="BindableTypeProvider"/> 类的新实例，
+        /// 并指定将所有可重写属性设置为可绑定属性。
         /// </summary>
-        /// <param name="type">用于数据绑定的类型的原型引用类型。</param>
+        /// <param name="type">原型类型，应为接口或非密封类。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="TypeAccessException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
-        private BindableBuilder(Type type)
+        private BindableTypeProvider(Type type)
         {
             if (type is null)
             {
@@ -43,15 +44,16 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 以指定原型类型和用于筛选可绑定属性的条件初始化 <see cref="BindableBuilder"/> 类的新实例。
+        /// 以指定类型为原型类型初始化 <see cref="BindableTypeProvider"/> 类的新实例，
+        /// 并指定将符合指定条件的可重写属性设置为可绑定属性。
         /// </summary>
-        /// <param name="type">用于数据绑定的类型的原型引用类型。</param>
+        /// <param name="type">原型类型，应为接口或非密封类。</param>
         /// <param name="isBindable">用于筛选可绑定属性的 <see cref="Predicate{T}"/> 委托。</param>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> 或
         /// <paramref name="isBindable"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="TypeAccessException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
-        private BindableBuilder(Type type, Predicate<PropertyInfo> isBindable)
+        private BindableTypeProvider(Type type, Predicate<PropertyInfo> isBindable)
             : this(type)
         {
             if (isBindable is null)
@@ -63,14 +65,9 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 用于数据绑定的类型的原型类型的 <see cref="Type"/> 对象。
+        /// 原型类型的 <see cref="Type"/> 对象。
         /// </summary>
         public Type PrototypeType { get; }
-
-        /// <summary>
-        /// 指示当前 <see cref="BindableBuilder"/> 是否用于构造默认的数据绑定派生类型。
-        /// </summary>
-        public bool IsDefault => this.IsBindable is null;
 
         /// <summary>
         /// 用于筛选可绑定属性的 <see cref="Predicate{T}"/> 委托。
@@ -78,7 +75,7 @@ namespace XstarS.ComponentModel
         private Predicate<PropertyInfo> IsBindable { get; }
 
         /// <summary>
-        /// 用于数据绑定的类型的 <see cref="TypeBuilder"/> 对象。
+        /// 可绑定派生类型的 <see cref="TypeBuilder"/> 对象。
         /// </summary>
         private TypeBuilder BindableTypeBuilder { get; set; }
 
@@ -88,49 +85,49 @@ namespace XstarS.ComponentModel
         private MethodInfo OnPropertyChangedMethod { get; set; }
 
         /// <summary>
-        /// 返回一个以指定类型为原型类型的 <see cref="BindableBuilder"/> 类的实例，
-        /// 并指定对所有可重写属性设置数据绑定。
+        /// 返回一个以指定类型为原型类型的 <see cref="BindableTypeProvider"/> 类的实例，
+        /// 并指定将所有可重写属性设置为可绑定属性。
         /// </summary>
-        /// <param name="type">用于数据绑定的类型的原型类型。</param>
-        /// <returns>一个对所有可重写属性设置数据绑定的原型类型为
-        /// <paramref name="type"/> 的 <see cref="BindableBuilder"/> 类的实例。</returns>
+        /// <param name="type">原型类型，应为接口或非密封类。</param>
+        /// <returns>一个将所有可重写属性设置为可绑定属性的原型类型为
+        /// <paramref name="type"/> 的 <see cref="BindableTypeProvider"/> 类的实例。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="TypeAccessException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
-        public static BindableBuilder Default(Type type) =>
-            BindableBuilder.LazyDefaults.GetOrAdd(type,
-                newType => new Lazy<BindableBuilder>(
-                    () => new BindableBuilder(newType))).Value;
+        public static BindableTypeProvider Default(Type type) =>
+            BindableTypeProvider.LazyDefaults.GetOrAdd(type,
+                newType => new Lazy<BindableTypeProvider>(
+                    () => new BindableTypeProvider(newType))).Value;
 
         /// <summary>
-        /// 创建一个以指定类型为原型类型的 <see cref="BindableBuilder"/> 类的实例，
-        /// 并指定对符合指定条件的可重写属性设置数据绑定。
+        /// 创建一个以指定类型为原型类型的 <see cref="BindableTypeProvider"/> 类的实例，
+        /// 并指定将符合指定条件的可重写属性设置为可绑定属性。
         /// </summary>
-        /// <param name="type">用于数据绑定的类型的原型类型。</param>
+        /// <param name="type">原型类型，应为接口或非密封类。</param>
         /// <param name="isBindable">用于筛选可绑定属性的 <see cref="Predicate{T}"/> 委托。</param>
-        /// <returns>一个对符合 <paramref name="isBindable"/> 条件的可重写属性设置数据绑定的原型类型为
-        /// <paramref name="type"/> 的 <see cref="BindableBuilder"/> 类的实例。</returns>
+        /// <returns>一个将符合 <paramref name="isBindable"/> 条件的可重写属性设置可绑定属性的原型类型为
+        /// <paramref name="type"/> 的 <see cref="BindableTypeProvider"/> 类的实例。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> 或
         /// <paramref name="isBindable"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="TypeAccessException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
-        public static BindableBuilder Custom(Type type, Predicate<PropertyInfo> isBindable) =>
-            new BindableBuilder(type, isBindable);
+        public static BindableTypeProvider Custom(Type type, Predicate<PropertyInfo> isBindable) =>
+            new BindableTypeProvider(type, isBindable);
 
         /// <summary>
-        /// 构造用于数据绑定的派生类型。
+        /// 构造可绑定派生类型。
         /// </summary>
-        /// <returns>构造完成的用于数据绑定的派生类型。</returns>
+        /// <returns>构造完成的可绑定派生类型。</returns>
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
         /// 但未定义公共或保护级别的 <code>void OnPropertyChanged(string)</code> 方法。</exception>
         protected override Type BuildBindableType()
         {
-            // 定义用于数据绑定的类型。
+            // 定义用于数据绑定的派生类型。
             this.DefineBindableType();
 
-            // 定义用于数据绑定的类型的各成员。
+            // 定义用于数据绑定的派生类型的各成员。
             this.DefineConstructors();
             this.DefinePropertyChangedEvent();
             this.DefineProperties();
@@ -142,12 +139,12 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 定义用于数据绑定的派生类型。
+        /// 定义可绑定派生类型。
         /// </summary>
         private void DefineBindableType()
         {
             var baseType = this.PrototypeType;
-            var typeID = this.IsDefault ? "" : $"#{this.GetHashCode().ToString()}";
+            var typeID = (this.IsBindable is null) ? "" : $"#{this.GetHashCode().ToString()}";
 
             // 定义动态程序集。
             var asmName = $"{baseType.ToString()}(Bindable{typeID})";
@@ -191,7 +188,7 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 定义用于数据绑定的派生类型的构造函数。
+        /// 定义可绑定派生类型的构造函数。
         /// </summary>
         private void DefineConstructors()
         {
@@ -261,7 +258,7 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 定义用于数据绑定的派生类型的属性。
+        /// 定义可绑定派生类型的属性。
         /// </summary>
         private void DefineProperties()
         {
@@ -285,7 +282,7 @@ namespace XstarS.ComponentModel
                     // 属性。
                     else
                     {
-                        if (!this.IsDefault && !this.IsBindable(baseProperty))
+                        if (!(this.IsBindable is null) && !this.IsBindable(baseProperty))
                         {
                             type.DefineDefaultProperty(baseProperty);
                         }
@@ -299,7 +296,7 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 定义用于数据绑定的派生类型的事件。
+        /// 定义可绑定派生类型的事件。
         /// </summary>
         private void DefineEvents()
         {
@@ -320,7 +317,7 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 定义用于数据绑定的派生类型的方法。
+        /// 定义可绑定派生类型的方法。
         /// </summary>
         private void DefineMethods()
         {

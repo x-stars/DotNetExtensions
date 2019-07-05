@@ -1,22 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
 namespace XstarS.Reflection
 {
-    public sealed partial class ProxyBuilder
+    public sealed partial class ProxyTypeProvider
     {
         private sealed class AttributesBuilder
         {
-            internal AttributesBuilder(ProxyBuilder proxyBuilder)
+            internal AttributesBuilder(ProxyTypeProvider proxyBuilder)
             {
                 this.ProxyBuilder = proxyBuilder;
                 this.BuildAttributesType();
             }
 
-            internal ProxyBuilder ProxyBuilder { get; }
+            internal ProxyTypeProvider ProxyBuilder { get; }
 
             internal TypeBuilder AttributesTypeBuilder { get; private set; }
 

@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 为数据绑定类型提供抽象基类实现，包含属性发生更改时通知客户端的方法。
+    /// 为可绑定类型 <see cref="INotifyPropertyChanged"/> 提供抽象基类实现。
     /// </summary>
     [Serializable]
     public abstract class BindableObject : INotifyPropertyChanged

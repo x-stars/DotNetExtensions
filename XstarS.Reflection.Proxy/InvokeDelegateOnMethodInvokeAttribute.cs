@@ -5,7 +5,7 @@ namespace XstarS.Reflection
 {
     /// <summary>
     /// 表示方法调用时调用一个 <see cref="OnInvokeHandler"/> 委托的代理。
-    /// 此特性用于 <see cref="CustomProxyBuilder"/> 的内部实现，请不要使用此特性。
+    /// 此特性用于 <see cref="ProxyTypeBuilder"/> 的内部实现，请不要使用此特性。
     /// </summary>
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
     public sealed class InvokeDelegateOnMethodInvokeAttribute : OnMethodInvokeAttribute
@@ -19,7 +19,7 @@ namespace XstarS.Reflection
         public InvokeDelegateOnMethodInvokeAttribute(string handlerGuid)
         {
             var guid = Guid.Parse(handlerGuid);
-            this.Handler = CustomProxyBuilder.GetHandler(guid);
+            this.Handler = ProxyTypeBuilder.GetHandler(guid);
         }
 
         /// <summary>

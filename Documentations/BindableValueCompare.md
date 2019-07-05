@@ -153,7 +153,7 @@ new BindableBox();
 
 ## 运行时代码自动生成
 
-使用 `XstarS.ComponentModel.BindableBuilder<T>` 动态生成数据绑定派生类。
+使用 `XstarS.ComponentModel.BindableTypeProvider<T>` 动态生成数据绑定派生类。
 
 ### 非密封类方式
 
@@ -174,14 +174,14 @@ public abstract class BindableBox
     public abstract event PropertyChangedEventHandler PropertyChanged;
 
     public static BindableBox Create() =>
-        BindableBuilder<BindableBox>.Default.CreateInstance();
+        BindableTypeProvider<BindableBox>.Default.CreateInstance();
 }
 
 // 创建实例。
 BindableBox.Create();
 ```
 
-此实现无需在类外调用 `BindableBuilder`，可维护性较强。
+此实现无需在类外调用 `BindableTypeProvider`，可维护性较强。
 
 ### 接口方式
 
@@ -199,7 +199,7 @@ public interface IBindableBox
 }
 
 // 创建实例。
-BindableBuilder<IBindableBox>.Default.CreateInstance();
+BindableTypeProvider<IBindableBox>.Default.CreateInstance();
 ```
 
-此实现需要在类外调用 `BindableBuilder` 以创建实例，可维护性比非密封类稍差。
+此实现需要在类外调用 `BindableTypeProvider` 以创建实例，可维护性比非密封类稍差。
