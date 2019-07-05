@@ -115,7 +115,7 @@ namespace XstarS.ComponentModel
 
         /// <summary>
         /// 释放此实例占用的资源。
-        /// 将取消当前实例对 <see cref="IBindingValue.ValueChanged"/> 事件的订阅。
+        /// 将取消当前实例对 <see cref="IBindingValue{T}.ValueChanged"/> 事件的订阅。
         /// </summary>
         public void Dispose()
         {
@@ -125,7 +125,7 @@ namespace XstarS.ComponentModel
 
         /// <summary>
         /// 释放此实例占用的非托管资源。并根据指示释放托管资源。
-        /// 将取消当前实例对 <see cref="IBindingValue.ValueChanged"/> 事件的订阅。
+        /// 将取消当前实例对 <see cref="IBindingValue{T}.ValueChanged"/> 事件的订阅。
         /// </summary>
         /// <param name="disposing">指示是否释放托管资源。</param>
         protected virtual void Dispose(bool disposing)
@@ -144,7 +144,7 @@ namespace XstarS.ComponentModel
 
         /// <summary>
         /// <see cref="ValueBinding{TSource, TTarget}.Source"/> 的
-        /// <see cref="IBindingValue.ValueChanged"/> 事件的事件处理。
+        /// <see cref="IBindingValue{T}.ValueChanged"/> 事件的事件处理。
         /// </summary>
         /// <param name="sender">事件源。</param>
         /// <param name="e">提供事件数据的对象。</param>
@@ -156,7 +156,7 @@ namespace XstarS.ComponentModel
 
         /// <summary>
         /// <see cref="ValueBinding{TSource, TTarget}.Target"/> 的
-        /// <see cref="IBindingValue.ValueChanged"/> 事件的事件处理。
+        /// <see cref="IBindingValue{T}.ValueChanged"/> 事件的事件处理。
         /// </summary>
         /// <param name="sender">事件源。</param>
         /// <param name="e">提供事件数据的对象。</param>

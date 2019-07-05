@@ -7,7 +7,7 @@ namespace XstarS.ComponentModel
     /// 为用于数据绑定的值提供基类实现。
     /// </summary>
     /// <typeparam name="T">用于数据绑定的值的类型。</typeparam>
-    public abstract class BindingValueBase<T> : IBindingValue<T>
+    public abstract class BindingValueBase<T> : IBindingValue, IBindingValue<T>
     {
         /// <summary>
         /// <see cref="BindingValueBase{T}.GetValue"/> 的延迟初始化值。
@@ -63,7 +63,11 @@ namespace XstarS.ComponentModel
         /// 用于数据绑定的值。
         /// </summary>
         /// <exception cref="MissingMemberException">调用了未能正确构造数据绑定值访问器。</exception>
-        object IBindingValue.Value { get => this.Value; set => this.Value = (T)value; }
+        object IBindingValue.Value
+        {
+            get => this.Value;
+            set => this.Value = (value is T newValue) ? newValue : default;
+        }
 
         /// <summary>
         /// 在数据绑定值更改时发生。

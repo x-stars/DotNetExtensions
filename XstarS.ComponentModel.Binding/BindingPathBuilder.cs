@@ -183,7 +183,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <typeparam name="T">用于数据绑定的值的类型。</typeparam>
         /// <returns>使用当前数据绑定路径创建的 <see cref="BindingPath{T}"/> 对象。</returns>
-        public BindingPath<T> MakeBindingValue<T>()
+        public BindingPath<T> ToBindingPath<T>()
         {
             return new BindingPath<T>(this.Instance, this.ValuePath,
                 this.ValueExpression, this.BindingValueProviders.ToArray());
