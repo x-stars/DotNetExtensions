@@ -25,8 +25,8 @@ namespace XstarS.ComponentModel
         public BindingValueBase()
         {
             this.IsDisposed = false;
-            this.LazyGetValue = new Lazy<Func<T>>(this.BuildGetValue);
-            this.LazySetValue = new Lazy<Action<T>>(this.BuildSetValue);
+            this.LazyGetValue = new Lazy<Func<T>>(this.CreateGetValue);
+            this.LazySetValue = new Lazy<Action<T>>(this.CreateSetValue);
         }
 
         /// <summary>
@@ -106,17 +106,17 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 在派生类中重写，用于构造获取数据绑定值的委托。
+        /// 在派生类中重写，创建获取数据绑定值的委托。
         /// </summary>
-        /// <returns>构造完成的获取数据绑定值的委托。</returns>
+        /// <returns>创建的获取数据绑定值的委托。</returns>
         /// <exception cref="MissingMemberException">无法正确构造获取数据绑定值的委托。</exception>
-        protected abstract Func<T> BuildGetValue();
+        protected abstract Func<T> CreateGetValue();
 
         /// <summary>
-        /// 在派生类中重写，用于构造设置数据绑定值的委托。
+        /// 在派生类中重写，创建设置数据绑定值的委托。
         /// </summary>
-        /// <returns>构造完成的设置数据绑定值的委托。</returns>
+        /// <returns>创建的设置数据绑定值的委托。</returns>
         /// <exception cref="MissingMemberException">无法正确构造设置数据绑定值的委托。</exception>
-        protected abstract Action<T> BuildSetValue();
+        protected abstract Action<T> CreateSetValue();
     }
 }

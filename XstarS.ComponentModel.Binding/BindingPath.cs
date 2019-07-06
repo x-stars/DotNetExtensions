@@ -92,11 +92,11 @@ namespace XstarS.ComponentModel
         private IBindingValue[] BindingValues => this.Disposable.InternalBindingValues;
 
         /// <summary>
-        /// 构造获取数据绑定值的委托。
+        /// 创建获取数据绑定值的委托。
         /// </summary>
-        /// <returns>构造完成的获取数据绑定值的委托。</returns>
+        /// <returns>创建的获取数据绑定值的委托。</returns>
         /// <exception cref="MissingMemberException">无法正确构造获取数据绑定值的委托。</exception>
-        protected override Func<T> BuildGetValue()
+        protected override Func<T> CreateGetValue()
         {
             try
             {
@@ -110,11 +110,11 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 构造设置数据绑定值的委托。
+        /// 创建设置数据绑定值的委托。
         /// </summary>
-        /// <returns>构造完成的设置数据绑定值的委托。</returns>
+        /// <returns>创建的设置数据绑定值的委托。</returns>
         /// <exception cref="MissingMemberException">无法正确构造设置数据绑定值的委托。</exception>
-        protected override Action<T> BuildSetValue()
+        protected override Action<T> CreateSetValue()
         {
             try
             {
@@ -170,7 +170,7 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 在绑定路径中某一节点的值改变时，更新 <see cref="BindingPath{T}.BindingValues"/>。
+        /// 在绑定路径中某一节点的值更改时，更新 <see cref="BindingPath{T}.BindingValues"/>。
         /// </summary>
         /// <param name="valueChanged">值发生更改的 <see cref="IBindingValue"/> 对象。</param>
         private void UpdateBindingValues(object valueChanged)

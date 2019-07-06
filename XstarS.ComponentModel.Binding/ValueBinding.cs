@@ -4,6 +4,31 @@ using System.ComponentModel;
 namespace XstarS.ComponentModel
 {
     /// <summary>
+    /// 表示两个相同类型的值之间的单向或双向的数据绑定。
+    /// </summary>
+    /// <typeparam name="T">数据绑定的值的类型。</typeparam>
+    public class ValueBinding<T> : ValueBinding<T, T>
+    {
+        /// <summary>
+        /// 使用数据绑定源值、数据绑定目标值和绑定方向初始化 <see cref="ValueBinding{TValue}"/> 类的新实例。
+        /// </summary>
+        /// <param name="source">数据绑定源值的 <see cref="IBindingValue{T}"/> 对象。</param>
+        /// <param name="target">数据绑定目标值的 <see cref="IBindingValue{T}"/> 对象。</param>
+        /// <param name="direction">数据绑定方向，可为从源到目标的单向绑定，或是双向绑定。</param>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="direction"/> 的值不合法。</exception>
+        public ValueBinding(IBindingValue<T> source, IBindingValue<T> target, BindingDirection direction)
+            : base(source, target, direction, ValueBinding<T>.DefaultConvert, ValueBinding<T>.DefaultConvert) { }
+
+        /// <summary>
+        /// 表示一个默认的类型转换方法，直接将输入值返回。
+        /// </summary>
+        /// <param name="value">要进行转换的值。</param>
+        /// <returns>转换后得到的值。</returns>
+        private static T DefaultConvert(T value) => value;
+    }
+
+    /// <summary>
     /// 表示两个不同类型的值之间的单向或双向的数据绑定。
     /// </summary>
     /// <typeparam name="TSource">数据绑定源值的类型。</typeparam>
@@ -165,30 +190,5 @@ namespace XstarS.ComponentModel
             try { this.Source.Value = this.ConvertBack(this.Target.Value); }
             catch (Exception) { this.Source.Value = default; }
         }
-    }
-
-    /// <summary>
-    /// 表示两个相同类型的值之间的单向或双向的数据绑定。
-    /// </summary>
-    /// <typeparam name="T">数据绑定的值的类型。</typeparam>
-    public class ValueBinding<T> : ValueBinding<T, T>
-    {
-        /// <summary>
-        /// 使用数据绑定源值、数据绑定目标值和绑定方向初始化 <see cref="ValueBinding{TValue}"/> 类的新实例。
-        /// </summary>
-        /// <param name="source">数据绑定源值的 <see cref="IBindingValue{T}"/> 对象。</param>
-        /// <param name="target">数据绑定目标值的 <see cref="IBindingValue{T}"/> 对象。</param>
-        /// <param name="direction">数据绑定方向，可为从源到目标的单向绑定，或是双向绑定。</param>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="direction"/> 的值不合法。</exception>
-        public ValueBinding(IBindingValue<T> source, IBindingValue<T> target, BindingDirection direction)
-            : base(source, target, direction, ValueBinding<T>.DefaultConvert, ValueBinding<T>.DefaultConvert) { }
-
-        /// <summary>
-        /// 表示一个默认的类型转换方法，直接将输入值返回。
-        /// </summary>
-        /// <param name="value">要进行转换的值。</param>
-        /// <returns>转换后得到的值。</returns>
-        private static T DefaultConvert(T value) => value;
     }
 }

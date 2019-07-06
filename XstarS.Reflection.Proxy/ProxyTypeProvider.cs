@@ -8,6 +8,47 @@ using System.Reflection.Emit;
 namespace XstarS.Reflection
 {
     /// <summary>
+    /// 提供代理派生类型，并提供创建此派生类型的实例的方法。
+    /// </summary>
+    /// <typeparam name="T">原型类型，应为接口或非密封类。</typeparam>
+    public sealed class ProxyTypeProvider<T> : ProxyTypeProviderBase<T> where T : class
+    {
+        /// <summary>
+        /// <see cref="ProxyTypeProvider{T}.Default"/> 的延迟初始化值。
+        /// </summary>
+        private static readonly Lazy<ProxyTypeProvider<T>> LazyDefault =
+            new Lazy<ProxyTypeProvider<T>>(() => new ProxyTypeProvider<T>());
+
+        /// <summary>
+        /// 提供代理派生类型的 <see cref="ProxyTypeProvider"/> 对象。
+        /// </summary>
+        private readonly ProxyTypeProvider InternalProvider;
+
+        /// <summary>
+        /// 初始化 <see cref="ProxyTypeProvider{T}"/> 类的新实例。
+        /// </summary>
+        /// <exception cref="TypeAccessException">
+        /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
+        private ProxyTypeProvider()
+        {
+            this.InternalProvider = ProxyTypeProvider.Default(typeof(T));
+        }
+
+        /// <summary>
+        /// 返回一个默认的 <see cref="ProxyTypeProvider{T}"/> 类的实例。
+        /// </summary>
+        /// <exception cref="TypeAccessException">
+        /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
+        public static ProxyTypeProvider<T> Default => ProxyTypeProvider<T>.LazyDefault.Value;
+
+        /// <summary>
+        /// 创建代理派生类型。
+        /// </summary>
+        /// <returns>创建的代理派生类型。</returns>
+        protected override Type CreateProxyType() => this.InternalProvider.ProxyType;
+    }
+
+    /// <summary>
     /// 提供指定类型的代理派生类型，并提供创建此派生类型的实例的方法。
     /// </summary>
     public sealed partial class ProxyTypeProvider : ProxyTypeProviderBase<object>
@@ -17,6 +58,36 @@ namespace XstarS.Reflection
         /// </summary>
         private static readonly ConcurrentDictionary<Type, Lazy<ProxyTypeProvider>> LazyDefaults =
             new ConcurrentDictionary<Type, Lazy<ProxyTypeProvider>>();
+
+        /// <summary>
+        /// 原型类型中所有可在程序集外部重写的方法。
+        /// </summary>
+        private MethodInfo[] BaseMethods;
+
+        /// <summary>
+        /// 代理派生类型的 <see cref="TypeBuilder"/> 对象。
+        /// </summary>
+        private TypeBuilder ProxyTypeBuilder;
+
+        /// <summary>
+        /// 代理派生类型中用于访问原型类型中对应方法的方法。
+        /// </summary>
+        private Dictionary<MethodInfo, MethodInfo> BaseAccessMethods;
+
+        /// <summary>
+        /// 代理派生类型中用于保存原型类型中定义的 <see cref="OnMemberInvokeAttribute"/> 特性的字段。
+        /// </summary>
+        private FieldInfo[] OnMemberInvokeFields;
+
+        /// <summary>
+        /// 代理派生类型中用于保存原型类型中定义的 <see cref="OnMethodInvokeAttribute"/> 特性的字段。
+        /// </summary>
+        private Dictionary<MethodInfo, FieldInfo[]> MethodsOnMethodInvokeFields;
+
+        /// <summary>
+        /// 代理派生类型中对应原型类型中方法的代理方法的 <see cref="MethodInvoker"/> 委托的字段。
+        /// </summary>
+        private Dictionary<MethodInfo, FieldInfo> ProxyDelegateFields;
 
         /// <summary>
         /// 以原型类型初始化 <see cref="ProxyTypeProvider"/> 类的新实例。
@@ -32,43 +103,13 @@ namespace XstarS.Reflection
                 throw new TypeAccessException();
             }
 
-            this.PrototypeType = type;
+            this.BaseType = type;
         }
 
         /// <summary>
         /// 原型类型的 <see cref="Type"/> 对象。
         /// </summary>
-        public Type PrototypeType { get; }
-
-        /// <summary>
-        /// 原型类型中所有可在程序集外部重写的方法。
-        /// </summary>
-        private MethodInfo[] BaseMethods { get; set; }
-
-        /// <summary>
-        /// 代理派生类型的 <see cref="TypeBuilder"/> 对象。
-        /// </summary>
-        private TypeBuilder ProxyTypeBuilder { get; set; }
-
-        /// <summary>
-        /// 代理派生类型中用于访问原型类型中对应方法的方法。
-        /// </summary>
-        private IDictionary<MethodInfo, MethodBuilder> BaseAccessMethods { get; set; }
-
-        /// <summary>
-        /// 代理派生类型中用于保存原型类型中定义的 <see cref="OnMemberInvokeAttribute"/> 特性的字段。
-        /// </summary>
-        private FieldBuilder[] OnMemberInvokeFields { get; set; }
-
-        /// <summary>
-        /// 代理派生类型中用于保存原型类型中定义的 <see cref="OnMethodInvokeAttribute"/> 特性的字段。
-        /// </summary>
-        private IDictionary<MethodInfo, FieldBuilder[]> MethodsOnMethodInvokeFields { get; set; }
-
-        /// <summary>
-        /// 代理派生类型中对应原型类型中方法的代理方法的 <see cref="MethodInvoker"/> 委托的字段。
-        /// </summary>
-        private IDictionary<MethodInfo, FieldBuilder> ProxyDelegateFields { get; set; }
+        public Type BaseType { get; }
 
         /// <summary>
         /// 获取以指定类型为原型类型的 <see cref="ProxyTypeProvider"/> 类的实例。
@@ -84,10 +125,16 @@ namespace XstarS.Reflection
                     () => new ProxyTypeProvider(newType))).Value;
 
         /// <summary>
+        /// 创建代理派生类型。
+        /// </summary>
+        /// <returns>创建的派生类型。</returns>
+        protected override Type CreateProxyType() => this.BuildProxyType();
+
+        /// <summary>
         /// 构造代理派生类型。
         /// </summary>
         /// <returns>构造完成的派生类型。</returns>
-        protected override Type BuildProxyType()
+        private Type BuildProxyType()
         {
             // 初始化原型类型中可以被重写的方法。
             this.InitializeBaseMethods();
@@ -111,7 +158,7 @@ namespace XstarS.Reflection
         /// </summary>
         private void InitializeBaseMethods()
         {
-            this.BaseMethods = this.PrototypeType.GetAccessibleMethods().Where(
+            this.BaseMethods = this.BaseType.GetAccessibleMethods().Where(
                 baseMethod => baseMethod.IsOverridable()).ToArray();
         }
 
@@ -120,7 +167,7 @@ namespace XstarS.Reflection
         /// </summary>
         private void DefineProxyType()
         {
-            var baseType = this.PrototypeType;
+            var baseType = this.BaseType;
 
             // 定义动态程序集。
             var asmName = $"{baseType.ToString()}(Proxy)";
@@ -146,17 +193,17 @@ namespace XstarS.Reflection
                 (baseType.IsGenericType ? $"<{string.Join(",", genericArgumentNames)}>" : "");
 
             // 获取原型类型信息。
-            bool isInterface = baseType.IsInterface;
+            var isInterface = baseType.IsInterface;
             var parent = !isInterface ? baseType : typeof(object);
             var interfaces = !isInterface ? baseType.GetInterfaces() :
                 baseType.GetInterfaces().Concat(new[] { baseType }).ToArray();
 
             // 定义动态类型。
-            var objectProxyType = module.DefineType(typeName,
+            var proxyType = module.DefineType(typeName,
                 TypeAttributes.Class | TypeAttributes.Public |
                 TypeAttributes.Serializable | TypeAttributes.BeforeFieldInit,
                 parent, interfaces);
-            this.ProxyTypeBuilder = objectProxyType;
+            this.ProxyTypeBuilder = proxyType;
         }
 
         /// <summary>
@@ -164,10 +211,10 @@ namespace XstarS.Reflection
         /// </summary>
         private void DefineConstructors()
         {
-            var baseType = this.PrototypeType;
-            var objectProxyType = this.ProxyTypeBuilder;
+            var baseType = this.BaseType;
+            var proxyType = this.ProxyTypeBuilder;
 
-            bool isInterface = baseType.IsInterface;
+            var isInterface = baseType.IsInterface;
             var parent = !isInterface ? baseType : typeof(object);
 
             var baseConstructors = parent.GetConstructors(
@@ -175,7 +222,7 @@ namespace XstarS.Reflection
                 constructor => constructor.IsPublic || constructor.IsFamily);
             foreach (var baseConstructor in baseConstructors)
             {
-                objectProxyType.DefineDefaultConstructor(baseConstructor);
+                proxyType.DefineDefaultConstructor(baseConstructor);
             }
         }
 
@@ -184,14 +231,14 @@ namespace XstarS.Reflection
         /// </summary>
         private void DefineBaseAccessMethods()
         {
-            var objectProxyType = this.ProxyTypeBuilder;
+            var proxyType = this.ProxyTypeBuilder;
             var baseMethods = this.BaseMethods;
 
-            var baseAccessMethods = new Dictionary<MethodInfo, MethodBuilder>();
+            var baseAccessMethods = new Dictionary<MethodInfo, MethodInfo>();
             for (int i = 0; i < baseMethods.Length; i++)
             {
                 var baseMethod = baseMethods[i];
-                var accessMethod = objectProxyType.DefineBaseAccessMethod(baseMethod);
+                var accessMethod = proxyType.DefineBaseAccessMethod(baseMethod);
                 baseAccessMethods[baseMethod] = accessMethod;
             }
             this.BaseAccessMethods = baseAccessMethods;
@@ -202,7 +249,7 @@ namespace XstarS.Reflection
         /// </summary>
         private void DefineAttributesType()
         {
-            var attributesType = new AttributesBuilder(this);
+            var attributesType = new AttributesTypeProvider(this);
             this.OnMemberInvokeFields = attributesType.OnMemberInvokeFields;
             this.MethodsOnMethodInvokeFields = attributesType.MethodsOnMethodInvokeFields;
         }
@@ -212,7 +259,7 @@ namespace XstarS.Reflection
         /// </summary>
         private void DefineDelegatesType()
         {
-            var delegatesType = new DelegatesBuilder(this);
+            var delegatesType = new DelegatesTypeProvider(this);
             this.ProxyDelegateFields = delegatesType.ProxyDelegateFields;
         }
 
@@ -237,14 +284,14 @@ namespace XstarS.Reflection
         /// 要调用代理方法的 <see cref="MethodInvoker"/> 委托的方法在原型类型中对应的方法。</param>
         private void DefineProxyOverrideMethod(MethodInfo baseMethod)
         {
-            var objectProxyType = this.ProxyTypeBuilder;
-            var proxyDelegateField = (FieldInfo)this.ProxyDelegateFields[baseMethod];
-            bool newSlot = baseMethod.DeclaringType.IsInterface;
+            var proxyType = this.ProxyTypeBuilder;
+            var proxyDelegateField = this.ProxyDelegateFields[baseMethod];
+            var newSlot = baseMethod.DeclaringType.IsInterface;
 
             // 对于没有任何代理特性的方法则定义默认重写方法并返回。
             if (proxyDelegateField is null)
             {
-                objectProxyType.DefineDefaultOverrideMethod(baseMethod);
+                proxyType.DefineDefaultOverrideMethod(baseMethod);
                 return;
             }
 
@@ -255,8 +302,8 @@ namespace XstarS.Reflection
             var baseParameters = baseMethod.GetParameters();
             var attributes = baseAttributes & ~MethodAttributes.Abstract;
             if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
-            bool hasReturns = baseReturnParam.ParameterType != typeof(void);
-            var proxyMethod = objectProxyType.DefineMethod(baseMethod.Name,
+            var hasReturns = baseReturnParam.ParameterType != typeof(void);
+            var proxyMethod = proxyType.DefineMethod(baseMethod.Name,
                 attributes, baseReturnParam.ParameterType,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));
             // 泛型参数。
@@ -293,7 +340,7 @@ namespace XstarS.Reflection
             {
                 ilGen.Emit(OpCodes.Ldsfld, proxyDelegateField);
                 ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.Emit(OpCodes.Castclass, objectProxyType);
+                ilGen.Emit(OpCodes.Castclass, proxyType);
                 ilGen.EmitLdcI4(baseParameters.Length);
                 ilGen.Emit(OpCodes.Newarr, typeof(object));
                 for (int i = 0; i < baseParameters.Length; i++)

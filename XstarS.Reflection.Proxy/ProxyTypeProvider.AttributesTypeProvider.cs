@@ -7,25 +7,27 @@ namespace XstarS.Reflection
 {
     public sealed partial class ProxyTypeProvider
     {
-        private sealed class AttributesBuilder
+        private sealed class AttributesTypeProvider
         {
-            internal AttributesBuilder(ProxyTypeProvider proxyBuilder)
+            private TypeBuilder AttributesTypeBuilder;
+
+            internal AttributesTypeProvider(ProxyTypeProvider provider)
             {
-                this.ProxyBuilder = proxyBuilder;
-                this.BuildAttributesType();
+                this.ProxyTypeProvider = provider;
+                this.AttributesType = this.BuildAttributesType();
             }
 
-            internal ProxyTypeProvider ProxyBuilder { get; }
+            public ProxyTypeProvider ProxyTypeProvider { get; }
 
-            internal TypeBuilder AttributesTypeBuilder { get; private set; }
+            public Type AttributesType { get; }
 
-            internal FieldBuilder[] OnMemberInvokeFields { get; private set; }
+            public FieldInfo[] OnMemberInvokeFields { get; private set; }
 
-            internal Dictionary<MethodInfo, TypeBuilder> MethodAttributesTypes { get; private set; }
+            public Dictionary<MethodInfo, Type> MethodAttributesTypes { get; private set; }
 
-            internal Dictionary<MethodInfo, FieldBuilder[]> MethodsOnMethodInvokeFields { get; private set; }
+            public Dictionary<MethodInfo, FieldInfo[]> MethodsOnMethodInvokeFields { get; private set; }
 
-            private void BuildAttributesType()
+            private Type BuildAttributesType()
             {
                 // 定义存储代理特性的类型。
                 this.DefineAttributesType();
@@ -35,15 +37,15 @@ namespace XstarS.Reflection
                 this.DefineMethodAttributesTypes();
 
                 // 完成类型创建。
-                this.AttributesTypeBuilder.CreateTypeInfo();
+                return this.AttributesTypeBuilder.CreateTypeInfo();
             }
 
             private void DefineAttributesType()
             {
-                var objectProxyType = this.ProxyBuilder.ProxyTypeBuilder;
+                var proxyType = this.ProxyTypeProvider.ProxyTypeBuilder;
 
                 // 定义存储代理特性的类型。
-                var attributesType = objectProxyType.DefineNestedType($"<{nameof(Attribute)}>",
+                var attributesType = proxyType.DefineNestedType($"<{nameof(Attribute)}>",
                     TypeAttributes.Class | TypeAttributes.NestedAssembly |
                     TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
                 this.AttributesTypeBuilder = attributesType;
@@ -51,7 +53,7 @@ namespace XstarS.Reflection
 
             private void DefineOnMemberInvokeFields()
             {
-                var baseType = this.ProxyBuilder.PrototypeType;
+                var baseType = this.ProxyTypeProvider.BaseType;
                 var attributesType = this.AttributesTypeBuilder;
 
                 // 获取相关特性。
@@ -61,11 +63,11 @@ namespace XstarS.Reflection
                 // 对于不包含类型代理特性的类型则直接返回空数组。
                 if (onMemberInvokeAttributes.Length == 0)
                 {
-                    this.OnMemberInvokeFields = Array.Empty<FieldBuilder>();
+                    this.OnMemberInvokeFields = Array.Empty<FieldInfo>();
                     return;
                 }
 
-                var onMemberInvokeFields = new FieldBuilder[onMemberInvokeAttributes.Length];
+                var onMemberInvokeFields = new FieldInfo[onMemberInvokeAttributes.Length];
                 // 定义静态构造函数。
                 var constructor = attributesType.DefineTypeInitializer();
                 // 生成 IL 代码。
@@ -101,15 +103,15 @@ namespace XstarS.Reflection
 
             private void DefineMethodAttributesTypes()
             {
-                var baseMethods = this.ProxyBuilder.BaseMethods;
-                var methodAttributesTypes = new Dictionary<MethodInfo, TypeBuilder>();
-                var methodsOnMethodInvokeFields = new Dictionary<MethodInfo, FieldBuilder[]>();
+                var baseMethods = this.ProxyTypeProvider.BaseMethods;
+                var methodAttributesTypes = new Dictionary<MethodInfo, Type>();
+                var methodsOnMethodInvokeFields = new Dictionary<MethodInfo, FieldInfo[]>();
 
                 // 依次为每个方法定义代理特性存储类。
                 foreach (var baseMethod in baseMethods)
                 {
-                    var methodAttributesTypeBuilder = new MethodAttributesBuilder(this, baseMethod);
-                    methodAttributesTypes[baseMethod] = methodAttributesTypeBuilder.MethodAttributesTypeBuilder;
+                    var methodAttributesTypeBuilder = new MethodAttributesTypeProvider(this, baseMethod);
+                    methodAttributesTypes[baseMethod] = methodAttributesTypeBuilder.MethodAttributesType;
                     methodsOnMethodInvokeFields[baseMethod] = methodAttributesTypeBuilder.OnMethodInvokeFields;
                 }
 
@@ -117,25 +119,27 @@ namespace XstarS.Reflection
                 this.MethodsOnMethodInvokeFields = methodsOnMethodInvokeFields;
             }
 
-            private class MethodAttributesBuilder
+            private sealed class MethodAttributesTypeProvider
             {
-                internal MethodAttributesBuilder(
-                    AttributesBuilder attributesTypeBuilder, MethodInfo baseMethod)
+                private TypeBuilder MethodAttributesTypeBuilder;
+
+                internal MethodAttributesTypeProvider(
+                    AttributesTypeProvider provider, MethodInfo baseMethod)
                 {
-                    this.AttributesBuilder = attributesTypeBuilder;
+                    this.AttributesTypeProvider = provider;
                     this.BaseMethod = baseMethod;
-                    this.BuildMethodAttributesType();
+                    this.MethodAttributesType = this.BuildMethodAttributesType();
                 }
 
-                internal AttributesBuilder AttributesBuilder { get; }
+                public AttributesTypeProvider AttributesTypeProvider { get; }
 
-                internal MethodInfo BaseMethod { get; }
+                public MethodInfo BaseMethod { get; }
 
-                internal TypeBuilder MethodAttributesTypeBuilder { get; private set; }
+                public Type MethodAttributesType { get; }
 
-                internal FieldBuilder[] OnMethodInvokeFields { get; private set; }
+                public FieldInfo[] OnMethodInvokeFields { get; private set; }
 
-                private void BuildMethodAttributesType()
+                private Type BuildMethodAttributesType()
                 {
                     var baseMethod = this.BaseMethod;
 
@@ -147,8 +151,8 @@ namespace XstarS.Reflection
                     if (onMethodInvokeAttributes.Length == 0)
                     {
                         this.MethodAttributesTypeBuilder = null;
-                        this.OnMethodInvokeFields = Array.Empty<FieldBuilder>();
-                        return;
+                        this.OnMethodInvokeFields = Array.Empty<FieldInfo>();
+                        return null;
                     }
 
                     // 定义保存方法代理特性的类型。
@@ -158,13 +162,13 @@ namespace XstarS.Reflection
                     this.DefineOnMethodInvokeFields();
 
                     // 完成类型创建。
-                    this.MethodAttributesTypeBuilder.CreateTypeInfo();
+                    return this.MethodAttributesTypeBuilder.CreateTypeInfo();
                 }
 
                 private void DefineMethodAttributesType()
                 {
                     var baseMethod = this.BaseMethod;
-                    var attributesType = this.AttributesBuilder.AttributesTypeBuilder;
+                    var attributesType = this.AttributesTypeProvider.AttributesTypeBuilder;
 
                     // 定义保存方法代理特性的类型。
                     var methodAttributesType = attributesType.DefineNestedType(
@@ -183,7 +187,7 @@ namespace XstarS.Reflection
                     var onMethodInvokeAttributes =
                         baseMethod.GetCustomAttributes(ReflectionData.T_OnMethodInvokeAttribute, false);
 
-                    var onMethodInvokeFields = new FieldBuilder[onMethodInvokeAttributes.Length];
+                    var onMethodInvokeFields = new FieldInfo[onMethodInvokeAttributes.Length];
                     // 定义静态构造函数。
                     var constructor = methodAttributesType.DefineTypeInitializer();
                     // 生成 IL 代码。

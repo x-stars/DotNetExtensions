@@ -21,27 +21,13 @@ namespace XstarS.ComponentModel
         {
             int testCount = 10000;
 
-            var builders = new BindableTypeProvider<DisposableBinding<object>>[testCount];
-            var builderTasks = new Task[testCount];
-            var builderHashCodes = new int[testCount];
-            Parallel.For(0, testCount, delegate (int index)
-            {
-                var builder = BindableTypeProvider<DisposableBinding<object>>.Default;
-                builders[index] = builder;
-                builderHashCodes[index] = RuntimeHelpers.GetHashCode(builder);
-            });
-            Assert.IsTrue(builderHashCodes.All(hashCode => hashCode == builderHashCodes[0]));
-
-            var types = new Type[testCount];
-            var typeTasks = new Task[testCount];
-            var typeHashCodes = new int[testCount];
-            Parallel.For(0, testCount, delegate (int index)
-            {
-                var type = builders[index].BindableType;
-                types[index] = type;
-                typeHashCodes[index] = RuntimeHelpers.GetHashCode(type);
-            });
-            Assert.IsTrue(typeHashCodes.All(hashCode => hashCode == typeHashCodes[0]));
+            var providers = new BindableTypeProvider<DisposableBinding<object>>[testCount];
+            Parallel.For(0, testCount,
+                index => providers[index] = BindableTypeProvider<DisposableBinding<object>>.Default);
+            Assert.IsTrue(providers.All(
+                provider => object.ReferenceEquals(provider, providers[0])));
+            Assert.IsTrue(providers.All(
+                provider => object.ReferenceEquals(provider.BindableType, providers[0].BindableType)));
         }
 
         [TestMethod]

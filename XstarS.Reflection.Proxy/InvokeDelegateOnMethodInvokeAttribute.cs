@@ -18,8 +18,7 @@ namespace XstarS.Reflection
         /// <see cref="OnInvokeHandler"/> 被分配的 <see cref="Guid"/>。</param>
         public InvokeDelegateOnMethodInvokeAttribute(string handlerGuid)
         {
-            var guid = Guid.Parse(handlerGuid);
-            this.Handler = ProxyTypeBuilder.GetHandler(guid);
+            this.Handler = ProxyTypeBuilder.GetHandler(Guid.Parse(handlerGuid));
         }
 
         /// <summary>

@@ -8,6 +8,94 @@ using System.Reflection.Emit;
 namespace XstarS.Reflection
 {
     /// <summary>
+    /// 提供从代理委托构造代理派生类型及其实例的方法。
+    /// </summary>
+    /// <typeparam name="T">原型类型，应为接口或非密封类。</typeparam>
+    public sealed class ProxyTypeBuilder<T> : ProxyTypeProviderBase<T> where T : class
+    {
+        /// <summary>
+        /// 构造代理派生类型的 <see cref="ProxyTypeBuilder"/> 对象。
+        /// </summary>
+        private readonly ProxyTypeBuilder InternalBuilder;
+
+        /// <summary>
+        /// 初始化 <see cref="ProxyTypeBuilder{T}"/> 类的新实例。
+        /// </summary>
+        /// <exception cref="TypeAccessException">
+        /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
+        public ProxyTypeBuilder()
+        {
+            this.InternalBuilder = new ProxyTypeBuilder(typeof(T));
+        }
+
+        /// <summary>
+        /// 将指定 <see cref="OnInvokeHandler"/> 代理委托添加到指定的可重写方法。
+        /// </summary>
+        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <param name="method">要添加代理委托的可重写方法的 <see cref="MemberInfo"/> 对象。</param>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        /// <exception cref="MethodAccessException">
+        /// <paramref name="method"/> 不为原型类型中的可重写方法。</exception>
+        /// <exception cref="NotSupportedException">
+        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(OnInvokeHandler handler, MethodInfo method) =>
+            this.InternalBuilder.AddOnInvoke(handler, method);
+
+        /// <summary>
+        /// 将指定 <see cref="OnInvokeHandler"/> 代理委托添加到指定的多个可重写方法。
+        /// </summary>
+        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <param name="methods">要添加代理委托的多个可重写方法的 <see cref="MemberInfo"/> 对象。</param>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        /// <exception cref="MethodAccessException">
+        /// <paramref name="methods"/> 不全为原型类型中的可重写方法。</exception>
+        /// <exception cref="NotSupportedException">
+        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(OnInvokeHandler handler, params MethodInfo[] methods) =>
+            this.InternalBuilder.AddOnInvoke(handler, methods);
+
+        /// <summary>
+        /// 将指定 <see cref="OnInvokeHandler"/> 代理委托添加到指定的多个可重写方法。
+        /// </summary>
+        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <param name="methods">要添加代理委托的多个可重写方法的 <see cref="MemberInfo"/> 对象。</param>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        /// <exception cref="MethodAccessException">
+        /// <paramref name="methods"/> 不全为原型类型中的可重写方法。</exception>
+        /// <exception cref="NotSupportedException">
+        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(OnInvokeHandler handler, IEnumerable<MethodInfo> methods) =>
+            this.InternalBuilder.AddOnInvoke(handler, methods);
+
+        /// <summary>
+        /// 根据指定规则将指定 <see cref="OnInvokeHandler"/> 代理委托添加到可重写方法。
+        /// </summary>
+        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <param name="methodFilter">筛选要添加代理委托的方法的 <see cref="Predicate{T}"/> 委托。</param>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        /// <exception cref="NotSupportedException">
+        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(OnInvokeHandler handler, Predicate<MethodInfo> methodFilter) =>
+            this.InternalBuilder.AddOnInvoke(handler, methodFilter);
+
+        /// <summary>
+        /// 将指定 <see cref="OnInvokeHandler"/> 代理委托添加到所有可重写方法。
+        /// </summary>
+        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        /// <exception cref="NotSupportedException">
+        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(OnInvokeHandler handler) =>
+            this.InternalBuilder.AddOnInvoke(handler);
+
+        /// <summary>
+        /// 创建代理派生类型。
+        /// </summary>
+        /// <returns>创建的代理派生类型。</returns>
+        protected override Type CreateProxyType() => this.InternalBuilder.ProxyType;
+    }
+
+    /// <summary>
     /// 提供从指定原型类型和代理委托构造代理派生类型及其实例的方法。
     /// </summary>
     public sealed class ProxyTypeBuilder : ProxyTypeProviderBase<object>
@@ -18,6 +106,31 @@ namespace XstarS.Reflection
         /// </summary>
         private static readonly ConcurrentDictionary<Guid, OnInvokeHandler> Handlers =
             new ConcurrentDictionary<Guid, OnInvokeHandler>();
+
+        /// <summary>
+        /// 原型类型中所有可在程序集外部重写的方法。
+        /// </summary>
+        private MethodInfo[] BaseMethods;
+
+        /// <summary>
+        /// 代理特性派生类型中方法对应的 <see cref="OnInvokeHandler"/> 代理委托的 <see cref="Guid"/>。
+        /// </summary>
+        private IDictionary<MethodInfo, List<Guid>> MethodHandlerGuids;
+
+        /// <summary>
+        /// 代理特性派生类型的 <see cref="TypeBuilder"/> 对象。
+        /// </summary>
+        private TypeBuilder ProxyBaseTypeBuilder;
+
+        /// <summary>
+        /// 代理特性派生类型的 <see cref="Type"/> 对象。
+        /// </summary>
+        private Type ProxyBaseType;
+
+        /// <summary>
+        /// 提供代理派生类型的 <see cref="ProxyTypeProvider"/> 对象。
+        /// </summary>
+        private ProxyTypeProvider InternalProvider;
 
         /// <summary>
         /// 以指定类型为原型类型初始化 <see cref="ProxyTypeBuilder"/> 类的新实例。
@@ -33,39 +146,14 @@ namespace XstarS.Reflection
                 throw new TypeAccessException();
             }
 
-            this.PrototypeType = type;
+            this.BaseType = type;
             this.InitializeBaseMethods();
         }
 
         /// <summary>
         /// 原型类型的 <see cref="Type"/> 对象。
         /// </summary>
-        public Type PrototypeType { get; }
-
-        /// <summary>
-        /// 原型类型中所有可在程序集外部重写的方法。
-        /// </summary>
-        private MethodInfo[] BaseMethods { get; set; }
-
-        /// <summary>
-        /// 代理特性派生类型中方法对应的 <see cref="OnInvokeHandler"/> 代理委托的 <see cref="Guid"/>。
-        /// </summary>
-        private IDictionary<MethodInfo, List<Guid>> MethodHandlerGuids { get; set; }
-
-        /// <summary>
-        /// 代理特性派生类型的 <see cref="TypeBuilder"/> 对象。
-        /// </summary>
-        private TypeBuilder ProxyBaseTypeBuilder { get; set; }
-
-        /// <summary>
-        /// 代理特性派生类型的 <see cref="Type"/> 对象。
-        /// </summary>
-        private Type ProxyBaseType { get; set; }
-
-        /// <summary>
-        /// 提供代理派生类型的 <see cref="ProxyTypeProvider"/> 对象。
-        /// </summary>
-        private ProxyTypeProvider InternalProvider { get; set; }
+        public Type BaseType { get; }
 
         /// <summary>
         /// 获取被分配了指定 <see cref="Guid"/> 的 <see cref="OnInvokeHandler"/> 委托。
@@ -192,10 +280,16 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
+        /// 创建代理派生类型。
+        /// </summary>
+        /// <returns>创建的代理派生类型。</returns>
+        protected override Type CreateProxyType() => this.BuildProxyType();
+
+        /// <summary>
         /// 构造代理派生类型。
         /// </summary>
         /// <returns>构造完成的派生类型。</returns>
-        protected override Type BuildProxyType()
+        private Type BuildProxyType()
         {
             this.BuildProxyBaseType();
 
@@ -208,7 +302,7 @@ namespace XstarS.Reflection
         /// </summary>
         private void InitializeBaseMethods()
         {
-            var baseMethods = this.PrototypeType.GetAccessibleMethods().Where(
+            var baseMethods = this.BaseType.GetAccessibleMethods().Where(
                 baseMethod => baseMethod.IsOverridable()).ToArray();
             this.BaseMethods = baseMethods;
             var methodHandlerGuids = baseMethods.ToDictionary(
@@ -234,7 +328,7 @@ namespace XstarS.Reflection
         /// </summary>
         private void DefineProxyBaseType()
         {
-            var baseType = this.PrototypeType;
+            var baseType = this.BaseType;
 
             // 定义动态程序集。
             var asmName = $"{baseType.ToString()}(ProxyBase#{this.GetHashCode().ToString()})";
@@ -279,7 +373,7 @@ namespace XstarS.Reflection
         /// </summary>
         private void DefineConstructors()
         {
-            var baseType = this.PrototypeType;
+            var baseType = this.BaseType;
             var objectProxyType = this.ProxyBaseTypeBuilder;
 
             bool isInterface = baseType.IsInterface;

@@ -19,7 +19,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         protected BindableTypeProviderBase()
         {
-            this.LazyBindableType = new Lazy<Type>(this.BuildBindableType);
+            this.LazyBindableType = new Lazy<Type>(this.CreateBindableType);
         }
 
         /// <summary>
@@ -64,12 +64,12 @@ namespace XstarS.ComponentModel
         public override string ToString() => this.BindableType.ToString();
 
         /// <summary>
-        /// 在派生类中重写时，构造可绑定派生类型。
+        /// 在派生类中重写时，创建可绑定派生类型。
         /// </summary>
-        /// <returns>构造完成的可绑定派生类型。</returns>
+        /// <returns>创建的可绑定派生类型。</returns>
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
         /// 但未定义公共或保护级别的 <code>void OnPropertyChanged(string)</code> 方法。</exception>
-        protected abstract Type BuildBindableType();
+        protected abstract Type CreateBindableType();
     }
 }

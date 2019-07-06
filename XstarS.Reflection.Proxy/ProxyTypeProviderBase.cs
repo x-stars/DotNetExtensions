@@ -18,7 +18,7 @@ namespace XstarS.Reflection
         /// </summary>
         protected ProxyTypeProviderBase()
         {
-            this.LazyProxyType = new Lazy<Type>(this.BuildProxyType);
+            this.LazyProxyType = new Lazy<Type>(this.CreateProxyType);
         }
 
         /// <summary>
@@ -52,12 +52,16 @@ namespace XstarS.Reflection
         public T CreateInstance(params object[] arguments) =>
             (T)Activator.CreateInstance(this.ProxyType, arguments);
 
+        /// <summary>
+        /// 返回表示代理派生类型的字符串。
+        /// </summary>
+        /// <returns><see cref="ProxyTypeProviderBase{T}.ProxyType"/> 的字符串表达形式。</returns>
         public override string ToString() => this.ProxyType.ToString();
 
         /// <summary>
-        /// 在派生类中重写时，构造代理派生类型。
+        /// 在派生类中重写时，创建代理派生类型。
         /// </summary>
-        /// <returns>构造完成的代理派生类型。</returns>
-        protected abstract Type BuildProxyType();
+        /// <returns>创建的代理派生类型。</returns>
+        protected abstract Type CreateProxyType();
     }
 }

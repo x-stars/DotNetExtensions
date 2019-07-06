@@ -8,25 +8,27 @@ namespace XstarS.Reflection
 {
     public sealed partial class ProxyTypeProvider
     {
-        private sealed class DelegatesBuilder
+        private sealed class DelegatesTypeProvider
         {
-            internal DelegatesBuilder(ProxyTypeProvider proxyBuilder)
+            private TypeBuilder DelegatesTypeBuilder;
+
+            internal DelegatesTypeProvider(ProxyTypeProvider provider)
             {
-                this.ProxyBuilder = proxyBuilder;
-                this.BuildDelegatesType();
+                this.ProxyTypeProvider = provider;
+                this.DelegatesType = this.BuildDelegatesType();
             }
 
-            internal ProxyTypeProvider ProxyBuilder { get; }
+            public ProxyTypeProvider ProxyTypeProvider { get; }
 
-            internal TypeBuilder DelegatesTypeBuilder { get; private set; }
+            public Type DelegatesType { get; }
 
-            internal Dictionary<MethodInfo, TypeBuilder> MethodDelegateTypes { get; private set; }
+            public Dictionary<MethodInfo, Type> MethodDelegateTypes { get; private set; }
 
-            internal Dictionary<MethodInfo, MethodBuilder> ProxyMethods { get; private set; }
+            public Dictionary<MethodInfo, MethodInfo> ProxyMethods { get; private set; }
 
-            internal Dictionary<MethodInfo, FieldBuilder> ProxyDelegateFields { get; private set; }
+            public Dictionary<MethodInfo, FieldInfo> ProxyDelegateFields { get; private set; }
 
-            private void BuildDelegatesType()
+            private Type BuildDelegatesType()
             {
                 // 定义保存所有代理方法的委托的类型。
                 this.DefineDelegatesType();
@@ -35,15 +37,15 @@ namespace XstarS.Reflection
                 this.DefineMethodDelegateTypes();
 
                 // 完成类型创建。
-                this.DelegatesTypeBuilder.CreateTypeInfo();
+                return this.DelegatesTypeBuilder.CreateTypeInfo();
             }
 
             private void DefineDelegatesType()
             {
-                var objectProxyType = this.ProxyBuilder.ProxyTypeBuilder;
+                var proxyType = this.ProxyTypeProvider.ProxyTypeBuilder;
 
                 // 定义保存所有代理方法的委托的类型。
-                var delegatesType = objectProxyType.DefineNestedType($"<{nameof(Delegate)}>",
+                var delegatesType = proxyType.DefineNestedType($"<{nameof(Delegate)}>",
                     TypeAttributes.Class | TypeAttributes.NestedAssembly |
                     TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
                 this.DelegatesTypeBuilder = delegatesType;
@@ -51,16 +53,16 @@ namespace XstarS.Reflection
 
             private void DefineMethodDelegateTypes()
             {
-                var baseMethods = this.ProxyBuilder.BaseMethods;
-                var methodDelegateTypes = new Dictionary<MethodInfo, TypeBuilder>();
-                var proxyMethods = new Dictionary<MethodInfo, MethodBuilder>();
-                var proxyDelegateFields = new Dictionary<MethodInfo, FieldBuilder>();
+                var baseMethods = this.ProxyTypeProvider.BaseMethods;
+                var methodDelegateTypes = new Dictionary<MethodInfo, Type>();
+                var proxyMethods = new Dictionary<MethodInfo, MethodInfo>();
+                var proxyDelegateFields = new Dictionary<MethodInfo, FieldInfo>();
 
                 // 定义所有保存代理方法的委托的类型。
                 foreach (var baseMethod in baseMethods)
                 {
-                    var methodDelegateTypeBuilder = new MethodDelegateBuilder(this, baseMethod);
-                    methodDelegateTypes[baseMethod] = methodDelegateTypeBuilder.MethodDelegateTypeBuilder;
+                    var methodDelegateTypeBuilder = new MethodDelegateTypeProvider(this, baseMethod);
+                    methodDelegateTypes[baseMethod] = methodDelegateTypeBuilder.MethodDelegateType;
                     proxyMethods[baseMethod] = methodDelegateTypeBuilder.ProxyMethod;
                     proxyDelegateFields[baseMethod] = methodDelegateTypeBuilder.ProxyDelegateField;
                 }
@@ -70,41 +72,43 @@ namespace XstarS.Reflection
                 this.ProxyDelegateFields = proxyDelegateFields;
             }
 
-            private class MethodDelegateBuilder
+            private sealed class MethodDelegateTypeProvider
             {
-                internal MethodDelegateBuilder(
-                    DelegatesBuilder delegatesTypeBuilder, MethodInfo baseMethod)
+                private TypeBuilder MethodDelegateTypeBuilder;
+
+                private FieldInfo BaseMethodInfoField;
+
+                private GenericTypeParameterBuilder[] GenericParameters;
+
+                private ConstructorBuilder Constructor;
+
+                private OnMemberInvokeAttribute[] OnMemberInvokeAttributes;
+
+                private OnMethodInvokeAttribute[] OnMethodInvokeAttributes;
+
+                internal MethodDelegateTypeProvider(
+                    DelegatesTypeProvider provider, MethodInfo baseMethod)
                 {
-                    this.DelegatesBuilder = delegatesTypeBuilder;
+                    this.DelegatesTypeProvider = provider;
                     this.BaseMethod = baseMethod;
-                    this.BuildMethodDelegateType();
+                    this.MethodDelegateType = this.BuildMethodDelegateType();
                 }
 
-                internal DelegatesBuilder DelegatesBuilder { get; }
+                public DelegatesTypeProvider DelegatesTypeProvider { get; }
 
-                internal MethodInfo BaseMethod { get; }
+                public MethodInfo BaseMethod { get; }
 
-                internal FieldInfo BaseMethodInfoField { get; private set; }
+                public Type MethodDelegateType { get; }
 
-                internal TypeBuilder MethodDelegateTypeBuilder { get; private set; }
+                public MethodInfo ProxyMethod { get; private set; }
 
-                internal GenericTypeParameterBuilder[] GenericParameters { get; private set; }
+                public FieldInfo ProxyDelegateField { get; private set; }
 
-                private ConstructorBuilder Constructor { get; set; }
-
-                private OnMemberInvokeAttribute[] OnMemberInvokeAttributes { get; set; }
-
-                private OnMethodInvokeAttribute[] OnMethodInvokeAttributes { get; set; }
-
-                internal MethodBuilder ProxyMethod { get; private set; }
-
-                internal FieldBuilder ProxyDelegateField { get; private set; }
-
-                private void BuildMethodDelegateType()
+                private Type BuildMethodDelegateType()
                 {
-                    var baseType = this.DelegatesBuilder.ProxyBuilder.PrototypeType;
+                    var baseType = this.DelegatesTypeProvider.ProxyTypeProvider.BaseType;
                     var baseMethod = this.BaseMethod;
-                    var delegatesType = this.DelegatesBuilder.DelegatesTypeBuilder;
+                    var delegatesType = this.DelegatesTypeProvider.DelegatesTypeBuilder;
 
                     // 获取相关特性。
                     var onMemberInvokeAttributes = Array.ConvertAll(
@@ -124,7 +128,7 @@ namespace XstarS.Reflection
                         this.MethodDelegateTypeBuilder = null;
                         this.ProxyMethod = null;
                         this.ProxyDelegateField = null;
-                        return;
+                        return null;
                     }
 
                     // 定义保存代理方法的委托的类型。
@@ -142,14 +146,14 @@ namespace XstarS.Reflection
                     }
 
                     // 完成类型创建。
-                    this.MethodDelegateTypeBuilder.CreateTypeInfo();
+                    return this.MethodDelegateTypeBuilder.CreateTypeInfo();
                 }
 
                 private void DefineMethodDelegateType()
                 {
-                    var baseType = this.DelegatesBuilder.ProxyBuilder.PrototypeType;
+                    var baseType = this.DelegatesTypeProvider.ProxyTypeProvider.BaseType;
                     var baseMethod = this.BaseMethod;
-                    var delegatesType = this.DelegatesBuilder.DelegatesTypeBuilder;
+                    var delegatesType = this.DelegatesTypeProvider.DelegatesTypeBuilder;
 
                     // 定义保存代理方法的委托的类型。
                     var methodDelegateType = delegatesType.DefineNestedType(
@@ -212,10 +216,10 @@ namespace XstarS.Reflection
 
                 private void DefineBaseProxyMethod()
                 {
-                    var proxyBuilder = this.DelegatesBuilder.ProxyBuilder;
-                    var objectProxyType = proxyBuilder.ProxyTypeBuilder;
+                    var proxyType = this.DelegatesTypeProvider.ProxyTypeProvider.ProxyTypeBuilder;
                     var baseMethod = this.BaseMethod;
-                    var baseAccessMethod = (MethodInfo)proxyBuilder.BaseAccessMethods[baseMethod];
+                    var baseAccessMethod =
+                        this.DelegatesTypeProvider.ProxyTypeProvider.BaseAccessMethods[baseMethod];
                     var methodDelegateType = this.MethodDelegateTypeBuilder;
                     var typeGenericParams = this.GenericParameters;
                     var constructor = this.Constructor;
@@ -238,7 +242,7 @@ namespace XstarS.Reflection
                     var ilGen = proxyMethod.GetILGenerator();
                     {
                         ilGen.Emit(OpCodes.Ldarg_0);
-                        ilGen.Emit(OpCodes.Castclass, objectProxyType);
+                        ilGen.Emit(OpCodes.Castclass, proxyType);
                         var baseGenericParams = baseMethod.GetGenericArguments();
                         var baseParameters = baseMethod.GetParameters();
                         if (baseParameters.Length != 0)
@@ -287,10 +291,10 @@ namespace XstarS.Reflection
 
                 private void DefineOnMethodInvokeProxyMethods()
                 {
-                    var proxyBuilder = this.DelegatesBuilder.ProxyBuilder;
                     var baseMethod = this.BaseMethod;
                     var baseMethodInfoField = this.BaseMethodInfoField;
-                    var onMethodInvokeFields = proxyBuilder.MethodsOnMethodInvokeFields[baseMethod];
+                    var onMethodInvokeFields =
+                        this.DelegatesTypeProvider.ProxyTypeProvider.MethodsOnMethodInvokeFields[baseMethod];
                     var methodDelegateType = this.MethodDelegateTypeBuilder;
                     var typeGenericParams = this.GenericParameters;
                     var constructor = this.Constructor;
@@ -350,10 +354,10 @@ namespace XstarS.Reflection
 
                 private void DefineOnMemberInvokeProxyMethods()
                 {
-                    var proxyBuilder = this.DelegatesBuilder.ProxyBuilder;
                     var baseMethod = this.BaseMethod;
                     var baseMethodInfoField = this.BaseMethodInfoField;
-                    var onMemberInvokeFields = proxyBuilder.OnMemberInvokeFields;
+                    var onMemberInvokeFields =
+                        this.DelegatesTypeProvider.ProxyTypeProvider.OnMemberInvokeFields;
                     var methodDelegateType = this.MethodDelegateTypeBuilder;
                     var typeGenericParams = this.GenericParameters;
                     var constructor = this.Constructor;

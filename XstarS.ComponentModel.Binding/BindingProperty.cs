@@ -21,11 +21,11 @@ namespace XstarS.ComponentModel
             : base(instance, propertyName) { }
 
         /// <summary>
-        /// 构造获取数据绑定值的委托。
+        /// 创建获取数据绑定值的委托。
         /// </summary>
-        /// <returns>构造完成的获取数据绑定值的委托。</returns>
+        /// <returns>创建的获取数据绑定值的委托。</returns>
         /// <exception cref="MissingMemberException">无法正确构造获取数据绑定值的委托。</exception>
-        protected override Func<T> BuildGetValue()
+        protected override Func<T> CreateGetValue()
         {
             try
             {
@@ -41,11 +41,11 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 用于构造设置数据绑定值的委托。
+        /// 创建设置数据绑定值的委托。
         /// </summary>
-        /// <returns>构造完成的设置数据绑定值的委托。</returns>
+        /// <returns>创建的设置数据绑定值的委托。</returns>
         /// <exception cref="MissingMemberException">无法正确构造设置数据绑定值的委托。</exception>
-        protected override Action<T> BuildSetValue()
+        protected override Action<T> CreateSetValue()
         {
             try
             {
