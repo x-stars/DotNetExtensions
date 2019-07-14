@@ -209,10 +209,10 @@ namespace XstarS.ComponentModel
         /// 但未定义公共或保护级别的 <code>void OnPropertyChanged(string)</code> 方法。</exception>
         private Type BuildBindableType()
         {
-            // 定义用于数据绑定的派生类型。
+            // 定义可绑定派生类型。
             this.DefineBindableType();
 
-            // 定义用于数据绑定的派生类型的各成员。
+            // 定义可绑定派生类型的各成员。
             this.DefineConstructors();
             this.DefinePropertyChangedEvent();
             this.DefineProperties();
@@ -256,13 +256,11 @@ namespace XstarS.ComponentModel
 
             // 获取原型类型信息。
             var baseInterfaces = baseType.GetInterfaces();
-            var isInterface = baseType.IsInterface;
-            var definedPropertyChanged = baseInterfaces.Contains(typeof(INotifyPropertyChanged));
-            var parent = !isInterface ? baseType : typeof(object);
-            var interfaces = !isInterface ? baseInterfaces :
+            var parent = !baseType.IsInterface ? baseType : typeof(object);
+            var interfaces = !baseType.IsInterface ? baseInterfaces :
                 baseInterfaces.Concat(new[] { baseType }).ToArray();
-            interfaces = definedPropertyChanged ? interfaces :
-                interfaces.Concat(new[] { typeof(INotifyPropertyChanged) }).ToArray();
+            interfaces = baseInterfaces.Contains(typeof(INotifyPropertyChanged)) ?
+                interfaces : interfaces.Concat(new[] { typeof(INotifyPropertyChanged) }).ToArray();
 
             // 定义动态类型。
             var type = module.DefineType(typeName,
@@ -296,13 +294,11 @@ namespace XstarS.ComponentModel
         private void DefinePropertyChangedEvent()
         {
             var baseType = this.BaseType;
-            var baseInterfaces = baseType.GetInterfaces();
-            var definedPropertyChanged = baseInterfaces.Contains(typeof(INotifyPropertyChanged));
             var type = this.BindableTypeBuilder;
 
             var methodOnPropertyChanged = default(MethodInfo);
             // 未实现 INotifyPropertyChanged 接口。
-            if (!definedPropertyChanged)
+            if (!baseType.GetInterfaces().Contains(typeof(INotifyPropertyChanged)))
             {
                 var baseEventPropertyChanged =
                     typeof(INotifyPropertyChanged).GetEvent(nameof(INotifyPropertyChanged.PropertyChanged));
@@ -312,8 +308,11 @@ namespace XstarS.ComponentModel
             // 已实现 INotifyPropertyChanged 接口。
             else
             {
-                var baseEventPropertyChanged = baseType.GetAccessibleEvents().Where(
-                    @event => @event.Name == nameof(INotifyPropertyChanged.PropertyChanged)).SingleOrDefault();
+                var baseEventPropertyChanged = (
+                    from @event in baseType.GetAccessibleEvents()
+                    where @event.Name == nameof(INotifyPropertyChanged.PropertyChanged)
+                    where @event.EventHandlerType == typeof(PropertyChangedEventHandler)
+                    select @event).FirstOrDefault();
                 // 未实现 PropertyChanged 事件。
                 if (!(baseEventPropertyChanged is null) && baseEventPropertyChanged.AddMethod.IsAbstract)
                 {
@@ -326,12 +325,12 @@ namespace XstarS.ComponentModel
                     methodOnPropertyChanged = (
                         from method in baseType.GetAccessibleMethods()
                         where method.Name == "OnPropertyChanged"
-                        && Enumerable.SequenceEqual(
-                            Array.ConvertAll(method.GetParameters(), param => param.ParameterType),
-                            new[] { typeof(string) })
-                        && method.ReturnType == typeof(void)
-                        && method.IsInheritableInstance() && !method.IsAbstract
-                        select method).SingleOrDefault();
+                        where method.GetParameters().Length == 1
+                        where method.GetParameters()[0].ParameterType == typeof(string)
+                        where method.ReturnType == typeof(void)
+                        where method.IsInheritableInstance()
+                        where !method.IsAbstract
+                        select method).FirstOrDefault();
                     if (methodOnPropertyChanged is null)
                     {
                         throw new MissingMethodException(baseType.ToString(), "OnPropertyChanged");
@@ -354,9 +353,9 @@ namespace XstarS.ComponentModel
             foreach (var baseProperty in baseType.GetAccessibleProperties().Where(
                 property => property.GetAccessors(true).All(accessor => accessor.IsInheritableInstance())))
             {
-                if (baseProperty.GetAccessors().All(accessor => accessor.IsOverridable()))
+                if (baseProperty.GetAccessors(true).All(accessor => accessor.IsOverridable()))
                 {
-                    // 索引器。
+                    // 索引器（带参属性）。
                     if (baseProperty.GetIndexParameters().Length != 0)
                     {
                         if (baseProperty.GetAccessors().All(accessor => accessor.IsAbstract))
@@ -364,13 +363,15 @@ namespace XstarS.ComponentModel
                             type.DefineNotImplementedProperty(baseProperty);
                         }
                     }
-                    // 属性。
+                    // 属性（无参属性）。
                     else
                     {
+                        // 默认可绑定类型。
                         if (this.IsBindable is null)
                         {
                             type.DefineBindableProperty(baseProperty, methodOnPropertyChanged);
                         }
+                        // 自定义可绑定类型。
                         else
                         {
                             if (this.IsBindable(baseProperty))

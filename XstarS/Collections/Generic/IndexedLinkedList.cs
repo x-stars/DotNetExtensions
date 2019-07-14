@@ -50,16 +50,6 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
-        /// 获取一个值，该值指示 <see cref="IndexedLinkedList{T}"/> 是否为只读。
-        /// </summary>
-        protected bool IsReadOnly => false;
-
-        /// <summary>
-        /// 获取一个值，该值指示 <see cref="IndexedLinkedList{T}"/> 是否具有固定大小。
-        /// </summary>
-        protected bool IsFixedSize => false;
-
-        /// <summary>
         /// 获取或设置指定索引处的元素。
         /// </summary>
         /// <param name="index">要获取或设置的元素的从零开始的索引。</param>
@@ -76,12 +66,12 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 获取一个值，该值指示 <see cref="IList"/> 是否为只读。
         /// </summary>
-        bool IList.IsReadOnly => this.IsReadOnly;
+        bool IList.IsReadOnly => false;
 
         /// <summary>
         /// 获取一个值，该值指示 <see cref="IList"/> 是否具有固定大小。
         /// </summary>
-        bool IList.IsFixedSize => this.IsFixedSize;
+        bool IList.IsFixedSize => false;
 
         /// <summary>
         /// 将对象添加到 <see cref="IndexedLinkedList{T}"/> 的结尾处。
@@ -91,38 +81,6 @@ namespace XstarS.Collections.Generic
         public void Add(T item)
         {
             this.AddLast(item);
-        }
-
-        /// <summary>
-        /// 将指定的新节点添加到 <see cref="IndexedLinkedList{T}"/> 的结尾处。
-        /// </summary>
-        /// <param name="node">要添加到 <see cref="IndexedLinkedList{T}"/> 末尾的链表节点。</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="node"/> 为 <see langword="null"/>。</exception>
-        public void Add(LinkedListNode<T> node)
-        {
-            this.AddLast(node);
-        }
-
-        /// <summary>
-        /// 将指定链表中的所有元素添加到 <see cref="IList{T}"/> 的末尾。
-        /// </summary>
-        /// <param name="list">应将其元素添加到 <see cref="IList{T}"/> 的末尾的链表。</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="list"/> 为 <see langword="null"/>。</exception>
-        public void AddRange(LinkedList<T> list)
-        {
-            if (list is null)
-            {
-                throw new ArgumentNullException(nameof(list));
-            }
-
-            var node = list.First;
-            while (!(node is null))
-            {
-                this.AddLast(node);
-                node = node.Next;
-            }
         }
 
         /// <summary>
@@ -169,7 +127,7 @@ namespace XstarS.Collections.Generic
             var node = this.NodeAt(index);
             for (int i = 0; i < count; i++)
             {
-                list.AddLast(node);
+                list.AddLast(node.Value);
                 node = node.Next;
             }
             return list;
@@ -217,41 +175,6 @@ namespace XstarS.Collections.Generic
             else
             {
                 this.AddBefore(this.NodeAt(index), item);
-            }
-        }
-
-        /// <summary>
-        /// 将指定链表中的所有节点插入 <see cref="IndexedLinkedList{T}"/> 的指定索引处。
-        /// </summary>
-        /// <param name="index">应插入 <paramref name="list"/> 的从零开始的索引。</param>
-        /// <param name="list">要插入的链表。</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，
-        /// 或 <paramref name="index"/> 大于 <see cref="LinkedList{T}.Count"/>。</exception>
-        public void InsertRange(int index, LinkedList<T> list)
-        {
-            if ((index < 0) || (index > this.Count))
-            {
-                throw new ArgumentOutOfRangeException(nameof(index));
-            }
-
-            if (index == this.Count)
-            {
-                var node = list.First;
-                while (!(node is null))
-                {
-                    this.AddLast(node);
-                    node = node.Next;
-                }
-            }
-            else
-            {
-                var indexNode = this.NodeAt(index);
-                var node = list.First;
-                while (!(node is null))
-                {
-                    this.AddBefore(indexNode, node);
-                    node = node.Next;
-                }
             }
         }
 

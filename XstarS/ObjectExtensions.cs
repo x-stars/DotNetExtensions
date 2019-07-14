@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace XstarS
 {
@@ -25,28 +26,45 @@ namespace XstarS
             new CloneableObject(value).DeepClone();
 
         /// <summary>
-        /// 确定当前对象与指定对象的所有字段的值（对数组则是所有元素的值）是否相等。
-        /// 将递归比较至字段（元素）为 .NET 基元类型 (<see cref="Type.IsPrimitive"/>)、
-        /// 字符串 <see cref="string"/> 或或指针类型 (<see cref="Type.IsPointer"/>)。
+        /// 确定当前对象与指定对象的引用是否相等。
+        /// </summary>
+        /// <param name="value">要进行引用相等比较的对象。</param>
+        /// <param name="other">要与当前对象进行比较的对象。</param>
+        /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的引用相等，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        public static new bool ReferenceEquals(this object value, object other) =>
+            object.ReferenceEquals(value, other);
+
+        /// <summary>
+        /// 确定当前对象与指定对象的值是否相等。
+        /// 将递归比较至对象的字段（数组的元素）为 .NET 基元类型 (<see cref="Type.IsPrimitive"/>)、
+        /// 字符串 <see cref="string"/> 或指针类型 (<see cref="Type.IsPointer"/>)。
         /// </summary>
         /// <remarks>基于反射调用，可能存在性能问题。</remarks>
         /// <param name="value">要进行值相等比较的对象。</param>
         /// <param name="other">要与当前对象进行比较的对象。</param>
-        /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的所有实例字段（元素）的值都相等，
+        /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public static bool ValueEquals(this object value, object other) =>
             new ValueEquatablePair(value, other).ValueEquals();
 
         /// <summary>
-        /// 获取当前对象基于所有字段的值（对数组则是所有元素的值）的哈希函数，
-        /// 将递归计算至字段（元素）为 .NET 基元类型 (<see cref="Type.IsPrimitive"/>)、
-        /// 字符串 <see cref="string"/> 或或指针类型 (<see cref="Type.IsPointer"/>)。
+        /// 获取当前对象基于引用的哈希代码。
+        /// </summary>
+        /// <param name="value">要获取基于引用的哈希代码的对象。</param>
+        /// <returns><paramref name="value"/> 基于引用的哈希代码。</returns>
+        public static int GetReferenceHashCode(this object value) =>
+            RuntimeHelpers.GetHashCode(value);
+
+        /// <summary>
+        /// 获取当前对象基于值的哈希代码。
+        /// 将递归计算至对象的字段（数组的元素）为 .NET 基元类型 (<see cref="Type.IsPrimitive"/>)、
+        /// 字符串 <see cref="string"/> 或指针类型 (<see cref="Type.IsPointer"/>)。
         /// </summary>
         /// <remarks>基于反射调用，可能存在性能问题。</remarks>
-        /// <param name="value">要获取基于值的哈希函数的对象。</param>
-        /// <returns>递归获取 <paramref name="value"/> 的所有字段（对数组则是所有元素），
-        /// 直至其为 .NET 基元类型、字符串或指针类型得到的基于值的 32 位有符号整数哈希函数。</returns>
+        /// <param name="value">要获取基于值的哈希代码的对象。</param>
+        /// <returns>由 <paramref name="value"/> 基于值的哈希代码。</returns>
         public static int GetValueHashCode(this object value) =>
-            new ValueHashCodeObject(value).GetValueHashCode();
+            new ValueHashableObject(value).GetValueHashCode();
     }
 }

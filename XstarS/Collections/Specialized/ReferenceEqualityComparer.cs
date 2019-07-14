@@ -31,10 +31,10 @@ namespace XstarS.Collections.Specialized
         public override bool Equals(T x, T y) => object.ReferenceEquals(x, y);
 
         /// <summary>
-        /// 获取指定对象基于引用的哈希函数。
+        /// 获取指定对象基于引用的哈希代码。
         /// </summary>
-        /// <param name="obj">要获取哈希函数的对象。</param>
-        /// <returns><paramref name="obj"/> 基于引用的哈希函数。</returns>
+        /// <param name="obj">要获取哈希代码的对象。</param>
+        /// <returns><paramref name="obj"/> 基于引用的哈希代码。</returns>
         public override int GetHashCode(T obj) => RuntimeHelpers.GetHashCode(obj);
     }
 }

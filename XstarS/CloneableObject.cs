@@ -57,26 +57,12 @@ namespace XstarS
         /// <returns><see cref="CloneableObject.Value"/> 的深度副本。</returns>
         public object DeepClone()
         {
-            var value = this.Value;
             this.Cloned = this.Cloned ??
-                new Dictionary<object, object>(ReferenceEqualityComparer<object>.Default);
+                new Dictionary<object, object>(
+                    ReferenceEqualityComparer<object>.Default);
 
-            // 对于已有副本的对象则直接返回其副本。
-            if (value is null) { return null; }
-            else if (this.Cloned.ContainsKey(value)) { return this.Cloned[value]; }
+            var clone = this.TypedDeepClone();
 
-            // 创建当前对象的浅表副本。
-            var clone = this.ShallowClone();
-            this.Cloned[value] = clone;
-
-            // 根据当前对象的类型确定创建成员副本的方法。
-            var type = value.GetType();
-            if (type.IsPrimitive) { }
-            else if (type == typeof(string)) { }
-            else if (type.IsArray) { this.ArrayElementsDeepClone(); }
-            else { this.ObjectMembersDeepClone(); }
-
-            // 返回当前对象的深层副本。
             this.Cloned = null;
             return clone;
         }
@@ -90,6 +76,33 @@ namespace XstarS
             new CloneableObject(value) { Cloned = this.Cloned }.DeepClone();
 
         /// <summary>
+        /// 根据类型创建当前对象的深度副本。
+        /// </summary>
+        /// <returns><see cref="CloneableObject.Value"/> 的深度副本。</returns>
+        private object TypedDeepClone()
+        {
+            var value = this.Value;
+
+            // 空引用。
+            if (value is null) { return null; }
+            // 已有副本的对象。
+            if (this.Cloned.ContainsKey(value)) { return this.Cloned[value]; }
+
+            // 创建当前对象的浅表副本。
+            var clone = this.ShallowClone();
+            this.Cloned[value] = clone;
+
+            // 根据当前对象的类型确定创建成员副本的方法。
+            var type = value.GetType();
+            if (type.IsPrimitive) { }
+            else if (type == typeof(string)) { }
+            else if (type.IsArray) { this.ArrayElementsDeepClone(); }
+            else { this.ObjectMembersDeepClone(); }
+
+            return clone;
+        }
+
+        /// <summary>
         /// 将当前实例包含的数组的浅表副本的每个元素替换为其深度副本。
         /// </summary>
         private void ArrayElementsDeepClone()
@@ -99,18 +112,17 @@ namespace XstarS
             // 仅创建非指针元素的副本。
             if (!clone.GetType().GetElementType().IsPointer)
             {
-                // 一维数组，将每个元素替换为其深度副本。
+                // 将每个元素替换为其深度副本。
                 if (clone.Rank == 1)
                 {
-                    for (long i = 0; i < clone.LongLength; i++)
+                    for (long i = 0L; i < clone.LongLength; i++)
                     {
                         clone.SetValue(this.DeepClone(clone.GetValue(i)), i);
                     }
                 }
-                // 多维数组，将其映射为一维数组，并将每个元素替换为其深度副本。
                 else
                 {
-                    for (long i = 0; i < clone.LongLength; i++)
+                    for (long i = 0L; i < clone.LongLength; i++)
                     {
                         var a = clone.OffsetToIndices(i);
                         clone.SetValue(this.DeepClone(clone.GetValue(a)), a);
