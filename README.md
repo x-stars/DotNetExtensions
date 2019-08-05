@@ -1,10 +1,6 @@
-﻿# DotNetExtensionLibrary
+﻿# XstarS .NET 扩展库
 
-天南十字星 (XstarS) 的 .NET 扩展库。
-
-C# 底层面向对象练习作品，同时也可用作自己开发时的实用库。
-
-工程结构和命名空间均仿照 .NET 框架库。
+天南十字星 (XstarS) 的自用 .NET 扩展库，程序集名称和命名空间均仿照 .NET 框架库。
 
 ## 程序集 XstarS
 
