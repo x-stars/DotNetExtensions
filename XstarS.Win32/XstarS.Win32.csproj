@@ -9,9 +9,9 @@
     <Description></Description>
     <Copyright>Copyright © XstarS 2018-2019</Copyright>
     <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/x-stars/DotNetExtensionLibrary</PackageProjectUrl>
+    <PackageProjectUrl>https://github.com/x-stars/DotNetExtensions</PackageProjectUrl>
     <PackageIconUrl></PackageIconUrl>
-    <RepositoryUrl>https://github.com/x-stars/DotNetExtensionLibrary</RepositoryUrl>
+    <RepositoryUrl>https://github.com/x-stars/DotNetExtensions</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
