@@ -31,7 +31,7 @@ public class BindingData : INotifyPropertyChanged
 
 ### `PropertyChanged` 事件的触发方法
 
-传统上，直接在属性的 `set` 处调用 `System.Void OnPropertyChanged(System.String)` 方法即可。
+传统上，直接在属性的 `set` 处调用 `OnPropertyChanged` 方法即可。
 
 ``` CSharp
 using System.Collections.Generic;
@@ -241,4 +241,4 @@ namespace XstarS.ComponentModel
 
 #### 具体设计
 
-整个数据绑定类型构造器的具体设计请参见 [XstarS.ComponentModel.Binding](../XstarS.ComponentModel.Binding) 工程源代码，此处不再详述。
+整个数据绑定类型构造器的具体设计请参见 [XstarS.ComponentModel.Bindable](../XstarS.ComponentModel.Bindable) 工程源代码，此处不再详述。

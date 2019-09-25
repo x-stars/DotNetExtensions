@@ -14,12 +14,16 @@
 * `XstarS.IO`
 * `XstarS.Reflection`
 
-## 程序集 XstarS.ComponentModel.Binding
+## 程序集 XstarS.ComponentModel.Bindable
 
 提供便捷的数据绑定接口实现方法，目前提供三种实现方案：方法提取、绑定值封装、动态生成数据绑定派生类。
 
 原理和使用方法详述于[数据绑定接口实现框架说明文档](Documentations/BindableValue.md)中。
 使用此框架的优势叙述于[数据绑定实现方式比较文档](Documentations/BindableValueCompare.md)中。
+
+## 程序集 XstarS.ComponentModel.Binding
+
+提供基于数据绑定接口的通用的属性数据绑定方法。
 
 ## 程序集 XstarS.ParamReaders
 

@@ -1,7 +1,7 @@
 ﻿# 数据绑定接口实现框架
 
 本文叙述了数据绑定接口 `System.ComponentModel.INotifyPropertyChanged`
-的实现框架 XstarS.ComponentModel.Binding 程序集的使用方法，
+的实现框架 XstarS.ComponentModel.Bindable 程序集的使用方法，
 结合 System 程序集中的可绑定列表 `System.ComponentModel.BindingList<T>`，可实现便捷的数据绑定。
 
 目前提供三种方案：方法提取、绑定值封装、动态生成数据绑定派生类。三种方案各有优缺点，目前各自的建议使用场景：

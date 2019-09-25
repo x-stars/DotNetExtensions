@@ -7,4 +7,4 @@ using System.Runtime.InteropServices;
 // 指示此程序集是否对 COM 可见。
 [assembly: ComVisible(false)]
 // 如果此程序集对 COM 公开，则使用以下 GUID 作为类型库的 ID。
-[assembly: Guid("A585D13F-7545-4B46-84EC-DD0F0CDD7BD6")]
+[assembly: Guid("1CD40780-2782-4FC0-956A-9A9AA2CB79AB")]
