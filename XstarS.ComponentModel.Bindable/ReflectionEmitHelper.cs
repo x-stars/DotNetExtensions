@@ -19,9 +19,9 @@ namespace XstarS.ComponentModel
         /// <param name="type">要定义构造函数的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseConstructor">作为基础的构造函数的定义。</param>
         /// <returns>定义完成的构造函数，仅调用 <paramref name="baseConstructor"/> 构造函数。</returns>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        /// <exception cref="MethodAccessException">
+        /// <exception cref="ArgumentException">
         /// <paramref name="baseConstructor"/> 的访问级别不为公共或保护。</exception>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static ConstructorBuilder DefineDefaultConstructor(
             this TypeBuilder type, ConstructorInfo baseConstructor)
         {
@@ -36,7 +36,8 @@ namespace XstarS.ComponentModel
             }
             if (!baseConstructor.IsInheritableInstance())
             {
-                throw new MethodAccessException();
+                throw new ArgumentException(
+                    new ArgumentException().Message, nameof(baseConstructor));
             }
 
             // 定义构造函数。
@@ -87,9 +88,9 @@ namespace XstarS.ComponentModel
         /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseProperty">作为基础的属性的定义。</param>
         /// <returns>定义完成的属性，仅抛出 <see cref="NotImplementedException"/> 异常。</returns>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        /// <exception cref="MethodAccessException">
+        /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static PropertyBuilder DefineNotImplementedProperty(
             this TypeBuilder type, PropertyInfo baseProperty)
         {
@@ -104,7 +105,7 @@ namespace XstarS.ComponentModel
             }
             if (!baseProperty.GetAccessors().All(accessor => accessor.IsOverridable()))
             {
-                throw new MethodAccessException();
+                throw new ArgumentException();
             }
 
             // 定义属性或构造器。
@@ -131,10 +132,9 @@ namespace XstarS.ComponentModel
         /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseProperty">作为基础的属性的定义。</param>
         /// <returns>一个键值对，键为自动属性的定义，值为其对应的字段。</returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="baseProperty"/> 是一个索引器或无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        /// <exception cref="ArgumentException"><paramref name="baseProperty"/> 是一个索引器。</exception>
-        /// <exception cref="MethodAccessException">
-        /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
         internal static KeyValuePair<PropertyBuilder, FieldBuilder> DefineDefaultProperty(
             this TypeBuilder type, PropertyInfo baseProperty)
         {
@@ -154,7 +154,8 @@ namespace XstarS.ComponentModel
             }
             if (!baseProperty.GetAccessors().All(accessor => accessor.IsOverridable()))
             {
-                throw new MethodAccessException();
+                throw new ArgumentException(
+                    new ArgumentException().Message, nameof(baseProperty));
             }
 
             var newSlot = baseProperty.DeclaringType.IsInterface;
@@ -232,10 +233,9 @@ namespace XstarS.ComponentModel
         /// <param name="baseProperty">作为基础的属性的定义。</param>
         /// <param name="methodOnPropertyChanged"><code>void OnProperty(string)</code> 方法。</param>
         /// <returns>一个键值对，键为可绑定属性的定义，值为其对应的字段。</returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="baseProperty"/> 是一个索引器或无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        /// <exception cref="ArgumentException"><paramref name="baseProperty"/> 是一个索引器。</exception>
-        /// <exception cref="MethodAccessException">
-        /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
         internal static KeyValuePair<PropertyBuilder, FieldBuilder> DefineBindableProperty(
             this TypeBuilder type, PropertyInfo baseProperty, MethodInfo methodOnPropertyChanged)
         {
@@ -259,7 +259,8 @@ namespace XstarS.ComponentModel
             }
             if (!baseProperty.GetAccessors().All(accessor => accessor.IsOverridable()))
             {
-                throw new MethodAccessException();
+                throw new ArgumentException(
+                    new ArgumentException().Message, nameof(baseProperty));
             }
 
             var newSlot = baseProperty.DeclaringType.IsInterface;
@@ -351,10 +352,9 @@ namespace XstarS.ComponentModel
         /// <param name="type">要定义事件的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseEvent">作为基础的事件的定义。</param>
         /// <returns>一个键值对，键为事件的定义，值为其对应的事件委托。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// 存在为 <see langword="null"/> 的参数。</exception>
-        /// <exception cref="MethodAccessException">
+        /// <exception cref="ArgumentException">
         /// <paramref name="baseEvent"/> 的方法无法在程序集外部重写。</exception>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static KeyValuePair<EventBuilder, FieldBuilder> DefineDefaultEvent(
             this TypeBuilder type, EventInfo baseEvent)
         {
@@ -369,7 +369,8 @@ namespace XstarS.ComponentModel
             }
             if (!baseEvent.AddMethod.IsOverridable())
             {
-                throw new MethodAccessException();
+                throw new ArgumentException(
+                    new ArgumentException().Message, nameof(baseEvent));
             }
 
             var newSlot = baseEvent.DeclaringType.IsInterface;
@@ -494,9 +495,9 @@ namespace XstarS.ComponentModel
         /// <param name="fieldPropertyChanged">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的委托。</param>
         /// <returns>定义完成的 <code>void OnPropertyChanged(string)</code> 方法。</returns>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        /// <exception cref="FieldAccessException"><paramref name="fieldPropertyChanged"/>
+        /// <exception cref="ArgumentException"><paramref name="fieldPropertyChanged"/>
         /// 不为 <see cref="PropertyChangedEventHandler"/> 类型。</exception>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static MethodBuilder DefineOnPropertyChangedMethod(
             this TypeBuilder type, FieldInfo fieldPropertyChanged)
         {
@@ -511,7 +512,8 @@ namespace XstarS.ComponentModel
             }
             if (fieldPropertyChanged.FieldType != typeof(PropertyChangedEventHandler))
             {
-                throw new FieldAccessException();
+                throw new ArgumentException(
+                    new ArgumentException().Message, nameof(fieldPropertyChanged));
             }
 
             // 定义方法。
@@ -551,9 +553,9 @@ namespace XstarS.ComponentModel
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseMethod">作为基础的方法的定义。</param>
         /// <returns>定义完成的方法，仅抛出 <see cref="NotImplementedException"/> 异常。</returns>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        /// <exception cref="MethodAccessException">
+        /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static MethodBuilder DefineNotImplementedMethod(
             this TypeBuilder type, MethodInfo baseMethod)
         {
@@ -568,7 +570,8 @@ namespace XstarS.ComponentModel
             }
             if (!baseMethod.IsOverridable())
             {
-                throw new MethodAccessException();
+                throw new ArgumentException(
+                    new ArgumentException().Message, nameof(baseMethod));
             }
 
             var newSlot = baseMethod.DeclaringType.IsInterface;

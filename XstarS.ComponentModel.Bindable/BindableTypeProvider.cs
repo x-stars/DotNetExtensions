@@ -29,11 +29,19 @@ namespace XstarS.ComponentModel
         /// 初始化 <see cref="BindableTypeProvider{T}"/> 类的新实例，
         /// 并指定将所有可重写属性设置为可绑定属性。
         /// </summary>
-        /// <exception cref="TypeAccessException">
+        /// <exception cref="ArgumentException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
         private BindableTypeProvider()
         {
-            this.InternalProvider = BindableTypeProvider.Default(typeof(T));
+            var type = typeof(T);
+
+            if (!(((type.IsClass && !type.IsSealed) || type.IsInterface) &&
+                type.IsVisible && !type.ContainsGenericParameters))
+            {
+                throw new ArgumentException(new ArgumentException().Message, nameof(T));
+            }
+
+            this.InternalProvider = BindableTypeProvider.Default(type);
         }
 
         /// <summary>
@@ -41,13 +49,25 @@ namespace XstarS.ComponentModel
         /// 并指定将符合指定条件的可重写属性设置为可绑定属性。
         /// </summary>
         /// <param name="isBindable">用于筛选可绑定属性的 <see cref="Predicate{T}"/> 委托。</param>
+        /// <exception cref="ArgumentException">
+        /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="isBindable"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="TypeAccessException">
-        /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
         private BindableTypeProvider(Predicate<PropertyInfo> isBindable)
         {
-            this.InternalProvider = BindableTypeProvider.Custom(typeof(T), isBindable);
+            var type = typeof(T);
+
+            if (!(((type.IsClass && !type.IsSealed) || type.IsInterface) &&
+                type.IsVisible && !type.ContainsGenericParameters))
+            {
+                throw new ArgumentException(new ArgumentException().Message, nameof(T));
+            }
+            if (isBindable is null)
+            {
+                throw new ArgumentNullException(nameof(isBindable));
+            }
+
+            this.InternalProvider = BindableTypeProvider.Custom(type, isBindable);
         }
 
         /// <summary>
@@ -56,7 +76,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <returns>一个将所有可重写属性设置为可绑定属性的原型类型为
         /// <typeparamref name="T"/> 的 <see cref="BindableTypeProvider{T}"/> 类的实例。</returns>
-        /// <exception cref="TypeAccessException">
+        /// <exception cref="ArgumentException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
         public static BindableTypeProvider<T> Default => BindableTypeProvider<T>.LazyDefault.Value;
 
@@ -67,10 +87,10 @@ namespace XstarS.ComponentModel
         /// <param name="isBindable">用于筛选可绑定属性的 <see cref="Predicate{T}"/> 委托。</param>
         /// <returns>一个将符合 <paramref name="isBindable"/> 条件的可重写属性设置为可绑定属性的原型类型为
         /// <typeparamref name="T"/> 的 <see cref="BindableTypeProvider"/> 类的实例。</returns>
+        /// <exception cref="ArgumentException">
+        /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="isBindable"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="TypeAccessException">
-        /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
         public static BindableTypeProvider<T> Custom(Predicate<PropertyInfo> isBindable) =>
             new BindableTypeProvider<T>(isBindable);
 
@@ -110,10 +130,10 @@ namespace XstarS.ComponentModel
         /// 并指定将所有可重写属性设置为可绑定属性。
         /// </summary>
         /// <param name="type">原型类型，应为接口或非密封类。</param>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="TypeAccessException">
-        /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         private BindableTypeProvider(Type type)
         {
             if (type is null)
@@ -123,7 +143,7 @@ namespace XstarS.ComponentModel
             if (!(((type.IsClass && !type.IsSealed) || type.IsInterface) &&
                 type.IsVisible && !type.ContainsGenericParameters))
             {
-                throw new TypeAccessException();
+                throw new ArgumentException(new ArgumentException().Message, nameof(type));
             }
 
             this.BaseType = type;
@@ -135,18 +155,27 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="type">原型类型，应为接口或非密封类。</param>
         /// <param name="isBindable">用于筛选可绑定属性的 <see cref="Predicate{T}"/> 委托。</param>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> 或
         /// <paramref name="isBindable"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="TypeAccessException">
-        /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         private BindableTypeProvider(Type type, Predicate<PropertyInfo> isBindable)
-            : this(type)
         {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            if (!(((type.IsClass && !type.IsSealed) || type.IsInterface) &&
+                type.IsVisible && !type.ContainsGenericParameters))
+            {
+                throw new ArgumentException(new ArgumentException().Message, nameof(type));
+            }
             if (isBindable is null)
             {
                 throw new ArgumentNullException(nameof(isBindable));
             }
 
+            this.BaseType = type;
             this.IsBindable = isBindable;
         }
 
@@ -167,10 +196,10 @@ namespace XstarS.ComponentModel
         /// <param name="type">原型类型，应为接口或非密封类。</param>
         /// <returns>一个将所有可重写属性设置为可绑定属性的原型类型为
         /// <paramref name="type"/> 的 <see cref="BindableTypeProvider"/> 类的实例。</returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="TypeAccessException">
-        /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         public static BindableTypeProvider Default(Type type) =>
             BindableTypeProvider.LazyDefaults.GetOrAdd(type,
                 newType => new Lazy<BindableTypeProvider>(
@@ -184,10 +213,10 @@ namespace XstarS.ComponentModel
         /// <param name="isBindable">用于筛选可绑定属性的 <see cref="Predicate{T}"/> 委托。</param>
         /// <returns>一个将符合 <paramref name="isBindable"/> 条件的可重写属性设置可绑定属性的原型类型为
         /// <paramref name="type"/> 的 <see cref="BindableTypeProvider"/> 类的实例。</returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> 或
         /// <paramref name="isBindable"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="TypeAccessException">
-        /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         public static BindableTypeProvider Custom(Type type, Predicate<PropertyInfo> isBindable) =>
             new BindableTypeProvider(type, isBindable);
 

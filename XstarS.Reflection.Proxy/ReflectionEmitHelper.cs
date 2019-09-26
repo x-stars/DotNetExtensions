@@ -149,6 +149,11 @@ namespace XstarS.Reflection
             {
                 throw new ArgumentNullException(nameof(baseMethod));
             }
+            if (!baseMethod.IsInheritableInstance())
+            {
+                throw new ArgumentException(
+                    new ArgumentException().Message, nameof(baseMethod));
+            }
 
             // 定义方法。
             var baseGenericParams = baseMethod.GetGenericArguments();
@@ -228,9 +233,9 @@ namespace XstarS.Reflection
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseMethod">作为基础的基类方法的定义。</param>
         /// <returns>定义完成的重写方法，仅调用 <paramref name="baseMethod"/> 方法。</returns>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的访问级别不为公共或保护，或不可重写。</exception>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static MethodBuilder DefineDefaultOverrideMethod(
             this TypeBuilder type, MethodInfo baseMethod)
         {
@@ -242,6 +247,11 @@ namespace XstarS.Reflection
             if (baseMethod is null)
             {
                 throw new ArgumentNullException(nameof(baseMethod));
+            }
+            if (!baseMethod.IsOverridable())
+            {
+                throw new ArgumentException(
+                    new ArgumentException().Message, nameof(baseMethod));
             }
 
             bool newSlot = baseMethod.DeclaringType.IsInterface;

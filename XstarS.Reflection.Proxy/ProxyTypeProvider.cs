@@ -27,17 +27,25 @@ namespace XstarS.Reflection
         /// <summary>
         /// 初始化 <see cref="ProxyTypeProvider{T}"/> 类的新实例。
         /// </summary>
-        /// <exception cref="TypeAccessException">
+        /// <exception cref="ArgumentException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
         private ProxyTypeProvider()
         {
-            this.InternalProvider = ProxyTypeProvider.Default(typeof(T));
+            var type = typeof(T);
+
+            if (!(((type.IsClass && !type.IsSealed) || type.IsInterface) &&
+                type.IsVisible && !type.ContainsGenericParameters))
+            {
+                throw new ArgumentException(new ArgumentException().Message, nameof(T));
+            }
+
+            this.InternalProvider = ProxyTypeProvider.Default(type);
         }
 
         /// <summary>
         /// 返回一个默认的 <see cref="ProxyTypeProvider{T}"/> 类的实例。
         /// </summary>
-        /// <exception cref="TypeAccessException">
+        /// <exception cref="ArgumentException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
         public static ProxyTypeProvider<T> Default => ProxyTypeProvider<T>.LazyDefault.Value;
 
@@ -93,14 +101,20 @@ namespace XstarS.Reflection
         /// 以原型类型初始化 <see cref="ProxyTypeProvider"/> 类的新实例。
         /// </summary>
         /// <param name="type">原型类型，应为接口或非密封类。</param>
-        /// <exception cref="TypeAccessException">
+        /// <exception cref="ArgumentException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
-        private ProxyTypeProvider(Type type) : base()
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
+        private ProxyTypeProvider(Type type)
         {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
             if (!(((type.IsClass && !type.IsSealed) || type.IsInterface) &&
                 type.IsVisible && !type.ContainsGenericParameters))
             {
-                throw new TypeAccessException();
+                throw new ArgumentException(new ArgumentException().Message, nameof(type));
             }
 
             this.BaseType = type;
@@ -117,8 +131,10 @@ namespace XstarS.Reflection
         /// <param name="type">原型类型的 <see cref="Type"/> 对象。</param>
         /// <returns>一个原型类型为 <paramref name="type"/> 的
         /// <see cref="ProxyTypeProvider"/> 类的实例。</returns>
-        /// <exception cref="TypeAccessException">
+        /// <exception cref="ArgumentException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
         public static ProxyTypeProvider Default(Type type) =>
             ProxyTypeProvider.LazyDefaults.GetOrAdd(type,
                 newType => new Lazy<ProxyTypeProvider>(

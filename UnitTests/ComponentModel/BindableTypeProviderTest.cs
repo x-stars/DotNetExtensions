@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XstarS.ComponentModel.TestTypes;
@@ -33,16 +32,16 @@ namespace XstarS.ComponentModel
         [TestMethod]
         public void BindableType_InternalType_ThrowsException()
         {
-            Assert.ThrowsException<TypeAccessException>(
+            Assert.ThrowsException<ArgumentException>(
                 () => BindableTypeProvider<IInternalDisposableBinding<int>>.Default.BindableType);
-            Assert.ThrowsException<TypeAccessException>(
+            Assert.ThrowsException<ArgumentException>(
                 () => BindableTypeProvider<InternalDisposableBinding<string>>.Default.BindableType);
         }
 
         [TestMethod]
         public void BindableType_SealedClass_ThrowsException()
         {
-            Assert.ThrowsException<TypeAccessException>(
+            Assert.ThrowsException<ArgumentException>(
                 () => BindableTypeProvider<SealedDisposableBinding<string>>.Default.BindableType);
         }
 
