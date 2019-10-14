@@ -21,10 +21,6 @@
 原理和使用方法详述于[数据绑定接口实现框架说明文档](Documentations/BindableValue.md)中。
 使用此框架的优势叙述于[数据绑定实现方式比较文档](Documentations/BindableValueCompare.md)中。
 
-## 程序集 XstarS.ComponentModel.Binding
-
-提供基于数据绑定接口的通用的属性数据绑定方法。
-
 ## 程序集 XstarS.ParamReaders
 
 提供简易的命令行参数解析器，以及 CMD, PowerShell, Unix Shell 等多种风格的实现。
