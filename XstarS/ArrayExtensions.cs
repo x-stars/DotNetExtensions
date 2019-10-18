@@ -19,19 +19,19 @@ namespace XstarS
         /// <exception cref="ArgumentNullException">
         /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="offset"/> 不在 0 和
-        /// <paramref name="array"/> 的 <see cref="Array.LongLength"/> 之间。</exception>
-        public static int[] OffsetToIndices(this Array array, long offset)
+        /// <paramref name="array"/> 的 <see cref="Array.Length"/> 之间。</exception>
+        public static int[] OffsetToIndices(this Array array, int offset)
         {
             if (array is null)
             {
                 throw new ArgumentNullException(nameof(array));
             }
-            if ((offset < 0L) || (offset >= array.LongLength))
+            if ((offset < 0) || (offset >= array.Length))
             {
                 throw new ArgumentOutOfRangeException(nameof(offset));
             }
 
-            var scale = 1L;
+            var scale = 1;
             for (int i = 0; i < array.Rank; i++)
             {
                 scale *= array.GetLength(i);
@@ -41,7 +41,7 @@ namespace XstarS
             for (int i = 0; i < array.Rank; i++)
             {
                 scale /= array.GetLength(i);
-                result[i] = (int)(offset / scale);
+                result[i] = offset / scale;
                 offset %= scale;
             }
             return result;
@@ -110,7 +110,7 @@ namespace XstarS
             if (array.GetType() != other.GetType()) { return false; }
             // 大小不等。
             if (array.Rank != other.Rank) { return false; }
-            if (array.LongLength != other.LongLength) { return false; }
+            if (array.Length != other.Length) { return false; }
             for (int i = 0; i < array.Rank; i++)
             {
                 if (array.GetLength(i) != other.GetLength(i))
@@ -123,7 +123,7 @@ namespace XstarS
             comparer = comparer ?? EqualityComparer<object>.Default;
             bool isMultiDim = array.Rank > 1;
             bool isJagged = array.GetType().GetElementType().IsArray;
-            for (long i = 0L; i < array.LongLength; i++)
+            for (int i = 0; i < array.Length; i++)
             {
                 var xi = isMultiDim ? array.GetValue(array.OffsetToIndices(i)) : array.GetValue(i);
                 var yi = isMultiDim ? other.GetValue(other.OffsetToIndices(i)) : other.GetValue(i);
@@ -183,7 +183,7 @@ namespace XstarS
             var items = array.EnumerateArray().GetEnumerator();
 
             bool isMultiDim = lengths.Length > 1;
-            for (long i = 0L; i < result.LongLength; i++)
+            for (int i = 0; i < result.Length; i++)
             {
                 if (items.MoveNext())
                 {
@@ -253,9 +253,9 @@ namespace XstarS
             }
             else
             {
-                long Product(params int[] values)
+                int Product(params int[] values)
                 {
-                    long product = 1L;
+                    int product = 1;
                     foreach (var value in values)
                     {
                         product *= value;
@@ -267,16 +267,16 @@ namespace XstarS
                 var items = array.EnumerateArray().GetEnumerator();
                 var lastLengths = lengths;
                 var restLengths = new int[lastLengths.Length - 1];
-                Array.ConstrainedCopy(lastLengths, 0, restLengths, 0, restLengths.Length);
+                Array.Copy(lastLengths, 0, restLengths, 0, restLengths.Length);
 
                 while (restLengths.Length > 0)
                 {
                     result = Array.CreateInstance(itemType.MakeArrayType(), Product(restLengths));
-                    for (long i = 0L; i < result.LongLength; i++)
+                    for (int i = 0; i < result.Length; i++)
                     {
                         var innerArray = Array.CreateInstance(
                             itemType, lastLengths[lastLengths.Length - 1]);
-                        for (long j = 0L; j < innerArray.LongLength; j++)
+                        for (int j = 0; j < innerArray.Length; j++)
                         {
                             if (items.MoveNext())
                             {
@@ -298,7 +298,7 @@ namespace XstarS
                     itemType = itemType.MakeArrayType();
                     lastLengths = restLengths;
                     restLengths = new int[lastLengths.Length - 1];
-                    Array.ConstrainedCopy(lastLengths, 0, restLengths, 0, restLengths.Length);
+                    Array.Copy(lastLengths, 0, restLengths, 0, restLengths.Length);
                 }
                 return result;
             }
@@ -325,8 +325,8 @@ namespace XstarS
             }
 
             var result = new T[array.Length + other.Length];
-            Array.ConstrainedCopy(array, 0, result, 0, array.Length);
-            Array.ConstrainedCopy(other, 0, result, array.Length, other.Length);
+            Array.Copy(array, 0, result, 0, array.Length);
+            Array.Copy(other, 0, result, array.Length, other.Length);
             return result;
         }
 
@@ -364,7 +364,7 @@ namespace XstarS
             for (int i = 0; i < arrays.Length; i++)
             {
                 var array = arrays[i];
-                Array.ConstrainedCopy(array, 0, result, index, array.Length);
+                Array.Copy(array, 0, result, index, array.Length);
                 index += array.Length;
             }
             return result;
@@ -429,7 +429,7 @@ namespace XstarS
             }
 
             var result = Array.CreateInstance(typeof(T), lengths);
-            for (long i = 0; i < result.LongLength; i++)
+            for (int i = 0; i < result.Length; i++)
             {
                 var a = result.OffsetToIndices(i);
                 result.SetValue(indicesConverter(a), a);

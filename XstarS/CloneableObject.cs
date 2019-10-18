@@ -115,14 +115,14 @@ namespace XstarS
                 // 将每个元素替换为其深度副本。
                 if (clone.Rank == 1)
                 {
-                    for (long i = 0L; i < clone.LongLength; i++)
+                    for (int i = 0; i < clone.Length; i++)
                     {
                         clone.SetValue(this.DeepClone(clone.GetValue(i)), i);
                     }
                 }
                 else
                 {
-                    for (long i = 0L; i < clone.LongLength; i++)
+                    for (int i = 0; i < clone.Length; i++)
                     {
                         var a = clone.OffsetToIndices(i);
                         clone.SetValue(this.DeepClone(clone.GetValue(a)), a);

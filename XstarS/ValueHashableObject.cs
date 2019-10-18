@@ -144,7 +144,7 @@ namespace XstarS
             if (typeArray.GetElementType().IsPointer)
             {
                 var methodGet = typeArray.GetMethod("Get");
-                for (long i = 0; i < value.LongLength; i++)
+                for (int i = 0; i < value.Length; i++)
                 {
                     this.AppendValueHashCode(
                         methodGet.Invoke(value, Array.ConvertAll(
@@ -155,7 +155,7 @@ namespace XstarS
             else
             {
                 bool isMultiDim = value.Rank > 1;
-                for (long i = 0; i < value.LongLength; i++)
+                for (int i = 0; i < value.Length; i++)
                 {
                     this.AppendValueHashCode(isMultiDim ?
                         value.GetValue(value.OffsetToIndices(i)) : value.GetValue(i));

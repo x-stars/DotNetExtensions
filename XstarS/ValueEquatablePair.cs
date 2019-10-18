@@ -152,7 +152,7 @@ namespace XstarS
 
             // 大小不等。
             if (value.Rank != other.Rank) { return false; }
-            if (value.LongLength != other.LongLength) { return false; }
+            if (value.Length != other.Length) { return false; }
             for (int i = 0; i < value.Rank; i++)
             {
                 if (value.GetLength(i) != other.GetLength(i))
@@ -166,7 +166,7 @@ namespace XstarS
             if (typeArray.GetElementType().IsPointer)
             {
                 var methodGet = typeArray.GetMethod("Get");
-                for (long i = 0; i < value.LongLength; i++)
+                for (int i = 0; i < value.Length; i++)
                 {
                     if (!this.ValueEquals(
                         methodGet.Invoke(value, Array.ConvertAll(
@@ -182,7 +182,7 @@ namespace XstarS
             else
             {
                 bool isMultiDim = value.Rank > 1;
-                for (long i = 0; i < value.LongLength; i++)
+                for (int i = 0; i < value.Length; i++)
                 {
                     if (!this.ValueEquals(
                         isMultiDim ? value.GetValue(value.OffsetToIndices(i)) : value.GetValue(i),
