@@ -59,7 +59,7 @@ namespace XstarS.Win32
             /// 程序无法以写访问权限打开注册表项。</exception>
             /// <exception cref="SecurityException">
             /// 程序没有足够的权限读取注册表。</exception>
-            public static int? VersionInCurrentUser
+            public static int? VersionCurrentUser
             {
                 get
                 {
@@ -107,10 +107,10 @@ namespace XstarS.Win32
             /// 程序无法以写访问权限打开注册表项。</exception>
             /// <exception cref="SecurityException">
             /// 程序没有足够的权限读取注册表。</exception>
-            public static int? MajorVersionInCurrentUser
+            public static int? MajorVersionCurrentUser
             {
-                get => SystemComponents.WebBrowser.VersionInCurrentUser / 1000;
-                set => SystemComponents.WebBrowser.VersionInCurrentUser = value * 1000;
+                get => SystemComponents.WebBrowser.VersionCurrentUser / 1000;
+                set => SystemComponents.WebBrowser.VersionCurrentUser = value * 1000;
             }
 
             /// <summary>
@@ -123,7 +123,7 @@ namespace XstarS.Win32
             /// 程序无法以写访问权限打开注册表项。</exception>
             /// <exception cref="SecurityException">
             /// 程序没有足够的权限读取注册表。</exception>
-            public static int? VersionInLocalMachine
+            public static int? VersionLocalMachine
             {
                 get
                 {
@@ -171,10 +171,10 @@ namespace XstarS.Win32
             /// 程序无法以写访问权限打开注册表项。</exception>
             /// <exception cref="SecurityException">
             /// 程序没有足够的权限读取注册表。</exception>
-            public static int? MajorVersionInLocalMachine
+            public static int? MajorVersionLocalMachine
             {
-                get => SystemComponents.WebBrowser.VersionInLocalMachine / 1000;
-                set => SystemComponents.WebBrowser.VersionInLocalMachine = value * 1000;
+                get => SystemComponents.WebBrowser.VersionLocalMachine / 1000;
+                set => SystemComponents.WebBrowser.VersionLocalMachine = value * 1000;
             }
 
             /// <summary>
@@ -184,8 +184,8 @@ namespace XstarS.Win32
             /// <exception cref="SecurityException">
             /// 程序没有足够的权限读取注册表。</exception>
             public static int? Version =>
-                SystemComponents.WebBrowser.VersionInCurrentUser ??
-                SystemComponents.WebBrowser.VersionInLocalMachine;
+                SystemComponents.WebBrowser.VersionCurrentUser ??
+                SystemComponents.WebBrowser.VersionLocalMachine;
 
             /// <summary>
             /// 获取当前程序的内置网络浏览器运行的 Internet Explorer 的主要版本。
