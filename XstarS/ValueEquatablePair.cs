@@ -30,10 +30,10 @@ namespace XstarS
         public readonly object Other;
 
         /// <summary>
-        /// 已经比较过的 <see cref="ValueEquatablePair"/> 对象。
+        /// 已经比较过的对象的 <see cref="KeyValuePair{TKey, TValue}"/>。
         /// </summary>
         [NonSerialized]
-        private HashSet<ValueEquatablePair> Compared;
+        private HashSet<KeyValuePair<object, object>> Compared;
 
         /// <summary>
         /// 使用要进行值相等比较的两个对象初始化 <see cref="ValueEquatablePair"/> 类的新实例。
@@ -56,11 +56,10 @@ namespace XstarS
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
         public bool ValueEquals()
         {
-            this.Compared = this.Compared ??
-                new HashSet<ValueEquatablePair>(
-                    PairReferenceEqualityComparer.Default);
+            this.Compared = new HashSet<KeyValuePair<object, object>>(
+                PairReferenceEqualityComparer.Default);
 
-            var equals = this.TypedValueEquals();
+            var equals = this.ValueEquals(this.Value, this.Other);
 
             this.Compared = null;
             return equals;
@@ -73,22 +72,11 @@ namespace XstarS
         /// <param name="other">要进行值相等比较的第二个对象。</param>
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        private bool ValueEquals(object value, object other) =>
-            new ValueEquatablePair(value, other) { Compared = this.Compared }.ValueEquals();
-
-        /// <summary>
-        /// 根据类型确定当前实例包含的两个对象的值是否相等。
-        /// </summary>
-        /// <returns>若当前实例的 <see cref="ValueEquatablePair.Value"/> 和
-        /// <see cref="ValueEquatablePair.Other"/> 的值相等，
-        /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        private bool TypedValueEquals()
+        private bool ValueEquals(object value, object other)
         {
-            var value = this.Value;
-            var other = this.Other;
-
             // 已比较过的对象。
-            if (!this.Compared.Add(this)) { return true; }
+            var pair = new KeyValuePair<object, object>(value, other);
+            if (!this.Compared.Add(pair)) { return true; }
             // 引用比较。
             if (object.ReferenceEquals(value, other)) { return true; }
             if ((value is null) ^ (other is null)) { return false; }
@@ -98,58 +86,63 @@ namespace XstarS
             // 根据类型进行值相等比较。
             var type = value.GetType();
             return
-                type.IsPrimitive ? this.PrimitiveValueEquals() :
-                type == typeof(string) ? this.StringValueEquals() :
-                type == typeof(Pointer) ? this.PointerValueEquals() :
-                type.IsArray ? this.ArrayValueEquals() :
-                this.ObjectValueEquals();
+                type.IsPrimitive ? this.PrimitiveValueEquals(value, other) :
+                type == typeof(string) ? this.StringValueEquals((string)value, (string)other) :
+                type == typeof(Pointer) ? this.PointerValueEquals((Pointer)value, (Pointer)other) :
+                type.IsArray ? this.ArrayValueEquals((Array)value, (Array)other) :
+                this.ObjectValueEquals(value, other);
         }
 
         /// <summary>
-        /// 确定当前实例包含的两个基元类型对象 (<see cref="Type.IsPrimitive"/>) 的值是否相等。
+        /// 确定指定的两个基元类型对象 (<see cref="Type.IsPrimitive"/>) 的值是否相等。
         /// </summary>
-        /// <returns>若当前实例的 <see cref="ValueEquatablePair.Value"/> 和
-        /// <see cref="ValueEquatablePair.Other"/> 的类型相同且值相等，
+        /// <param name="value">要进行值相等比较的第一个基元类型对象。</param>
+        /// <param name="other">要进行值相等比较的第二个基元类型对象。</param>
+        /// <returns>若 <paramref name="value"/> 和 <paramref name="other"/> 的类型相同且值相等，
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        private bool PrimitiveValueEquals() =>
-            object.Equals(this.Value, this.Other);
-
-        /// <summary>
-        /// 确定当前实例包含的两个字符串 <see cref="string"/> 的值是否相等。
-        /// </summary>
-        /// <returns>若当前实例的 <see cref="ValueEquatablePair.Value"/> 和
-        /// <see cref="ValueEquatablePair.Other"/> 的值均为字符串 <see cref="string"/> 且值相等，
-        /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        private bool StringValueEquals() =>
-            string.Equals((string)this.Value, (string)this.Other);
-
-        /// <summary>
-        /// 确定当前实例包含的两个指针包装 <see cref="Pointer"/> 的值是否相等。
-        /// </summary>
-        /// <returns>若当前实例的 <see cref="ValueEquatablePair.Value"/> 和
-        /// <see cref="ValueEquatablePair.Other"/> 的值均为指针包装 <see cref="Pointer"/>，
-        /// 且指针的值和类型都相等，则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        private unsafe bool PointerValueEquals()
+        private bool PrimitiveValueEquals(object value, object other)
         {
-            var value = (Pointer)this.Value;
-            var other = (Pointer)this.Other;
+            return object.Equals(value, other);
+        }
 
+        /// <summary>
+        /// 确定指定的两个字符串 <see cref="string"/> 的值是否相等。
+        /// </summary>
+        /// <param name="value">要进行值相等比较的第一个字符串。</param>
+        /// <param name="other">要进行值相等比较的第二个字符串。</param>
+        /// <returns>若 <paramref name="value"/> 和 <paramref name="other"/>
+        /// 均为字符串 <see cref="string"/> 且值相等，
+        /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
+        private bool StringValueEquals(string value, string other)
+        {
+            return string.Equals(value, other);
+        }
+
+        /// <summary>
+        /// 确定指定的两个指针包装 <see cref="Pointer"/> 的值是否相等。
+        /// </summary>
+        /// <param name="value">要进行值相等比较的第一个指针包装。</param>
+        /// <param name="other">要进行值相等比较的第二个指针包装。</param>
+        /// <returns>若 <paramref name="value"/> 和 <paramref name="other"/>
+        /// 均为指针包装 <see cref="Pointer"/>，且指针的值和类型都相等，
+        /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
+        private unsafe bool PointerValueEquals(Pointer value, Pointer other)
+        {
             return (Pointer.Unbox(value) == Pointer.Unbox(other)) && (
                 ValueEquatablePair.StaticGetPointerType(value) ==
                 ValueEquatablePair.StaticGetPointerType(other));
         }
 
         /// <summary>
-        /// 确定当前实例包含的两个数组 <see cref="Array"/> 的所有元素的值是否相等。
+        /// 确定指定的两个数组 <see cref="Array"/> 的所有元素的值是否相等。
         /// </summary>
-        /// <returns>若当前实例的 <see cref="ValueEquatablePair.Value"/> 和
-        /// <see cref="ValueEquatablePair.Other"/> 均为数组 <see cref="Array"/>，且类型和尺寸相同，
-        /// 每个元素的值相等，则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        private bool ArrayValueEquals()
+        /// <param name="value">要进行值相等比较的第一个数组。</param>
+        /// <param name="other">要进行值相等比较的第二个数组。</param>
+        /// <returns>若 <paramref name="value"/> 和 <paramref name="other"/>
+        /// 均为数组 <see cref="Array"/>，且类型和尺寸相同，每个元素的值相等，
+        /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
+        private bool ArrayValueEquals(Array value, Array other)
         {
-            var value = (Array)this.Value;
-            var other = (Array)this.Other;
-
             // 大小不等。
             if (value.Rank != other.Rank) { return false; }
             if (value.Length != other.Length) { return false; }
@@ -196,16 +189,15 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 确定当前实例包含的两个对象的所有字段的值是否相等。
+        /// 确定指定的两个对象的所有字段的值是否相等。
         /// </summary>
-        /// <returns>若当前实例的 <see cref="ValueEquatablePair.Value"/> 和
-        /// <see cref="ValueEquatablePair.Other"/> 的类型相同，且每个实例字段的值相等，
+        /// <param name="value">要进行值相等比较的第一个对象。</param>
+        /// <param name="other">要进行值相等比较的第二个对象。</param>
+        /// <returns>若 <paramref name="value"/> 和 <paramref name="other"/>
+        /// 的类型相同，且每个实例字段的值相等，
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        private bool ObjectValueEquals()
+        private bool ObjectValueEquals(object value, object other)
         {
-            var value = this.Value;
-            var other = this.Other;
-
             // 循环获取基类。
             for (var type = value.GetType(); !(type is null); type = type.BaseType)
             {
@@ -225,9 +217,9 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 用于比较两个 <see cref="ValueEquatablePair"/> 包含的对象的引用是否相等的比较器。
+        /// 用于比较两个 <see cref="KeyValuePair{TKey, TValue}"/> 包含的对象的引用是否相等的比较器。
         /// </summary>
-        private sealed class PairReferenceEqualityComparer : EqualityComparer<ValueEquatablePair>
+        private sealed class PairReferenceEqualityComparer : EqualityComparer<KeyValuePair<object, object>>
         {
             /// <summary>
             /// 初始化 <see cref="PairReferenceEqualityComparer"/> 类的新实例。
@@ -240,22 +232,22 @@ namespace XstarS
             public static new PairReferenceEqualityComparer Default { get; } = new PairReferenceEqualityComparer();
 
             /// <summary>
-            /// 确定两个 <see cref="ValueEquatablePair"/> 包含的对象的引用是否相等。
+            /// 确定两个 <see cref="KeyValuePair{TKey, TValue}"/> 包含的对象的引用是否相等。
             /// </summary>
-            /// <param name="x">要比较对象引用的第一个 <see cref="ValueEquatablePair"/>。</param>
-            /// <param name="y">要比较对象引用的第二个 <see cref="ValueEquatablePair"/>。</param>
+            /// <param name="x">要比较对象引用的第一个 <see cref="KeyValuePair{TKey, TValue}"/>。</param>
+            /// <param name="y">要比较对象引用的第二个 <see cref="KeyValuePair{TKey, TValue}"/>。</param>
             /// <returns>若 <paramref name="x"/> 与 <paramref name="y"/> 的包含的对象的引用分别相等，
             /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-            public override bool Equals(ValueEquatablePair x, ValueEquatablePair y) =>
-                object.ReferenceEquals(x?.Value, y?.Value) && object.ReferenceEquals(x?.Other, y?.Other);
+            public override bool Equals(KeyValuePair<object, object> x, KeyValuePair<object, object> y) =>
+                object.ReferenceEquals(x.Key, y.Key) && object.ReferenceEquals(x.Value, y.Value);
 
             /// <summary>
-            /// 获取指定 <see cref="ValueEquatablePair"/> 包含的对象基于引用的哈希代码。
+            /// 获取指定 <see cref="KeyValuePair{TKey, TValue}"/> 包含的对象基于引用的哈希代码。
             /// </summary>
-            /// <param name="obj">要获取包含的对象的哈希代码的 <see cref="ValueEquatablePair"/>。</param>
+            /// <param name="obj">要获取包含的对象的哈希代码的 <see cref="KeyValuePair{TKey, TValue}"/>。</param>
             /// <returns><paramref name="obj"/> 包含的对象基于引用的哈希代码。</returns>
-            public override int GetHashCode(ValueEquatablePair obj) =>
-                RuntimeHelpers.GetHashCode(obj?.Value) * -1521134295 + RuntimeHelpers.GetHashCode(obj?.Other);
+            public override int GetHashCode(KeyValuePair<object, object> obj) =>
+                RuntimeHelpers.GetHashCode(obj.Key) * -1521134295 + RuntimeHelpers.GetHashCode(obj.Value);
         }
     }
 }

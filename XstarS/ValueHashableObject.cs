@@ -18,10 +18,10 @@ namespace XstarS
         public readonly object Value;
 
         /// <summary>
-        /// 基于值的哈希代码的引用包装。
+        /// 当前对象的基于值的哈希代码。
         /// </summary>
         [NonSerialized]
-        private StrongBox<int> HashCodeBox;
+        private int HashCode;
 
         /// <summary>
         /// 已经计算过哈希代码的对象。
@@ -46,12 +46,15 @@ namespace XstarS
         /// <returns><see cref="ValueHashableObject.Value"/> 基于值的哈希代码。</returns>
         public int GetValueHashCode()
         {
-            this.HashCodeBox = new StrongBox<int>();
+            this.HashCode = 0;
+            this.Computed = new HashSet<object>(
+                ReferenceEqualityComparer<object>.Default);
 
-            this.AppendValueHashCode();
-            int hashCode = this.HashCodeBox.Value;
+            this.AppendValueHashCode(this.Value);
+            int hashCode = this.HashCode;
 
-            this.HashCodeBox = null;
+            this.Computed = null;
+            this.HashCode = 0;
             return hashCode;
         }
 
@@ -59,38 +62,17 @@ namespace XstarS
         /// 将指定哈希代码附加到当前哈希代码中。
         /// </summary>
         /// <param name="hashCode">要附加到当前哈希代码的哈希代码。</param>
-        private void AppendHashCode(int hashCode) =>
-            this.HashCodeBox.Value = this.HashCodeBox.Value * -1521134295 + hashCode;
-
-        /// <summary>
-        /// 将当前实例包含的对象基于值的哈希代码附加到当前的哈希代码中。
-        /// </summary>
-        private void AppendValueHashCode()
+        private void AppendHashCode(int hashCode)
         {
-            this.Computed = this.Computed ??
-                new HashSet<object>(
-                    ReferenceEqualityComparer<object>.Default);
-
-            this.AppendTypedValueHashCode();
-
-            this.Computed = null;
+            this.HashCode = this.HashCode * -1521134295 + hashCode;
         }
 
         /// <summary>
         /// 将指定对象基于值的哈希代码附加到当前的哈希代码中。
         /// </summary>
         /// <param name="value">要将其基于值的哈希代码追加到当前哈希代码的对象。</param>
-        private void AppendValueHashCode(object value) =>
-            new ValueHashableObject(value) { HashCodeBox = this.HashCodeBox,
-                Computed = this.Computed }.AppendValueHashCode();
-
-        /// <summary>
-        /// 根据类型将当前实例包含的对象基于值的哈希代码附加到当前的哈希代码中。
-        /// </summary>
-        private void AppendTypedValueHashCode()
+        private void AppendValueHashCode(object value)
         {
-            var value = this.Value;
-
             // 空引用。
             if (value is null) { this.AppendEmptyValueHashCode(); return; }
             // 已计算过的对象。
@@ -98,45 +80,55 @@ namespace XstarS
 
             // 根据类型附加哈希代码。
             var type = value.GetType();
-            if (type.IsPrimitive) { this.AppendPrimitiveValueHashCode(); }
-            else if (type == typeof(string)) { this.AppendStringValueHashCode(); }
-            else if (type == typeof(Pointer)) { this.AppendPointerValueHashCode(); }
-            else if (type.IsArray) { this.AppendArrayValueHashCode(); }
-            else { this.AppendObjectValueHashCode(); }
+            if (type.IsPrimitive) { this.AppendPrimitiveValueHashCode(value); }
+            else if (type == typeof(string)) { this.AppendStringValueHashCode((string)value); }
+            else if (type == typeof(Pointer)) { this.AppendPointerValueHashCode((Pointer)value); }
+            else if (type.IsArray) { this.AppendArrayValueHashCode((Array)value); }
+            else { this.AppendObjectValueHashCode(value); }
         }
 
         /// <summary>
         /// 将一个空哈希代码附加到当前的哈希代码中。
         /// </summary>
-        private void AppendEmptyValueHashCode() =>
+        private void AppendEmptyValueHashCode()
+        {
             this.AppendHashCode(0);
+        }
 
         /// <summary>
-        /// 将当前实例包含的基元类型对象 (<see cref="Type.IsPrimitive"/>) 基于值的哈希代码附加到当前的哈希代码中。
+        /// 将指定基元类型对象 (<see cref="Type.IsPrimitive"/>) 基于值的哈希代码附加到当前的哈希代码中。
         /// </summary>
-        private void AppendPrimitiveValueHashCode() =>
-            this.AppendHashCode(this.Value.GetHashCode());
+        /// <param name="value">要将其基于值的哈希代码追加到当前哈希代码的基元类型对象。</param>
+        private void AppendPrimitiveValueHashCode(object value)
+        {
+            this.AppendHashCode(value.GetHashCode());
+        }
 
         /// <summary>
-        /// 将当前实例包含的字符串 <see cref="string"/> 基于值的哈希代码附加到当前的哈希代码中。
+        /// 将指定字符串 <see cref="string"/> 基于值的哈希代码附加到当前的哈希代码中。
         /// </summary>
-        private void AppendStringValueHashCode() =>
-            this.AppendHashCode(((string)this.Value).GetHashCode());
+        /// <param name="value">要将其基于值的哈希代码追加到当前哈希代码的字符串。</param>
+        private void AppendStringValueHashCode(string value)
+        {
+            this.AppendHashCode(value.GetHashCode());
+        }
 
         /// <summary>
-        /// 将当前实例包含的指针包装 <see cref="Pointer"/> 基于值的哈希代码附加到当前的哈希代码中。
+        /// 将指定指针包装 <see cref="Pointer"/> 基于值的哈希代码附加到当前的哈希代码中。
         /// </summary>
-        private unsafe void AppendPointerValueHashCode() =>
-            this.AppendHashCode(((IntPtr)Pointer.Unbox((Pointer)this.Value)).GetHashCode());
+        /// <param name="value">要将其基于值的哈希代码追加到当前哈希代码的指针包装。</param>
+        private unsafe void AppendPointerValueHashCode(Pointer value)
+        {
+            this.AppendHashCode(((IntPtr)Pointer.Unbox(value)).GetHashCode());
+        }
 
         /// <summary>
-        /// 将当前实例包含的数组 <see cref="Array"/> 基于所有元素的值的哈希代码附加到当前的哈希代码中。
+        /// 将指定数组 <see cref="Array"/> 基于所有元素的值的哈希代码附加到当前的哈希代码中。
         /// 将递归计算至元素为 .NET 基元类型、字符串或指针类型。
         /// </summary>
-        private void AppendArrayValueHashCode()
+        /// <param name="value">要将其基于值的哈希代码追加到当前哈希代码的数组。</param>
+        private void AppendArrayValueHashCode(Array value)
         {
-            var value = (Array)this.Value;
-
             this.AppendEmptyValueHashCode();
 
             var typeArray = value.GetType();
@@ -164,13 +156,12 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将当前实例包含的对象基于所有字段的值的哈希代码附加到当前的哈希代码中。
+        /// 将指定对象基于所有字段的值的哈希代码附加到当前的哈希代码中。
         /// 将递归计算至字段为 .NET 基元类型、字符串或指针类型。
         /// </summary>
-        private void AppendObjectValueHashCode()
+        /// <param name="value">要将其基于值的哈希代码追加到当前哈希代码的对象。</param>
+        private void AppendObjectValueHashCode(object value)
         {
-            var value = this.Value;
-
             this.AppendEmptyValueHashCode();
 
             // 循环获取基类。
