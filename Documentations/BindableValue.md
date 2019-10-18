@@ -182,4 +182,4 @@ public class MainWindow : Window
 ```
 
 此时若更改 `MainWindow.BindingData` 的 `BindingValue` 属性会通知客户端属性发生更改，而更改 `Value` 属性则不会。
-若使用 `defaultBuilder` 创建 `IBindableData` 的实例，则两属性都会在发生更改时通知客户端。
+若使用 `defaultProvider` 创建 `IBindableData` 的实例，则两属性都会在发生更改时通知客户端。
