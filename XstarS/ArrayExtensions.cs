@@ -167,6 +167,10 @@ namespace XstarS
             {
                 throw new ArgumentNullException(nameof(array));
             }
+            if (lengths is null)
+            {
+                throw new ArgumentNullException(nameof(lengths));
+            }
 
             var itemType = array.GetType().GetElementType();
             while (itemType.IsArray)
@@ -230,6 +234,10 @@ namespace XstarS
             if (array is null)
             {
                 throw new ArgumentNullException(nameof(array));
+            }
+            if (lengths is null)
+            {
+                throw new ArgumentNullException(nameof(lengths));
             }
 
             var itemType = array.GetType().GetElementType();

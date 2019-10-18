@@ -35,7 +35,7 @@ namespace XstarS.IO
                 case SearchOption.TopDirectoryOnly:
                     try { return directory.GetFileSystemInfos(searchPattern); }
                     catch (ArgumentException) { throw; }
-                    catch (Exception) { return new FileSystemInfo[0]; }
+                    catch (Exception) { return Array.Empty<FileSystemInfo>(); }
                 case SearchOption.AllDirectories:
                     try
                     {
@@ -54,9 +54,9 @@ namespace XstarS.IO
                         return result;
                     }
                     catch (ArgumentException) { throw; }
-                    catch (Exception) { return new FileSystemInfo[0]; }
+                    catch (Exception) { return Array.Empty<FileSystemInfo>(); }
                 default:
-                    return new FileSystemInfo[0];
+                    return Array.Empty<FileSystemInfo>();
             }
         }
 
@@ -87,7 +87,7 @@ namespace XstarS.IO
                 case SearchOption.TopDirectoryOnly:
                     try { return directory.GetDirectories(searchPattern); }
                     catch (ArgumentException) { throw; }
-                    catch (Exception) { return new DirectoryInfo[0]; }
+                    catch (Exception) { return Array.Empty<DirectoryInfo>(); }
                 case SearchOption.AllDirectories:
                     try
                     {
@@ -106,9 +106,9 @@ namespace XstarS.IO
                         return result;
                     }
                     catch (ArgumentException) { throw; }
-                    catch (Exception) { return new DirectoryInfo[0]; }
+                    catch (Exception) { return Array.Empty<DirectoryInfo>(); }
                 default:
-                    return new DirectoryInfo[0];
+                    return Array.Empty<DirectoryInfo>();
             }
         }
 
@@ -139,7 +139,7 @@ namespace XstarS.IO
                 case SearchOption.TopDirectoryOnly:
                     try { return directory.GetFiles(searchPattern); }
                     catch (ArgumentException) { throw; }
-                    catch (Exception) { return new FileInfo[0]; }
+                    catch (Exception) { return Array.Empty<FileInfo>(); }
                 case SearchOption.AllDirectories:
                     try
                     {
@@ -158,9 +158,9 @@ namespace XstarS.IO
                         return result;
                     }
                     catch (ArgumentException) { throw; }
-                    catch (Exception) { return new FileInfo[0]; }
+                    catch (Exception) { return Array.Empty<FileInfo>(); }
                 default:
-                    return new FileInfo[0];
+                    return Array.Empty<FileInfo>();
             }
         }
     }

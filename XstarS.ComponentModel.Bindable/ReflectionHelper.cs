@@ -93,12 +93,21 @@ namespace XstarS.ComponentModel
         /// <param name="type">要检索成员的 <see cref="Type"/> 对象。</param>
         /// <param name="memberFinder">检索指定类型的成员的 <see cref="Func{T, TResult}"/> 委托。</param>
         /// <returns><paramref name="type"/> 可以访问的所有指定类型的成员的集合。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="type"/>
+        /// 或 <paramref name="memberFinder"/> 为 <see langword="null"/>。</exception>
         private static IEnumerable<TMemberInfo> GetAccessibleMembers<TMemberInfo>(
             this Type type, Func<Type, IEnumerable<TMemberInfo>> memberFinder)
             where TMemberInfo : MemberInfo
         {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            if (memberFinder is null)
+            {
+                throw new ArgumentNullException(nameof(memberFinder));
+            }
+
             var result = new List<TMemberInfo>(memberFinder(type));
             if (type.IsInterface)
             {

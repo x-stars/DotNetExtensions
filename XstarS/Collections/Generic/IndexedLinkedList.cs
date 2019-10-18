@@ -183,13 +183,19 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <param name="index">应插入 <paramref name="collection"/> 的从零开始的索引。</param>
         /// <param name="collection">要插入的集合。</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，
-        /// 或 <paramref name="index"/> 大于 <see cref="LinkedList{T}.Count"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> 小于 0 或大于 <see cref="LinkedList{T}.Count"/>。</exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="collection"/> 为 <see langword="null"/>。</exception>
         public void InsertRange(int index, IEnumerable<T> collection)
         {
             if ((index < 0) || (index > this.Count))
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
+            }
+            if (collection is null)
+            {
+                throw new ArgumentNullException(nameof(collection));
             }
 
             if (index == this.Count)

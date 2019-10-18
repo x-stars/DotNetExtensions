@@ -72,14 +72,18 @@ namespace XstarS.Collections.Generic
         /// <param name="dictionary">一个 <see cref="IDictionary{TKey, TValue}"/> 对象。</param>
         /// <param name="keys">要从 <see cref="IDictionary{TKey, TValue}"/> 中移除的键的集合。</param>
         /// <returns>从 <paramref name="dictionary"/> 中移除的元素的数量。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="dictionary"/>
+        /// 或 <paramref name="keys"/> 为 <see langword="null"/>。</exception>
         public static int RemoveRange<TKey, TValue>(
             this IDictionary<TKey, TValue> dictionary, IEnumerable<TKey> keys)
         {
             if (dictionary is null)
             {
                 throw new ArgumentNullException(nameof(dictionary));
+            }
+            if (keys is null)
+            {
+                throw new ArgumentNullException(nameof(keys));
             }
 
             int result = 0;
