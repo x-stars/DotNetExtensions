@@ -23,7 +23,7 @@ namespace XstarS.Reflection
                 throw new ArgumentNullException(nameof(type));
             }
 
-            return type.IsValueType? Activator.CreateInstance(type) : null;
+            return type.IsValueType ? Activator.CreateInstance(type) : null;
         }
 
         /// <summary>

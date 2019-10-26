@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace XstarS
@@ -59,7 +57,7 @@ namespace XstarS
         public static IValueInfo<string> LengthIsInRange(
             this IValueInfo<string> valueInfo, int minLength, int maxLength, string message = null)
         {
-            if ((valueInfo.Value.Length < minLength) ||(valueInfo.Value.Length > maxLength))
+            if ((valueInfo.Value.Length < minLength) || (valueInfo.Value.Length > maxLength))
             {
                 ThrowHelper.ThrowArgumentException(valueInfo.Name, message, new IndexOutOfRangeException());
             }

@@ -95,7 +95,7 @@ namespace XstarS.ComponentModel.TestTypes
 
     internal class CloneableList<T> : List<T>, ICloneable
     {
-        public CloneableList() :base() { }
+        public CloneableList() : base() { }
 
         public CloneableList(int capacity) : base(capacity) { }
 
