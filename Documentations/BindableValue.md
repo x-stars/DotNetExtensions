@@ -117,7 +117,7 @@ public class MainWindow : Window
 定义一个原型基类或接口，通过 `System.Reflection.Emit` 命名空间提供的类来动态生成派生类，
 并在派生类的属性中实现数据绑定的相关代码。
 
-### 泛型接口 `XstarS.ComponentModel.IBindableTypeProvider<out T>`
+### 泛型接口 `XstarS.ComponentModel.IBindableFactory<out T>`
 
 用于提供原型类型对应的可用于数据绑定的派生类型，并提供创建此派生类型的实例的方法。
 
@@ -125,10 +125,10 @@ public class MainWindow : Window
 * `CreateInstance()` 方法构造一个 `BindableType` 的实例。
 * `CreateInstance(object[])` 方法以指定参数构造一个 `BindableType` 的实例。
 
-### `XstarS.ComponentModel.IBindableTypeProvider<out T>` 的实现
+### `XstarS.ComponentModel.IBindableFactory<out T>` 的实现
 
-* `BindableTypeProvider` 提供非泛型实现。
-* `BindableTypeProvider<T>` 提供泛型实现。
+* `BindableFactory` 提供非泛型实现。
+* `BindableFactory<T>` 提供泛型实现。
 
 ### 动态生成使用说明
 
@@ -145,15 +145,15 @@ public interface IBindableData : INotifyPropertyChanged
 ```
 
 注意，若定义的原型为一个类 (`class`)，则应将用于绑定的属性定义为 `virtual` 或 `abstract`，使得此属性能够在派生类中被重写。
-`BindableTypeProvider<T>` 不会对非 `virtual` 或 `abstract` 的属性生成绑定代码。
+`BindableFactory<T>` 不会对非 `virtual` 或 `abstract` 的属性生成绑定代码。
 同时，若定义了 `PropertyChanged` 事件，应将其应定义为 `abstract`，
 或是定义一个事件触发函数 `System.Void OnPropertyChanged(System.String)`，否则会导致无法正确构造派生类。
 
 > 若基类中的属性或方法或未定义为 `virtual` 或 `abstract`，则在派生类仅隐藏了基类中对应的定义，并未重写。
 > 当派生类的实例声明为基类时，则会调用基类中定义的属性或方法。
 
-而后在设置绑定处通过 `Default` 属性获取 `BindableTypeProvider<IBindableData>` 的默认实例，
-或是以自定义属性筛选条件通过 `Custom` 方法创建 `BindableTypeProvider<IBindableData>` 的自定义实例，
+而后在设置绑定处通过 `Default` 属性获取 `BindableFactory<IBindableData>` 的默认实例，
+或是以自定义属性筛选条件通过 `Custom` 方法创建 `BindableFactory<IBindableData>` 的自定义实例，
 再调用 `CreateInstance` 方法构造基于原型接口 `IBindableData` 的实例。
 
 ``` CSharp
@@ -166,9 +166,9 @@ public class MainWindow : Window
     public MainWindow()
     {
         // 对所有可重写属性设置绑定。
-        var defaultProvider = BindableTypeProvider<IBindableData>.Default;
+        var defaultFactory = BindableFactory<IBindableData>.Default;
         // 仅对名称以 Binding 开头的属性设置绑定。
-        var customProvider = BindableTypeProvider<IBindableData>.Custom(
+        var customFactory = BindableFactory<IBindableData>.Custom(
             prop => prop.Name.StartsWith("Binding"));
         this.BindingData = customProvider.CreateInstance();
         // ......
@@ -181,5 +181,5 @@ public class MainWindow : Window
 }
 ```
 
-此时若更改 `MainWindow.BindingData` 的 `BindingValue` 属性会通知客户端属性发生更改，而更改 `Value` 属性则不会。
-若使用 `defaultProvider` 创建 `IBindableData` 的实例，则两属性都会在发生更改时通知客户端。
+若使用 `defaultFactory` 创建 `IBindableData` 的实例，两属性都会在发生更改时通知客户端；
+若使用 `customFactory` 创建 `IBindableData` 的实例，则仅有 `BindingValue` 属性更更改时会通知客户端。

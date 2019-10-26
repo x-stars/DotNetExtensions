@@ -4,16 +4,8 @@ using System.ComponentModel;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供属性的可绑定封装，实现属性值更改时通知客户端。
+    /// 提供属性的可绑定封装，在属性值更改时通知客户端。
     /// </summary>
-    /// <remarks><para>
-    /// 设置数据绑定时，应绑定到 <see cref="Bindable{T}.Value"/>，而非实例本身。
-    /// </para><para>
-    /// 除初始化外，不应给此类的实例赋值，而应更改 <see cref="Bindable{T}.Value"/> 的值。
-    /// </para><para>
-    /// 直接更改实例的值将不会触发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件，
-    /// 并会替换 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件委托，破坏绑定关系。
-    /// </para></remarks>
     /// <typeparam name="T"><see cref="Bindable{T}"/> 的值的类型。</typeparam>
     [Serializable]
     public class Bindable<T> : BindableObject
@@ -32,10 +24,10 @@ namespace XstarS.ComponentModel
         /// 使用指定的值初始化 <see cref="Bindable{T}"/> 类的新实例。
         /// </summary>
         /// <param name="value">一个 <typeparamref name="T"/> 类型的值。</param>
-        public Bindable(T value) => this.Value = value;
+        public Bindable(T value) { this.Value = value; }
 
         /// <summary>
-        /// 当前 <see cref="Bindable{T}"/> 实例的值。
+        /// 当前 <see cref="Bindable{T}"/> 实例的可绑定的值。
         /// </summary>
         public T Value
         {

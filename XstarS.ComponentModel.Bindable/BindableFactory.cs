@@ -12,26 +12,26 @@ namespace XstarS.ComponentModel
     /// 提供可绑定派生类型，并提供创建此派生类型的实例的方法。
     /// </summary>
     /// <typeparam name="T">原型类型，应为接口或非密封类。</typeparam>
-    public sealed class BindableTypeProvider<T> : BindableTypeProviderBase<T> where T : class
+    public sealed class BindableFactory<T> : BindableFactoryBase<T> where T : class
     {
         /// <summary>
-        /// <see cref="BindableTypeProvider{T}.Default"/> 的延迟初始化值。
+        /// <see cref="BindableFactory{T}.Default"/> 的延迟初始化值。
         /// </summary>
-        private static readonly Lazy<BindableTypeProvider<T>> LazyDefault =
-            new Lazy<BindableTypeProvider<T>>(() => new BindableTypeProvider<T>());
+        private static readonly Lazy<BindableFactory<T>> LazyDefault =
+            new Lazy<BindableFactory<T>>(() => new BindableFactory<T>());
 
         /// <summary>
-        /// 提供可绑定派生类型的 <see cref="BindableTypeProvider"/> 对象。
+        /// 提供可绑定派生类型的 <see cref="BindableFactory"/> 对象。
         /// </summary>
-        private readonly BindableTypeProvider InternalProvider;
+        private readonly BindableFactory InternalFactory;
 
         /// <summary>
-        /// 初始化 <see cref="BindableTypeProvider{T}"/> 类的新实例，
+        /// 初始化 <see cref="BindableFactory{T}"/> 类的新实例，
         /// 并指定将所有可重写属性设置为可绑定属性。
         /// </summary>
         /// <exception cref="ArgumentException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
-        private BindableTypeProvider()
+        private BindableFactory()
         {
             var type = typeof(T);
 
@@ -41,11 +41,11 @@ namespace XstarS.ComponentModel
                 throw new ArgumentException(new ArgumentException().Message, nameof(T));
             }
 
-            this.InternalProvider = BindableTypeProvider.Default(type);
+            this.InternalFactory = BindableFactory.Default(type);
         }
 
         /// <summary>
-        /// 初始化 <see cref="BindableTypeProvider{T}"/> 类的新实例，
+        /// 初始化 <see cref="BindableFactory{T}"/> 类的新实例，
         /// 并指定将符合指定条件的可重写属性设置为可绑定属性。
         /// </summary>
         /// <param name="isBindable">用于筛选可绑定属性的 <see cref="Predicate{T}"/> 委托。</param>
@@ -53,7 +53,7 @@ namespace XstarS.ComponentModel
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="isBindable"/> 为 <see langword="null"/>。</exception>
-        private BindableTypeProvider(Predicate<PropertyInfo> isBindable)
+        private BindableFactory(Predicate<PropertyInfo> isBindable)
         {
             var type = typeof(T);
 
@@ -67,32 +67,32 @@ namespace XstarS.ComponentModel
                 throw new ArgumentNullException(nameof(isBindable));
             }
 
-            this.InternalProvider = BindableTypeProvider.Custom(type, isBindable);
+            this.InternalFactory = BindableFactory.Custom(type, isBindable);
         }
 
         /// <summary>
-        /// 返回一个以 <typeparamref name="T"/> 为原型类型的 <see cref="BindableTypeProvider{T}"/> 类的实例，
+        /// 返回一个以 <typeparamref name="T"/> 为原型类型的 <see cref="BindableFactory{T}"/> 类的实例，
         /// 并指定将所有可重写属性设置为可绑定属性。
         /// </summary>
         /// <returns>一个将所有可重写属性设置为可绑定属性的原型类型为
-        /// <typeparamref name="T"/> 的 <see cref="BindableTypeProvider{T}"/> 类的实例。</returns>
+        /// <typeparamref name="T"/> 的 <see cref="BindableFactory{T}"/> 类的实例。</returns>
         /// <exception cref="ArgumentException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
-        public static BindableTypeProvider<T> Default => BindableTypeProvider<T>.LazyDefault.Value;
+        public static BindableFactory<T> Default => BindableFactory<T>.LazyDefault.Value;
 
         /// <summary>
-        /// 创建一个以 <typeparamref name="T"/> 为原型类型的 <see cref="BindableTypeProvider"/> 类的实例，
+        /// 创建一个以 <typeparamref name="T"/> 为原型类型的 <see cref="BindableFactory{T}"/> 类的实例，
         /// 并指定将符合指定条件的可重写属性设置为可绑定属性。
         /// </summary>
         /// <param name="isBindable">用于筛选可绑定属性的 <see cref="Predicate{T}"/> 委托。</param>
         /// <returns>一个将符合 <paramref name="isBindable"/> 条件的可重写属性设置为可绑定属性的原型类型为
-        /// <typeparamref name="T"/> 的 <see cref="BindableTypeProvider"/> 类的实例。</returns>
+        /// <typeparamref name="T"/> 的 <see cref="BindableFactory{T}"/> 类的实例。</returns>
         /// <exception cref="ArgumentException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="isBindable"/> 为 <see langword="null"/>。</exception>
-        public static BindableTypeProvider<T> Custom(Predicate<PropertyInfo> isBindable) =>
-            new BindableTypeProvider<T>(isBindable);
+        public static BindableFactory<T> Custom(Predicate<PropertyInfo> isBindable) =>
+            new BindableFactory<T>(isBindable);
 
         /// <summary>
         /// 创建可绑定派生类型。
@@ -101,19 +101,19 @@ namespace XstarS.ComponentModel
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
         /// 但未定义公共或保护级别的 <code>void OnPropertyChanged(string)</code> 方法。</exception>
-        protected override Type CreateBindableType() => this.InternalProvider.BindableType;
+        protected override Type CreateBindableType() => this.InternalFactory.BindableType;
     }
 
     /// <summary>
     /// 提供指定类型的可绑定派生类型，并提供创建此派生类型的实例的方法。
     /// </summary>
-    public sealed class BindableTypeProvider : BindableTypeProviderBase<object>
+    public sealed class BindableFactory : BindableFactoryBase<object>
     {
         /// <summary>
-        /// <see cref="BindableTypeProvider.Default(Type)"/> 的延迟初始化值。
+        /// <see cref="BindableFactory.Default(Type)"/> 的延迟初始化值。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Lazy<BindableTypeProvider>> LazyDefaults =
-            new ConcurrentDictionary<Type, Lazy<BindableTypeProvider>>();
+        private static readonly ConcurrentDictionary<Type, Lazy<BindableFactory>> LazyDefaults =
+            new ConcurrentDictionary<Type, Lazy<BindableFactory>>();
 
         /// <summary>
         /// 可绑定派生类型的 <see cref="TypeBuilder"/> 对象。
@@ -126,7 +126,7 @@ namespace XstarS.ComponentModel
         private MethodInfo OnPropertyChangedMethod;
 
         /// <summary>
-        /// 以指定类型为原型类型初始化 <see cref="BindableTypeProvider"/> 类的新实例，
+        /// 以指定类型为原型类型初始化 <see cref="BindableFactory"/> 类的新实例，
         /// 并指定将所有可重写属性设置为可绑定属性。
         /// </summary>
         /// <param name="type">原型类型，应为接口或非密封类。</param>
@@ -134,7 +134,7 @@ namespace XstarS.ComponentModel
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        private BindableTypeProvider(Type type)
+        private BindableFactory(Type type)
         {
             if (type is null)
             {
@@ -150,7 +150,7 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 以指定类型为原型类型初始化 <see cref="BindableTypeProvider"/> 类的新实例，
+        /// 以指定类型为原型类型初始化 <see cref="BindableFactory"/> 类的新实例，
         /// 并指定将符合指定条件的可重写属性设置为可绑定属性。
         /// </summary>
         /// <param name="type">原型类型，应为接口或非密封类。</param>
@@ -159,7 +159,7 @@ namespace XstarS.ComponentModel
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> 或
         /// <paramref name="isBindable"/> 为 <see langword="null"/>。</exception>
-        private BindableTypeProvider(Type type, Predicate<PropertyInfo> isBindable)
+        private BindableFactory(Type type, Predicate<PropertyInfo> isBindable)
         {
             if (type is null)
             {
@@ -190,35 +190,35 @@ namespace XstarS.ComponentModel
         internal Predicate<PropertyInfo> IsBindable { get; }
 
         /// <summary>
-        /// 返回一个以指定类型为原型类型的 <see cref="BindableTypeProvider"/> 类的实例，
+        /// 返回一个以指定类型为原型类型的 <see cref="BindableFactory"/> 类的实例，
         /// 并指定将所有可重写属性设置为可绑定属性。
         /// </summary>
         /// <param name="type">原型类型，应为接口或非密封类。</param>
         /// <returns>一个将所有可重写属性设置为可绑定属性的原型类型为
-        /// <paramref name="type"/> 的 <see cref="BindableTypeProvider"/> 类的实例。</returns>
+        /// <paramref name="type"/> 的 <see cref="BindableFactory"/> 类的实例。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        public static BindableTypeProvider Default(Type type) =>
-            BindableTypeProvider.LazyDefaults.GetOrAdd(type,
-                newType => new Lazy<BindableTypeProvider>(
-                    () => new BindableTypeProvider(newType))).Value;
+        public static BindableFactory Default(Type type) =>
+            BindableFactory.LazyDefaults.GetOrAdd(type,
+                newType => new Lazy<BindableFactory>(
+                    () => new BindableFactory(newType))).Value;
 
         /// <summary>
-        /// 创建一个以指定类型为原型类型的 <see cref="BindableTypeProvider"/> 类的实例，
+        /// 创建一个以指定类型为原型类型的 <see cref="BindableFactory"/> 类的实例，
         /// 并指定将符合指定条件的可重写属性设置为可绑定属性。
         /// </summary>
         /// <param name="type">原型类型，应为接口或非密封类。</param>
         /// <param name="isBindable">用于筛选可绑定属性的 <see cref="Predicate{T}"/> 委托。</param>
         /// <returns>一个将符合 <paramref name="isBindable"/> 条件的可重写属性设置可绑定属性的原型类型为
-        /// <paramref name="type"/> 的 <see cref="BindableTypeProvider"/> 类的实例。</returns>
+        /// <paramref name="type"/> 的 <see cref="BindableFactory"/> 类的实例。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException"><paramref name="type"/> 或
         /// <paramref name="isBindable"/> 为 <see langword="null"/>。</exception>
-        public static BindableTypeProvider Custom(Type type, Predicate<PropertyInfo> isBindable) =>
-            new BindableTypeProvider(type, isBindable);
+        public static BindableFactory Custom(Type type, Predicate<PropertyInfo> isBindable) =>
+            new BindableFactory(type, isBindable);
 
         /// <summary>
         /// 创建可绑定派生类型。

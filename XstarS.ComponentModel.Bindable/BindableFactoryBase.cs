@@ -4,20 +4,20 @@ using System.ComponentModel;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 为可绑定派生类型提供对象 <see cref="IBindableTypeProvider{T}"/> 提供抽象基类实现。
+    /// 提供可绑定派生类型提供对象 <see cref="IBindableFactory{T}"/> 的抽象基类。
     /// </summary>
     /// <typeparam name="T">原型类型，应为接口或非密封类。</typeparam>
-    public abstract class BindableTypeProviderBase<T> : IBindableTypeProvider<T> where T : class
+    public abstract class BindableFactoryBase<T> : IBindableFactory<T> where T : class
     {
         /// <summary>
-        /// <see cref="BindableTypeProviderBase{T}.BindableType"/> 的延迟初始化对象。
+        /// <see cref="BindableFactoryBase{T}.BindableType"/> 的延迟初始化对象。
         /// </summary>
         private readonly Lazy<Type> LazyBindableType;
 
         /// <summary>
-        /// 初始化 <see cref="BindableTypeProviderBase{T}"/> 类的新实例。
+        /// 初始化 <see cref="BindableFactoryBase{T}"/> 类的新实例。
         /// </summary>
-        protected BindableTypeProviderBase()
+        protected BindableFactoryBase()
         {
             this.LazyBindableType = new Lazy<Type>(this.CreateBindableType);
         }
@@ -35,9 +35,9 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <returns>一个不使用参数创建的可绑定派生类型的实例。</returns>
         /// <exception cref="MissingMethodException">
-        /// <see cref="BindableTypeProviderBase{T}.BindableType"/> 不包含无参构造函数。</exception>
+        /// <see cref="BindableFactoryBase{T}.BindableType"/> 不包含无参构造函数。</exception>
         /// <exception cref="MethodAccessException">
-        /// <see cref="BindableTypeProviderBase{T}.BindableType"/> 的无参构造函数访问级别过低。</exception>
+        /// <see cref="BindableFactoryBase{T}.BindableType"/> 的无参构造函数访问级别过低。</exception>
         public T CreateInstance() =>
             (T)Activator.CreateInstance(this.BindableType);
 
@@ -49,10 +49,10 @@ namespace XstarS.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="arguments"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="MissingMethodException">
-        /// <see cref="BindableTypeProviderBase{T}.BindableType"/> 
+        /// <see cref="BindableFactoryBase{T}.BindableType"/> 
         /// 不包含与 <paramref name="arguments"/> 相匹配的构造函数。</exception>
         /// <exception cref="MethodAccessException">
-        /// <see cref="BindableTypeProviderBase{T}.BindableType"/> 
+        /// <see cref="BindableFactoryBase{T}.BindableType"/> 
         /// 中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
         public T CreateInstance(params object[] arguments) =>
             (T)Activator.CreateInstance(this.BindableType, arguments);
@@ -60,7 +60,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 返回表示可绑定派生类型的字符串。
         /// </summary>
-        /// <returns><see cref="BindableTypeProviderBase{T}.BindableType"/> 的字符串表达形式。</returns>
+        /// <returns><see cref="BindableFactoryBase{T}.BindableType"/> 的字符串表达形式。</returns>
         public override string ToString() => this.BindableType.ToString();
 
         /// <summary>

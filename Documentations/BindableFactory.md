@@ -1,6 +1,6 @@
 ﻿# 数据绑定类型提供对象
 
-本文叙述了以原型类型为基础，自动构造可用于数据绑定的类型的 `XstarS.ComponentModel.IBindableTypeProvider<out T>` 的实现原理和整体思路。
+本文叙述了以原型类型为基础，自动构造可用于数据绑定的类型的 `XstarS.ComponentModel.IBindableFactory<out T>` 的实现原理和整体思路。
 
 ## 数据绑定与 `INotifyPropertyChanged` 接口
 
@@ -157,7 +157,7 @@ public class Properties
 | 生成速度 | 需要编译，稍慢             | 无需编译，较快             |
 | 技术难度 | 使用编程语言实现，较低     | 需要掌握 IL 汇编指令，较高 |
 
-`IBindableTypeProvider<out T>` 最终采用了 Emit 技术，原因如下：
+`IBindableFactory<out T>` 最终采用了 Emit 技术，原因如下：
 
 * 生成的类型基于原型类型，有大量特性需要反射获取：
   * 将这些特性转换为特定于语言（C#）的特性的工作量较大；
@@ -199,17 +199,17 @@ public class Properties
 为便于与反射框架协作，此处分别定义了泛型和非泛型的实现，并将共通的代码定义为一个抽象类。
 整体设计参照 `System.Collection.Generic.EqualityComparer<T>` 模式设计如下（命名空间 `XstarS.ComponentModel`）：
 
-* `IBindableTypeProvider<out T>`
-* `BindableTypeProviderBase<T>`
-  * `BindableTypeProvider`
-  * `BindableTypeProvider<T>`
+* `IBindableFactory<out T>`
+* `BindableFactoryBase<T>`
+  * `BindableFactory`
+  * `BindableFactory<T>`
 
 其中：
 
-* `IBindableTypeProvider<out T>` 作为公共接口。
-* `BindableTypeProviderBase<T>` 实现 `IBindableTypeProvider<out T>`接口，提供基类实现。
-* `BindableTypeProvider` 继承 `BindableTypeProviderBase<System.Object>` 类，提供非泛型实现。
-* `BindableTypeProvider<T>` 继承 `BindableTypeProviderBase<T>` 类，提供泛型实现。
+* `IBindableFactory<out T>` 作为公共接口。
+* `BindableFactoryBase<T>` 实现 `IBindableFactory<out T>`接口，提供基类实现。
+* `BindableFactory` 继承 `BindableFactoryBase<System.Object>` 类，提供非泛型实现。
+* `BindableFactory<T>` 继承 `BindableFactoryBase<T>` 类，提供泛型实现。
 
 #### 接口设计
 
@@ -219,7 +219,7 @@ using System.ComponentModel;
 
 namespace XstarS.ComponentModel
 {
-    public interface IBindableTypeProvider<out T> where T : class
+    public interface IBindableFactory<out T> where T : class
     {
         Type BindableType { get; }
         T CreateInstance();

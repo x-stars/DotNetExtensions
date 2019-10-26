@@ -7,7 +7,7 @@ namespace XstarS.ComponentModel
     /// 提供可绑定派生类型，并提供创建此派生类型的实例的方法。
     /// </summary>
     /// <typeparam name="T">原型类型，应为接口或非密封类。</typeparam>
-    public interface IBindableTypeProvider<out T> where T : class
+    public interface IBindableFactory<out T> where T : class
     {
         /// <summary>
         /// 可绑定派生类型的 <see cref="Type"/> 对象。
@@ -22,9 +22,9 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <returns>一个可绑定派生类型的实例。</returns>
         /// <exception cref="MissingMethodException">
-        /// <see cref="IBindableTypeProvider{T}.BindableType"/> 不包含无参构造函数。</exception>
+        /// <see cref="IBindableFactory{T}.BindableType"/> 不包含无参构造函数。</exception>
         /// <exception cref="MethodAccessException">
-        /// <see cref="IBindableTypeProvider{T}.BindableType"/> 的无参构造函数访问级别过低。</exception>
+        /// <see cref="IBindableFactory{T}.BindableType"/> 的无参构造函数访问级别过低。</exception>
         T CreateInstance();
 
         /// <summary>
@@ -35,10 +35,10 @@ namespace XstarS.ComponentModel
         /// <exception cref="ArgumentNullException">
         /// <paramref name="arguments"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="MissingMethodException">
-        /// <see cref="IBindableTypeProvider{T}.BindableType"/>
+        /// <see cref="IBindableFactory{T}.BindableType"/>
         /// 不包含与 <paramref name="arguments"/> 相匹配的构造函数。</exception>
         /// <exception cref="MethodAccessException">
-        /// <see cref="IBindableTypeProvider{T}.BindableType"/>
+        /// <see cref="IBindableFactory{T}.BindableType"/>
         /// 中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
         T CreateInstance(params object[] arguments);
     }
