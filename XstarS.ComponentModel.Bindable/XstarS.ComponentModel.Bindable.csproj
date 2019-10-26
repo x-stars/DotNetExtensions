@@ -2,8 +2,11 @@
 
   <PropertyGroup>
     <RootNamespace>XstarS.ComponentModel</RootNamespace>
-    <TargetFrameworks>net47;netcoreapp2.1;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>
+      net461;net472;netcoreapp2.1;netcoreapp3.0;netstandard2.0;netstandard2.1
+    </TargetFrameworks>
     <LangVersion>latest</LangVersion>
+    <DocumentationFile>obj\XstarS.ComponentModel.Bindable.xml</DocumentationFile>
     <Version>1.0.0</Version>
     <Authors>XstarS</Authors>
     <Description></Description>
@@ -15,16 +18,18 @@
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile>obj/XstarS.ComponentModel.Bindable.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>obj/XstarS.ComponentModel.Bindable.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Reflection.Emit" Version="4.3.0" />
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <PackageReference Include="System.Reflection.Emit" Version="4.6.0" />
   </ItemGroup>
 
 </Project>

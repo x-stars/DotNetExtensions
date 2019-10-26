@@ -2,8 +2,9 @@
 
   <PropertyGroup>
     <RootNamespace>XstarS.Windows</RootNamespace>
-    <TargetFrameworks>net47</TargetFrameworks>
+    <TargetFrameworks>net461;net472</TargetFrameworks>
     <LangVersion>latest</LangVersion>
+    <DocumentationFile>obj\XstarS.Windows.xml</DocumentationFile>
     <Version>1.0.0</Version>
     <Authors>XstarS</Authors>
     <Description></Description>
@@ -15,12 +16,14 @@
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net47|AnyCPU'">
-    <DocumentationFile>obj/XstarS.Windows.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net47|AnyCPU'">
-    <DocumentationFile>obj/XstarS.Windows.xml</DocumentationFile>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
