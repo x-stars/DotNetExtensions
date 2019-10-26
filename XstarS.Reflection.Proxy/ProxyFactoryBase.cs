@@ -3,20 +3,20 @@
 namespace XstarS.Reflection
 {
     /// <summary>
-    /// 为代理派生类型提供对象 <see cref="IProxyTypeProvider{T}"/> 提供抽象基类实现。
+    /// 提供代理派生类型提供对象 <see cref="IProxyFactory{T}"/> 的抽象基类。
     /// </summary>
     /// <typeparam name="T">原型类型，应为接口或非密封类。</typeparam>
-    public abstract class ProxyTypeProviderBase<T> : IProxyTypeProvider<T> where T : class
+    public abstract class ProxyFactoryBase<T> : IProxyFactory<T> where T : class
     {
         /// <summary>
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 的延迟初始化值。
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/> 的延迟初始化值。
         /// </summary>
         private readonly Lazy<Type> LazyProxyType;
 
         /// <summary>
-        /// 初始化 <see cref="ProxyTypeProviderBase{T}"/> 类的新实例。
+        /// 初始化 <see cref="ProxyFactoryBase{T}"/> 类的新实例。
         /// </summary>
-        protected ProxyTypeProviderBase()
+        protected ProxyFactoryBase()
         {
             this.LazyProxyType = new Lazy<Type>(this.CreateProxyType);
         }
@@ -31,9 +31,9 @@ namespace XstarS.Reflection
         /// </summary>
         /// <returns>一个不使用参数创建的代理派生类型的实例。</returns>
         /// <exception cref="MissingMethodException">
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 不包含无参构造函数。</exception>
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/> 不包含无参构造函数。</exception>
         /// <exception cref="MethodAccessException">
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 的无参构造函数访问级别过低。</exception>
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/> 的无参构造函数访问级别过低。</exception>
         public T CreateInstance() =>
             (T)Activator.CreateInstance(this.ProxyType);
 
@@ -44,10 +44,10 @@ namespace XstarS.Reflection
         /// <exception cref="ArgumentNullException">
         /// <paramref name="arguments"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="MissingMethodException">
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/>
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/>
         /// 不包含与 <paramref name="arguments"/> 相匹配的构造函数。</exception>
         /// <exception cref="MethodAccessException">
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/>
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/>
         /// 中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
         public T CreateInstance(params object[] arguments) =>
             (T)Activator.CreateInstance(this.ProxyType, arguments);
@@ -55,7 +55,7 @@ namespace XstarS.Reflection
         /// <summary>
         /// 返回表示代理派生类型的字符串。
         /// </summary>
-        /// <returns><see cref="ProxyTypeProviderBase{T}.ProxyType"/> 的字符串表达形式。</returns>
+        /// <returns><see cref="ProxyFactoryBase{T}.ProxyType"/> 的字符串表达形式。</returns>
         public override string ToString() => this.ProxyType.ToString();
 
         /// <summary>

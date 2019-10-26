@@ -12,10 +12,10 @@ namespace XstarS.Reflection.TestTypes
     {
         public NotifyPropertyChangedOnPropertyInvokeAttribute() { }
 
-        public override object Invoke(object target, MethodInfo method,
-            MethodInvoker invoker, Type[] genericArguments, object[] arguments)
+        public override object Invoke(MethodInvoker invoker, object target,
+            MethodInfo method, Type[] genericArguments, object[] arguments)
         {
-            var result = base.Invoke(target, method, invoker, genericArguments, arguments);
+            var result = base.Invoke(invoker, target, method, genericArguments, arguments);
             ((NotifyPropertyChanged)target).OnPropertyChanged(method.Name.Substring("set_".Length));
             return result;
         }
@@ -29,11 +29,11 @@ namespace XstarS.Reflection.TestTypes
     {
         public WriteArugmentsAndResultOnMethodInvokeAttribute() { }
 
-        public override object Invoke(object target, MethodInfo method,
-            MethodInvoker invoker, Type[] genericArguments, object[] arguments)
+        public override object Invoke(MethodInvoker invoker, object target,
+            MethodInfo method, Type[] genericArguments, object[] arguments)
         {
             Console.WriteLine(string.Join(",", arguments));
-            var reuslt = base.Invoke(target, method, invoker, genericArguments, arguments);
+            var reuslt = base.Invoke(invoker, target, method, genericArguments, arguments);
             Console.WriteLine(reuslt);
             return reuslt;
         }
@@ -44,11 +44,11 @@ namespace XstarS.Reflection.TestTypes
     {
         public WriteTypeRefMethodOnMemberInvokeAttribute() { }
 
-        public override object Invoke(object target, MethodInfo method,
-            MethodInvoker invoker, Type[] genericArguments, object[] arguments)
+        public override object Invoke(MethodInvoker invoker, object target,
+            MethodInfo method, Type[] genericArguments, object[] arguments)
         {
             Console.WriteLine($"{target.GetType()}#{RuntimeHelpers.GetHashCode(target)}.[{method.ToString()}]");
-            return base.Invoke(target, method, invoker, genericArguments, arguments);
+            return base.Invoke(invoker, target, method, genericArguments, arguments);
         }
     }
 
@@ -57,8 +57,8 @@ namespace XstarS.Reflection.TestTypes
     {
         public WriteTypeRefMethodAndReturnsDefaultOnMemberInvokeAttribute() { }
 
-        public override object Invoke(object target, MethodInfo method,
-            MethodInvoker invoker, Type[] genericArguments, object[] arguments)
+        public override object Invoke(MethodInvoker invoker, object target,
+            MethodInfo method, Type[] genericArguments, object[] arguments)
         {
             Console.WriteLine($"{target.GetType()}#{RuntimeHelpers.GetHashCode(target)}.[{method.ToString()}]");
             return (method.ReturnType.IsValueType && (method.ReturnType != typeof(void))) ?

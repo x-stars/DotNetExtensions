@@ -11,25 +11,25 @@ namespace XstarS.Reflection
     /// 提供代理派生类型，并提供创建此派生类型的实例的方法。
     /// </summary>
     /// <typeparam name="T">原型类型，应为接口或非密封类。</typeparam>
-    public sealed class ProxyTypeProvider<T> : ProxyTypeProviderBase<T> where T : class
+    public sealed class ProxyFactory<T> : ProxyFactoryBase<T> where T : class
     {
         /// <summary>
-        /// <see cref="ProxyTypeProvider{T}.Default"/> 的延迟初始化值。
+        /// <see cref="ProxyFactory{T}.Default"/> 的延迟初始化值。
         /// </summary>
-        private static readonly Lazy<ProxyTypeProvider<T>> LazyDefault =
-            new Lazy<ProxyTypeProvider<T>>(() => new ProxyTypeProvider<T>());
+        private static readonly Lazy<ProxyFactory<T>> LazyDefault =
+            new Lazy<ProxyFactory<T>>(() => new ProxyFactory<T>());
 
         /// <summary>
-        /// 提供代理派生类型的 <see cref="ProxyTypeProvider"/> 对象。
+        /// 提供代理派生类型的 <see cref="ProxyFactory"/> 对象。
         /// </summary>
-        private readonly ProxyTypeProvider InternalProvider;
+        private readonly ProxyFactory InternalFactory;
 
         /// <summary>
-        /// 初始化 <see cref="ProxyTypeProvider{T}"/> 类的新实例。
+        /// 初始化 <see cref="ProxyFactory{T}"/> 类的新实例。
         /// </summary>
         /// <exception cref="ArgumentException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
-        private ProxyTypeProvider()
+        private ProxyFactory()
         {
             var type = typeof(T);
 
@@ -39,33 +39,33 @@ namespace XstarS.Reflection
                 throw new ArgumentException(new ArgumentException().Message, nameof(T));
             }
 
-            this.InternalProvider = ProxyTypeProvider.Default(type);
+            this.InternalFactory = ProxyFactory.Default(type);
         }
 
         /// <summary>
-        /// 返回一个默认的 <see cref="ProxyTypeProvider{T}"/> 类的实例。
+        /// 返回一个默认的 <see cref="ProxyFactory{T}"/> 类的实例。
         /// </summary>
         /// <exception cref="ArgumentException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
-        public static ProxyTypeProvider<T> Default => ProxyTypeProvider<T>.LazyDefault.Value;
+        public static ProxyFactory<T> Default => ProxyFactory<T>.LazyDefault.Value;
 
         /// <summary>
         /// 创建代理派生类型。
         /// </summary>
         /// <returns>创建的代理派生类型。</returns>
-        protected override Type CreateProxyType() => this.InternalProvider.ProxyType;
+        protected override Type CreateProxyType() => this.InternalFactory.ProxyType;
     }
 
     /// <summary>
     /// 提供指定类型的代理派生类型，并提供创建此派生类型的实例的方法。
     /// </summary>
-    public sealed partial class ProxyTypeProvider : ProxyTypeProviderBase<object>
+    public sealed partial class ProxyFactory : ProxyFactoryBase<object>
     {
         /// <summary>
-        /// <see cref="ProxyTypeProvider.Default(Type)"/> 的延迟初始化值。
+        /// <see cref="ProxyFactory.Default(Type)"/> 的延迟初始化值。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Lazy<ProxyTypeProvider>> LazyDefaults =
-            new ConcurrentDictionary<Type, Lazy<ProxyTypeProvider>>();
+        private static readonly ConcurrentDictionary<Type, Lazy<ProxyFactory>> LazyDefaults =
+            new ConcurrentDictionary<Type, Lazy<ProxyFactory>>();
 
         /// <summary>
         /// 原型类型中所有可在程序集外部重写的方法。
@@ -98,14 +98,14 @@ namespace XstarS.Reflection
         private Dictionary<MethodInfo, FieldInfo> ProxyDelegateFields;
 
         /// <summary>
-        /// 以原型类型初始化 <see cref="ProxyTypeProvider"/> 类的新实例。
+        /// 以原型类型初始化 <see cref="ProxyFactory"/> 类的新实例。
         /// </summary>
         /// <param name="type">原型类型，应为接口或非密封类。</param>
         /// <exception cref="ArgumentException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        private ProxyTypeProvider(Type type)
+        private ProxyFactory(Type type)
         {
             if (type is null)
             {
@@ -126,19 +126,19 @@ namespace XstarS.Reflection
         public Type BaseType { get; }
 
         /// <summary>
-        /// 获取以指定类型为原型类型的 <see cref="ProxyTypeProvider"/> 类的实例。
+        /// 获取以指定类型为原型类型的 <see cref="ProxyFactory"/> 类的实例。
         /// </summary>
         /// <param name="type">原型类型的 <see cref="Type"/> 对象。</param>
         /// <returns>一个原型类型为 <paramref name="type"/> 的
-        /// <see cref="ProxyTypeProvider"/> 类的实例。</returns>
+        /// <see cref="ProxyFactory"/> 类的实例。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        public static ProxyTypeProvider Default(Type type) =>
-            ProxyTypeProvider.LazyDefaults.GetOrAdd(type,
-                newType => new Lazy<ProxyTypeProvider>(
-                    () => new ProxyTypeProvider(newType))).Value;
+        public static ProxyFactory Default(Type type) =>
+            ProxyFactory.LazyDefaults.GetOrAdd(type,
+                newType => new Lazy<ProxyFactory>(
+                    () => new ProxyFactory(newType))).Value;
 
         /// <summary>
         /// 创建代理派生类型。
@@ -265,7 +265,7 @@ namespace XstarS.Reflection
         /// </summary>
         private void DefineAttributesType()
         {
-            var attributesType = new AttributesTypeProvider(this);
+            var attributesType = new AttributesStorage(this);
             this.OnMemberInvokeFields = attributesType.OnMemberInvokeFields;
             this.MethodsOnMethodInvokeFields = attributesType.MethodsOnMethodInvokeFields;
         }
@@ -275,7 +275,7 @@ namespace XstarS.Reflection
         /// </summary>
         private void DefineDelegatesType()
         {
-            var delegatesType = new DelegatesTypeProvider(this);
+            var delegatesType = new DelegatesStorage(this);
             this.ProxyDelegateFields = delegatesType.ProxyDelegateFields;
         }
 

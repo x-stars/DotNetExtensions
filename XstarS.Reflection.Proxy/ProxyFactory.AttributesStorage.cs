@@ -5,19 +5,19 @@ using System.Reflection.Emit;
 
 namespace XstarS.Reflection
 {
-    public sealed partial class ProxyTypeProvider
+    public sealed partial class ProxyFactory
     {
-        private sealed class AttributesTypeProvider
+        private sealed class AttributesStorage
         {
             private TypeBuilder AttributesTypeBuilder;
 
-            internal AttributesTypeProvider(ProxyTypeProvider provider)
+            internal AttributesStorage(ProxyFactory proxyType)
             {
-                this.ProxyTypeProvider = provider;
+                this.ProxyType = proxyType;
                 this.AttributesType = this.BuildAttributesType();
             }
 
-            public ProxyTypeProvider ProxyTypeProvider { get; }
+            public ProxyFactory ProxyType { get; }
 
             public Type AttributesType { get; }
 
@@ -42,7 +42,7 @@ namespace XstarS.Reflection
 
             private void DefineAttributesType()
             {
-                var proxyType = this.ProxyTypeProvider.ProxyTypeBuilder;
+                var proxyType = this.ProxyType.ProxyTypeBuilder;
 
                 // 定义存储代理特性的类型。
                 var attributesType = proxyType.DefineNestedType($"<{nameof(Attribute)}>",
@@ -53,7 +53,7 @@ namespace XstarS.Reflection
 
             private void DefineOnMemberInvokeFields()
             {
-                var baseType = this.ProxyTypeProvider.BaseType;
+                var baseType = this.ProxyType.BaseType;
                 var attributesType = this.AttributesTypeBuilder;
 
                 // 获取相关特性。
@@ -103,7 +103,7 @@ namespace XstarS.Reflection
 
             private void DefineMethodAttributesTypes()
             {
-                var baseMethods = this.ProxyTypeProvider.BaseMethods;
+                var baseMethods = this.ProxyType.BaseMethods;
                 var methodAttributesTypes = new Dictionary<MethodInfo, Type>();
                 var methodsOnMethodInvokeFields = new Dictionary<MethodInfo, FieldInfo[]>();
 
@@ -124,14 +124,14 @@ namespace XstarS.Reflection
                 private TypeBuilder MethodAttributesTypeBuilder;
 
                 internal MethodAttributesTypeProvider(
-                    AttributesTypeProvider provider, MethodInfo baseMethod)
+                    AttributesStorage attibutesType, MethodInfo baseMethod)
                 {
-                    this.AttributesTypeProvider = provider;
+                    this.AttributesType = attibutesType;
                     this.BaseMethod = baseMethod;
                     this.MethodAttributesType = this.BuildMethodAttributesType();
                 }
 
-                public AttributesTypeProvider AttributesTypeProvider { get; }
+                public AttributesStorage AttributesType { get; }
 
                 public MethodInfo BaseMethod { get; }
 
@@ -168,7 +168,7 @@ namespace XstarS.Reflection
                 private void DefineMethodAttributesType()
                 {
                     var baseMethod = this.BaseMethod;
-                    var attributesType = this.AttributesTypeProvider.AttributesTypeBuilder;
+                    var attributesType = this.AttributesType.AttributesTypeBuilder;
 
                     // 定义保存方法代理特性的类型。
                     var methodAttributesType = attributesType.DefineNestedType(

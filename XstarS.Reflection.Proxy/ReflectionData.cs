@@ -47,10 +47,10 @@ namespace XstarS.Reflection
         internal static readonly Type T_OnMethodInvokeAttribute = typeof(OnMethodInvokeAttribute);
 
         /// <summary>
-        /// <see cref="InvokeDelegateOnMethodInvokeAttribute"/> 类型的 <see cref="Type"/> 对象。
+        /// <see cref="HandleOnMethodInvokeAttribute"/> 类型的 <see cref="Type"/> 对象。
         /// </summary>
-        internal static readonly Type T_InvokeDelegateOnMethodInvokeAttribute =
-            typeof(InvokeDelegateOnMethodInvokeAttribute);
+        internal static readonly Type T_HandleOnMethodInvokeAttribute =
+            typeof(HandleOnMethodInvokeAttribute);
 
         /// <summary>
         /// <see cref="MethodInvoker.MethodInvoker(object, IntPtr)"/>
@@ -60,11 +60,11 @@ namespace XstarS.Reflection
             ReflectionData.T_MethodInvoker.GetConstructors()[0];
 
         /// <summary>
-        /// <see cref="InvokeDelegateOnMethodInvokeAttribute.InvokeDelegateOnMethodInvokeAttribute(string)"/>
+        /// <see cref="HandleOnMethodInvokeAttribute.HandleOnMethodInvokeAttribute(string)"/>
         /// 实例构造函数的 <see cref="ConstructorInfo"/> 对象。
         /// </summary>
-        internal static readonly ConstructorInfo T_InvokeDelegateOnMethodInvokeAttribute_IC_ctor =
-            ReflectionData.T_InvokeDelegateOnMethodInvokeAttribute.GetConstructor(new[] { typeof(string) });
+        internal static readonly ConstructorInfo T_HandleOnMethodInvokeAttribute_IC_ctor =
+            ReflectionData.T_HandleOnMethodInvokeAttribute.GetConstructor(new[] { typeof(string) });
 
         /// <summary>
         /// <see cref="MethodInvoker.Invoke(object, object[])"/> 实例方法的 <see cref="MethodInfo"/> 对象。
@@ -73,14 +73,14 @@ namespace XstarS.Reflection
             ReflectionData.T_MethodInvoker.GetMethod(nameof(MethodInvoker.Invoke));
 
         /// <summary>
-        /// <see cref="OnMemberInvokeAttribute.Invoke(object, MethodInfo, MethodInvoker, Type[], object[])"/>
+        /// <see cref="OnMemberInvokeAttribute.Invoke(MethodInvoker, object, MethodInfo, Type[], object[])"/>
         /// 实例方法的 <see cref="MethodInfo"/> 对象。
         /// </summary>
         internal static readonly MethodInfo T_OnMemberInvokeAttribute_IM_Invoke =
             ReflectionData.T_OnMemberInvokeAttribute.GetMethod(nameof(OnMemberInvokeAttribute.Invoke));
 
         /// <summary>
-        /// <see cref="OnMethodInvokeAttribute.Invoke(object, MethodInfo, MethodInvoker, Type[], object[])"/>
+        /// <see cref="OnMethodInvokeAttribute.Invoke(MethodInvoker, object, MethodInfo, Type[], object[])"/>
         /// 实例方法的 <see cref="MethodInfo"/> 对象。
         /// </summary>
         internal static readonly MethodInfo T_OnMethodInvokeAttribute_IM_Invoke =

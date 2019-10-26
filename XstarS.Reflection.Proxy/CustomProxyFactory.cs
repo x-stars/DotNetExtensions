@@ -11,19 +11,19 @@ namespace XstarS.Reflection
     /// 提供从代理委托构造代理派生类型及其实例的方法。
     /// </summary>
     /// <typeparam name="T">原型类型，应为接口或非密封类。</typeparam>
-    public sealed class ProxyTypeBuilder<T> : ProxyTypeProviderBase<T> where T : class
+    public sealed class CustomProxyFactory<T> : ProxyFactoryBase<T> where T : class
     {
         /// <summary>
-        /// 构造代理派生类型的 <see cref="ProxyTypeBuilder"/> 对象。
+        /// 构造代理派生类型的 <see cref="CustomProxyFactory"/> 对象。
         /// </summary>
-        private readonly ProxyTypeBuilder InternalBuilder;
+        private readonly CustomProxyFactory InternalFactory;
 
         /// <summary>
-        /// 初始化 <see cref="ProxyTypeBuilder{T}"/> 类的新实例。
+        /// 初始化 <see cref="CustomProxyFactory{T}"/> 类的新实例。
         /// </summary>
         /// <exception cref="ArgumentException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
-        public ProxyTypeBuilder()
+        public CustomProxyFactory()
         {
             var type = typeof(T);
 
@@ -33,87 +33,87 @@ namespace XstarS.Reflection
                 throw new ArgumentException(new ArgumentException().Message, nameof(T));
             }
 
-            this.InternalBuilder = new ProxyTypeBuilder(type);
+            this.InternalFactory = new CustomProxyFactory(type);
         }
 
         /// <summary>
-        /// 将指定 <see cref="OnInvokeHandler"/> 代理委托添加到指定的可重写方法。
+        /// 将指定 <see cref="MethodInvokeHandler"/> 代理委托添加到指定的可重写方法。
         /// </summary>
-        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <param name="handler">要添加到方法的 <see cref="MethodInvokeHandler"/> 代理委托。</param>
         /// <param name="method">要添加代理委托的可重写方法的 <see cref="MemberInfo"/> 对象。</param>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="MethodAccessException">
         /// <paramref name="method"/> 不为原型类型中的可重写方法。</exception>
         /// <exception cref="NotSupportedException">
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
-        public void AddOnInvoke(OnInvokeHandler handler, MethodInfo method) =>
-            this.InternalBuilder.AddOnInvoke(handler, method);
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(MethodInvokeHandler handler, MethodInfo method) =>
+            this.InternalFactory.AddOnInvoke(handler, method);
 
         /// <summary>
-        /// 将指定 <see cref="OnInvokeHandler"/> 代理委托添加到指定的多个可重写方法。
+        /// 将指定 <see cref="MethodInvokeHandler"/> 代理委托添加到指定的多个可重写方法。
         /// </summary>
-        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <param name="handler">要添加到方法的 <see cref="MethodInvokeHandler"/> 代理委托。</param>
         /// <param name="methods">要添加代理委托的多个可重写方法的 <see cref="MemberInfo"/> 对象。</param>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="MethodAccessException">
         /// <paramref name="methods"/> 不全为原型类型中的可重写方法。</exception>
         /// <exception cref="NotSupportedException">
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
-        public void AddOnInvoke(OnInvokeHandler handler, params MethodInfo[] methods) =>
-            this.InternalBuilder.AddOnInvoke(handler, methods);
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(MethodInvokeHandler handler, params MethodInfo[] methods) =>
+            this.InternalFactory.AddOnInvoke(handler, methods);
 
         /// <summary>
-        /// 将指定 <see cref="OnInvokeHandler"/> 代理委托添加到指定的多个可重写方法。
+        /// 将指定 <see cref="MethodInvokeHandler"/> 代理委托添加到指定的多个可重写方法。
         /// </summary>
-        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <param name="handler">要添加到方法的 <see cref="MethodInvokeHandler"/> 代理委托。</param>
         /// <param name="methods">要添加代理委托的多个可重写方法的 <see cref="MemberInfo"/> 对象。</param>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="MethodAccessException">
         /// <paramref name="methods"/> 不全为原型类型中的可重写方法。</exception>
         /// <exception cref="NotSupportedException">
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
-        public void AddOnInvoke(OnInvokeHandler handler, IEnumerable<MethodInfo> methods) =>
-            this.InternalBuilder.AddOnInvoke(handler, methods);
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(MethodInvokeHandler handler, IEnumerable<MethodInfo> methods) =>
+            this.InternalFactory.AddOnInvoke(handler, methods);
 
         /// <summary>
-        /// 根据指定规则将指定 <see cref="OnInvokeHandler"/> 代理委托添加到可重写方法。
+        /// 根据指定规则将指定 <see cref="MethodInvokeHandler"/> 代理委托添加到可重写方法。
         /// </summary>
-        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <param name="handler">要添加到方法的 <see cref="MethodInvokeHandler"/> 代理委托。</param>
         /// <param name="methodFilter">筛选要添加代理委托的方法的 <see cref="Predicate{T}"/> 委托。</param>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="NotSupportedException">
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
-        public void AddOnInvoke(OnInvokeHandler handler, Predicate<MethodInfo> methodFilter) =>
-            this.InternalBuilder.AddOnInvoke(handler, methodFilter);
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(MethodInvokeHandler handler, Predicate<MethodInfo> methodFilter) =>
+            this.InternalFactory.AddOnInvoke(handler, methodFilter);
 
         /// <summary>
-        /// 将指定 <see cref="OnInvokeHandler"/> 代理委托添加到所有可重写方法。
+        /// 将指定 <see cref="MethodInvokeHandler"/> 代理委托添加到所有可重写方法。
         /// </summary>
-        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <param name="handler">要添加到方法的 <see cref="MethodInvokeHandler"/> 代理委托。</param>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="NotSupportedException">
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
-        public void AddOnInvoke(OnInvokeHandler handler) =>
-            this.InternalBuilder.AddOnInvoke(handler);
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(MethodInvokeHandler handler) =>
+            this.InternalFactory.AddOnInvoke(handler);
 
         /// <summary>
         /// 创建代理派生类型。
         /// </summary>
         /// <returns>创建的代理派生类型。</returns>
-        protected override Type CreateProxyType() => this.InternalBuilder.ProxyType;
+        protected override Type CreateProxyType() => this.InternalFactory.ProxyType;
     }
 
     /// <summary>
     /// 提供从指定原型类型和代理委托构造代理派生类型及其实例的方法。
     /// </summary>
-    public sealed class ProxyTypeBuilder : ProxyTypeProviderBase<object>
+    public sealed class CustomProxyFactory : ProxyFactoryBase<object>
     {
         /// <summary>
-        /// 用于 <see cref="InvokeDelegateOnMethodInvokeAttribute"/> 特性的
-        /// <see cref="OnInvokeHandler"/> 委托的存储对象。
+        /// 用于 <see cref="HandleOnMethodInvokeAttribute"/> 特性的
+        /// <see cref="MethodInvokeHandler"/> 委托的存储对象。
         /// </summary>
-        private static readonly ConcurrentDictionary<Guid, OnInvokeHandler> Handlers =
-            new ConcurrentDictionary<Guid, OnInvokeHandler>();
+        private static readonly ConcurrentDictionary<Guid, MethodInvokeHandler> Handlers =
+            new ConcurrentDictionary<Guid, MethodInvokeHandler>();
 
         /// <summary>
         /// 原型类型中所有可在程序集外部重写的方法。
@@ -121,7 +121,7 @@ namespace XstarS.Reflection
         private MethodInfo[] BaseMethods;
 
         /// <summary>
-        /// 代理特性派生类型中方法对应的 <see cref="OnInvokeHandler"/> 代理委托的 <see cref="Guid"/>。
+        /// 代理特性派生类型中方法对应的 <see cref="MethodInvokeHandler"/> 代理委托的 <see cref="Guid"/>。
         /// </summary>
         private IDictionary<MethodInfo, List<Guid>> MethodHandlerGuids;
 
@@ -136,19 +136,19 @@ namespace XstarS.Reflection
         private Type ProxyBaseType;
 
         /// <summary>
-        /// 提供代理派生类型的 <see cref="ProxyTypeProvider"/> 对象。
+        /// 提供代理派生类型的 <see cref="ProxyFactory"/> 对象。
         /// </summary>
-        private ProxyTypeProvider InternalProvider;
+        private ProxyFactory InternalFactory;
 
         /// <summary>
-        /// 以指定类型为原型类型初始化 <see cref="ProxyTypeBuilder"/> 类的新实例。
+        /// 以指定类型为原型类型初始化 <see cref="CustomProxyFactory"/> 类的新实例。
         /// </summary>
         /// <param name="type">原型类型，应为接口或非密封类。</param>
         /// <exception cref="ArgumentException">
         /// <paramref name="type"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        public ProxyTypeBuilder(Type type)
+        public CustomProxyFactory(Type type)
         {
             if (type is null)
             {
@@ -170,24 +170,24 @@ namespace XstarS.Reflection
         public Type BaseType { get; }
 
         /// <summary>
-        /// 获取被分配了指定 <see cref="Guid"/> 的 <see cref="OnInvokeHandler"/> 委托。
-        /// 此方法用于 <see cref="InvokeDelegateOnMethodInvokeAttribute"/> 特性的内部实现，请不要调用此方法。
+        /// 获取被分配了指定 <see cref="Guid"/> 的 <see cref="MethodInvokeHandler"/> 委托。
+        /// 此方法用于 <see cref="HandleOnMethodInvokeAttribute"/> 特性的内部实现，请不要调用此方法。
         /// </summary>
-        /// <param name="guid"><see cref="OnInvokeHandler"/> 委托对应的 <see cref="Guid"/>。</param>
-        /// <returns>被分配了指定 <see cref="Guid"/> 的 <see cref="OnInvokeHandler"/> 委托。</returns>
-        public static OnInvokeHandler GetHandler(Guid guid) => ProxyTypeBuilder.Handlers[guid];
+        /// <param name="guid"><see cref="MethodInvokeHandler"/> 委托对应的 <see cref="Guid"/>。</param>
+        /// <returns>被分配了指定 <see cref="Guid"/> 的 <see cref="MethodInvokeHandler"/> 委托。</returns>
+        public static MethodInvokeHandler GetHandler(Guid guid) => CustomProxyFactory.Handlers[guid];
 
         /// <summary>
-        /// 将指定 <see cref="OnInvokeHandler"/> 代理委托添加到指定的可重写方法。
+        /// 将指定 <see cref="MethodInvokeHandler"/> 代理委托添加到指定的可重写方法。
         /// </summary>
-        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <param name="handler">要添加到方法的 <see cref="MethodInvokeHandler"/> 代理委托。</param>
         /// <param name="method">要添加代理委托的可重写方法的 <see cref="MemberInfo"/> 对象。</param>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="MethodAccessException">
         /// <paramref name="method"/> 不为原型类型中的可重写方法。</exception>
         /// <exception cref="NotSupportedException">
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
-        public void AddOnInvoke(OnInvokeHandler handler, MethodInfo method)
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(MethodInvokeHandler handler, MethodInfo method)
         {
             if (handler is null)
             {
@@ -207,21 +207,21 @@ namespace XstarS.Reflection
             }
 
             var handlerGuid = Guid.NewGuid();
-            ProxyTypeBuilder.Handlers[handlerGuid] = handler;
+            CustomProxyFactory.Handlers[handlerGuid] = handler;
             this.MethodHandlerGuids[method].Add(handlerGuid);
         }
 
         /// <summary>
-        /// 将指定 <see cref="OnInvokeHandler"/> 代理委托添加到指定的多个可重写方法。
+        /// 将指定 <see cref="MethodInvokeHandler"/> 代理委托添加到指定的多个可重写方法。
         /// </summary>
-        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <param name="handler">要添加到方法的 <see cref="MethodInvokeHandler"/> 代理委托。</param>
         /// <param name="methods">要添加代理委托的多个可重写方法的 <see cref="MemberInfo"/> 对象。</param>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="MethodAccessException">
         /// <paramref name="methods"/> 不全为原型类型中的可重写方法。</exception>
         /// <exception cref="NotSupportedException">
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
-        public void AddOnInvoke(OnInvokeHandler handler, params MethodInfo[] methods)
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(MethodInvokeHandler handler, params MethodInfo[] methods)
         {
             if (methods is null)
             {
@@ -235,16 +235,16 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 将指定 <see cref="OnInvokeHandler"/> 代理委托添加到指定的多个可重写方法。
+        /// 将指定 <see cref="MethodInvokeHandler"/> 代理委托添加到指定的多个可重写方法。
         /// </summary>
-        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <param name="handler">要添加到方法的 <see cref="MethodInvokeHandler"/> 代理委托。</param>
         /// <param name="methods">要添加代理委托的多个可重写方法的 <see cref="MemberInfo"/> 对象。</param>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="MethodAccessException">
         /// <paramref name="methods"/> 不全为原型类型中的可重写方法。</exception>
         /// <exception cref="NotSupportedException">
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
-        public void AddOnInvoke(OnInvokeHandler handler, IEnumerable<MethodInfo> methods)
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(MethodInvokeHandler handler, IEnumerable<MethodInfo> methods)
         {
             if (methods is null)
             {
@@ -258,14 +258,14 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 根据指定规则将指定 <see cref="OnInvokeHandler"/> 代理委托添加到可重写方法。
+        /// 根据指定规则将指定 <see cref="MethodInvokeHandler"/> 代理委托添加到可重写方法。
         /// </summary>
-        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <param name="handler">要添加到方法的 <see cref="MethodInvokeHandler"/> 代理委托。</param>
         /// <param name="methodFilter">筛选要添加代理委托的方法的 <see cref="Predicate{T}"/> 委托。</param>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="NotSupportedException">
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
-        public void AddOnInvoke(OnInvokeHandler handler, Predicate<MethodInfo> methodFilter)
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(MethodInvokeHandler handler, Predicate<MethodInfo> methodFilter)
         {
             if (methodFilter is null)
             {
@@ -282,13 +282,13 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 将指定 <see cref="OnInvokeHandler"/> 代理委托添加到所有可重写方法。
+        /// 将指定 <see cref="MethodInvokeHandler"/> 代理委托添加到所有可重写方法。
         /// </summary>
-        /// <param name="handler">要添加到方法的 <see cref="OnInvokeHandler"/> 代理委托。</param>
+        /// <param name="handler">要添加到方法的 <see cref="MethodInvokeHandler"/> 代理委托。</param>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="NotSupportedException">
-        /// <see cref="ProxyTypeProviderBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
-        public void AddOnInvoke(OnInvokeHandler handler)
+        /// <see cref="ProxyFactoryBase{T}.ProxyType"/> 已经创建，无法再添加新的代理委托。</exception>
+        public void AddOnInvoke(MethodInvokeHandler handler)
         {
             this.AddOnInvoke(handler, method => true);
         }
@@ -307,8 +307,8 @@ namespace XstarS.Reflection
         {
             this.BuildProxyBaseType();
 
-            this.InternalProvider = ProxyTypeProvider.Default(this.ProxyBaseType);
-            return this.InternalProvider.ProxyType;
+            this.InternalFactory = ProxyFactory.Default(this.ProxyBaseType);
+            return this.InternalFactory.ProxyType;
         }
 
         /// <summary>
@@ -416,10 +416,10 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 定义添加 <see cref="InvokeDelegateOnMethodInvokeAttribute"/> 特性的方法，并重写原型类型中的对应方法。
+        /// 定义添加 <see cref="HandleOnMethodInvokeAttribute"/> 特性的方法，并重写原型类型中的对应方法。
         /// </summary>
         /// <param name="baseMethod">
-        /// 要添加 <see cref="InvokeDelegateOnMethodInvokeAttribute"/> 特性的方法在原型类型中对应的方法。</param>
+        /// 要添加 <see cref="HandleOnMethodInvokeAttribute"/> 特性的方法在原型类型中对应的方法。</param>
         private void DefineAttributesOverrideMethods(MethodInfo baseMethod)
         {
             var objectProxyType = this.ProxyBaseTypeBuilder;
@@ -431,7 +431,7 @@ namespace XstarS.Reflection
             {
                 var handlerGuid = handlerGuids[i];
                 var attribute = new CustomAttributeBuilder(
-                    ReflectionData.T_InvokeDelegateOnMethodInvokeAttribute_IC_ctor,
+                    ReflectionData.T_HandleOnMethodInvokeAttribute_IC_ctor,
                     new object[] { handlerGuid.ToString() });
                 method.SetCustomAttribute(attribute);
             }
