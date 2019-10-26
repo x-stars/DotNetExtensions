@@ -27,7 +27,8 @@ namespace XstarS.ComponentModel
         public Bindable(T value) { this.Value = value; }
 
         /// <summary>
-        /// 当前 <see cref="Bindable{T}"/> 实例的可绑定的值。
+        /// 获取或设置当前 <see cref="Bindable{T}"/> 实例的可绑定的值。
+        /// 更改属性的值将引发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。
         /// </summary>
         public T Value
         {

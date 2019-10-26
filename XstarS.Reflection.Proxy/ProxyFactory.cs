@@ -186,27 +186,29 @@ namespace XstarS.Reflection
             var baseType = this.BaseType;
 
             // 定义动态程序集。
-            var asmName = $"{baseType.ToString()}(Proxy)";
+            var validBaseFullName = baseType.ToString().Replace("<", "[").Replace(">", "]");
+            var asmName = $"Proxy[{validBaseFullName}]";
             var assembly = AssemblyBuilder.DefineDynamicAssembly(
                 new AssemblyName(asmName), AssemblyBuilderAccess.Run);
             var module = assembly.DefineDynamicModule($"{asmName}.dll");
 
             // 生成类型名称。
             var baseNamespace = baseType.Namespace;
-            var @namespace = baseNamespace;
+            var @namespace = !(baseNamespace is null) ? $"{baseNamespace}." : "";
             var baseTypeNames = new List<string>();
             for (var nestedType = baseType; !(nestedType is null); nestedType = nestedType.DeclaringType)
             {
                 baseTypeNames.Insert(0, nestedType.Name);
             }
             var typeNames = baseTypeNames.ToArray();
+            var typeName = string.Join("-", typeNames);
             var baseGenericArgumentNames = Array.ConvertAll(
                 baseType.GetGenericArguments(), genericArgument => genericArgument.ToString());
             var genericArgumentNames = Array.ConvertAll(
                 baseGenericArgumentNames, name => name.Replace('.', '-').Replace('+', '-'));
-            var typeName = (!(@namespace is null) ? $"{@namespace}." : "") +
-                $"<Proxy>{string.Join("-", typeNames)}" +
-                (baseType.IsGenericType ? $"<{string.Join(",", genericArgumentNames)}>" : "");
+            var genericArguments = baseType.IsGenericType ?
+                $"<{string.Join(",", genericArgumentNames)}>" : "";
+            var fullName = $"{@namespace}<Proxy>{typeName}{genericArguments}";
 
             // 获取原型类型信息。
             var isInterface = baseType.IsInterface;
@@ -215,10 +217,9 @@ namespace XstarS.Reflection
                 baseType.GetInterfaces().Concat(new[] { baseType }).ToArray();
 
             // 定义动态类型。
-            var proxyType = module.DefineType(typeName,
-                TypeAttributes.Class | TypeAttributes.Public |
-                TypeAttributes.Serializable | TypeAttributes.BeforeFieldInit,
-                parent, interfaces);
+            var typeAttributes = TypeAttributes.Class |
+                TypeAttributes.Public | TypeAttributes.BeforeFieldInit;
+            var proxyType = module.DefineType(fullName, typeAttributes, parent, interfaces);
             this.ProxyTypeBuilder = proxyType;
         }
 

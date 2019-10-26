@@ -18,6 +18,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 在属性值更改时发生。
         /// </summary>
+        [field: NonSerialized]
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
