@@ -3,16 +3,16 @@
 namespace XstarS
 {
     /// <summary>
-    /// 提供可解构对象 <see cref="IDeconstructable"/> 的扩展方法。
+    /// 提供可析构对象 <see cref="IDeconstructable"/> 的扩展方法。
     /// </summary>
     public static class DeconstructableExtensions
     {
         /// <summary>
-        /// 将可解构对象 <see cref="IDeconstructable"/>
+        /// 将可析构对象 <see cref="IDeconstructable"/>
         /// 转换为空值元组 <see cref="ValueTuple"/>。
         /// </summary>
         /// <param name="deconstructable">
-        /// 要转换到值元组的可解构对象 <see cref="IDeconstructable"/>。</param>
+        /// 要转换到值元组的可析构对象 <see cref="IDeconstructable"/>。</param>
         /// <returns>转换后得到的空值元组 <see cref="ValueTuple"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="deconstructable"/> 为 <see langword="null"/>。</exception>
@@ -29,12 +29,12 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将可解构对象 <see cref="IDeconstructable{T1}"/>
+        /// 将可析构对象 <see cref="IDeconstructable{T1}"/>
         /// 转换为 1 元值元组 <see cref="ValueTuple{T1}"/>。
         /// </summary>
         /// <typeparam name="T1">第 1 个元素的类型。</typeparam>
         /// <param name="deconstructable">
-        /// 要转换到值元组的可解构对象 <see cref="IDeconstructable{T1}"/>。</param>
+        /// 要转换到值元组的可析构对象 <see cref="IDeconstructable{T1}"/>。</param>
         /// <returns>转换后得到的 1 元值元组 <see cref="ValueTuple{T1}"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="deconstructable"/> 为 <see langword="null"/>。</exception>
@@ -51,13 +51,13 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将可解构对象 <see cref="IDeconstructable{T1, T2}"/>
+        /// 将可析构对象 <see cref="IDeconstructable{T1, T2}"/>
         /// 转换为 2 元值元组 <see cref="ValueTuple{T1, T2}"/>。
         /// </summary>
         /// <typeparam name="T1">第 1 个元素的类型。</typeparam>
         /// <typeparam name="T2">第 2 个元素的类型。</typeparam>
         /// <param name="deconstructable">
-        /// 要转换到值元组的可解构对象 <see cref="IDeconstructable{T1, T2}"/>。</param>
+        /// 要转换到值元组的可析构对象 <see cref="IDeconstructable{T1, T2}"/>。</param>
         /// <returns>转换后得到的 2 元值元组 <see cref="ValueTuple{T1, T2}"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="deconstructable"/> 为 <see langword="null"/>。</exception>
@@ -74,14 +74,14 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将可解构对象 <see cref="IDeconstructable{T1, T2, T3}"/>
+        /// 将可析构对象 <see cref="IDeconstructable{T1, T2, T3}"/>
         /// 转换为 3 元值元组 <see cref="ValueTuple{T1, T2, T3}"/>。
         /// </summary>
         /// <typeparam name="T1">第 1 个元素的类型。</typeparam>
         /// <typeparam name="T2">第 2 个元素的类型。</typeparam>
         /// <typeparam name="T3">第 3 个元素的类型。</typeparam>
         /// <param name="deconstructable">
-        /// 要转换到值元组的可解构对象 <see cref="IDeconstructable{T1, T2, T3}"/>。</param>
+        /// 要转换到值元组的可析构对象 <see cref="IDeconstructable{T1, T2, T3}"/>。</param>
         /// <returns>转换后得到的 3 元值元组 <see cref="ValueTuple{T1, T2, T3}"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="deconstructable"/> 为 <see langword="null"/>。</exception>
@@ -98,7 +98,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将可解构对象 <see cref="IDeconstructable{T1, T2, T3, T4}"/>
+        /// 将可析构对象 <see cref="IDeconstructable{T1, T2, T3, T4}"/>
         /// 转换为 4 元值元组 <see cref="ValueTuple{T1, T2, T3, T4}"/>。
         /// </summary>
         /// <typeparam name="T1">第 1 个元素的类型。</typeparam>
@@ -106,7 +106,7 @@ namespace XstarS
         /// <typeparam name="T3">第 3 个元素的类型。</typeparam>
         /// <typeparam name="T4">第 4 个元素的类型。</typeparam>
         /// <param name="deconstructable">
-        /// 要转换到值元组的可解构对象 <see cref="IDeconstructable{T1, T2, T3, T4}"/>。</param>
+        /// 要转换到值元组的可析构对象 <see cref="IDeconstructable{T1, T2, T3, T4}"/>。</param>
         /// <returns>转换后得到的 4 元值元组 <see cref="ValueTuple{T1, T2, T3, T4}"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="deconstructable"/> 为 <see langword="null"/>。</exception>
@@ -123,7 +123,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将可解构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5}"/>
+        /// 将可析构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5}"/>
         /// 转换为 5 元值元组 <see cref="ValueTuple{T1, T2, T3, T4, T5}"/>。
         /// </summary>
         /// <typeparam name="T1">第 1 个元素的类型。</typeparam>
@@ -132,7 +132,7 @@ namespace XstarS
         /// <typeparam name="T4">第 4 个元素的类型。</typeparam>
         /// <typeparam name="T5">第 5 个元素的类型。</typeparam>
         /// <param name="deconstructable">
-        /// 要转换到值元组的可解构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5}"/>。</param>
+        /// 要转换到值元组的可析构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5}"/>。</param>
         /// <returns>转换后得到的 5 元值元组 <see cref="ValueTuple{T1, T2, T3, T4, T5}"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="deconstructable"/> 为 <see langword="null"/>。</exception>
@@ -149,7 +149,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将可解构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5, T6}"/>
+        /// 将可析构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5, T6}"/>
         /// 转换为 6 元值元组 <see cref="ValueTuple{T1, T2, T3, T4, T5, T6}"/>。
         /// </summary>
         /// <typeparam name="T1">第 1 个元素的类型。</typeparam>
@@ -159,7 +159,7 @@ namespace XstarS
         /// <typeparam name="T5">第 5 个元素的类型。</typeparam>
         /// <typeparam name="T6">第 6 个元素的类型。</typeparam>
         /// <param name="deconstructable">
-        /// 要转换到值元组的可解构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5, T6}"/>。</param>
+        /// 要转换到值元组的可析构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5, T6}"/>。</param>
         /// <returns>转换后得到的 6 元值元组 <see cref="ValueTuple{T1, T2, T3, T4, T5, T6}"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="deconstructable"/> 为 <see langword="null"/>。</exception>
@@ -176,7 +176,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将可解构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5, T6, T7}"/>
+        /// 将可析构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5, T6, T7}"/>
         /// 转换为 7 元值元组 <see cref="ValueTuple{T1, T2, T3, T4, T5, T6, T7}"/>。
         /// </summary>
         /// <typeparam name="T1">第 1 个元素的类型。</typeparam>
@@ -187,7 +187,7 @@ namespace XstarS
         /// <typeparam name="T6">第 6 个元素的类型。</typeparam>
         /// <typeparam name="T7">第 7 个元素的类型。</typeparam>
         /// <param name="deconstructable">
-        /// 要转换到值元组的可解构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5, T6, T7}"/>。</param>
+        /// 要转换到值元组的可析构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5, T6, T7}"/>。</param>
         /// <returns>转换后得到的 7 元值元组 <see cref="ValueTuple{T1, T2, T3, T4, T5, T6, T7}"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="deconstructable"/> 为 <see langword="null"/>。</exception>
@@ -204,7 +204,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将可解构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5, T6, T7, TRest}"/>
+        /// 将可析构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5, T6, T7, TRest}"/>
         /// 转换为 n 元值元组 <see cref="ValueTuple{T1, T2, T3, T4, T5, T6, T7, TRest}"/>。
         /// </summary>
         /// <typeparam name="T1">第 1 个元素的类型。</typeparam>
@@ -216,7 +216,7 @@ namespace XstarS
         /// <typeparam name="T7">第 7 个元素的类型。</typeparam>
         /// <typeparam name="TRest">剩余元素的值元组类型。</typeparam>
         /// <param name="deconstructable">
-        /// 要转换到值元组的可解构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5, T6, T7, TRest}"/>。</param>
+        /// 要转换到值元组的可析构对象 <see cref="IDeconstructable{T1, T2, T3, T4, T5, T6, T7, TRest}"/>。</param>
         /// <returns>转换后得到的 n 元值元组 <see cref="ValueTuple{T1, T2, T3, T4, T5, T6, T7, TRest}"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="deconstructable"/> 为 <see langword="null"/>。</exception>

@@ -7,12 +7,17 @@
 系统基础相关，目前包含的命名空间：
 
 * `XstarS`
-* `XstarS.Collections`
-* `XstarS.Collections.Generic`
 * `XstarS.Collections.Specialized`
 * `XstarS.Diagnostics`
 * `XstarS.IO`
 * `XstarS.Reflection`
+
+## 程序集 XstarS.Collections
+
+集合类型相关，目前包含的命名空间：
+
+* `XstarS.Collections`
+* `XstarS.Collections.Generic`
 
 ## 程序集 XstarS.ComponentModel.Bindable
 
@@ -20,6 +25,13 @@
 
 原理和使用方法详述于[数据绑定接口实现框架说明文档](Documentations/BindableValue.md)中。
 使用此框架的优势叙述于[数据绑定实现方式比较文档](Documentations/BindableValueCompare.md)中。
+
+## 程序集 XstarS.Deconstructable
+
+提供可析构类型 `XstarS.IDeconstructable` 及相关的扩展方法。
+
+可析构类型可使用值元组 `System.ValueTuple` 表达式将实例按成员析构为多个变量，
+详情可参考微软提供的文档：[析构元组和其他类型](https://docs.microsoft.com/zh-cn/dotnet/csharp/deconstruct)。
 
 ## 程序集 XstarS.ParamReaders
 

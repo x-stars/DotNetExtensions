@@ -7,7 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\Unit
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS", "XstarS\XstarS.csproj", "{0CB35110-130B-4359-BA62-5585C12E44A7}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Collections", "XstarS.Collections\XstarS.Collections.csproj", "{2C4B84BE-8F7D-4120-A092-C4AE242E1C06}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.ComponentModel.Bindable", "XstarS.ComponentModel.Bindable\XstarS.ComponentModel.Bindable.csproj", "{1CD40780-2782-4FC0-956A-9A9AA2CB79AB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Deconstructable", "XstarS.Deconstructable\XstarS.Deconstructable.csproj", "{A7169450-C2E3-4D1D-A69D-B6A51EC7357F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.ParamReaders", "XstarS.ParamReaders\XstarS.ParamReaders.csproj", "{B5EF52C2-DE52-4ADD-ACD7-191A6BBC426E}"
 EndProject
@@ -33,10 +37,18 @@ Global
 		{0CB35110-130B-4359-BA62-5585C12E44A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CB35110-130B-4359-BA62-5585C12E44A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CB35110-130B-4359-BA62-5585C12E44A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2C4B84BE-8F7D-4120-A092-C4AE242E1C06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2C4B84BE-8F7D-4120-A092-C4AE242E1C06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2C4B84BE-8F7D-4120-A092-C4AE242E1C06}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2C4B84BE-8F7D-4120-A092-C4AE242E1C06}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1CD40780-2782-4FC0-956A-9A9AA2CB79AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1CD40780-2782-4FC0-956A-9A9AA2CB79AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CD40780-2782-4FC0-956A-9A9AA2CB79AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CD40780-2782-4FC0-956A-9A9AA2CB79AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7169450-C2E3-4D1D-A69D-B6A51EC7357F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7169450-C2E3-4D1D-A69D-B6A51EC7357F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7169450-C2E3-4D1D-A69D-B6A51EC7357F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7169450-C2E3-4D1D-A69D-B6A51EC7357F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B5EF52C2-DE52-4ADD-ACD7-191A6BBC426E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B5EF52C2-DE52-4ADD-ACD7-191A6BBC426E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5EF52C2-DE52-4ADD-ACD7-191A6BBC426E}.Release|Any CPU.ActiveCfg = Release|Any CPU
