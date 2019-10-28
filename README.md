@@ -26,6 +26,13 @@
 可析构类型可使用值元组 `System.ValueTuple` 表达式将实例按成员析构为多个变量，
 详情可参考微软提供的文档：[析构元组和其他类型](https://docs.microsoft.com/zh-cn/dotnet/csharp/deconstruct)。
 
+## 程序集 XstarS.DynamicProxy
+
+提供以反射发出 (Emit) 实现的代理类型构造方法，保持动态代理灵活性的同时避免了反射带来的低效率问题。
+
+目前实现了两种注入的代理代码的方法，分别以特性 (Attribute) 标注和委托 (Delegate) 调用实现，均为运行时代码注入。
+其中，特性标注方法的动态性稍弱，但可读性较强，便于维护；而委托调用方法的动态性极强，自由度极高，但不便于维护。
+
 ## 程序集 XstarS.ObjectModel
 
 提供部分组件模型的实现类型，包括数据绑定和命令等。
@@ -40,13 +47,6 @@
 提供简易的命令行参数解析器，以及 CMD, PowerShell, Unix Shell 等多种风格的实现。
 
 原理和使用方法详述于[命令行参数解析器说明文档](Documentations/ParamReaders.md)中。
-
-## 程序集 XstarS.Reflection.Proxy
-
-提供以反射发出 (Emit) 实现的代理类型构造方法，保持动态代理灵活性的同时避免了反射带来的低效率问题。
-
-目前实现了两种注入的代理代码的方法，分别以特性 (Attribute) 标注和委托 (Delegate) 调用实现，均为运行时代码注入。
-其中，特性标注方法的动态性稍弱，但可读性较强，便于维护；而委托调用方法的动态性极强，自由度极高，但不便于维护。
 
 ## 程序集 XstarS.ValueValidate
 
