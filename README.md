@@ -19,19 +19,21 @@
 * `XstarS.Collections`
 * `XstarS.Collections.Generic`
 
-## 程序集 XstarS.ComponentModel.Bindable
-
-提供便捷的数据绑定接口实现方法，目前提供三种实现方案：方法提取、绑定值封装、动态生成数据绑定派生类。
-
-原理和使用方法详述于[数据绑定接口实现框架说明文档](Documentations/BindableValue.md)中。
-使用此框架的优势叙述于[数据绑定实现方式比较文档](Documentations/BindableValueCompare.md)中。
-
 ## 程序集 XstarS.Deconstructable
 
 提供可析构类型 `XstarS.IDeconstructable` 及相关的扩展方法。
 
 可析构类型可使用值元组 `System.ValueTuple` 表达式将实例按成员析构为多个变量，
 详情可参考微软提供的文档：[析构元组和其他类型](https://docs.microsoft.com/zh-cn/dotnet/csharp/deconstruct)。
+
+## 程序集 XstarS.ObjectModel
+
+提供部分组件模型的实现类型，包括数据绑定和命令等。
+
+目前提供的数据绑定的实现方案：方法提取、绑定值封装、动态生成数据绑定派生类。
+
+原理和使用方法详述于[数据绑定接口实现框架说明文档](Documentations/BindableValue.md)中。
+使用此框架的优势叙述于[数据绑定实现方式比较文档](Documentations/BindableValueCompare.md)中。
 
 ## 程序集 XstarS.ParamReaders
 

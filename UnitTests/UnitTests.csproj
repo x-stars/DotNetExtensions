@@ -27,8 +27,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\XstarS.Collections\XstarS.Collections.csproj" />
-    <ProjectReference Include="..\XstarS.ComponentModel.Bindable\XstarS.ComponentModel.Bindable.csproj" />
     <ProjectReference Include="..\XstarS.Deconstructable\XstarS.Deconstructable.csproj" />
+    <ProjectReference Include="..\XstarS.ObjectModel\XstarS.ObjectModel.csproj" />
     <ProjectReference Include="..\XstarS.ParamReaders\XstarS.ParamReaders.csproj" />
     <ProjectReference Include="..\XstarS.Reflection.Proxy\XstarS.Reflection.Proxy.csproj" />
     <ProjectReference Include="..\XstarS.ValueValidate\XstarS.ValueValidate.csproj" />
