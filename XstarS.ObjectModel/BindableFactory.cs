@@ -9,7 +9,7 @@ using System.Reflection.Emit;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供可绑定派生类型，并提供创建此派生类型的实例的方法。
+    /// 提供基于 <see cref="INotifyPropertyChanged"/> 的可绑定派生类型，并提供创建此派生类型的实例的方法。
     /// </summary>
     /// <typeparam name="T">原型类型，应为接口或非密封类。</typeparam>
     public sealed class BindableFactory<T> : BindableFactoryBase<T> where T : class
@@ -100,12 +100,12 @@ namespace XstarS.ComponentModel
         /// <returns>创建的可绑定派生类型。</returns>
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
-        /// 但未定义公共或保护级别的 <code>void OnPropertyChanged(string)</code> 方法。</exception>
+        /// 但未定义公共或保护级别的 <c>void OnPropertyChanged(string)</c> 方法。</exception>
         protected override Type CreateBindableType() => this.InternalFactory.BindableType;
     }
 
     /// <summary>
-    /// 提供指定类型的可绑定派生类型，并提供创建此派生类型的实例的方法。
+    /// 提供指定类型基于 <see cref="INotifyPropertyChanged"/> 的可绑定派生类型，并提供创建此派生类型的实例的方法。
     /// </summary>
     public sealed class BindableFactory : BindableFactoryBase<object>
     {
@@ -121,7 +121,7 @@ namespace XstarS.ComponentModel
         private TypeBuilder BindableTypeBuilder;
 
         /// <summary>
-        /// <code>void OnPropertyChanged(string)</code> 方法的 <see cref="MethodInfo"/> 对象。
+        /// <c>void OnPropertyChanged(string)</c> 方法的 <see cref="MethodInfo"/> 对象。
         /// </summary>
         private MethodInfo OnPropertyChangedMethod;
 
@@ -226,7 +226,7 @@ namespace XstarS.ComponentModel
         /// <returns>创建的可绑定派生类型。</returns>
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
-        /// 但未定义公共或保护级别的 <code>void OnPropertyChanged(string)</code> 方法。</exception>
+        /// 但未定义公共或保护级别的 <c>void OnPropertyChanged(string)</c> 方法。</exception>
         protected override Type CreateBindableType() => this.BuildBindableType();
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace XstarS.ComponentModel
         /// <returns>构造完成的可绑定派生类型。</returns>
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
-        /// 但未定义公共或保护级别的 <code>void OnPropertyChanged(string)</code> 方法。</exception>
+        /// 但未定义公共或保护级别的 <c>void OnPropertyChanged(string)</c> 方法。</exception>
         private Type BuildBindableType()
         {
             // 定义可绑定派生类型。

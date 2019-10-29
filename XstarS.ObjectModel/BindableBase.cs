@@ -22,7 +22,7 @@ namespace XstarS.ComponentModel
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// 引发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。
+        /// 引发 <see cref="BindableBase.PropertyChanged"/> 事件。
         /// </summary>
         /// <param name="propertyName">已更改属性的名称，可由编译器自动获取。</param>
         protected virtual void OnPropertyChanged(

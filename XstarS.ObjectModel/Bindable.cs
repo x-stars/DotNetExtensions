@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
 
 namespace XstarS.ComponentModel
 {
@@ -28,7 +27,7 @@ namespace XstarS.ComponentModel
 
         /// <summary>
         /// 获取或设置当前 <see cref="Bindable{T}"/> 实例的可绑定的值。
-        /// 更改属性的值将引发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。
+        /// 更改属性的值将引发 <see cref="BindableBase.PropertyChanged"/> 事件。
         /// </summary>
         public T Value
         {

@@ -4,7 +4,8 @@ using System.ComponentModel;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供可绑定派生类型提供对象 <see cref="IBindableFactory{T}"/> 的抽象基类。
+    /// 提供基于 <see cref="INotifyPropertyChanged"/> 的可绑定派生类型提供对象
+    /// <see cref="IBindableFactory{T}"/> 的抽象基类。
     /// </summary>
     /// <typeparam name="T">原型类型，应为接口或非密封类。</typeparam>
     public abstract class BindableFactoryBase<T> : IBindableFactory<T> where T : class
@@ -25,9 +26,6 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 可绑定派生类型的 <see cref="Type"/> 对象。
         /// </summary>
-        /// <exception cref="MissingMethodException">
-        /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
-        /// 但未定义公共或保护级别的 <code>void OnPropertyChanged(string)</code> 方法。</exception>
         public Type BindableType => this.LazyBindableType.Value;
 
         /// <summary>
@@ -67,9 +65,6 @@ namespace XstarS.ComponentModel
         /// 在派生类中重写时，创建可绑定派生类型。
         /// </summary>
         /// <returns>创建的可绑定派生类型。</returns>
-        /// <exception cref="MissingMethodException">
-        /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
-        /// 但未定义公共或保护级别的 <code>void OnPropertyChanged(string)</code> 方法。</exception>
         protected abstract Type CreateBindableType();
     }
 }

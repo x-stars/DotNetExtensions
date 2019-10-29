@@ -231,7 +231,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseProperty">作为基础的属性的定义。</param>
-        /// <param name="methodOnPropertyChanged"><code>void OnProperty(string)</code> 方法。</param>
+        /// <param name="methodOnPropertyChanged"><c>void OnProperty(string)</c> 方法。</param>
         /// <returns>一个键值对，键为可绑定属性的定义，值为其对应的字段。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 是一个索引器或无法在程序集外部重写。</exception>
@@ -489,12 +489,12 @@ namespace XstarS.ComponentModel
 
         /// <summary>
         /// 使用已有的 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的委托，
-        /// 定义 <code>OnPropertyChanged(string)</code> 方法，并添加到当前类型。
+        /// 定义 <c>void OnPropertyChanged(string)</c> 方法，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="fieldPropertyChanged">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的委托。</param>
-        /// <returns>定义完成的 <code>void OnPropertyChanged(string)</code> 方法。</returns>
+        /// <returns>定义完成的 <c>void OnPropertyChanged(string)</c> 方法。</returns>
         /// <exception cref="ArgumentException"><paramref name="fieldPropertyChanged"/>
         /// 不为 <see cref="PropertyChangedEventHandler"/> 类型。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>

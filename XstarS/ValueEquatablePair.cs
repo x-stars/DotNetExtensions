@@ -12,7 +12,7 @@ namespace XstarS
     internal sealed class ValueEquatablePair
     {
         /// <summary>
-        /// <see cref="Pointer"/> 的 <code>GetPointerType()</code> 方法的静态委托调用。
+        /// <see cref="Pointer"/> 的 <c>GetPointerType()</c> 方法的静态委托调用。
         /// </summary>
         private static readonly Func<Pointer, Type> StaticGetPointerType =
             typeof(Pointer).GetMethod("GetPointerType",

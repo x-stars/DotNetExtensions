@@ -53,7 +53,7 @@ namespace XstarS.ComponentModel
         public abstract bool CanExecute(object parameter);
 
         /// <summary>
-        /// 引发 <see cref="ICommand.CanExecuteChanged"/> 事件。
+        /// 引发 <see cref="Command.CanExecuteChanged"/> 事件。
         /// </summary>
         protected virtual void OnCanExecuteChanged()
         {

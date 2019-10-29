@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供可绑定类型 <see cref="BindableBase"/> 基于数据存储的抽象基类。
+    /// 提供可绑定类型 <see cref="INotifyPropertyChanged"/> 基于数据结构的抽象基类。
     /// </summary>
     [Serializable]
     public abstract class BindableStorage : BindableBase
@@ -60,7 +60,7 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 设置指定属性的值，并引发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。
+        /// 设置指定属性的值，并引发 <see cref="BindableBase.PropertyChanged"/> 事件。
         /// </summary>
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="value">属性的新值，一般为 <see langword="value"/>。</param>

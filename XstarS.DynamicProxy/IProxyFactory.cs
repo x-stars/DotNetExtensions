@@ -11,8 +11,6 @@ namespace XstarS.Reflection
         /// <summary>
         /// 代理派生类型的 <see cref="Type"/> 对象。
         /// </summary>
-        /// <exception cref="ArgumentException">
-        /// <typeparamref name="T"/> 不为非抽象非密封类。</exception>
         Type ProxyType { get; }
 
         /// <summary>

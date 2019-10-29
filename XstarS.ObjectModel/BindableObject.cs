@@ -6,7 +6,7 @@ using System.Runtime.CompilerServices;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 可绑定类型 <see cref="BindableBase"/> 基于字段的抽象基类。
+    /// 提供可绑定类型 <see cref="INotifyPropertyChanged"/> 基于字段的抽象基类。
     /// </summary>
     [Serializable]
     public abstract class BindableObject : BindableBase
@@ -17,7 +17,7 @@ namespace XstarS.ComponentModel
         protected BindableObject() { }
 
         /// <summary>
-        /// 更改属性的值，并引发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。
+        /// 更改属性的值，并引发 <see cref="BindableBase.PropertyChanged"/> 事件。
         /// </summary>
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="field">属性对应的字段。</param>

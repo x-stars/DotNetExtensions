@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Windows.Input;
 
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 表示一个由委托 <see cref="Delegate"/> 定义的命令。
+    /// 表示一个由委托 <see cref="Delegate"/> 定义的命令 <see cref="ICommand"/>。
     /// </summary>
     internal sealed class DelegateCommand : Command
     {

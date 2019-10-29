@@ -4,7 +4,7 @@ using System.ComponentModel;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供可绑定派生类型，并提供创建此派生类型的实例的方法。
+    /// 提供基于 <see cref="INotifyPropertyChanged"/> 的可绑定派生类型，并提供创建此派生类型的实例的方法。
     /// </summary>
     /// <typeparam name="T">原型类型，应为接口或非密封类。</typeparam>
     public interface IBindableFactory<out T> where T : class
@@ -12,9 +12,6 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 可绑定派生类型的 <see cref="Type"/> 对象。
         /// </summary>
-        /// <exception cref="MissingMethodException">
-        /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
-        /// 但未定义公共或保护级别的 <code>void OnPropertyChanged(string)</code> 方法。</exception>
         Type BindableType { get; }
 
         /// <summary>
