@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -14,14 +14,14 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 所有属性的数据存储。
         /// </summary>
-        private readonly Dictionary<string, object> PropertyStorage;
+        private readonly ConcurrentDictionary<string, object> PropertyStorage;
 
         /// <summary>
         /// 初始化 <see cref="BindableStorage"/> 类的新实例。
         /// </summary>
         protected BindableStorage()
         {
-            this.PropertyStorage = new Dictionary<string, object>();
+            this.PropertyStorage = new ConcurrentDictionary<string, object>();
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace XstarS.ComponentModel
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="propertyName">属性的名称，可由编译器自动获取。</param>
         /// <returns>指定属性的值；若不存在或类型不匹配，则为 <see langword="default"/>。</returns>
-        protected T GetValue<T>(
+        protected T GetProperty<T>(
             [CallerMemberName] string propertyName = null)
         {
             return (this[propertyName] is T value) ? value : default(T);
@@ -65,7 +65,7 @@ namespace XstarS.ComponentModel
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="value">属性的新值，一般为 <see langword="value"/>。</param>
         /// <param name="propertyName">属性的名称，可由编译器自动获取。</param>
-        protected void SetValue<T>(T value,
+        protected void SetProperty<T>(T value,
             [CallerMemberName] string propertyName = null)
         {
             this[propertyName] = (object)value;
