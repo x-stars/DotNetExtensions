@@ -7,10 +7,12 @@
     </TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DocumentationFile>obj\XstarS.xml</DocumentationFile>
+    <DocumentationFile>
+      obj\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml
+    </DocumentationFile>
     <Version>1.0.0</Version>
     <Authors>XstarS</Authors>
-    <Description></Description>
+    <Description>$(AssemblyName)</Description>
     <Copyright>Copyright © XstarS 2018-2019</Copyright>
     <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/x-stars/DotNetExtensions</PackageProjectUrl>
