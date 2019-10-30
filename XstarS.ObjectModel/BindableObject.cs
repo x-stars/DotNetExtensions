@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -26,11 +25,8 @@ namespace XstarS.ComponentModel
         protected void SetProperty<T>(ref T field, T value,
             [CallerMemberName] string propertyName = null)
         {
-            if (!EqualityComparer<T>.Default.Equals(field, value))
-            {
-                field = value;
-                this.OnPropertyChanged(propertyName);
-            }
+            field = value;
+            this.OnPropertyChanged(propertyName);
         }
     }
 }

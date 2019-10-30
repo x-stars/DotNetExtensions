@@ -1,9 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供属性的可绑定封装，在属性值更改时通知客户端。
+    /// 提供属性基于 <see cref="INotifyPropertyChanged"/> 的可绑定封装，在属性值更改时通知客户端。
     /// </summary>
     /// <typeparam name="T"><see cref="Bindable{T}"/> 的值的类型。</typeparam>
     [Serializable]

@@ -29,21 +29,20 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="propertyName">属性的名称。</param>
         /// <returns>指定属性的值；若不存在，则为 <see langword="null"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="propertyName"/> 为 <see langword="null"/>。</exception>
         protected object this[string propertyName]
         {
             get
             {
-                return this.PropertyStorage.ContainsKey(propertyName) ?
-                    this.PropertyStorage[propertyName] : null;
+                this.PropertyStorage.TryGetValue(propertyName, out var value);
+                return value;
             }
 
             set
             {
-                if (!object.Equals(this[propertyName], value))
-                {
-                    this.PropertyStorage[propertyName] = value;
-                    this.OnPropertyChanged(propertyName);
-                }
+                this.PropertyStorage[propertyName] = value;
+                this.OnPropertyChanged(propertyName);
             }
         }
 
