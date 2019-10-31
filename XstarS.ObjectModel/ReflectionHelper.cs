@@ -12,7 +12,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 确定当前方法或构造函数是否为程序集外部可继承的实例方法。
         /// </summary>
-        /// <param name="method">要进行检查的 <see cref="MethodInfo"/> 对象。</param>
+        /// <param name="method">要进行检查的 <see cref="MethodBase"/> 对象。</param>
         /// <returns>若 <paramref name="method"/> 是一个程序集外部可继承的实例方法，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
@@ -44,6 +44,24 @@ namespace XstarS.ComponentModel
             }
 
             return method.IsInheritableInstance() && (method.IsVirtual && !method.IsFinal);
+        }
+
+        /// <summary>
+        /// 确定当前属性是否为索引属性，即带索引参数的属性。
+        /// </summary>
+        /// <param name="property">要进行检查的 <see cref="PropertyInfo"/> 对象。</param>
+        /// <returns>若 <paramref name="property"/> 是一个索引属性，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="property"/> 为 <see langword="null"/>。</exception>
+        internal static bool IsIndexProperty(this PropertyInfo property)
+        {
+            if (property is null)
+            {
+                throw new ArgumentNullException(nameof(property));
+            }
+
+            return property.GetIndexParameters().Length != 0;
         }
 
         /// <summary>

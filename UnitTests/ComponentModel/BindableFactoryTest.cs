@@ -1,7 +1,5 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using XstarS.ComponentModel.TestTypes;
@@ -11,18 +9,14 @@ namespace XstarS.ComponentModel
     [TestClass]
     public class BindableFactoryTest
     {
-        private readonly Predicate<PropertyInfo> HasBindableAttribute =
-            prop => prop.GetCustomAttributes(false).Any(
-                attr => (attr is BindableAttribute bAttr) && bAttr.Bindable);
-
         [TestMethod]
         public void BindableType_Singleton_IsThreadSafe()
         {
             int testCount = 10000;
 
-            var providers = new BindableFactory<DisposableBinding<object>>[testCount];
+            var providers = new BindableFactory<DisposableBindingValue<object>>[testCount];
             Parallel.For(0, testCount,
-                index => providers[index] = BindableFactory<DisposableBinding<object>>.Default);
+                index => providers[index] = BindableFactory<DisposableBindingValue<object>>.Default);
             Assert.IsTrue(providers.All(
                 provider => object.ReferenceEquals(provider, providers[0])));
             Assert.IsTrue(providers.All(
@@ -33,20 +27,20 @@ namespace XstarS.ComponentModel
         public void BindableType_InternalType_ThrowsException()
         {
             Assert.ThrowsException<ArgumentException>(
-                () => BindableFactory<IInternalDisposableBinding<int>>.Default.BindableType);
+                () => BindableFactory<IInternalDisposableBindingValue<int>>.Default.BindableType);
             Assert.ThrowsException<ArgumentException>(
-                () => BindableFactory<InternalDisposableBinding<string>>.Default.BindableType);
+                () => BindableFactory<InternalDisposableBindingValue<string>>.Default.BindableType);
         }
 
         [TestMethod]
         public void BindableType_SealedClass_ThrowsException()
         {
             Assert.ThrowsException<ArgumentException>(
-                () => BindableFactory<SealedDisposableBinding<string>>.Default.BindableType);
+                () => BindableFactory<SealedDisposableBindingValue<string>>.Default.BindableType);
         }
 
         [TestMethod]
-        public void BindableType_NonAbstractEventButNoOnPropertyChangedMethod_ThrowsException()
+        public void BindableType_NoOnPropertyChangedMethod_ThrowsException()
         {
             Assert.ThrowsException<MissingMethodException>(
                 () => BindableFactory<BadDisposableBindingBase<object>>.Default.BindableType);
@@ -56,68 +50,68 @@ namespace XstarS.ComponentModel
         public void CreateInstance_InterfaceAndClass_ReturnsInstance()
         {
             Assert.IsNotNull(BindableFactory<IDisposableNotifyPropertyChanged>.Default.CreateInstance());
-            Assert.IsNotNull(BindableFactory<IDisposableBinding<int>>.Default.CreateInstance());
-            Assert.IsNotNull(BindableFactory<DisposableBindingBase<object>>.Default.CreateInstance());
-            Assert.IsNotNull(BindableFactory<DisposableBinding<int>>.Default.CreateInstance(1, 2));
+            Assert.IsNotNull(BindableFactory<IDisposableBindingValue<int>>.Default.CreateInstance());
+            Assert.IsNotNull(BindableFactory<DisposableBindingValueBase<object>>.Default.CreateInstance());
+            Assert.IsNotNull(BindableFactory<DisposableBindingValue<int>>.Default.CreateInstance(1));
         }
 
         [TestMethod]
         public void CreateInstance_InterfaceWithMethod_ThrowsWhenCallMethod()
         {
-            var o = BindableFactory<IDisposableBinding<object>>.Default.CreateInstance();
+            var o = BindableFactory<IDisposableBindingValue<object>>.Default.CreateInstance();
             Assert.ThrowsException<NotImplementedException>(() => o.Dispose());
         }
 
         [TestMethod]
-        public void CreateInstance_ClassWithAbstractIndexer_ThrowsWhenCallIndexer()
+        public void CreateInstance_ClassWithAbstractMethod_ThrowsWhenCallMethod()
         {
-            var o = BindableFactory<IndexedDisposableBindingBase<double>>.Default.CreateInstance();
-            Assert.ThrowsException<NotImplementedException>(() => o[0]);
-            Assert.ThrowsException<NotImplementedException>(() => o[0] = 0D);
+            var o = BindableFactory<DisposableBindingValueBase<object>>.Default.CreateInstance();
+            Assert.ThrowsException<NotImplementedException>(() => o.Load(new CloneableList<object>()));
         }
 
         [TestMethod]
         public void CreateInstance_ClassWithMethod_WorksProperly()
         {
-            object i1 = new object(), i2 = new object(), i3 = new object(), i4 = new object();
-            var o = BindableFactory<DisposableBinding<object>>.Custom(
-                this.HasBindableAttribute).CreateInstance(i1, i2);
-            var l = new CloneableList<object>() { i3, i4 };
+            object i1 = new object(), i2 = new object();
+            var o = BindableFactory<DisposableBindingValue<object>>.Default.CreateInstance(i1);
+            var l = new CloneableList<object>() { i2 };
             Assert.AreSame(o.Value, i1);
-            Assert.AreSame(o.BindableValue, i2);
             o.Load(l);
-            Assert.AreSame(o.Value, i3);
-            Assert.AreSame(o.BindableValue, i4);
+            Assert.AreSame(o.Value, i2);
         }
 
         [TestMethod]
-        public void PropertyChanged_Default_CallsHandlerTwice()
+        public void PropertyChanged_AbstractProperty_CallsHandler()
         {
             int i = 0;
-            var o = BindableFactory<DisposableBindingBase<int>>.Default.CreateInstance();
+            var o = BindableFactory<DisposableBindingValueBase<int>>.Default.CreateInstance();
             o.PropertyChanged += (sender, e) => i++;
-            o.Value++; o.BindableValue++;
-            Assert.AreEqual(i, 2);
-        }
-
-        [TestMethod]
-        public void PropertyChanged_BindableOnly_CallsHandlerOnce()
-        {
-            int i = 0;
-            var o = BindableFactory<DisposableBindingBase<int>>.Custom(
-                this.HasBindableAttribute).CreateInstance();
-            o.PropertyChanged += (sender, e) => i++;
-            o.Value++; o.BindableValue++;
+            o.Value++;
             Assert.AreEqual(i, 1);
         }
 
         [TestMethod]
-        public void PropertyChanged_NonOverridableProperty_CallsHandlerZeroTimes()
+        public void CreateInstance_VirtualIndexProperty_CallsHandler()
         {
             int i = 0;
-            var o = BindableFactory<NonOverridableDisposableBinding<int>>.Default.CreateInstance(0, 0);
+            var o = BindableFactory<IndexedDisposableBindingValueBase<double>>.Default.CreateInstance();
             o.PropertyChanged += (sender, e) => i++;
-            o.Value++; o.BindableValue++;
+            o[0] = 0D;
+            Assert.AreEqual(o[0], 0D);
+            Assert.AreEqual(o.Value, 0D);
+            o[0] = 1D;
+            Assert.AreEqual(o[0], 1D);
+            Assert.AreEqual(o.Value, 1D);
+            Assert.AreEqual(i, 4);
+        }
+
+        [TestMethod]
+        public void PropertyChanged_SealedProperty_NotCallsHandler()
+        {
+            int i = 0;
+            var o = BindableFactory<DisposableSealedBindingValue<int>>.Default.CreateInstance(0);
+            o.PropertyChanged += (sender, e) => i++;
+            o.Value++;
             Assert.AreEqual(i, 0);
         }
     }

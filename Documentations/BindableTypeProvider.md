@@ -1,6 +1,6 @@
 ﻿# 数据绑定类型提供对象
 
-本文叙述了以原型类型为基础，自动构造可用于数据绑定的类型的 `XstarS.ComponentModel.IBindableFactory<out T>` 的实现原理和整体思路。
+本文叙述了以原型类型为基础，自动构造可用于数据绑定的类型的 `XstarS.ComponentModel.BindableTypeProvider` 的实现原理和整体思路。
 
 ## 数据绑定与 `INotifyPropertyChanged` 接口
 
@@ -68,7 +68,7 @@ using System.Runtime.CompilerServices;
 
 public class BindingData : INotifyPropertyChanged
 {
-    // Other members.
+    // Event and On-Event method.
 
     protected void SetProperty<T>(ref T item, T value,
         [CallerMemberName] string propertyName = null)
@@ -157,7 +157,7 @@ public class Properties
 | 生成速度 | 需要编译，稍慢             | 无需编译，较快             |
 | 技术难度 | 使用编程语言实现，较低     | 需要掌握 IL 汇编指令，较高 |
 
-`IBindableFactory<out T>` 最终采用了 Emit 技术，原因如下：
+`BindableTypeProvider` 最终采用了 Emit 技术，原因如下：
 
 * 生成的类型基于原型类型，有大量特性需要反射获取：
   * 将这些特性转换为特定于语言（C#）的特性的工作量较大；
@@ -194,40 +194,6 @@ public class Properties
 > * 以上特性均指 IL 汇编中的特性而非 C# 中的修饰符。
 > * 接口中的所有成员均为 `abstract` 且 `virtual`，尽管在 C# 中并无此修饰符。
 
-#### 工程结构设计
-
-为便于与反射框架协作，此处分别定义了泛型和非泛型的实现，并将共通的代码定义为一个抽象类。
-整体设计参照 `System.Collection.Generic.EqualityComparer<T>` 模式设计如下（命名空间 `XstarS.ComponentModel`）：
-
-* `IBindableFactory<out T>`
-* `BindableFactoryBase<T>`
-  * `BindableFactory`
-  * `BindableFactory<T>`
-
-其中：
-
-* `IBindableFactory<out T>` 作为公共接口。
-* `BindableFactoryBase<T>` 实现 `IBindableFactory<out T>`接口，提供基类实现。
-* `BindableFactory` 继承 `BindableFactoryBase<System.Object>` 类，提供非泛型实现。
-* `BindableFactory<T>` 继承 `BindableFactoryBase<T>` 类，提供泛型实现。
-
-#### 接口设计
-
-``` CSharp
-using System;
-using System.ComponentModel;
-
-namespace XstarS.ComponentModel
-{
-    public interface IBindableFactory<out T> where T : class
-    {
-        Type BindableType { get; }
-        T CreateInstance();
-        T CreateInstance(params object[] args);
-    }
-}
-```
-
 #### 类型定义
 
 .NET 中动态定义的类型包含在一个动态程序集 (Assembly) 中，若生成文件，即为一个 *.dll 或 *.exe 文件。
@@ -239,6 +205,11 @@ namespace XstarS.ComponentModel
 
 > 反射发出 Emit 的基础教程可参考微软提供的文档：[发出动态方法和程序集](https://docs.microsoft.com/zh-cn/dotnet/framework/reflection-and-codedom/emitting-dynamic-methods-and-assemblies)。
 
-#### 具体设计
+#### 具体实现
 
-整个数据绑定类型构造器的具体设计请参见 [XstarS.ComponentModel.Bindable](../XstarS.ComponentModel.Bindable) 工程源代码，此处不再详述。
+相关类型：
+
+* `BindableTypeProvider`: 从原型类型构造数据绑定类型。
+* `BindableFactory<T>`: 提供创建数据绑定类型的实例的方法。
+
+具体实现请参见 [XstarS.ObjectModel](../XstarS.ObjectModel) 工程源代码，此处不再详述。
