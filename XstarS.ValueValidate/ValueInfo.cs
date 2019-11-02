@@ -7,7 +7,7 @@ namespace XstarS
     /// </summary>
     /// <typeparam name="T">待验证的对象的类型。</typeparam>
     [Serializable]
-    internal class ValueInfo<T> : IValueInfo<T>
+    internal sealed class ValueInfo<T> : IValueInfo<T>
     {
         /// <summary>
         /// 使用对象的值和名称初始化 <see cref="ValueInfo{T}"/> 结构的新实例。
