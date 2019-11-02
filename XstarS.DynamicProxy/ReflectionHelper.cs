@@ -12,7 +12,7 @@ namespace XstarS.Reflection
         /// <summary>
         /// 确定当前方法或构造函数是否为程序集外部可继承的实例方法。
         /// </summary>
-        /// <param name="method">要进行检查的 <see cref="MethodInfo"/> 对象。</param>
+        /// <param name="method">要进行检查的 <see cref="MethodBase"/> 对象。</param>
         /// <returns>若 <paramref name="method"/> 是一个程序集外部可继承的实例方法，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">

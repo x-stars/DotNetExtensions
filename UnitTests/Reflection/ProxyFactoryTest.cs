@@ -9,7 +9,8 @@ namespace XstarS.Reflection
         [TestMethod]
         public void CreateInstance_SimpleClass_WorksProperly()
         {
-            var o = ProxyFactory<ProxyBinding<int>>.Default.CreateInstance(0);
+            var o = ProxyFactory<ProxyBinding<int>>.WithHandler(
+                TestInvokeHandlers.ProxyBindingInvokeHandler).CreateInstance(0);
             int i = 0;
             o.PropertyChanged += (sender, e) => i++;
             for (int j = 0; j < 1000; j++) { o.Value++; }
@@ -21,7 +22,8 @@ namespace XstarS.Reflection
         [TestMethod]
         public void CreateInstance_ComplexClass_WorksProperly()
         {
-            var o = ProxyFactory<ProxyCollection<int>>.Default.CreateInstance();
+            var o = ProxyFactory<ProxyCollection<int>>.WithHandler(
+                TestInvokeHandlers.ProxyCollectionInvokeHandler).CreateInstance();
             for (int j = 0; j < 1000; j++) { o.Add(j); }
             Assert.AreEqual(o.Count, 1000);
         }
@@ -29,14 +31,16 @@ namespace XstarS.Reflection
         [TestMethod]
         public void CreateInstance_AbstractClass_WorksProperly()
         {
-            var o = ProxyFactory<ProxyEqualityComparer<object>>.Default.CreateInstance();
+            var o = ProxyFactory<ProxyEqualityComparer<object>>.WithHandler(
+                TestInvokeHandlers.ProxyEqualityComparerInvokeHandler).CreateInstance();
             Assert.IsFalse(o.Equals(0, 0));
         }
 
         [TestMethod]
         public void CreateInstance_Interface_WorksProperly()
         {
-            var o = ProxyFactory<IProxyList<object>>.Default.CreateInstance();
+            var o = ProxyFactory<IProxyList<object>>.WithHandler(
+                TestInvokeHandlers.IProxyListInvokeHandler).CreateInstance();
             Assert.AreEqual(o.Count, 0);
         }
     }

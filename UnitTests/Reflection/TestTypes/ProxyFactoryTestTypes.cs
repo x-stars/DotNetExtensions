@@ -2,68 +2,51 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace XstarS.Reflection.TestTypes
 {
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = false)]
-    public class NotifyPropertyChangedOnPropertyInvokeAttribute : OnMemberInvokeAttribute
+    internal static class TestInvokeHandlers
     {
-        public NotifyPropertyChangedOnPropertyInvokeAttribute() { }
+        internal static readonly ProxyInvokeHandler ProxyBindingInvokeHandler =
+            delegate (ProxyInvokeInfo info)
+            {
+                Console.WriteLine(string.Join(", ", info.Arguments));
+                var result = info.BaseDelegate.Invoke(info.Instance, info.Arguments);
+                if (info.Method.IsSpecialName && info.Method.Name.StartsWith("set_"))
+                {
+                    ((NotifyPropertyChanged)info.Instance).OnPropertyChanged(
+                        info.Method.Name.Substring("set_".Length));
+                }
+                Console.WriteLine(result);
+                return result;
+            };
 
-        public override object Invoke(MethodInvoker invoker, object target,
-            MethodInfo method, Type[] genericArguments, object[] arguments)
-        {
-            var result = base.Invoke(invoker, target, method, genericArguments, arguments);
-            ((NotifyPropertyChanged)target).OnPropertyChanged(method.Name.Substring("set_".Length));
-            return result;
-        }
+        internal static readonly ProxyInvokeHandler ProxyCollectionInvokeHandler =
+            delegate (ProxyInvokeInfo info)
+            {
+                Console.WriteLine($"{info.Instance.GetType()}#" +
+                    $"{RuntimeHelpers.GetHashCode(info.Instance)}.[{info.Method.ToString()}]");
+                return info.BaseDelegate.Invoke(info.Instance, info.Arguments);
+            };
 
-        public override bool FilterMethod(MethodInfo method) => method.IsSpecialName &&
-            method.Name.StartsWith("set_") && (method.GetParameters().Length == 1);
-    }
+        internal static readonly ProxyInvokeHandler ProxyEqualityComparerInvokeHandler =
+            delegate (ProxyInvokeInfo info)
+            {
+                Console.WriteLine($"{info.Instance.GetType()}#" +
+                    $"{RuntimeHelpers.GetHashCode(info.Instance)}.[{info.Method.ToString()}]");
+                return (info.Method.ReturnType.IsValueType && (info.Method.ReturnType != typeof(void))) ?
+                    Activator.CreateInstance(info.Method.ReturnType) : null;
+            };
 
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = true, Inherited = false)]
-    public class WriteArugmentsAndResultOnMethodInvokeAttribute : OnMethodInvokeAttribute
-    {
-        public WriteArugmentsAndResultOnMethodInvokeAttribute() { }
-
-        public override object Invoke(MethodInvoker invoker, object target,
-            MethodInfo method, Type[] genericArguments, object[] arguments)
-        {
-            Console.WriteLine(string.Join(",", arguments));
-            var reuslt = base.Invoke(invoker, target, method, genericArguments, arguments);
-            Console.WriteLine(reuslt);
-            return reuslt;
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = false)]
-    public class WriteTypeRefMethodOnMemberInvokeAttribute : OnMemberInvokeAttribute
-    {
-        public WriteTypeRefMethodOnMemberInvokeAttribute() { }
-
-        public override object Invoke(MethodInvoker invoker, object target,
-            MethodInfo method, Type[] genericArguments, object[] arguments)
-        {
-            Console.WriteLine($"{target.GetType()}#{RuntimeHelpers.GetHashCode(target)}.[{method.ToString()}]");
-            return base.Invoke(invoker, target, method, genericArguments, arguments);
-        }
-    }
-
-    [AttributeUsage(AttributeTargets.Class | AttributeTargets.Interface, AllowMultiple = true, Inherited = false)]
-    public class WriteTypeRefMethodAndReturnsDefaultOnMemberInvokeAttribute : OnMemberInvokeAttribute
-    {
-        public WriteTypeRefMethodAndReturnsDefaultOnMemberInvokeAttribute() { }
-
-        public override object Invoke(MethodInvoker invoker, object target,
-            MethodInfo method, Type[] genericArguments, object[] arguments)
-        {
-            Console.WriteLine($"{target.GetType()}#{RuntimeHelpers.GetHashCode(target)}.[{method.ToString()}]");
-            return (method.ReturnType.IsValueType && (method.ReturnType != typeof(void))) ?
-                Activator.CreateInstance(method.ReturnType) : null;
-        }
+        internal static readonly ProxyInvokeHandler IProxyListInvokeHandler =
+            delegate (ProxyInvokeInfo info)
+            {
+                Console.WriteLine($"{info.Instance.GetType()}#" +
+                    $"{RuntimeHelpers.GetHashCode(info.Instance)}.[{info.Method.ToString()}]");
+                return (info.Method.ReturnType.IsValueType && (info.Method.ReturnType != typeof(void))) ?
+                    Activator.CreateInstance(info.Method.ReturnType) : null;
+            };
     }
 
     public abstract class NotifyPropertyChanged : INotifyPropertyChanged
@@ -72,11 +55,10 @@ namespace XstarS.Reflection.TestTypes
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        internal protected virtual void OnPropertyChanged(string propertyName) =>
+        protected internal virtual void OnPropertyChanged(string propertyName) =>
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    [NotifyPropertyChangedOnPropertyInvoke]
     public class ProxyBinding<T> : NotifyPropertyChanged
     {
         public ProxyBinding() { }
@@ -88,11 +70,9 @@ namespace XstarS.Reflection.TestTypes
 
         public virtual T Value { get; set; }
 
-        [WriteArugmentsAndResultOnMethodInvoke]
         public virtual TU Function<TU>(TU value) => value;
     }
 
-    [WriteTypeRefMethodOnMemberInvoke]
     public class ProxyCollection<T> : Collection<T>
     {
         public ProxyCollection() { }
@@ -100,12 +80,12 @@ namespace XstarS.Reflection.TestTypes
         public ProxyCollection(IList<T> list) : base(list) { }
     }
 
-    [WriteTypeRefMethodAndReturnsDefaultOnMemberInvoke]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Microsoft.Design", "CA1012:AbstractTypesShouldNotHaveConstructors")]
     public abstract class ProxyEqualityComparer<T> : EqualityComparer<T>
     {
         public ProxyEqualityComparer() { }
     }
 
-    [WriteTypeRefMethodAndReturnsDefaultOnMemberInvoke]
     public interface IProxyList<T> : IList<T> { }
 }

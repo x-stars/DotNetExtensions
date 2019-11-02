@@ -71,18 +71,17 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 以指定的构造函数为基础，定义仅调用指定构造函数的构造函数，并添加到当前类型。
+        /// 以指定的构造函数为基础，定义仅调用此构造函数的构造函数，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义构造函数的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseConstructor">作为基础的构造函数的定义。</param>
-        /// <returns>定义完成的构造函数，仅调用 <paramref name="baseConstructor"/> 构造函数。</returns>
+        /// <returns>定义完成的构造函数，调用 <paramref name="baseConstructor"/> 构造函数。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseConstructor"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static ConstructorBuilder DefineDefaultConstructor(
+        internal static ConstructorBuilder DefineBaseInvokeConstructor(
             this TypeBuilder type, ConstructorInfo baseConstructor)
         {
-            // 参数检查。
             if (type is null)
             {
                 throw new ArgumentNullException(nameof(type));
@@ -97,7 +96,6 @@ namespace XstarS.Reflection
                     new ArgumentException().Message, nameof(baseConstructor));
             }
 
-            // 定义构造函数。
             var baseParameters = baseConstructor.GetParameters();
             var baseAttributes = baseConstructor.Attributes;
             var constructor = type.DefineConstructor(
@@ -128,18 +126,17 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 以指定的基类方法为基础，定义仅调用基类方法的新方法（签名不同），并添加到当前类型。
+        /// 以指定的基类方法为基础，定义调用基类方法的新方法，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
-        /// <param name="baseMethod">作为基础的基类方法的定义。</param>
-        /// <returns>定义完成的签名不同的新方法，仅调用 <paramref name="baseMethod"/> 方法。</returns>
+        /// <param name="baseMethod">作为基础的基类方法。</param>
+        /// <returns>定义的新方法，调用 <paramref name="baseMethod"/> 方法。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static MethodBuilder DefineBaseAccessMethod(
+        internal static MethodBuilder DefineBaseInvokeMethod(
             this TypeBuilder type, MethodInfo baseMethod)
         {
-            // 参数检查。
             if (type is null)
             {
                 throw new ArgumentNullException(nameof(type));
@@ -154,19 +151,18 @@ namespace XstarS.Reflection
                     new ArgumentException().Message, nameof(baseMethod));
             }
 
-            // 定义方法。
             var baseGenericParams = baseMethod.GetGenericArguments();
             var baseReturnParam = baseMethod.ReturnParameter;
             var baseParameters = baseMethod.GetParameters();
-            var accessMethod = type.DefineMethod(
-                $"<{baseMethod.DeclaringType.ToString()}>{baseMethod.Name}",
-                MethodAttributes.Family | MethodAttributes.HideBySig,
+            var method = type.DefineMethod($"<Base>" +
+                $"{baseMethod.Name}#{baseMethod.MethodHandle.Value.ToString()}",
+                MethodAttributes.Assembly | MethodAttributes.HideBySig,
                 baseReturnParam.ParameterType,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));
-            // 泛型参数。
+
             var genericParams = (baseGenericParams.Length == 0) ?
                 Array.Empty<GenericTypeParameterBuilder>() :
-                accessMethod.DefineGenericParameters(
+                method.DefineGenericParameters(
                     Array.ConvertAll(baseGenericParams, param => param.Name));
             for (int i = 0; i < baseGenericParams.Length; i++)
             {
@@ -188,20 +184,20 @@ namespace XstarS.Reflection
                     genericParam.SetInterfaceConstraints(interfaceConstraints);
                 }
             }
-            // 普通参数。
-            var returnParam = accessMethod.DefineParameter(0, baseReturnParam.Attributes, null);
+
+            var returnParam = method.DefineParameter(0, baseReturnParam.Attributes, null);
             for (int i = 0; i < baseParameters.Length; i++)
             {
                 var baseParameter = baseParameters[i];
-                var parameter = accessMethod.DefineParameter(
+                var parameter = method.DefineParameter(
                     i + 1, baseParameter.Attributes, baseParameter.Name);
                 if (baseParameter.HasDefaultValue)
                 {
                     parameter.SetConstant(baseParameter.DefaultValue);
                 }
             }
-            // 生成 IL 代码。
-            var ilGen = accessMethod.GetILGenerator();
+
+            var ilGen = method.GetILGenerator();
             {
                 ilGen.Emit(OpCodes.Ldarg_0);
                 for (int i = 0; i < baseParameters.Length; i++)
@@ -218,27 +214,26 @@ namespace XstarS.Reflection
                 {
                     ilGen.Emit(OpCodes.Call,
                         (baseGenericParams.Length == 0) ? baseMethod :
-                        baseMethod.MakeGenericMethod(accessMethod.GetGenericArguments()));
+                        baseMethod.MakeGenericMethod(method.GetGenericArguments()));
                     ilGen.Emit(OpCodes.Ret);
                 }
             }
 
-            return accessMethod;
+            return method;
         }
 
         /// <summary>
-        /// 以指定的基类方法为基础，定义仅调用基类方法的重写方法，并添加到当前类型。
+        /// 以指定的基类方法为基础，定义调用基类方法的重写方法，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
-        /// <param name="baseMethod">作为基础的基类方法的定义。</param>
-        /// <returns>定义完成的重写方法，仅调用 <paramref name="baseMethod"/> 方法。</returns>
+        /// <param name="baseMethod">作为基础的基类方法。</param>
+        /// <returns>定义的重写方法，调用 <paramref name="baseMethod"/> 方法。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的访问级别不为公共或保护，或不可重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static MethodBuilder DefineDefaultOverrideMethod(
+        internal static MethodBuilder DefineBaseInvokeMethodOverride(
             this TypeBuilder type, MethodInfo baseMethod)
         {
-            // 参数检查。
             if (type is null)
             {
                 throw new ArgumentNullException(nameof(type));
@@ -253,22 +248,20 @@ namespace XstarS.Reflection
                     new ArgumentException().Message, nameof(baseMethod));
             }
 
-            bool newSlot = baseMethod.DeclaringType.IsInterface;
-
-            // 定义方法。
+            var baseInInterface = baseMethod.DeclaringType.IsInterface;
             var baseAttributes = baseMethod.Attributes;
             var baseGenericParams = baseMethod.GetGenericArguments();
             var baseReturnParam = baseMethod.ReturnParameter;
             var baseParameters = baseMethod.GetParameters();
             var attributes = baseAttributes & ~MethodAttributes.Abstract;
-            if (!newSlot) { attributes &= ~MethodAttributes.NewSlot; }
-            var overrideMethod = type.DefineMethod(baseMethod.Name,
+            if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
+            var method = type.DefineMethod(baseMethod.Name,
                 attributes, baseReturnParam.ParameterType,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));
-            // 泛型参数。
+
             var genericParams = (baseGenericParams.Length == 0) ?
                 Array.Empty<GenericTypeParameterBuilder>() :
-                overrideMethod.DefineGenericParameters(
+                method.DefineGenericParameters(
                     Array.ConvertAll(baseGenericParams, param => param.Name));
             for (int i = 0; i < baseGenericParams.Length; i++)
             {
@@ -290,20 +283,20 @@ namespace XstarS.Reflection
                     genericParam.SetInterfaceConstraints(interfaceConstraints);
                 }
             }
-            // 普通参数。
-            var returnParam = overrideMethod.DefineParameter(0, baseReturnParam.Attributes, null);
+
+            var returnParam = method.DefineParameter(0, baseReturnParam.Attributes, null);
             for (int i = 0; i < baseParameters.Length; i++)
             {
                 var baseParameter = baseParameters[i];
-                var parameter = overrideMethod.DefineParameter(
+                var parameter = method.DefineParameter(
                     i + 1, baseParameter.Attributes, baseParameter.Name);
                 if (baseParameter.HasDefaultValue)
                 {
                     parameter.SetConstant(baseParameter.DefaultValue);
                 }
             }
-            // 生成 IL 代码。
-            var ilGen = overrideMethod.GetILGenerator();
+
+            var ilGen = method.GetILGenerator();
             {
                 ilGen.Emit(OpCodes.Ldarg_0);
                 for (int i = 0; i < baseParameters.Length; i++)
@@ -325,7 +318,7 @@ namespace XstarS.Reflection
                 }
             }
 
-            return overrideMethod;
+            return method;
         }
     }
 }
