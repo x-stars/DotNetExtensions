@@ -20,7 +20,7 @@ namespace XstarS.ComponentModel
             new ConcurrentDictionary<Type, Lazy<BindableTypeProvider>>();
 
         /// <summary>
-        /// <see cref="BindableTypeProvider.BindableType"/> 的延迟初始化对象。
+        /// <see cref="BindableTypeProvider.BindableType"/> 的延迟初始化值。
         /// </summary>
         private readonly Lazy<Type> LazyBindableType;
 
@@ -173,46 +173,47 @@ namespace XstarS.ComponentModel
             var baseType = this.BaseType;
             var type = this.BindableTypeBuilder;
 
-            var baseEventPropertyChanged =
+            var baseEvent =
                 baseType.GetInterfaces().Contains(typeof(INotifyPropertyChanged)) ?
                 baseType.GetAccessibleEvents().Where(@event =>
                 @event.Name == nameof(INotifyPropertyChanged.PropertyChanged) &&
                 @event.EventHandlerType == typeof(PropertyChangedEventHandler)).FirstOrDefault() :
                 typeof(INotifyPropertyChanged).GetEvent(nameof(INotifyPropertyChanged.PropertyChanged));
 
-            if (baseEventPropertyChanged?.AddMethod.IsAbstract == true)
+            if (baseEvent?.AddMethod.IsAbstract == true)
             {
-                var fieldPropertyChanged = type.DefineDefaultEventOverride(baseEventPropertyChanged).Value;
-                var methodOnPropertyChanged = type.DefineMethod("OnPropertyChanged",
+                var field = type.DefineDefaultEventOverride(baseEvent).Value;
+
+                var method = type.DefineMethod("OnPropertyChanged",
                     MethodAttributes.Family | MethodAttributes.Virtual |
                     MethodAttributes.HideBySig | MethodAttributes.NewSlot,
                     typeof(void), new[] { typeof(string) });
-                methodOnPropertyChanged.DefineParameter(1, ParameterAttributes.None, "propertyName");
-                var ilGen = methodOnPropertyChanged.GetILGenerator();
-                {
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    ilGen.Emit(OpCodes.Ldfld, fieldPropertyChanged);
-                    ilGen.Emit(OpCodes.Dup);
-                    var labelInvoke = ilGen.DefineLabel();
-                    ilGen.Emit(OpCodes.Brtrue_S, labelInvoke);
-                    ilGen.Emit(OpCodes.Pop);
-                    ilGen.Emit(OpCodes.Ret);
-                    ilGen.MarkLabel(labelInvoke);
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    ilGen.Emit(OpCodes.Ldarg_1);
-                    ilGen.Emit(OpCodes.Newobj,
-                        typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) }));
-                    ilGen.Emit(OpCodes.Callvirt, typeof(PropertyChangedEventHandler).GetMethod(
-                        nameof(PropertyChangedEventHandler.Invoke),
-                        new[] { typeof(object), typeof(PropertyChangedEventArgs) }));
-                    ilGen.Emit(OpCodes.Ret);
-                }
 
-                this.OnPropertyChangedMethod = methodOnPropertyChanged;
+                method.DefineParameter(1, ParameterAttributes.None, "propertyName");
+
+                var il = method.GetILGenerator();
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldfld, field);
+                il.Emit(OpCodes.Dup);
+                var labelInvoke = il.DefineLabel();
+                il.Emit(OpCodes.Brtrue_S, labelInvoke);
+                il.Emit(OpCodes.Pop);
+                il.Emit(OpCodes.Ret);
+                il.MarkLabel(labelInvoke);
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Newobj,
+                    typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) }));
+                il.Emit(OpCodes.Callvirt, typeof(PropertyChangedEventHandler).GetMethod(
+                    nameof(PropertyChangedEventHandler.Invoke),
+                    new[] { typeof(object), typeof(PropertyChangedEventArgs) }));
+                il.Emit(OpCodes.Ret);
+
+                this.OnPropertyChangedMethod = method;
             }
             else
             {
-                var methodOnPropertyChanged =
+                var method =
                     baseType.GetAccessibleMethods().Where(method =>
                     (method.Name == "OnPropertyChanged") &&
                     (method.GetParameters().Length == 1) &&
@@ -220,12 +221,13 @@ namespace XstarS.ComponentModel
                     (method.ReturnType == typeof(void)) &&
                     method.IsInheritableInstance() &&
                     !method.IsAbstract).FirstOrDefault();
-                if (methodOnPropertyChanged is null)
+
+                if (method is null)
                 {
                     throw new MissingMethodException(baseType.ToString(), "OnPropertyChanged");
                 }
 
-                this.OnPropertyChangedMethod = methodOnPropertyChanged;
+                this.OnPropertyChangedMethod = method;
             }
         }
 
@@ -236,7 +238,7 @@ namespace XstarS.ComponentModel
         {
             var baseType = this.BaseType;
             var type = this.BindableTypeBuilder;
-            var methodOnPropertyChanged = this.OnPropertyChangedMethod;
+            var onPropertyChangedMethod = this.OnPropertyChangedMethod;
 
             foreach (var baseProperty in baseType.GetAccessibleProperties().Where(
                 property => property.GetAccessors(true).All(accessor => accessor.IsInheritableInstance())))
@@ -251,12 +253,12 @@ namespace XstarS.ComponentModel
                         }
                         else
                         {
-                            type.DefineAutoBindablePropertyOverride(baseProperty, methodOnPropertyChanged);
+                            type.DefineAutoBindablePropertyOverride(baseProperty, onPropertyChangedMethod);
                         }
                     }
                     else
                     {
-                        type.DefineBaseBindablePropertyOverride(baseProperty, methodOnPropertyChanged);
+                        type.DefineBaseBindablePropertyOverride(baseProperty, onPropertyChangedMethod);
                     }
                 }
             }

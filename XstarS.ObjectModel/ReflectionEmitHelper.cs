@@ -16,17 +16,17 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 发出将指定索引处的参数加载到计算堆栈上的指令，并放到当前指令流中。
         /// </summary>
-        /// <param name="ilGen">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
+        /// <param name="il">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
         /// <param name="position">要加载到计算堆栈的参数的索引。</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="ilGen"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="il"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="position"/> 小于 0。</exception>
-        internal static void EmitLdarg(this ILGenerator ilGen, int position)
+        internal static void EmitLdarg(this ILGenerator il, int position)
         {
-            if (ilGen is null)
+            if (il is null)
             {
-                throw new ArgumentNullException(nameof(ilGen));
+                throw new ArgumentNullException(nameof(il));
             }
             if (position < 0)
             {
@@ -35,12 +35,12 @@ namespace XstarS.ComponentModel
 
             switch (position)
             {
-                case 0: ilGen.Emit(OpCodes.Ldarg_0); break;
-                case 1: ilGen.Emit(OpCodes.Ldarg_1); break;
-                case 2: ilGen.Emit(OpCodes.Ldarg_2); break;
-                case 3: ilGen.Emit(OpCodes.Ldarg_3); break;
+                case 0: il.Emit(OpCodes.Ldarg_0); break;
+                case 1: il.Emit(OpCodes.Ldarg_1); break;
+                case 2: il.Emit(OpCodes.Ldarg_2); break;
+                case 3: il.Emit(OpCodes.Ldarg_3); break;
                 default:
-                    ilGen.Emit((position <= byte.MaxValue) ?
+                    il.Emit((position <= byte.MaxValue) ?
                         OpCodes.Ldarg_S : OpCodes.Ldarg, position);
                     break;
             }
@@ -72,42 +72,28 @@ namespace XstarS.ComponentModel
                     new ArgumentException().Message, nameof(baseConstructor));
             }
 
-            var baseParameters = baseConstructor.GetParameters();
             var baseAttributes = baseConstructor.Attributes;
+            var baseParameters = baseConstructor.GetParameters();
+
             var constructor = type.DefineConstructor(
                 baseAttributes, baseConstructor.CallingConvention,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));
+
             for (int i = 0; i < baseParameters.Length; i++)
             {
                 var baseParameter = baseParameters[i];
-                var parameter = constructor.DefineParameter(
-                    i + 1, baseParameter.Attributes, baseParameter.Name);
-                if (baseParameter.HasDefaultValue)
-                {
-                    parameter.SetConstant(baseParameter.DefaultValue);
-                }
+                var parameter = constructor.DefineParameter(i + 1,
+                    baseParameter.Attributes, baseParameter.Name);
             }
-            var ilGen = constructor.GetILGenerator();
+
+            var il = constructor.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            for (int i = 0; i < baseParameters.Length; i++)
             {
-                ilGen.Emit(OpCodes.Ldarg_0);
-                for (int i = 0; i < baseParameters.Length; i++)
-                {
-                    int position = i + 1;
-                    switch (position)
-                    {
-                        case 0: ilGen.Emit(OpCodes.Ldarg_0); break;
-                        case 1: ilGen.Emit(OpCodes.Ldarg_1); break;
-                        case 2: ilGen.Emit(OpCodes.Ldarg_2); break;
-                        case 3: ilGen.Emit(OpCodes.Ldarg_3); break;
-                        default:
-                            ilGen.Emit((position <= byte.MaxValue) ?
-                                OpCodes.Ldarg_S : OpCodes.Ldarg, position);
-                            break;
-                    }
-                }
-                ilGen.Emit(OpCodes.Call, baseConstructor);
-                ilGen.Emit(OpCodes.Ret);
+                il.EmitLdarg(i + 1);
             }
+            il.Emit(OpCodes.Call, baseConstructor);
+            il.Emit(OpCodes.Ret);
 
             return constructor;
         }
@@ -140,11 +126,13 @@ namespace XstarS.ComponentModel
             var property = type.DefineProperty(
                 baseProperty.Name, baseProperty.Attributes, baseProperty.PropertyType,
                 Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
+
             if (baseProperty.CanRead)
             {
                 var method = type.DefineNotImplementedMethodOverride(baseProperty.GetMethod);
                 property.SetGetMethod(method);
             }
+
             if (baseProperty.CanWrite)
             {
                 var method = type.DefineNotImplementedMethodOverride(baseProperty.SetMethod);
@@ -159,14 +147,14 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseProperty">作为基础的属性。</param>
-        /// <param name="methodOnPropertyChanged"><c>void OnPropertyChanged(string)</c> 方法。</param>
+        /// <param name="onPropertyChangedMethod"><c>void OnPropertyChanged(string)</c> 方法。</param>
         /// <returns>定义的可绑定属性，调用 <paramref name="baseProperty"/> 属性，
         /// 并在属性更改时触发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 是抽象属性或无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static PropertyBuilder DefineBaseBindablePropertyOverride(
-            this TypeBuilder type, PropertyInfo baseProperty, MethodInfo methodOnPropertyChanged)
+            this TypeBuilder type, PropertyInfo baseProperty, MethodInfo onPropertyChangedMethod)
         {
             if (type is null)
             {
@@ -176,9 +164,9 @@ namespace XstarS.ComponentModel
             {
                 throw new ArgumentNullException(nameof(baseProperty));
             }
-            if (methodOnPropertyChanged is null)
+            if (onPropertyChangedMethod is null)
             {
-                throw new ArgumentNullException(nameof(methodOnPropertyChanged));
+                throw new ArgumentNullException(nameof(onPropertyChangedMethod));
             }
             if (baseProperty.GetAccessors().All(accessor => accessor.IsAbstract))
             {
@@ -191,7 +179,6 @@ namespace XstarS.ComponentModel
                     new ArgumentException().Message, nameof(baseProperty));
             }
 
-            var baseInInterface = baseProperty.DeclaringType.IsInterface;
             var property = type.DefineProperty(
                 baseProperty.Name, baseProperty.Attributes, baseProperty.PropertyType,
                 Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
@@ -199,65 +186,75 @@ namespace XstarS.ComponentModel
             if (baseProperty.CanRead)
             {
                 var baseMethod = baseProperty.GetMethod;
+                var baseInInterface = baseMethod.DeclaringType.IsInterface;
                 var baseAttributes = baseMethod.Attributes;
                 var baseReturnParam = baseMethod.ReturnParameter;
                 var baseParameters = baseMethod.GetParameters();
                 var attributes = baseAttributes & ~MethodAttributes.Abstract;
                 if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
+
                 var method = type.DefineMethod(baseMethod.Name,
                     attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseMethod.GetParameters(), param => param.ParameterType));
+
+                var returnParam = method.DefineParameter(0,
+                    baseReturnParam.Attributes, baseReturnParam.Name);
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
                     var baseParameter = baseParameters[i];
                     var parameter = method.DefineParameter(i + 1,
-                        baseParameters[i].Attributes, baseParameters[i].Name);
+                        baseParameter.Attributes, baseParameter.Name);
                 }
-                var ilGen = method.GetILGenerator();
+
+                var il = method.GetILGenerator();
+                il.Emit(OpCodes.Ldarg_0);
+                for (int i = 0; i < baseParameters.Length; i++)
                 {
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    for (int i = 0; i < baseParameters.Length; i++)
-                    {
-                        ilGen.EmitLdarg(i + 1);
-                    }
-                    ilGen.Emit(OpCodes.Call, baseProperty.GetMethod);
-                    ilGen.Emit(OpCodes.Ret);
+                    il.EmitLdarg(i + 1);
                 }
+                il.Emit(OpCodes.Call, baseProperty.GetMethod);
+                il.Emit(OpCodes.Ret);
+
                 property.SetGetMethod(method);
             }
 
             if (baseProperty.CanWrite)
             {
                 var baseMethod = baseProperty.SetMethod;
+                var baseInInterface = baseMethod.DeclaringType.IsInterface;
                 var baseAttributes = baseMethod.Attributes;
                 var baseReturnParam = baseMethod.ReturnParameter;
                 var baseParameters = baseMethod.GetParameters();
                 var attributes = baseAttributes & ~MethodAttributes.Abstract;
                 if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
+
                 var method = type.DefineMethod(baseMethod.Name,
                     attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
+
+                var returnParam = method.DefineParameter(0,
+                    baseReturnParam.Attributes, baseReturnParam.Name);
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
                     var baseParameter = baseParameters[i];
                     var parameter = method.DefineParameter(i + 1,
-                        baseParameters[i].Attributes, baseParameters[i].Name);
+                        baseParameter.Attributes, baseParameter.Name);
                 }
-                var ilGen = method.GetILGenerator();
+
+                var il = method.GetILGenerator();
+                il.Emit(OpCodes.Ldarg_0);
+                for (int i = 0; i < baseParameters.Length; i++)
                 {
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    for (int i = 0; i < baseParameters.Length; i++)
-                    {
-                        ilGen.EmitLdarg(i + 1);
-                    }
-                    ilGen.Emit(OpCodes.Call, baseProperty.SetMethod);
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    var propertyName = baseProperty.Name;
-                    if (baseProperty.IsIndexProperty()) { propertyName += "[]"; }
-                    ilGen.Emit(OpCodes.Ldstr, propertyName);
-                    ilGen.Emit(OpCodes.Callvirt, methodOnPropertyChanged);
-                    ilGen.Emit(OpCodes.Ret);
+                    il.EmitLdarg(i + 1);
                 }
+                il.Emit(OpCodes.Call, baseProperty.SetMethod);
+                il.Emit(OpCodes.Ldarg_0);
+                var propertyName = baseProperty.Name;
+                if (baseProperty.IsIndexProperty()) { propertyName += "[]"; }
+                il.Emit(OpCodes.Ldstr, propertyName);
+                il.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
+                il.Emit(OpCodes.Ret);
+
                 property.SetSetMethod(method);
             }
 
@@ -295,63 +292,73 @@ namespace XstarS.ComponentModel
                     new ArgumentException().Message, nameof(baseProperty));
             }
 
-            var baseInInterface = baseProperty.DeclaringType.IsInterface;
             var property = type.DefineProperty(
                 baseProperty.Name, baseProperty.Attributes, baseProperty.PropertyType,
                 Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
+
             var field = type.DefineField(
                 baseProperty.Name, baseProperty.PropertyType, FieldAttributes.Private);
 
             if (baseProperty.CanRead)
             {
                 var baseMethod = baseProperty.GetMethod;
+                var baseInInterface = baseMethod.DeclaringType.IsInterface;
                 var baseAttributes = baseMethod.Attributes;
                 var baseReturnParam = baseMethod.ReturnParameter;
                 var baseParameters = baseMethod.GetParameters();
                 var attributes = baseAttributes & ~MethodAttributes.Abstract;
                 if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
+
                 var method = type.DefineMethod(baseMethod.Name,
                     attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
+
+                var returnParam = method.DefineParameter(0,
+                    baseReturnParam.Attributes, baseReturnParam.Name);
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
                     var baseParameter = baseParameters[i];
                     var parameter = method.DefineParameter(i + 1,
-                        baseParameters[i].Attributes, baseParameters[i].Name);
+                        baseParameter.Attributes, baseParameter.Name);
                 }
-                var ilGen = method.GetILGenerator();
-                {
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    ilGen.Emit(OpCodes.Ldfld, field);
-                    ilGen.Emit(OpCodes.Ret);
-                }
+
+                var il = method.GetILGenerator();
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldfld, field);
+                il.Emit(OpCodes.Ret);
+
                 property.SetGetMethod(method);
             }
 
             if (baseProperty.CanWrite)
             {
                 var baseMethod = baseProperty.SetMethod;
+                var baseInInterface = baseMethod.DeclaringType.IsInterface;
                 var baseAttributes = baseMethod.Attributes;
                 var baseReturnParam = baseMethod.ReturnParameter;
                 var baseParameters = baseMethod.GetParameters();
                 var attributes = baseAttributes & ~MethodAttributes.Abstract;
                 if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
+
                 var method = type.DefineMethod(baseMethod.Name,
                     attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
+
+                var returnParam = method.DefineParameter(0,
+                    baseReturnParam.Attributes, baseReturnParam.Name);
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
                     var baseParameter = baseParameters[i];
                     var parameter = method.DefineParameter(i + 1,
-                        baseParameters[i].Attributes, baseParameters[i].Name);
+                        baseParameter.Attributes, baseParameter.Name);
                 }
-                var ilGen = method.GetILGenerator();
-                {
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    ilGen.Emit(OpCodes.Ldarg_1);
-                    ilGen.Emit(OpCodes.Stfld, field);
-                    ilGen.Emit(OpCodes.Ret);
-                }
+
+                var il = method.GetILGenerator();
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Stfld, field);
+                il.Emit(OpCodes.Ret);
+
                 property.SetSetMethod(method);
             }
 
@@ -363,14 +370,14 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseProperty">作为基础的属性。</param>
-        /// <param name="methodOnPropertyChanged"><c>void OnProperty(string)</c> 方法。</param>
+        /// <param name="onPropertyChangedMethod"><c>void OnProperty(string)</c> 方法。</param>
         /// <returns>定义的可绑定自动属性及其对应的字段，
         /// 在属性更改时触发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 是索引属性或无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static KeyValuePair<PropertyBuilder, FieldBuilder> DefineAutoBindablePropertyOverride(
-            this TypeBuilder type, PropertyInfo baseProperty, MethodInfo methodOnPropertyChanged)
+            this TypeBuilder type, PropertyInfo baseProperty, MethodInfo onPropertyChangedMethod)
         {
             if (type is null)
             {
@@ -380,9 +387,9 @@ namespace XstarS.ComponentModel
             {
                 throw new ArgumentNullException(nameof(baseProperty));
             }
-            if (methodOnPropertyChanged is null)
+            if (onPropertyChangedMethod is null)
             {
-                throw new ArgumentNullException(nameof(methodOnPropertyChanged));
+                throw new ArgumentNullException(nameof(onPropertyChangedMethod));
             }
             if (baseProperty.IsIndexProperty())
             {
@@ -395,66 +402,76 @@ namespace XstarS.ComponentModel
                     new ArgumentException().Message, nameof(baseProperty));
             }
 
-            var baseInInterface = baseProperty.DeclaringType.IsInterface;
             var property = type.DefineProperty(
                 baseProperty.Name, baseProperty.Attributes, baseProperty.PropertyType,
                 Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
+
             var field = type.DefineField(
                 baseProperty.Name, baseProperty.PropertyType, FieldAttributes.Private);
 
             if (baseProperty.CanRead)
             {
                 var baseMethod = baseProperty.GetMethod;
+                var baseInInterface = baseMethod.DeclaringType.IsInterface;
                 var baseAttributes = baseMethod.Attributes;
                 var baseReturnParam = baseMethod.ReturnParameter;
                 var baseParameters = baseMethod.GetParameters();
                 var attributes = baseAttributes & ~MethodAttributes.Abstract;
                 if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
+
                 var method = type.DefineMethod(baseMethod.Name,
                     attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseMethod.GetParameters(), param => param.ParameterType));
+
+                var returnParam = method.DefineParameter(0,
+                    baseReturnParam.Attributes, baseReturnParam.Name);
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
                     var baseParameter = baseParameters[i];
                     var parameter = method.DefineParameter(i + 1,
-                        baseParameters[i].Attributes, baseParameters[i].Name);
+                        baseParameter.Attributes, baseParameter.Name);
                 }
-                var ilGen = method.GetILGenerator();
-                {
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    ilGen.Emit(OpCodes.Ldfld, field);
-                    ilGen.Emit(OpCodes.Ret);
-                }
+
+                var il = method.GetILGenerator();
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldfld, field);
+                il.Emit(OpCodes.Ret);
+
                 property.SetGetMethod(method);
             }
 
             if (baseProperty.CanWrite)
             {
                 var baseMethod = baseProperty.SetMethod;
+                var baseInInterface = baseMethod.DeclaringType.IsInterface;
                 var baseAttributes = baseMethod.Attributes;
                 var baseReturnParam = baseMethod.ReturnParameter;
                 var baseParameters = baseMethod.GetParameters();
                 var attributes = baseAttributes & ~MethodAttributes.Abstract;
                 if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
+
                 var method = type.DefineMethod(baseMethod.Name,
                     attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
+
+                var returnParam = method.DefineParameter(0,
+                    baseReturnParam.Attributes, baseReturnParam.Name);
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
                     var baseParameter = baseParameters[i];
                     var parameter = method.DefineParameter(i + 1,
-                        baseParameters[i].Attributes, baseParameters[i].Name);
+                        baseParameter.Attributes, baseParameter.Name);
                 }
-                var ilGen = method.GetILGenerator();
-                {
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    ilGen.Emit(OpCodes.Ldarg_1);
-                    ilGen.Emit(OpCodes.Stfld, field);
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    ilGen.Emit(OpCodes.Ldstr, baseProperty.Name);
-                    ilGen.Emit(OpCodes.Callvirt, methodOnPropertyChanged);
-                    ilGen.Emit(OpCodes.Ret);
-                }
+
+                var il = method.GetILGenerator();
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Stfld, field);
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldstr, baseProperty.Name);
+                il.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
+                il.Emit(OpCodes.Ret);
+
                 property.SetSetMethod(method);
             }
 
@@ -487,111 +504,122 @@ namespace XstarS.ComponentModel
                     new ArgumentException().Message, nameof(baseEvent));
             }
 
-            var baseInInterface = baseEvent.DeclaringType.IsInterface;
             var eventType = baseEvent.EventHandlerType;
+
             var @event = type.DefineEvent(baseEvent.Name, baseEvent.Attributes, eventType);
+
             var field = type.DefineField(baseEvent.Name, eventType, FieldAttributes.Private);
 
             {
                 var baseMethod = baseEvent.AddMethod;
+                var baseInInterface = baseMethod.DeclaringType.IsInterface;
                 var baseAttributes = baseMethod.Attributes;
                 var baseReturnParam = baseMethod.ReturnParameter;
                 var baseParameters = baseMethod.GetParameters();
                 var attributes = baseAttributes & ~MethodAttributes.Abstract;
                 if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
+
                 var method = type.DefineMethod(baseMethod.Name,
                     attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
+
+                var returnParam = method.DefineParameter(0,
+                    baseReturnParam.Attributes, baseReturnParam.Name);
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
                     var baseParameter = baseParameters[i];
                     var parameter = method.DefineParameter(i + 1,
                         baseParameter.Attributes, baseParameter.Name);
                 }
-                var ilGen = method.GetILGenerator();
-                {
-                    var local0 = ilGen.DeclareLocal(eventType);
-                    var local1 = ilGen.DeclareLocal(eventType);
-                    var local2 = ilGen.DeclareLocal(eventType);
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    ilGen.Emit(OpCodes.Ldfld, field);
-                    ilGen.Emit(OpCodes.Stloc_0);
-                    var labelStart = ilGen.DefineLabel();
-                    ilGen.MarkLabel(labelStart);
-                    ilGen.Emit(OpCodes.Ldloc_0);
-                    ilGen.Emit(OpCodes.Stloc_1);
-                    ilGen.Emit(OpCodes.Ldloc_1);
-                    ilGen.Emit(OpCodes.Ldarg_1);
-                    ilGen.Emit(OpCodes.Call, typeof(Delegate).GetMethod(
-                        nameof(Delegate.Combine),
-                        new[] { typeof(Delegate), typeof(Delegate) }));
-                    ilGen.Emit(OpCodes.Castclass, eventType);
-                    ilGen.Emit(OpCodes.Stloc_2);
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    ilGen.Emit(OpCodes.Ldflda, field);
-                    ilGen.Emit(OpCodes.Ldloc_2);
-                    ilGen.Emit(OpCodes.Ldloc_1);
-                    ilGen.Emit(OpCodes.Call, typeof(Interlocked).GetMethods().Where(
-                        method => method.Name == nameof(Interlocked.CompareExchange) &&
-                        method.IsGenericMethod).First().MakeGenericMethod(eventType));
-                    ilGen.Emit(OpCodes.Stloc_0);
-                    ilGen.Emit(OpCodes.Ldloc_0);
-                    ilGen.Emit(OpCodes.Ldloc_1);
-                    ilGen.Emit(OpCodes.Bne_Un_S, labelStart);
-                    ilGen.Emit(OpCodes.Ret);
-                    @event.SetAddOnMethod(method);
-                }
+
+                var il = method.GetILGenerator();
+                var local0 = il.DeclareLocal(eventType);
+                var local1 = il.DeclareLocal(eventType);
+                var local2 = il.DeclareLocal(eventType);
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldfld, field);
+                il.Emit(OpCodes.Stloc_0);
+                var startLabel = il.DefineLabel();
+                il.MarkLabel(startLabel);
+                il.Emit(OpCodes.Ldloc_0);
+                il.Emit(OpCodes.Stloc_1);
+                il.Emit(OpCodes.Ldloc_1);
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Call, typeof(Delegate).GetMethod(
+                    nameof(Delegate.Combine),
+                    new[] { typeof(Delegate), typeof(Delegate) }));
+                il.Emit(OpCodes.Castclass, eventType);
+                il.Emit(OpCodes.Stloc_2);
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldflda, field);
+                il.Emit(OpCodes.Ldloc_2);
+                il.Emit(OpCodes.Ldloc_1);
+                il.Emit(OpCodes.Call, typeof(Interlocked).GetMethods().Where(
+                    method => method.Name == nameof(Interlocked.CompareExchange) &&
+                    method.IsGenericMethod).First().MakeGenericMethod(eventType));
+                il.Emit(OpCodes.Stloc_0);
+                il.Emit(OpCodes.Ldloc_0);
+                il.Emit(OpCodes.Ldloc_1);
+                il.Emit(OpCodes.Bne_Un_S, startLabel);
+                il.Emit(OpCodes.Ret);
+
+                @event.SetAddOnMethod(method);
             }
 
             {
                 var baseMethod = baseEvent.RemoveMethod;
+                var baseInInterface = baseMethod.DeclaringType.IsInterface;
                 var baseAttributes = baseMethod.Attributes;
                 var baseReturnParam = baseMethod.ReturnParameter;
                 var baseParameters = baseMethod.GetParameters();
                 var attributes = baseAttributes & ~MethodAttributes.Abstract;
                 if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
+
                 var method = type.DefineMethod(baseMethod.Name,
                     attributes, baseReturnParam.ParameterType,
                     Array.ConvertAll(baseParameters, param => param.ParameterType));
+
+                var returnParam = method.DefineParameter(0,
+                    baseReturnParam.Attributes, baseReturnParam.Name);
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
                     var baseParameter = baseParameters[i];
                     var parameter = method.DefineParameter(i + 1,
-                        baseParameters[i].Attributes, baseParameters[i].Name);
+                        baseParameter.Attributes, baseParameter.Name);
                 }
-                var ilGen = method.GetILGenerator();
-                {
-                    var local0 = ilGen.DeclareLocal(eventType);
-                    var local1 = ilGen.DeclareLocal(eventType);
-                    var local2 = ilGen.DeclareLocal(eventType);
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    ilGen.Emit(OpCodes.Ldfld, field);
-                    ilGen.Emit(OpCodes.Stloc_0);
-                    var labelStart = ilGen.DefineLabel();
-                    ilGen.MarkLabel(labelStart);
-                    ilGen.Emit(OpCodes.Ldloc_0);
-                    ilGen.Emit(OpCodes.Stloc_1);
-                    ilGen.Emit(OpCodes.Ldloc_1);
-                    ilGen.Emit(OpCodes.Ldarg_1);
-                    ilGen.Emit(OpCodes.Call, typeof(Delegate).GetMethod(
-                        nameof(Delegate.Remove),
-                        new[] { typeof(Delegate), typeof(Delegate) }));
-                    ilGen.Emit(OpCodes.Castclass, eventType);
-                    ilGen.Emit(OpCodes.Stloc_2);
-                    ilGen.Emit(OpCodes.Ldarg_0);
-                    ilGen.Emit(OpCodes.Ldflda, field);
-                    ilGen.Emit(OpCodes.Ldloc_2);
-                    ilGen.Emit(OpCodes.Ldloc_1);
-                    ilGen.Emit(OpCodes.Call, typeof(Interlocked).GetMethods().Where(
-                        method => method.Name == nameof(Interlocked.CompareExchange) &&
-                        method.IsGenericMethod).First().MakeGenericMethod(eventType));
-                    ilGen.Emit(OpCodes.Stloc_0);
-                    ilGen.Emit(OpCodes.Ldloc_0);
-                    ilGen.Emit(OpCodes.Ldloc_1);
-                    ilGen.Emit(OpCodes.Bne_Un_S, labelStart);
-                    ilGen.Emit(OpCodes.Ret);
-                    @event.SetRemoveOnMethod(method);
-                }
+
+                var il = method.GetILGenerator();
+                var local0 = il.DeclareLocal(eventType);
+                var local1 = il.DeclareLocal(eventType);
+                var local2 = il.DeclareLocal(eventType);
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldfld, field);
+                il.Emit(OpCodes.Stloc_0);
+                var startLabel = il.DefineLabel();
+                il.MarkLabel(startLabel);
+                il.Emit(OpCodes.Ldloc_0);
+                il.Emit(OpCodes.Stloc_1);
+                il.Emit(OpCodes.Ldloc_1);
+                il.Emit(OpCodes.Ldarg_1);
+                il.Emit(OpCodes.Call, typeof(Delegate).GetMethod(
+                    nameof(Delegate.Remove),
+                    new[] { typeof(Delegate), typeof(Delegate) }));
+                il.Emit(OpCodes.Castclass, eventType);
+                il.Emit(OpCodes.Stloc_2);
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Ldflda, field);
+                il.Emit(OpCodes.Ldloc_2);
+                il.Emit(OpCodes.Ldloc_1);
+                il.Emit(OpCodes.Call, typeof(Interlocked).GetMethods().Where(
+                    method => method.Name == nameof(Interlocked.CompareExchange) &&
+                    method.IsGenericMethod).First().MakeGenericMethod(eventType));
+                il.Emit(OpCodes.Stloc_0);
+                il.Emit(OpCodes.Ldloc_0);
+                il.Emit(OpCodes.Ldloc_1);
+                il.Emit(OpCodes.Bne_Un_S, startLabel);
+                il.Emit(OpCodes.Ret);
+
+                @event.SetRemoveOnMethod(method);
             }
 
             return new KeyValuePair<EventBuilder, FieldBuilder>(@event, field);
@@ -630,6 +658,7 @@ namespace XstarS.ComponentModel
             var baseParameters = baseMethod.GetParameters();
             var attributes = baseAttributes & ~MethodAttributes.Abstract;
             if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
+
             var method = type.DefineMethod(baseMethod.Name,
                 attributes, baseReturnParam.ParameterType,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));
@@ -638,32 +667,20 @@ namespace XstarS.ComponentModel
                 Array.Empty<GenericTypeParameterBuilder>() :
                 method.DefineGenericParameters(
                     Array.ConvertAll(baseGenericParams, param => param.Name));
-            for (int i = 0; i < baseGenericParams.Length; i++)
-            {
-                var baseGenericParam = baseGenericParams[i];
-                var genericParam = genericParams[i];
-                genericParam.SetGenericParameterAttributes(
-                    baseGenericParam.GenericParameterAttributes);
-            }
 
-            var returnParam = method.DefineParameter(0, baseReturnParam.Attributes, null);
+            var returnParam = method.DefineParameter(0,
+                baseReturnParam.Attributes, baseReturnParam.Name);
             for (int i = 0; i < baseParameters.Length; i++)
             {
                 var baseParameter = baseParameters[i];
-                var parameter = method.DefineParameter(
-                    i + 1, baseParameter.Attributes, baseParameter.Name);
-                if (baseParameter.HasDefaultValue)
-                {
-                    parameter.SetConstant(baseParameter.DefaultValue);
-                }
+                var parameter = method.DefineParameter(i + 1,
+                    baseParameter.Attributes, baseParameter.Name);
             }
 
-            var ilGen = method.GetILGenerator();
-            {
-                ilGen.Emit(OpCodes.Newobj,
-                    typeof(NotImplementedException).GetConstructor(Type.EmptyTypes));
-                ilGen.Emit(OpCodes.Throw);
-            }
+            var il = method.GetILGenerator();
+            il.Emit(OpCodes.Newobj,
+                typeof(NotImplementedException).GetConstructor(Type.EmptyTypes));
+            il.Emit(OpCodes.Throw);
 
             return method;
         }
