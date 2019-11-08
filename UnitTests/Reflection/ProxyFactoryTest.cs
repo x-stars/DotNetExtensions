@@ -7,41 +7,40 @@ namespace XstarS.Reflection
     public class ProxyFactoryTest
     {
         [TestMethod]
-        public void CreateInstance_SimpleClass_WorksProperly()
+        public void CreateInstance_Class_WorksProperly()
         {
-            var o = ProxyFactory<ProxyBinding<int>>.WithHandler(
-                TestInvokeHandlers.ProxyBindingInvokeHandler).CreateInstance(0);
-            int i = 0;
-            o.PropertyChanged += (sender, e) => i++;
-            for (int j = 0; j < 1000; j++) { o.Value++; }
-            Assert.AreEqual(i, 1000);
-            Assert.AreEqual(o.Value, 1000);
-            Assert.AreEqual(100, o.Function(100));
+            var o = ProxyFactory<ProxyCollection<int>>.WithHandler(
+                TestHandlers.WriteMethodAndInvokeBaseHandler).CreateInstance();
+            for (int i = 0; i < 10; i++) { o.Add(i); }
+            Assert.AreEqual(o.Count, 10);
         }
 
         [TestMethod]
-        public void CreateInstance_ComplexClass_WorksProperly()
+        public void CreateInstance_ClassWithGenericMethod_WorksProperly()
         {
-            var o = ProxyFactory<ProxyCollection<int>>.WithHandler(
-                TestInvokeHandlers.ProxyCollectionInvokeHandler).CreateInstance();
-            for (int j = 0; j < 1000; j++) { o.Add(j); }
-            Assert.AreEqual(o.Count, 1000);
+            var o = ProxyFactory<ProxyCreator>.WithHandler(
+                TestHandlers.WriteMethodAndInvokeBaseHandler).CreateInstance();
+            Assert.IsNotNull(o.Create<object>());
         }
 
         [TestMethod]
         public void CreateInstance_AbstractClass_WorksProperly()
         {
             var o = ProxyFactory<ProxyEqualityComparer<object>>.WithHandler(
-                TestInvokeHandlers.ProxyEqualityComparerInvokeHandler).CreateInstance();
-            Assert.IsFalse(o.Equals(0, 0));
+                TestHandlers.WriteMethodAndReturnDefaultHandler).CreateInstance();
+            Assert.AreEqual(o.Equals(0, 0), false);
         }
 
         [TestMethod]
         public void CreateInstance_Interface_WorksProperly()
         {
             var o = ProxyFactory<IProxyList<object>>.WithHandler(
-                TestInvokeHandlers.IProxyListInvokeHandler).CreateInstance();
+                TestHandlers.WriteMethodAndReturnDefaultHandler).CreateInstance();
             Assert.AreEqual(o.Count, 0);
+            for (int i = 0; i < 10; i++)
+            {
+                Assert.AreEqual(o[i], null);
+            }
         }
     }
 }

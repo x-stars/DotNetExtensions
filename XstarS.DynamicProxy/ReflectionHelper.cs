@@ -10,6 +10,23 @@ namespace XstarS.Reflection
     internal static class ReflectionHelper
     {
         /// <summary>
+        /// 将当前方法转换为其名称和句柄的字符串表达形式。
+        /// </summary>
+        /// <param name="method">要转换为字符串的 <see cref="MethodInfo"/> 对象。</param>
+        /// <returns><paramref name="method"/> 的名称和句柄的字符串表达形式。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
+        internal static string ToNameHandleString(this MethodInfo method)
+        {
+            if (method is null)
+            {
+                throw new ArgumentNullException(nameof(method));
+            }
+
+            return $"{method.Name}@{method.MethodHandle.Value.ToString()}";
+        }
+
+        /// <summary>
         /// 确定当前方法或构造函数是否为程序集外部可继承的实例方法。
         /// </summary>
         /// <param name="method">要进行检查的 <see cref="MethodBase"/> 对象。</param>

@@ -10,7 +10,7 @@ namespace XstarS.Reflection
     /// <summary>
     /// 提供基于代理委托 <see cref="ProxyInvokeHandler"/> 的代理类型。
     /// </summary>
-    public sealed partial class ProxyTypeProvider
+    public sealed class ProxyTypeProvider
     {
         /// <summary>
         /// <see cref="ProxyTypeProvider.OfType(Type)"/> 的延迟初始化值。
@@ -39,11 +39,6 @@ namespace XstarS.Reflection
         private TypeBuilder ProxyTypeBuilder;
 
         /// <summary>
-        /// 代理类型中存储原型类型方法的 <see cref="MethodInfo"/> 的字段。
-        /// </summary>
-        private Dictionary<MethodInfo, FieldInfo> BaseMethodInfoFields;
-
-        /// <summary>
         /// 代理类型中所有访问原型类型方法的方法。
         /// </summary>
         private Dictionary<MethodInfo, MethodInfo> BaseInvokeMethods;
@@ -52,6 +47,11 @@ namespace XstarS.Reflection
         /// 代理类型中所有原型类型方法的 <see cref="MethodDelegate"/> 委托的字段。
         /// </summary>
         private Dictionary<MethodInfo, FieldInfo> BaseMethodDelegateFields;
+
+        /// <summary>
+        /// 代理类型中存储原型类型方法的 <see cref="MethodInfo"/> 的字段。
+        /// </summary>
+        private Dictionary<MethodInfo, FieldInfo> BaseMethodInfoFields;
 
         /// <summary>
         /// 代理类型中 <see cref="ProxyInvokeHandler"/> 字段的 <see cref="FieldInfo"/> 对象。
@@ -123,10 +123,9 @@ namespace XstarS.Reflection
 
             this.DefineProxyType();
 
-            this.DefineBaseMethodInfoFields();
             this.DefineProxyTypeConstructors();
             this.DefineBaseInvokeMethods();
-            this.DefineBaseMethodDelegateFields();
+            this.DefineBaseMethodStaticTypes();
             this.DefineProxyOverrideMethods();
 
             return this.ProxyTypeBuilder.CreateTypeInfo();
@@ -139,7 +138,7 @@ namespace XstarS.Reflection
         private FieldInfo FindHandlerField()
         {
             return this.ProxyType.GetField(nameof(ProxyInvokeHandler),
-                BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
+                BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
         }
 
         /// <summary>
@@ -193,43 +192,6 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 定义所有存储原型类型方法的 <see cref="MethodInfo"/> 的字段。
-        /// </summary>
-        private void DefineBaseMethodInfoFields()
-        {
-            var baseMethods = this.BaseMethods;
-            var type = this.ProxyTypeBuilder;
-
-            var constructor = type.DefineTypeInitializer();
-            var ilGen = constructor.GetILGenerator();
-
-            var fields = new Dictionary<MethodInfo, FieldInfo>();
-            foreach (var baseMethod in baseMethods)
-            {
-                var field = type.DefineField($"<{nameof(MethodInfo)}>" +
-                    $"{baseMethod.Name}#{baseMethod.MethodHandle.Value.ToString()}",
-                    typeof(MethodInfo),
-                    FieldAttributes.Assembly | FieldAttributes.Static | FieldAttributes.InitOnly);
-                ilGen = constructor.GetILGenerator();
-                {
-                    ilGen.Emit(OpCodes.Ldtoken, baseMethod);
-                    ilGen.Emit(OpCodes.Ldtoken, baseMethod.DeclaringType);
-                    ilGen.Emit(OpCodes.Call, typeof(MethodBase).GetMethod(
-                        nameof(MethodBase.GetMethodFromHandle),
-                        new[] { typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle) }));
-                    ilGen.Emit(OpCodes.Castclass, typeof(MethodInfo));
-                    ilGen.Emit(OpCodes.Stsfld, field);
-                }
-
-                fields[baseMethod] = field;
-            }
-
-            ilGen.Emit(OpCodes.Ret);
-
-            this.BaseMethodInfoFields = fields;
-        }
-
-        /// <summary>
         /// 定义代理类型的构造函数。
         /// </summary>
         private void DefineProxyTypeConstructors()
@@ -268,39 +230,44 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 定义所有原型类型方法的 <see cref="MethodDelegate"/> 委托字段。
+        /// 定义所有原型类型方法的静态类型。
         /// </summary>
-        private void DefineBaseMethodDelegateFields()
+        private void DefineBaseMethodStaticTypes()
         {
             var baseMethods = this.BaseMethods;
 
-            var fields = new Dictionary<MethodInfo, FieldInfo>();
+            var delegateFields = new Dictionary<MethodInfo, FieldInfo>();
+            var infoFields = new Dictionary<MethodInfo, FieldInfo>();
+
+            this.BaseMethodDelegateFields = delegateFields;
+            this.BaseMethodInfoFields = infoFields;
+
             foreach (var baseMethod in baseMethods)
             {
-                var field = this.DefineBaseMethodDelegateField(baseMethod);
-                fields[baseMethod] = field;
+                this.DefineBaseMethodStaticType(baseMethod);
             }
-
-            this.BaseMethodDelegateFields = fields;
         }
 
         /// <summary>
-        /// 定义原型类型方法的 <see cref="MethodDelegate"/> 委托字段。
+        /// 定义原型类型方法的静态类型。
         /// </summary>
         /// <param name="baseMethod">原型类型的方法。</param>
-        /// <returns>定义的  <see cref="MethodDelegate"/> 委托字段。</returns>
-        private FieldBuilder DefineBaseMethodDelegateField(MethodInfo baseMethod)
+        private void DefineBaseMethodStaticType(MethodInfo baseMethod)
         {
             var baseType = this.BaseType;
             var proxyType = this.ProxyTypeBuilder;
             var baseInvokeMethod = this.BaseInvokeMethods[baseMethod];
+            var delegateFields = this.BaseMethodDelegateFields;
+            var methodInfoFields = this.BaseMethodInfoFields;
 
-            var type = proxyType.DefineNestedType($"<{nameof(MethodDelegate)}>" +
-                $"{baseMethod.Name}#{baseMethod.MethodHandle.Value.ToString()}",
+            var baseGenericParams = baseMethod.GetGenericArguments();
+            var baseReturnParam = baseMethod.ReturnParameter;
+            var baseParameters = baseMethod.GetParameters();
+
+            var type = proxyType.DefineNestedType($"{baseMethod.ToNameHandleString()}",
                 TypeAttributes.Class | TypeAttributes.NestedAssembly |
                 TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
-            var baseGenericParams = baseMethod.GetGenericArguments();
-            var baseParameters = baseMethod.GetParameters();
+
             var genericParams = (baseGenericParams.Length == 0) ?
                 Array.Empty<GenericTypeParameterBuilder>() :
                 type.DefineGenericParameters(
@@ -309,79 +276,78 @@ namespace XstarS.Reflection
             {
                 var baseGenericParam = baseGenericParams[i];
                 var genericParam = genericParams[i];
-                var constraints = baseGenericParam.GetGenericParameterConstraints();
-                var baseTypeConstraint = constraints.Where(
-                    constraint => !constraint.IsInterface).SingleOrDefault();
-                var interfaceConstraints = constraints.Where(
-                    constraint => constraint.IsInterface).ToArray();
-                genericParam.SetGenericParameterAttributes(
-                    baseGenericParam.GenericParameterAttributes);
-                if (!(baseTypeConstraint is null))
-                {
-                    genericParam.SetBaseTypeConstraint(baseTypeConstraint);
-                }
-                if (interfaceConstraints.Length != 0)
-                {
-                    genericParam.SetInterfaceConstraints(interfaceConstraints);
-                }
+                genericParam.SetGenericConstraintsAs(baseGenericParam);
             }
 
-            baseInvokeMethod = !baseMethod.IsGenericMethod ? baseInvokeMethod :
-                baseInvokeMethod.MakeGenericMethod(type.GetGenericArguments());
-            var method = type.DefineMethod(nameof(MethodDelegate.Invoke),
+            var delegateMethod = type.DefineMethod(nameof(MethodDelegate.Invoke),
                 MethodAttributes.Assembly | MethodAttributes.Static | MethodAttributes.HideBySig,
                 typeof(object), new[] { typeof(object), typeof(object[]) });
-            method.DefineParameter(1, ParameterAttributes.None, "instance");
-            method.DefineParameter(2, ParameterAttributes.None, "arguments");
-            var ilGen = method.GetILGenerator();
             {
-                ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.Emit(OpCodes.Castclass, proxyType);
+                delegateMethod.DefineParameter(1, ParameterAttributes.None, "instance");
+                delegateMethod.DefineParameter(2, ParameterAttributes.None, "arguments");
+
+                var il = delegateMethod.GetILGenerator();
+                il.Emit(OpCodes.Ldarg_0);
+                il.Emit(OpCodes.Castclass, proxyType);
                 for (int i = 0; i < baseParameters.Length; i++)
                 {
-                    ilGen.Emit(OpCodes.Ldarg_1);
                     var baseParameter = baseParameters[i];
-                    int indexPtInGpt = Array.IndexOf(
+                    int index = Array.IndexOf(
                         baseGenericParams, baseParameter.ParameterType);
-                    var parameterType = (indexPtInGpt == -1) ?
-                        baseParameter.ParameterType : genericParams[indexPtInGpt];
-                    ilGen.EmitLdcI4(i);
-                    ilGen.Emit(OpCodes.Ldelem_Ref);
-                    ilGen.Emit(OpCodes.Unbox_Any, parameterType);
+                    var parameterType = (index == -1) ?
+                        baseParameter.ParameterType : genericParams[index];
+                    il.Emit(OpCodes.Ldarg_1);
+                    il.EmitLdcI4(i);
+                    il.Emit(OpCodes.Ldelem_Ref);
+                    il.Emit(OpCodes.Unbox_Any, parameterType);
                 }
-                ilGen.Emit(OpCodes.Call, baseInvokeMethod);
+                il.Emit(OpCodes.Call,
+                    !baseInvokeMethod.IsGenericMethod ? baseInvokeMethod :
+                    baseInvokeMethod.MakeGenericMethod(type.GetGenericArguments()));
                 if (baseMethod.ReturnType != typeof(void))
                 {
-                    var baseReturnType = baseMethod.ReturnParameter.ParameterType;
-                    int indexRptInGpt = Array.IndexOf(
-                        baseGenericParams, baseReturnType);
-                    var returnType = (indexRptInGpt == -1) ?
-                        baseReturnType : genericParams[indexRptInGpt];
-                    ilGen.Emit(OpCodes.Box, returnType);
+                    int index = Array.IndexOf(
+                        baseGenericParams, baseReturnParam.ParameterType);
+                    var returnType = (index == -1) ?
+                        baseReturnParam.ParameterType : genericParams[index];
+                    il.Emit(OpCodes.Box, returnType);
                 }
                 else
                 {
-                    ilGen.Emit(OpCodes.Ldnull);
+                    il.Emit(OpCodes.Ldnull);
                 }
-                ilGen.Emit(OpCodes.Ret);
+                il.Emit(OpCodes.Ret);
             }
 
-            var field = type.DefineField(nameof(MethodDelegate), typeof(MethodDelegate),
+            var delegateField = type.DefineField(nameof(MethodDelegate), typeof(MethodDelegate),
+                FieldAttributes.Assembly | FieldAttributes.Static | FieldAttributes.InitOnly);
+
+            var infoField = type.DefineField(nameof(MethodInfo), typeof(MethodInfo),
                 FieldAttributes.Assembly | FieldAttributes.Static | FieldAttributes.InitOnly);
 
             var constructor = type.DefineTypeInitializer();
-            ilGen = constructor.GetILGenerator();
             {
-                ilGen.Emit(OpCodes.Ldnull);
-                ilGen.Emit(OpCodes.Ldftn, method);
-                ilGen.Emit(OpCodes.Newobj, typeof(MethodDelegate).GetConstructors()[0]);
-                ilGen.Emit(OpCodes.Stsfld, field);
-                ilGen.Emit(OpCodes.Ret);
+                var il = constructor.GetILGenerator();
+                il.Emit(OpCodes.Ldnull);
+                il.Emit(OpCodes.Ldftn, delegateMethod);
+                il.Emit(OpCodes.Newobj, typeof(MethodDelegate).GetConstructors()[0]);
+                il.Emit(OpCodes.Stsfld, delegateField);
+                il.Emit(OpCodes.Ldtoken,
+                    !baseMethod.IsGenericMethod ? baseMethod :
+                    baseMethod.MakeGenericMethod(type.GetGenericArguments()));
+                il.Emit(OpCodes.Ldtoken, baseMethod.DeclaringType);
+                il.Emit(OpCodes.Call, typeof(MethodBase).GetMethod(
+                    nameof(MethodBase.GetMethodFromHandle),
+                    new[] { typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle) }));
+                il.Emit(OpCodes.Castclass, typeof(MethodInfo));
+                il.Emit(OpCodes.Stsfld, infoField);
+                il.Emit(OpCodes.Ret);
             }
 
-            type.CreateTypeInfo();
+            this.BaseMethodDelegateFields[baseMethod] = delegateField;
+            this.BaseMethodInfoFields[baseMethod] = infoField;
 
-            return field;
+            type.CreateTypeInfo();
         }
 
         /// <summary>
@@ -393,13 +359,13 @@ namespace XstarS.Reflection
             var type = this.ProxyTypeBuilder;
 
             var field = type.DefineField(nameof(ProxyInvokeHandler),
-                typeof(ProxyInvokeHandler), FieldAttributes.Assembly);
+                typeof(ProxyInvokeHandler), FieldAttributes.Public);
 
             this.InternalHandlerField = field;
 
             foreach (var baseMethod in baseMethods)
             {
-                var method = this.DefineProxyOverrideMethod(baseMethod);
+                this.DefineProxyOverrideMethod(baseMethod);
             }
         }
 
@@ -407,22 +373,22 @@ namespace XstarS.Reflection
         /// 定义代理方法，并重写原型类型中的对应方法。
         /// </summary>
         /// <param name="baseMethod">原型类型的方法。</param>
-        /// <returns>定义的代理方法。</returns>
-        private MethodBuilder DefineProxyOverrideMethod(MethodInfo baseMethod)
+        private void DefineProxyOverrideMethod(MethodInfo baseMethod)
         {
-            var baseInInterface = baseMethod.DeclaringType.IsInterface;
             var type = this.ProxyTypeBuilder;
-            var baseMethodInvokerField = this.BaseMethodDelegateFields[baseMethod];
+            var baseMethodDelegateField = this.BaseMethodDelegateFields[baseMethod];
             var baseMethodInfoField = this.BaseMethodInfoFields[baseMethod];
-            var methodInvokeHandlerField = this.InternalHandlerField;
+            var handlerField = this.InternalHandlerField;
 
+            var baseInInterface = baseMethod.DeclaringType.IsInterface;
             var baseAttributes = baseMethod.Attributes;
             var baseGenericParams = baseMethod.GetGenericArguments();
             var baseReturnParam = baseMethod.ReturnParameter;
             var baseParameters = baseMethod.GetParameters();
             var attributes = baseAttributes & ~MethodAttributes.Abstract;
             if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
-            var method = type.DefineMethod(baseMethod.Name,
+
+            var method = type.DefineMethod($"{baseMethod.ToNameHandleString()}",
                 attributes, baseReturnParam.ParameterType,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));
 
@@ -436,94 +402,80 @@ namespace XstarS.Reflection
                 genericParam.SetGenericParameterAttributes(
                     methodGenericParam.GenericParameterAttributes);
             }
+
             if (baseMethod.IsGenericMethod)
             {
-                baseMethodInvokerField = TypeBuilder.GetField(
-                    baseMethodInvokerField.ReflectedType.MakeGenericType(
-                        method.GetGenericArguments()), baseMethodInvokerField);
+                baseMethodDelegateField = TypeBuilder.GetField(
+                    baseMethodDelegateField.DeclaringType.MakeGenericType(
+                        method.GetGenericArguments()), baseMethodDelegateField);
+                baseMethodInfoField = TypeBuilder.GetField(
+                    baseMethodInfoField.DeclaringType.MakeGenericType(
+                        method.GetGenericArguments()), baseMethodInfoField);
             }
 
-            var returnParam = method.DefineParameter(0, baseReturnParam.Attributes, null);
+            var returnParam = method.DefineParameter(0,
+                baseReturnParam.Attributes, baseReturnParam.Name);
             for (int i = 0; i < baseParameters.Length; i++)
             {
                 var baseParameter = baseParameters[i];
-                var parameter = method.DefineParameter(
-                    i + 1, baseParameter.Attributes, baseParameter.Name);
-                if (baseParameter.HasDefaultValue)
-                {
-                    parameter.SetConstant(baseParameter.DefaultValue);
-                }
+                var parameter = method.DefineParameter(i + 1,
+                    baseParameter.Attributes, baseParameter.Name);
             }
 
-            var ilGen = method.GetILGenerator();
+            var il = method.GetILGenerator();
+            var invokeBaseLabel = il.DefineLabel();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld, handlerField);
+            il.Emit(OpCodes.Brfalse_S, invokeBaseLabel);
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld, handlerField);
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Castclass, typeof(object));
+            il.Emit(OpCodes.Ldsfld, baseMethodInfoField);
+            il.EmitLdcI4(baseParameters.Length);
+            il.Emit(OpCodes.Newarr, typeof(object));
+            for (int i = 0; i < baseParameters.Length; i++)
             {
-                var invokeBaseLabel = ilGen.DefineLabel();
-                ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.Emit(OpCodes.Ldfld, methodInvokeHandlerField);
-                ilGen.Emit(OpCodes.Brfalse_S, invokeBaseLabel);
-                ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.Emit(OpCodes.Ldfld, methodInvokeHandlerField);
-                ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.Emit(OpCodes.Castclass, typeof(object));
-                ilGen.Emit(OpCodes.Ldsfld, baseMethodInfoField);
-                ilGen.EmitLdcI4(genericParams.Length);
-                ilGen.Emit(OpCodes.Newarr, typeof(Type));
-                for (int i = 0; i < genericParams.Length; i++)
-                {
-                    var genericParam = genericParams[i];
-                    ilGen.Emit(OpCodes.Dup);
-                    ilGen.EmitLdcI4(i);
-                    ilGen.Emit(OpCodes.Ldtoken, genericParam);
-                    ilGen.Emit(OpCodes.Call,
-                        typeof(Type).GetMethod(nameof(Type.GetTypeFromHandle)));
-                    ilGen.Emit(OpCodes.Stelem_Ref);
-                }
-                ilGen.EmitLdcI4(baseParameters.Length);
-                ilGen.Emit(OpCodes.Newarr, typeof(object));
-                for (int i = 0; i < baseParameters.Length; i++)
-                {
-                    var baseParameter = baseParameters[i];
-                    ilGen.Emit(OpCodes.Dup);
-                    ilGen.EmitLdcI4(i);
-                    ilGen.EmitLdarg(i + 1);
-                    ilGen.Emit(OpCodes.Box, baseParameter.ParameterType);
-                    ilGen.Emit(OpCodes.Stelem_Ref);
-                }
-                ilGen.Emit(OpCodes.Ldsfld, baseMethodInvokerField);
-                ilGen.Emit(OpCodes.Newobj, typeof(ProxyInvokeInfo).GetConstructors()[0]);
-                ilGen.Emit(OpCodes.Call,
-                    typeof(ProxyInvokeHandler).GetMethod(nameof(ProxyInvokeHandler.Invoke)));
-                var returnLabel = ilGen.DefineLabel();
-                ilGen.Emit(OpCodes.Br_S, returnLabel);
-                ilGen.MarkLabel(invokeBaseLabel);
-                ilGen.Emit(OpCodes.Ldsfld, baseMethodInvokerField);
-                ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.EmitLdcI4(baseParameters.Length);
-                ilGen.Emit(OpCodes.Newarr, typeof(object));
-                for (int i = 0; i < baseParameters.Length; i++)
-                {
-                    var baseParameter = baseParameters[i];
-                    ilGen.Emit(OpCodes.Dup);
-                    ilGen.EmitLdcI4(i);
-                    ilGen.EmitLdarg(i + 1);
-                    ilGen.Emit(OpCodes.Box, baseParameter.ParameterType);
-                    ilGen.Emit(OpCodes.Stelem_Ref);
-                }
-                ilGen.Emit(OpCodes.Call,
-                    typeof(MethodDelegate).GetMethod(nameof(MethodDelegate.Invoke)));
-                ilGen.MarkLabel(returnLabel);
-                if (baseMethod.ReturnType != typeof(void))
-                {
-                    ilGen.Emit(OpCodes.Unbox_Any, baseMethod.ReturnType);
-                }
-                else
-                {
-                    ilGen.Emit(OpCodes.Pop);
-                }
-                ilGen.Emit(OpCodes.Ret);
+                var baseParameter = baseParameters[i];
+                il.Emit(OpCodes.Dup);
+                il.EmitLdcI4(i);
+                il.EmitLdarg(i + 1);
+                il.Emit(OpCodes.Box, baseParameter.ParameterType);
+                il.Emit(OpCodes.Stelem_Ref);
             }
+            il.Emit(OpCodes.Ldsfld, baseMethodDelegateField);
+            il.Emit(OpCodes.Call,
+                typeof(ProxyInvokeHandler).GetMethod(nameof(ProxyInvokeHandler.Invoke)));
+            var returnLabel = il.DefineLabel();
+            il.Emit(OpCodes.Br_S, returnLabel);
+            il.MarkLabel(invokeBaseLabel);
+            il.Emit(OpCodes.Ldsfld, baseMethodDelegateField);
+            il.Emit(OpCodes.Ldarg_0);
+            il.EmitLdcI4(baseParameters.Length);
+            il.Emit(OpCodes.Newarr, typeof(object));
+            for (int i = 0; i < baseParameters.Length; i++)
+            {
+                var baseParameter = baseParameters[i];
+                il.Emit(OpCodes.Dup);
+                il.EmitLdcI4(i);
+                il.EmitLdarg(i + 1);
+                il.Emit(OpCodes.Box, baseParameter.ParameterType);
+                il.Emit(OpCodes.Stelem_Ref);
+            }
+            il.Emit(OpCodes.Call,
+                typeof(MethodDelegate).GetMethod(nameof(MethodDelegate.Invoke)));
+            il.MarkLabel(returnLabel);
+            if (baseMethod.ReturnType != typeof(void))
+            {
+                il.Emit(OpCodes.Unbox_Any, baseMethod.ReturnType);
+            }
+            else
+            {
+                il.Emit(OpCodes.Pop);
+            }
+            il.Emit(OpCodes.Ret);
 
-            return method;
+            type.DefineMethodOverride(method, baseMethod);
         }
     }
 }
