@@ -153,7 +153,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 是抽象属性或无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static PropertyBuilder DefineBaseBindablePropertyOverride(
+        internal static PropertyBuilder DefineBindableBaseInvokePropertyOverride(
             this TypeBuilder type, PropertyInfo baseProperty, MethodInfo onPropertyChangedMethod)
         {
             if (type is null)
@@ -376,7 +376,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 是索引属性或无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static KeyValuePair<PropertyBuilder, FieldBuilder> DefineAutoBindablePropertyOverride(
+        internal static KeyValuePair<PropertyBuilder, FieldBuilder> DefineBindableAutoPropertyOverride(
             this TypeBuilder type, PropertyInfo baseProperty, MethodInfo onPropertyChangedMethod)
         {
             if (type is null)
@@ -479,6 +479,50 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
+        /// 以指定的事件为基础，定义抛出未实现异常的重写事件，并添加到当前类型。
+        /// </summary>
+        /// <param name="type">要定义事件的 <see cref="TypeBuilder"/> 对象。</param>
+        /// <param name="baseEvent">作为基础的事件。</param>
+        /// <returns>定义的事件，抛出 <see cref="NotImplementedException"/> 异常。</returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="baseEvent"/> 的方法无法在程序集外部重写。</exception>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        internal static EventBuilder DefineNotImplementedEventOverride(
+            this TypeBuilder type, EventInfo baseEvent)
+        {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            if (baseEvent is null)
+            {
+                throw new ArgumentNullException(nameof(baseEvent));
+            }
+            if (!baseEvent.AddMethod.IsOverridable())
+            {
+                throw new ArgumentException(
+                    new ArgumentException().Message, nameof(baseEvent));
+            }
+
+            var @event = type.DefineEvent(
+                baseEvent.Name, baseEvent.Attributes, baseEvent.EventHandlerType);
+
+            {
+                var baseMethod = baseEvent.AddMethod;
+                var method = type.DefineNotImplementedMethodOverride(baseMethod);
+                @event.SetAddOnMethod(method);
+            }
+
+            {
+                var baseMethod = baseEvent.RemoveMethod;
+                var method = type.DefineNotImplementedMethodOverride(baseMethod);
+                @event.SetRemoveOnMethod(method);
+            }
+
+            return @event;
+        }
+
+        /// <summary>
         /// 以指定的事件为基础，定义以默认事件模式实现的重写事件，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义事件的 <see cref="TypeBuilder"/> 对象。</param>
@@ -504,11 +548,11 @@ namespace XstarS.ComponentModel
                     new ArgumentException().Message, nameof(baseEvent));
             }
 
-            var eventType = baseEvent.EventHandlerType;
+            var @event = type.DefineEvent(
+                baseEvent.Name, baseEvent.Attributes, baseEvent.EventHandlerType);
 
-            var @event = type.DefineEvent(baseEvent.Name, baseEvent.Attributes, eventType);
-
-            var field = type.DefineField(baseEvent.Name, eventType, FieldAttributes.Private);
+            var field = type.DefineField(
+                baseEvent.Name, baseEvent.EventHandlerType, FieldAttributes.Private);
 
             {
                 var baseMethod = baseEvent.AddMethod;
@@ -533,6 +577,7 @@ namespace XstarS.ComponentModel
                 }
 
                 var il = method.GetILGenerator();
+                var eventType = baseEvent.EventHandlerType;
                 var local0 = il.DeclareLocal(eventType);
                 var local1 = il.DeclareLocal(eventType);
                 var local2 = il.DeclareLocal(eventType);
@@ -589,6 +634,7 @@ namespace XstarS.ComponentModel
                 }
 
                 var il = method.GetILGenerator();
+                var eventType = baseEvent.EventHandlerType;
                 var local0 = il.DeclareLocal(eventType);
                 var local1 = il.DeclareLocal(eventType);
                 var local2 = il.DeclareLocal(eventType);

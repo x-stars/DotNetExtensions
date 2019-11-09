@@ -253,12 +253,12 @@ namespace XstarS.ComponentModel
                         }
                         else
                         {
-                            type.DefineAutoBindablePropertyOverride(baseProperty, onPropertyChangedMethod);
+                            type.DefineBindableAutoPropertyOverride(baseProperty, onPropertyChangedMethod);
                         }
                     }
                     else
                     {
-                        type.DefineBaseBindablePropertyOverride(baseProperty, onPropertyChangedMethod);
+                        type.DefineBindableBaseInvokePropertyOverride(baseProperty, onPropertyChangedMethod);
                     }
                 }
             }
@@ -279,7 +279,7 @@ namespace XstarS.ComponentModel
                 {
                     if (baseEvent.AddMethod.IsAbstract)
                     {
-                        type.DefineDefaultEventOverride(baseEvent);
+                        type.DefineNotImplementedEventOverride(baseEvent);
                     }
                 }
             }
