@@ -196,7 +196,8 @@ namespace XstarS.Reflection
             var baseReturnParam = baseMethod.ReturnParameter;
             var baseParameters = baseMethod.GetParameters();
 
-            var method = type.DefineMethod($"<Base>{baseMethod.ToNameHandleString()}",
+            var method = type.DefineMethod(
+                $"${baseMethod.ToNameHandleString()}",
                 MethodAttributes.Assembly | MethodAttributes.HideBySig,
                 baseReturnParam.ParameterType,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));

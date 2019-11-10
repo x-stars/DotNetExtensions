@@ -138,7 +138,7 @@ namespace XstarS.Reflection
         private FieldInfo FindHandlerField()
         {
             return this.ProxyType.GetField(nameof(ProxyInvokeHandler),
-                BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public);
+                BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
         }
 
         /// <summary>
@@ -157,8 +157,7 @@ namespace XstarS.Reflection
         {
             var baseType = this.BaseType;
 
-            var validBaseFullName = baseType.ToString().Replace("<", "[").Replace(">", "]");
-            var assemblyName = $"Proxy[{validBaseFullName}]";
+            var assemblyName = $"Proxy[{baseType.ToString()}]";
             var assembly = AssemblyBuilder.DefineDynamicAssembly(
                 new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
             var module = assembly.DefineDynamicModule($"{assemblyName}.dll");
@@ -178,7 +177,7 @@ namespace XstarS.Reflection
                 baseGenericArgumentNames, name => name.Replace('.', '-').Replace('+', '-'));
             var genericArguments = baseType.IsGenericType ?
                 $"<{string.Join(",", genericArgumentNames)}>" : "";
-            var fullName = $"{@namespace}<Proxy>{typeName}{genericArguments}";
+            var fullName = $"{@namespace}$Proxy@{typeName}{genericArguments}";
 
             var isInterface = baseType.IsInterface;
             var parent = !isInterface ? baseType : typeof(object);
@@ -264,7 +263,7 @@ namespace XstarS.Reflection
             var baseReturnParam = baseMethod.ReturnParameter;
             var baseParameters = baseMethod.GetParameters();
 
-            var type = proxyType.DefineNestedType($"{baseMethod.ToNameHandleString()}",
+            var type = proxyType.DefineNestedType($"${baseMethod.ToNameHandleString()}",
                 TypeAttributes.Class | TypeAttributes.NestedAssembly |
                 TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
 
@@ -359,7 +358,7 @@ namespace XstarS.Reflection
             var type = this.ProxyTypeBuilder;
 
             var field = type.DefineField(nameof(ProxyInvokeHandler),
-                typeof(ProxyInvokeHandler), FieldAttributes.Public);
+                typeof(ProxyInvokeHandler), FieldAttributes.Assembly);
 
             this.InternalHandlerField = field;
 
@@ -387,14 +386,17 @@ namespace XstarS.Reflection
             var baseParameters = baseMethod.GetParameters();
             var attributes = baseAttributes & ~MethodAttributes.Abstract;
             if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
+            attributes &= ~MethodAttributes.MemberAccessMask;
+            attributes |= MethodAttributes.Assembly;
 
             var method = type.DefineMethod($"{baseMethod.ToNameHandleString()}",
                 attributes, baseReturnParam.ParameterType,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));
 
             var genericParams = (baseGenericParams.Length == 0) ?
-                Array.Empty<GenericTypeParameterBuilder>() : method.DefineGenericParameters(
-                Array.ConvertAll(baseGenericParams, param => param.Name));
+                Array.Empty<GenericTypeParameterBuilder>() :
+                method.DefineGenericParameters(
+                    Array.ConvertAll(baseGenericParams, param => param.Name));
             for (int i = 0; i < baseGenericParams.Length; i++)
             {
                 var methodGenericParam = baseGenericParams[i];

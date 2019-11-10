@@ -113,7 +113,7 @@ namespace XstarS.ComponentModel
         {
             var baseType = this.BaseType;
 
-            var assemblyName = $"Bindable[{baseType.ToString().Replace("<", "[").Replace(">", "]")}]";
+            var assemblyName = $"Bindable[{baseType.ToString()}]";
             var assembly = AssemblyBuilder.DefineDynamicAssembly(
                 new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
             var module = assembly.DefineDynamicModule($"{assemblyName}.dll");
@@ -133,7 +133,7 @@ namespace XstarS.ComponentModel
                 baseGenericArgumentNames, name => name.Replace('.', '-').Replace('+', '-'));
             var joinedGenericArgumentNames = baseType.IsGenericType ?
                 $"<{string.Join(",", genericArgumentNames)}>" : "";
-            var fullName = $"{@namespace}<Bindable>{joinedTypeNames}{joinedGenericArgumentNames}";
+            var fullName = $"{@namespace}$Bindable@{joinedTypeNames}{joinedGenericArgumentNames}";
 
             var baseInterfaces = baseType.GetInterfaces();
             var parent = !baseType.IsInterface ? baseType : typeof(object);
