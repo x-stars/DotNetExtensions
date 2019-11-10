@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using XstarS.Reflection;
 
 namespace XstarS
 {
@@ -11,14 +12,6 @@ namespace XstarS
     [Serializable]
     internal sealed class ValueEquatablePair
     {
-        /// <summary>
-        /// <see cref="Pointer"/> 的 <c>GetPointerType()</c> 方法的静态委托调用。
-        /// </summary>
-        private static readonly Func<Pointer, Type> StaticGetPointerType =
-            typeof(Pointer).GetMethod("GetPointerType",
-                BindingFlags.Instance | BindingFlags.NonPublic).CreateDelegate(
-                    typeof(Func<Pointer, Type>)) as Func<Pointer, Type>;
-
         /// <summary>
         /// 要进行值相等比较的第一个对象。
         /// </summary>
@@ -126,11 +119,9 @@ namespace XstarS
         /// <returns>若 <paramref name="value"/> 和 <paramref name="other"/>
         /// 均为指针包装 <see cref="Pointer"/>，且指针的值和类型都相等，
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        private unsafe bool PointerValueEquals(Pointer value, Pointer other)
+        private bool PointerValueEquals(Pointer value, Pointer other)
         {
-            return (Pointer.Unbox(value) == Pointer.Unbox(other)) && (
-                ValueEquatablePair.StaticGetPointerType(value) ==
-                ValueEquatablePair.StaticGetPointerType(other));
+            return value.GetPointerValue() == other.GetPointerValue();
         }
 
         /// <summary>

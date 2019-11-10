@@ -6,7 +6,6 @@
       net461;net472;netcoreapp2.1;netcoreapp3.0;netstandard2.0;netstandard2.1
     </TargetFrameworks>
     <LangVersion>latest</LangVersion>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DocumentationFile>
       obj\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml
     </DocumentationFile>

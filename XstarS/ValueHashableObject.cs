@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using XstarS.Collections.Specialized;
+using XstarS.Reflection;
 
 namespace XstarS
 {
@@ -116,9 +117,9 @@ namespace XstarS
         /// 将指定指针包装 <see cref="Pointer"/> 基于值的哈希代码附加到当前的哈希代码中。
         /// </summary>
         /// <param name="value">要将其基于值的哈希代码追加到当前哈希代码的指针包装。</param>
-        private unsafe void AppendPointerValueHashCode(Pointer value)
+        private void AppendPointerValueHashCode(Pointer value)
         {
-            this.AppendHashCode(((IntPtr)Pointer.Unbox(value)).GetHashCode());
+            this.AppendHashCode(value.GetPointerValue().GetHashCode());
         }
 
         /// <summary>
