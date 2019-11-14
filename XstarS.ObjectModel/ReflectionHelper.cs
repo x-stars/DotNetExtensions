@@ -10,10 +10,10 @@ namespace XstarS.ComponentModel
     internal static class ReflectionHelper
     {
         /// <summary>
-        /// 确定当前方法或构造函数是否为程序集外部可继承的实例方法。
+        /// 确定当前 <see cref="MethodBase"/> 是否为程序集外部可继承的实例方法。
         /// </summary>
         /// <param name="method">要进行检查的 <see cref="MethodBase"/> 对象。</param>
-        /// <returns>若 <paramref name="method"/> 是一个程序集外部可继承的实例方法，
+        /// <returns>若 <paramref name="method"/> 是程序集外部可继承的实例方法，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
@@ -29,10 +29,10 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 确定当前方法是否可以在程序集外部重写。
+        /// 确定当前 <see cref="MethodInfo"/> 是否为程序集外部可重写的方法。
         /// </summary>
         /// <param name="method">要进行检查的 <see cref="MethodInfo"/> 对象。</param>
-        /// <returns>若 <paramref name="method"/> 可以在程序集外部重写，
+        /// <returns>若 <paramref name="method"/> 是程序集外部可重写的方法，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
@@ -47,10 +47,10 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 确定当前属性是否为索引属性，即带索引参数的属性。
+        /// 确定当前 <see cref="PropertyInfo"/> 是否为带索引参数的属性。
         /// </summary>
         /// <param name="property">要进行检查的 <see cref="PropertyInfo"/> 对象。</param>
-        /// <returns>若 <paramref name="property"/> 是一个索引属性，
+        /// <returns>若 <paramref name="property"/> 是带索引参数的属性，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="property"/> 为 <see langword="null"/>。</exception>
@@ -65,47 +65,47 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 检索当前类型可以访问的所有事件的集合。
+        /// 检索当前 <see cref="Type"/> 可以访问的所有事件的集合。
         /// </summary>
         /// <param name="type">要检索事件的 <see cref="Type"/> 对象。</param>
         /// <returns><paramref name="type"/> 可以访问的所有事件的集合。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        internal static IEnumerable<EventInfo> GetAccessibleEvents(this Type type) =>
+        public static IEnumerable<EventInfo> GetAccessibleEvents(this Type type) =>
             type.GetAccessibleMembers(RuntimeReflectionExtensions.GetRuntimeEvents);
 
         /// <summary>
-        /// 检索当前类型可以访问的所有字段的集合。
+        /// 检索当前 <see cref="Type"/> 可以访问的所有字段的集合。
         /// </summary>
         /// <param name="type">要检索字段的 <see cref="Type"/> 对象。</param>
         /// <returns><paramref name="type"/> 可以访问的所有字段的集合。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        internal static IEnumerable<FieldInfo> GetAccessibleFields(this Type type) =>
+        public static IEnumerable<FieldInfo> GetAccessibleFields(this Type type) =>
             type.GetAccessibleMembers(RuntimeReflectionExtensions.GetRuntimeFields);
 
         /// <summary>
-        /// 检索当前类型可以访问的所有方法的集合。
+        /// 检索当前 <see cref="Type"/> 可以访问的所有方法的集合。
         /// </summary>
         /// <param name="type">要检索方法的 <see cref="Type"/> 对象。</param>
         /// <returns><paramref name="type"/> 可以访问的所有方法的集合。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        internal static IEnumerable<MethodInfo> GetAccessibleMethods(this Type type) =>
+        public static IEnumerable<MethodInfo> GetAccessibleMethods(this Type type) =>
             type.GetAccessibleMembers(RuntimeReflectionExtensions.GetRuntimeMethods);
 
         /// <summary>
-        /// 检索当前类型可以访问的所有属性的集合。
+        /// 检索当前 <see cref="Type"/> 可以访问的所有属性的集合。
         /// </summary>
         /// <param name="type">要检索属性的 <see cref="Type"/> 对象。</param>
         /// <returns><paramref name="type"/> 可以访问的所有属性的集合。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        internal static IEnumerable<PropertyInfo> GetAccessibleProperties(this Type type) =>
+        public static IEnumerable<PropertyInfo> GetAccessibleProperties(this Type type) =>
             type.GetAccessibleMembers(RuntimeReflectionExtensions.GetRuntimeProperties);
 
         /// <summary>
-        /// 检索当前类型可以访问的所有指定类型的成员的集合。
+        /// 检索当前 <see cref="Type"/> 可以访问的所有指定类型的成员的集合。
         /// </summary>
         /// <typeparam name="TMemberInfo">要检索的成员的类型。</typeparam>
         /// <param name="type">要检索成员的 <see cref="Type"/> 对象。</param>
@@ -129,11 +129,11 @@ namespace XstarS.ComponentModel
             var result = new List<TMemberInfo>(memberFinder(type));
             if (type.IsInterface)
             {
-                foreach (var iface in type.GetInterfaces())
+                foreach (var iType in type.GetInterfaces())
                 {
-                    if (iface.IsVisible)
+                    if (iType.IsVisible)
                     {
-                        result.AddRange(memberFinder(iface));
+                        result.AddRange(memberFinder(iType));
                     }
                 }
                 result.AddRange(memberFinder(typeof(object)));
