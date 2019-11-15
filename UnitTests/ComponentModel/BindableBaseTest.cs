@@ -10,21 +10,22 @@ namespace XstarS.ComponentModel
         [TestMethod]
         public void PropertyChanged_BindableObject_CallsHandler()
         {
-            var rectangle = new BindableRectangle() { Length = 10, Width = 10 };
+            var box = new BindableBox() { Length = 10, Width = 10, Height = 10 };
             var changedCounts = new Dictionary<string, int>()
             {
-                [nameof(rectangle.Length)] = 0,
-                [nameof(rectangle.Width)] = 0,
-                [nameof(rectangle.Size)] = 0
+                [nameof(box.Length)] = 0,
+                [nameof(box.Width)] = 0,
+                [nameof(box.Height)] = 0,
+                [nameof(box.Size)] = 0
             };
-            rectangle.PropertyChanged += (sender, e) => changedCounts[e.PropertyName]++;
-            Assert.AreEqual(rectangle.Size, rectangle.Length * rectangle.Width);
-            rectangle.Length *= 10;
-            rectangle.Width *= 10;
-            Assert.AreEqual(rectangle.Size, rectangle.Length * rectangle.Width);
-            Assert.AreEqual(changedCounts[nameof(rectangle.Length)], 1);
-            Assert.AreEqual(changedCounts[nameof(rectangle.Width)], 1);
-            Assert.AreEqual(changedCounts[nameof(rectangle.Size)], 2);
+            box.PropertyChanged += (sender, e) => changedCounts[e.PropertyName]++;
+            Assert.AreEqual(box.Size, box.Length * box.Width * box.Height);
+            box.Length *= 10; box.Width *= 10; box.Height *= 10;
+            Assert.AreEqual(box.Size, box.Length * box.Width * box.Height);
+            Assert.AreEqual(changedCounts[nameof(box.Length)], 1);
+            Assert.AreEqual(changedCounts[nameof(box.Width)], 1);
+            Assert.AreEqual(changedCounts[nameof(box.Height)], 1);
+            Assert.AreEqual(changedCounts[nameof(box.Size)], 3);
         }
 
         [TestMethod]

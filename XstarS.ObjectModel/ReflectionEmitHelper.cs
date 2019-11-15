@@ -179,6 +179,9 @@ namespace XstarS.ComponentModel
                     new ArgumentException().Message, nameof(baseProperty));
             }
 
+            var rPropertyNames = baseProperty.GetCustomAttribute<
+                RelatedPropertiesAttribute>()?.PropertyNames ?? Array.Empty<string>();
+
             var property = type.DefineProperty(
                 baseProperty.Name, baseProperty.Attributes, baseProperty.PropertyType,
                 Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
@@ -248,11 +251,17 @@ namespace XstarS.ComponentModel
                     il.EmitLdarg(i + 1);
                 }
                 il.Emit(OpCodes.Call, baseProperty.SetMethod);
+                var propertyName = (baseProperty.GetIndexParameters().Length == 0) ?
+                    baseProperty.Name : $"{baseProperty.Name}[]";
                 il.Emit(OpCodes.Ldarg_0);
-                var propertyName = baseProperty.Name;
-                if (baseProperty.IsIndexProperty()) { propertyName += "[]"; }
                 il.Emit(OpCodes.Ldstr, propertyName);
                 il.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
+                foreach (var rPropertyName in rPropertyNames)
+                {
+                    il.Emit(OpCodes.Ldarg_0);
+                    il.Emit(OpCodes.Ldstr, rPropertyName);
+                    il.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
+                }
                 il.Emit(OpCodes.Ret);
 
                 property.SetSetMethod(method);
@@ -281,7 +290,7 @@ namespace XstarS.ComponentModel
             {
                 throw new ArgumentNullException(nameof(baseProperty));
             }
-            if (baseProperty.IsIndexProperty())
+            if (baseProperty.GetIndexParameters().Length != 0)
             {
                 throw new ArgumentException(
                     new ArgumentException().Message, nameof(baseProperty));
@@ -370,7 +379,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseProperty">作为基础的属性。</param>
-        /// <param name="onPropertyChangedMethod"><c>void OnProperty(string)</c> 方法。</param>
+        /// <param name="onPropertyChangedMethod"><c>void OnPropertyChanged(string)</c> 方法。</param>
         /// <returns>定义的可绑定自动属性及其对应的字段，
         /// 在属性更改时触发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。</returns>
         /// <exception cref="ArgumentException">
@@ -391,7 +400,7 @@ namespace XstarS.ComponentModel
             {
                 throw new ArgumentNullException(nameof(onPropertyChangedMethod));
             }
-            if (baseProperty.IsIndexProperty())
+            if (baseProperty.GetIndexParameters().Length != 0)
             {
                 throw new ArgumentException(
                     new ArgumentException().Message, nameof(baseProperty));
@@ -401,6 +410,9 @@ namespace XstarS.ComponentModel
                 throw new ArgumentException(
                     new ArgumentException().Message, nameof(baseProperty));
             }
+
+            var rPropertyNames = baseProperty.GetCustomAttribute<
+                RelatedPropertiesAttribute>()?.PropertyNames ?? Array.Empty<string>();
 
             var property = type.DefineProperty(
                 baseProperty.Name, baseProperty.Attributes, baseProperty.PropertyType,
@@ -470,6 +482,12 @@ namespace XstarS.ComponentModel
                 il.Emit(OpCodes.Ldarg_0);
                 il.Emit(OpCodes.Ldstr, baseProperty.Name);
                 il.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
+                foreach (var rPropertyName in rPropertyNames)
+                {
+                    il.Emit(OpCodes.Ldarg_0);
+                    il.Emit(OpCodes.Ldstr, rPropertyName);
+                    il.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
+                }
                 il.Emit(OpCodes.Ret);
 
                 property.SetSetMethod(method);
@@ -669,6 +687,62 @@ namespace XstarS.ComponentModel
             }
 
             return new KeyValuePair<EventBuilder, FieldBuilder>(@event, field);
+        }
+
+        /// <summary>
+        /// 定义 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的触发方法
+        /// <c>void OnPropertyChanged(string)</c>，并添加到当前类型。
+        /// </summary>
+        /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
+        /// <param name="propertyChangedField">
+        /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件委托的字段。</param>
+        /// <returns>定义的 <c>void OnPropertyChanged(string)</c> 方法。</returns>
+        /// <exception cref="ArgumentException"><paramref name="propertyChangedField"/>
+        /// 的类型不为 <see cref="PropertyChangedEventHandler"/>。</exception>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        internal static MethodBuilder DefineOnPropertyChangedMethod(
+            this TypeBuilder type, FieldInfo propertyChangedField)
+        {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            if (propertyChangedField is null)
+            {
+                throw new ArgumentNullException(nameof(propertyChangedField));
+            }
+            if (propertyChangedField.FieldType != typeof(PropertyChangedEventHandler))
+            {
+                throw new ArgumentException(
+                    new ArgumentException().Message, nameof(propertyChangedField));
+            }
+
+            var method = type.DefineMethod("OnPropertyChanged",
+                MethodAttributes.Family | MethodAttributes.Virtual |
+                MethodAttributes.HideBySig | MethodAttributes.NewSlot,
+                typeof(void), new[] { typeof(string) });
+
+            method.DefineParameter(1, ParameterAttributes.None, "propertyName");
+
+            var il = method.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld, propertyChangedField);
+            il.Emit(OpCodes.Dup);
+            var labelInvoke = il.DefineLabel();
+            il.Emit(OpCodes.Brtrue_S, labelInvoke);
+            il.Emit(OpCodes.Pop);
+            il.Emit(OpCodes.Ret);
+            il.MarkLabel(labelInvoke);
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldarg_1);
+            il.Emit(OpCodes.Newobj,
+                typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) }));
+            il.Emit(OpCodes.Callvirt, typeof(PropertyChangedEventHandler).GetMethod(
+                nameof(PropertyChangedEventHandler.Invoke),
+                new[] { typeof(object), typeof(PropertyChangedEventArgs) }));
+            il.Emit(OpCodes.Ret);
+
+            return method;
         }
 
         /// <summary>

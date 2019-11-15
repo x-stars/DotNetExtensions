@@ -9,20 +9,22 @@ namespace XstarS.ComponentModel
     internal sealed class DelegateCommand : Command
     {
         /// <summary>
-        /// 在调用此命令时要调用的方法的委托。
+        /// <see cref="DelegateCommand.Execute(object)"/> 方法的委托。
         /// </summary>
         private readonly Action<object> ExecuteDelegate;
 
         /// <summary>
-        /// 确定此命令是否可在其当前状态下执行的方法的委托。
+        /// <see cref="DelegateCommand.CanExecute(object)"/> 方法的委托。
         /// </summary>
         private readonly Predicate<object> CanExecuteDelegate;
 
         /// <summary>
-        /// 以指定的委托初始化 <see cref="DelegateCommand"/> 类的新实例。
+        /// 使用指定的委托初始化 <see cref="DelegateCommand"/> 类的新实例。
         /// </summary>
-        /// <param name="executeDelegate">在调用此命令时要调用的方法的委托。</param>
-        /// <param name="canExecuteDelegate">确定此命令是否可在其当前状态下执行的方法的委托。</param>
+        /// <param name="executeDelegate">
+        /// <see cref="DelegateCommand.Execute(object)"/> 方法的委托。</param>
+        /// <param name="canExecuteDelegate">
+        /// <see cref="DelegateCommand.CanExecute(object)"/> 方法的委托。</param>
         /// <param name="canExecuteChangedToken">
         /// 引发此命令的 <see cref="Command.CanExecuteChanged"/> 事件的对象。</param>
         internal DelegateCommand(

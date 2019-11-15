@@ -21,13 +21,17 @@ namespace XstarS.ComponentModel
         public event EventHandler CanExecuteChanged;
 
         /// <summary>
-        /// 以指定的委托创建一个 <see cref="Command"/> 类的实例。
+        /// 创建一个 <see cref="Command"/> 类的实例，
+        /// 其 <see cref="Command.Execute(object)"/> 方法和
+        /// <see cref="Command.CanExecute(object)"/> 方法由指定的委托定义。
         /// </summary>
-        /// <param name="executeDelegate">在调用此命令时要调用的方法的委托。</param>
-        /// <param name="canExecuteDelegate">确定此命令是否可在其当前状态下执行的方法的委托。</param>
+        /// <param name="executeDelegate">
+        /// <see cref="Command.Execute(object)"/> 方法的委托。</param>
+        /// <param name="canExecuteDelegate">
+        /// <see cref="Command.CanExecute(object)"/> 方法的委托。</param>
         /// <param name="canExecuteChangedToken">
         /// 引发此命令的 <see cref="Command.CanExecuteChanged"/> 事件的对象。</param>
-        /// <returns>以指定的委托创建的 <see cref="Command"/> 类的实例。</returns>
+        /// <returns>以指定的委托定义的 <see cref="Command"/> 类的实例。</returns>
         public static Command Create(
             Action<object> executeDelegate, Predicate<object> canExecuteDelegate,
             out CanExecuteChangedToken canExecuteChangedToken)
@@ -37,14 +41,14 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 定义在调用此命令时要调用的方法。
+        /// 在当前状态下执行此命令。
         /// </summary>
         /// <param name="parameter">此命令使用的数据。
         /// 如果此命令不需要传递数据，则该对象可以设置为 <see langword="null"/>。</param>
         public abstract void Execute(object parameter);
 
         /// <summary>
-        /// 定义确定此命令是否可在其当前状态下执行的方法。
+        /// 确定此命令是否可在其当前状态下执行。
         /// </summary>
         /// <param name="parameter">此命令使用的数据。
         /// 如果此命令不需要传递数据，则该对象可以设置为 <see langword="null"/>。</param>

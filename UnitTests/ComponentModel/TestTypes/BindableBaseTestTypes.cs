@@ -1,8 +1,8 @@
 ﻿namespace XstarS.ComponentModel.TestTypes
 {
-    public class BindableRectangle : BindableObject
+    public class BindableBox : BindableObject
     {
-        public BindableRectangle() { }
+        public BindableBox() { }
 
         private int _Length;
         public int Length
@@ -26,7 +26,18 @@
             }
         }
 
-        public int Size => this.Length * this.Width;
+        private int _Height;
+        public int Height
+        {
+            get => this._Height;
+            set
+            {
+                this.SetProperty(ref this._Height, value);
+                this.OnPropertyChanged(nameof(this.Size));
+            }
+        }
+
+        public int Size => this.Length * this.Width * this.Height;
     }
 
     public class BindablePersonName : BindableStorage

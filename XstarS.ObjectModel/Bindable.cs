@@ -16,19 +16,19 @@ namespace XstarS.ComponentModel
         private T InternalValue;
 
         /// <summary>
-        /// 使用默认值初始化 <see cref="Bindable{T}"/> 类的新实例。
+        /// 初始化 <see cref="Bindable{T}"/> 类的新实例。
         /// </summary>
         public Bindable() { }
 
         /// <summary>
-        /// 使用指定的值初始化 <see cref="Bindable{T}"/> 类的新实例。
+        /// 初始化 <see cref="Bindable{T}"/> 类的新实例，并将其值设置为指定的值。
         /// </summary>
         /// <param name="value">一个 <typeparamref name="T"/> 类型的值。</param>
         public Bindable(T value) { this.Value = value; }
 
         /// <summary>
-        /// 获取或设置当前 <see cref="Bindable{T}"/> 实例的可绑定的值。
-        /// 更改属性的值将引发 <see cref="BindableBase.PropertyChanged"/> 事件。
+        /// 获取或设置当前 <see cref="Bindable{T}"/> 的值。
+        /// 更改此属性的值将引发 <see cref="BindableBase.PropertyChanged"/> 事件。
         /// </summary>
         public T Value
         {
@@ -37,7 +37,7 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 返回表示当前实例的值的字符串。
+        /// 返回表示当前 <see cref="Bindable{T}"/> 的值的字符串。
         /// </summary>
         /// <returns><see cref="Bindable{T}.Value"/> 的等效字符串表达形式。</returns>
         public override string ToString() => this.Value?.ToString();
@@ -45,14 +45,14 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 创建一个新的 <see cref="Bindable{T}"/> 对象，并将其初始化为指定的值。
         /// </summary>
-        /// <param name="value">一个 <typeparamref name="T"/> 类型的值。</param>
-        /// <returns>使用 <paramref name="value"/> 初始化的 <see cref="Bindable{T}"/> 对象。</returns>
+        /// <param name="value">作为初始化值的 <typeparamref name="T"/> 类型的对象。</param>
+        /// <returns>值为 <paramref name="value"/> 的 <see cref="Bindable{T}"/> 对象。</returns>
         public static implicit operator Bindable<T>(T value) => new Bindable<T>(value);
 
         /// <summary>
         /// 返回指定 <see cref="Bindable{T}"/> 对象的值。
         /// </summary>
-        /// <param name="bindable">一个 <see cref="Bindable{T}"/> 对象。</param>
+        /// <param name="bindable">要获取值的 <see cref="Bindable{T}"/> 对象。</param>
         /// <returns><paramref name="bindable"/> 的值。</returns>
         public static implicit operator T(Bindable<T> bindable) => bindable.Value;
     }

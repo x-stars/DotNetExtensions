@@ -47,24 +47,6 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 确定当前 <see cref="PropertyInfo"/> 是否为带索引参数的属性。
-        /// </summary>
-        /// <param name="property">要进行检查的 <see cref="PropertyInfo"/> 对象。</param>
-        /// <returns>若 <paramref name="property"/> 是带索引参数的属性，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="property"/> 为 <see langword="null"/>。</exception>
-        internal static bool IsIndexProperty(this PropertyInfo property)
-        {
-            if (property is null)
-            {
-                throw new ArgumentNullException(nameof(property));
-            }
-
-            return property.GetIndexParameters().Length != 0;
-        }
-
-        /// <summary>
         /// 检索当前 <see cref="Type"/> 可以访问的所有事件的集合。
         /// </summary>
         /// <param name="type">要检索事件的 <see cref="Type"/> 对象。</param>

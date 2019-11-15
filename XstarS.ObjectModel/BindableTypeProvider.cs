@@ -35,7 +35,7 @@ namespace XstarS.ComponentModel
         private MethodInfo OnPropertyChangedMethod;
 
         /// <summary>
-        /// 以指定类型为原型类型初始化 <see cref="BindableTypeProvider"/> 类的新实例。
+        /// 使用指定的原型类型初始化 <see cref="BindableTypeProvider"/> 类的新实例。
         /// </summary>
         /// <param name="baseType">原型类型，应为接口或非密封类。</param>
         /// <exception cref="ArgumentException">
@@ -59,12 +59,12 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 原型类型的 <see cref="Type"/> 对象。
+        /// 获取原型类型的 <see cref="Type"/> 对象。
         /// </summary>
         public Type BaseType { get; }
 
         /// <summary>
-        /// 可绑定类型的 <see cref="Type"/> 对象。
+        /// 获取可绑定类型的 <see cref="Type"/> 对象。
         /// </summary>
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
@@ -72,10 +72,10 @@ namespace XstarS.ComponentModel
         public Type BindableType => this.LazyBindableType.Value;
 
         /// <summary>
-        /// 返回一个以指定类型为原型类型的 <see cref="BindableTypeProvider"/> 类的实例。
+        /// 获取原型类型为指定类型的 <see cref="BindableTypeProvider"/> 类的实例。
         /// </summary>
         /// <param name="baseType">原型类型，应为接口或非密封类。</param>
-        /// <returns>一个原型类型为 <paramref name="baseType"/> 的
+        /// <returns>原型类型为 <paramref name="baseType"/> 的
         /// <see cref="BindableTypeProvider"/> 类的实例。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseType"/> 不是公共接口，也不是公共非密封类。</exception>
@@ -173,54 +173,27 @@ namespace XstarS.ComponentModel
             var baseType = this.BaseType;
             var type = this.BindableTypeBuilder;
 
-            var baseEvent =
-                baseType.GetInterfaces().Contains(typeof(INotifyPropertyChanged)) ?
+            var baseEvent = baseType.GetInterfaces().Contains(typeof(INotifyPropertyChanged)) ?
                 baseType.GetAccessibleEvents().Where(@event =>
-                @event.Name == nameof(INotifyPropertyChanged.PropertyChanged) &&
-                @event.EventHandlerType == typeof(PropertyChangedEventHandler)).FirstOrDefault() :
+                    (@event.Name == nameof(INotifyPropertyChanged.PropertyChanged)) &&
+                    (@event.EventHandlerType == typeof(PropertyChangedEventHandler))).FirstOrDefault() :
                 typeof(INotifyPropertyChanged).GetEvent(nameof(INotifyPropertyChanged.PropertyChanged));
 
             if (baseEvent?.AddMethod.IsAbstract == true)
             {
                 var field = type.DefineDefaultEventOverride(baseEvent).Value;
-
-                var method = type.DefineMethod("OnPropertyChanged",
-                    MethodAttributes.Family | MethodAttributes.Virtual |
-                    MethodAttributes.HideBySig | MethodAttributes.NewSlot,
-                    typeof(void), new[] { typeof(string) });
-
-                method.DefineParameter(1, ParameterAttributes.None, "propertyName");
-
-                var il = method.GetILGenerator();
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldfld, field);
-                il.Emit(OpCodes.Dup);
-                var labelInvoke = il.DefineLabel();
-                il.Emit(OpCodes.Brtrue_S, labelInvoke);
-                il.Emit(OpCodes.Pop);
-                il.Emit(OpCodes.Ret);
-                il.MarkLabel(labelInvoke);
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Newobj,
-                    typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) }));
-                il.Emit(OpCodes.Callvirt, typeof(PropertyChangedEventHandler).GetMethod(
-                    nameof(PropertyChangedEventHandler.Invoke),
-                    new[] { typeof(object), typeof(PropertyChangedEventArgs) }));
-                il.Emit(OpCodes.Ret);
+                var method = type.DefineOnPropertyChangedMethod(field);
 
                 this.OnPropertyChangedMethod = method;
             }
             else
             {
-                var method =
-                    baseType.GetAccessibleMethods().Where(method =>
+                var method = baseType.GetAccessibleMethods().Where(method =>
                     (method.Name == "OnPropertyChanged") &&
+                    (method.ReturnParameter.ParameterType == typeof(void)) &&
                     (method.GetParameters().Length == 1) &&
                     (method.GetParameters()[0].ParameterType == typeof(string)) &&
-                    (method.ReturnType == typeof(void)) &&
-                    method.IsInheritableInstance() &&
-                    !method.IsAbstract).FirstOrDefault();
+                    method.IsInheritableInstance() && !method.IsAbstract).FirstOrDefault();
 
                 if (method is null)
                 {
@@ -247,7 +220,7 @@ namespace XstarS.ComponentModel
                 {
                     if (baseProperty.GetAccessors().All(accessor => accessor.IsAbstract))
                     {
-                        if (baseProperty.IsIndexProperty())
+                        if (baseProperty.GetIndexParameters().Length != 0)
                         {
                             type.DefineNotImplementedPropertyOverride(baseProperty);
                         }

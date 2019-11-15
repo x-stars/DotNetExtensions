@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -13,106 +14,94 @@ namespace XstarS.ComponentModel
         public void BindableType_Singleton_IsThreadSafe()
         {
             int testCount = 10000;
-
-            var providers = new BindableFactory<DisposableBindingValue<object>>[testCount];
+            var factories = new BindableFactory<object>[testCount];
             Parallel.For(0, testCount,
-                index => providers[index] = BindableFactory<DisposableBindingValue<object>>.Default);
-            Assert.IsTrue(providers.All(
-                provider => object.ReferenceEquals(provider, providers[0])));
-            Assert.IsTrue(providers.All(
-                provider => object.ReferenceEquals(provider.BindableType, providers[0].BindableType)));
+                index => factories[index] = BindableFactory<object>.Default);
+            Assert.IsTrue(factories.All(
+                factory => object.ReferenceEquals(factory, factories[0])));
+            Assert.IsTrue(factories.All(
+                factory => object.ReferenceEquals(factory.BindableType, factories[0].BindableType)));
         }
 
         [TestMethod]
-        public void BindableType_InternalType_ThrowsException()
+        public void BindableType_PublicInheritableType_ReturnsType()
         {
-            Assert.ThrowsException<ArgumentException>(
-                () => BindableFactory<IInternalDisposableBindingValue<int>>.Default.BindableType);
-            Assert.ThrowsException<ArgumentException>(
-                () => BindableFactory<InternalDisposableBindingValue<string>>.Default.BindableType);
+            Assert.IsNotNull(BindableFactory<IMutableRectangle>.Default.BindableType);
+            Assert.IsNotNull(BindableFactory<BindableRectangleBase>.Default.BindableType);
+            Assert.IsNotNull(BindableFactory<BindableRectangle>.Default.BindableType);
+            Assert.IsNotNull(BindableFactory<NonBindableRectangle>.Default.BindableType);
         }
 
         [TestMethod]
-        public void BindableType_SealedClass_ThrowsException()
+        public void BindableType_NonPublicOrNonInheritableType_ThrowsException()
         {
             Assert.ThrowsException<ArgumentException>(
-                () => BindableFactory<SealedDisposableBindingValue<string>>.Default.BindableType);
+                () => BindableFactory<IInternalMutableRectangle>.Default.BindableType);
+            Assert.ThrowsException<ArgumentException>(
+                () => BindableFactory<SealedMutableRectangle>.Default.BindableType);
         }
 
         [TestMethod]
         public void BindableType_NoOnPropertyChangedMethod_ThrowsException()
         {
             Assert.ThrowsException<MissingMethodException>(
-                () => BindableFactory<BadDisposableBindingBase<object>>.Default.BindableType);
+                () => BindableFactory<BadBindableRectangle>.Default.BindableType);
         }
 
         [TestMethod]
-        public void CreateInstance_InterfaceAndClass_ReturnsInstance()
+        public void CreateInstance_InterfaceAndNonSealedClass_ReturnsInstance()
         {
-            Assert.IsNotNull(BindableFactory<IDisposableNotifyPropertyChanged>.Default.CreateInstance());
-            Assert.IsNotNull(BindableFactory<IDisposableBindingValue<int>>.Default.CreateInstance());
-            Assert.IsNotNull(BindableFactory<DisposableBindingValueBase<object>>.Default.CreateInstance());
-            Assert.IsNotNull(BindableFactory<DisposableBindingValue<int>>.Default.CreateInstance(1));
+            Assert.IsNotNull(BindableFactory<IMutableRectangle>.Default.CreateInstance());
+            Assert.IsNotNull(BindableFactory<BindableRectangleBase>.Default.CreateInstance());
+            Assert.IsNotNull(BindableFactory<BindableRectangle>.Default.CreateInstance(2, 3));
+            Assert.IsNotNull(BindableFactory<NonBindableRectangle>.Default.CreateInstance(2, 3));
         }
 
         [TestMethod]
-        public void CreateInstance_InterfaceWithMethod_ThrowsWhenCallMethod()
+        public void CreateInstance_TypeWithAbstractMethod_ThrowsWhenCallMethod()
         {
-            var o = BindableFactory<IDisposableBindingValue<object>>.Default.CreateInstance();
-            Assert.ThrowsException<NotImplementedException>(() => o.Dispose());
+            var o1 = BindableFactory<IMutableRectangle>.Default.CreateInstance();
+            Assert.ThrowsException<NotImplementedException>(() => o1.Deconstruct(out _, out _));
+            var o2 = BindableFactory<BindableRectangleBase>.Default.CreateInstance();
+            Assert.ThrowsException<NotImplementedException>(() => o2.Deconstruct(out _, out _));
         }
 
         [TestMethod]
-        public void CreateInstance_ClassWithAbstractMethod_ThrowsWhenCallMethod()
+        public void PropertyChanged_OverridableProperty_CallsHandler()
         {
-            var o = BindableFactory<DisposableBindingValueBase<object>>.Default.CreateInstance();
-            Assert.ThrowsException<NotImplementedException>(() => o.Load(new CloneableList<object>()));
-        }
-
-        [TestMethod]
-        public void CreateInstance_ClassWithMethod_WorksProperly()
-        {
-            object i1 = new object(), i2 = new object();
-            var o = BindableFactory<DisposableBindingValue<object>>.Default.CreateInstance(i1);
-            var l = new CloneableList<object>() { i2 };
-            Assert.AreSame(o.Value, i1);
-            o.Load(l);
-            Assert.AreSame(o.Value, i2);
-        }
-
-        [TestMethod]
-        public void PropertyChanged_AbstractProperty_CallsHandler()
-        {
-            int i = 0;
-            var o = BindableFactory<DisposableBindingValueBase<int>>.Default.CreateInstance();
-            o.PropertyChanged += (sender, e) => i++;
-            o.Value++;
-            Assert.AreEqual(i, 1);
-        }
-
-        [TestMethod]
-        public void CreateInstance_VirtualIndexProperty_CallsHandler()
-        {
-            int i = 0;
-            var o = BindableFactory<IndexedDisposableBindingValueBase<double>>.Default.CreateInstance();
-            o.PropertyChanged += (sender, e) => i++;
-            o[0] = 0D;
-            Assert.AreEqual(o[0], 0D);
-            Assert.AreEqual(o.Value, 0D);
-            o[0] = 1D;
-            Assert.AreEqual(o[0], 1D);
-            Assert.AreEqual(o.Value, 1D);
-            Assert.AreEqual(i, 4);
+            var rectangle = BindableFactory<BindableRectangle>.Default.CreateInstance(10, 10);
+            var changedCounts = new Dictionary<string, int>()
+            {
+                [nameof(rectangle.Height)] = 0,
+                [nameof(rectangle.Width)] = 0,
+                [nameof(rectangle.Size)] = 0
+            };
+            rectangle.PropertyChanged += (sender, e) => changedCounts[e.PropertyName]++;
+            Assert.AreEqual(rectangle.Size, rectangle.Height * rectangle.Width);
+            rectangle.Height *= 10; rectangle.Width *= 10;
+            Assert.AreEqual(rectangle.Size, rectangle.Height * rectangle.Width);
+            Assert.AreEqual(changedCounts[nameof(rectangle.Height)], 1);
+            Assert.AreEqual(changedCounts[nameof(rectangle.Width)], 1);
+            Assert.AreEqual(changedCounts[nameof(rectangle.Size)], 2);
         }
 
         [TestMethod]
         public void PropertyChanged_SealedProperty_NotCallsHandler()
         {
-            int i = 0;
-            var o = BindableFactory<DisposableSealedBindingValue<int>>.Default.CreateInstance(0);
-            o.PropertyChanged += (sender, e) => i++;
-            o.Value++;
-            Assert.AreEqual(i, 0);
+            var rectangle = BindableFactory<NonBindableRectangle>.Default.CreateInstance(10, 10);
+            var changedCounts = new Dictionary<string, int>()
+            {
+                [nameof(rectangle.Height)] = 0,
+                [nameof(rectangle.Width)] = 0,
+                [nameof(rectangle.Size)] = 0
+            };
+            rectangle.PropertyChanged += (sender, e) => changedCounts[e.PropertyName]++;
+            Assert.AreEqual(rectangle.Size, rectangle.Height * rectangle.Width);
+            rectangle.Height *= 10; rectangle.Width *= 10;
+            Assert.AreEqual(rectangle.Size, rectangle.Height * rectangle.Width);
+            Assert.AreEqual(changedCounts[nameof(rectangle.Height)], 0);
+            Assert.AreEqual(changedCounts[nameof(rectangle.Width)], 0);
+            Assert.AreEqual(changedCounts[nameof(rectangle.Size)], 0);
         }
     }
 }

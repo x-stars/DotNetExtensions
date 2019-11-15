@@ -32,18 +32,18 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 返回一个默认的 <see cref="BindableFactory{T}"/> 类的实例。
+        /// 获取默认的 <see cref="BindableFactory{T}"/> 类的实例。
         /// </summary>
         public static BindableFactory<T> Default =>
             BindableFactory<T>.LazyDefault.Value;
 
         /// <summary>
-        /// 原型类型的 <see cref="Type"/> 对象。
+        /// 获取原型类型的 <see cref="Type"/> 对象。
         /// </summary>
         public Type BaseType => this.TypeProvider.BaseType;
 
         /// <summary>
-        /// 可绑定类型的 <see cref="Type"/> 对象。
+        /// 获取可绑定类型的 <see cref="Type"/> 对象。
         /// </summary>
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，

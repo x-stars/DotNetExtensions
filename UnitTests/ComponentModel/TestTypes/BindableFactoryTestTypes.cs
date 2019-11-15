@@ -1,104 +1,125 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 
 namespace XstarS.ComponentModel.TestTypes
 {
-    public interface IDisposableNotifyPropertyChanged : IDisposable, INotifyPropertyChanged { }
-
-    public interface IDisposableBindingValue<T> : IDisposableNotifyPropertyChanged
+    public interface IMutableRectangle
     {
-        T Value { get; set; }
+        int Height { get; set; }
+
+        int Width { get; set; }
+
+        void Deconstruct(out int height, out int width);
     }
 
-    internal interface IInternalDisposableBindingValue<T> : IDisposableBindingValue<T> { }
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Microsoft.Design", "CA1040:AvoidEmptyInterfaces")]
+    internal interface IInternalMutableRectangle : IMutableRectangle { }
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "Microsoft.Design", "CA1012:AbstractTypesShouldNotHaveConstructors")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Microsoft.Design", "CA1063:ImplementIDisposableCorrectly")]
-    public abstract class DisposableBindingValueBase<T> : IDisposableBindingValue<T>
+    public abstract class BindableRectangleBase : IMutableRectangle, INotifyPropertyChanged
     {
-        public DisposableBindingValueBase() { }
+        public BindableRectangleBase() { }
 
-        public DisposableBindingValueBase(T value)
+        public BindableRectangleBase(int height, int width)
         {
-            this.Value = value;
+            this.Height = height;
+            this.Width = width;
         }
 
-        public abstract T Value { get; set; }
+        [RelatedProperties(nameof(Size))]
+        public abstract int Height { get; set; }
+
+        [RelatedProperties(nameof(Size))]
+        public abstract int Width { get; set; }
+
+        public int Size => this.Height * this.Width;
 
         public abstract event PropertyChangedEventHandler PropertyChanged;
 
-        public void Dispose()
+        public abstract void Deconstruct(out int height, out int width);
+    }
+
+    public sealed class SealedMutableRectangle : IMutableRectangle
+    {
+        public SealedMutableRectangle() { }
+
+        public SealedMutableRectangle(int height, int width)
         {
-            this.Value = default;
+            this.Height = height;
+            this.Width = width;
         }
 
-        public abstract void Load<TCollection>(TCollection collection)
-            where TCollection : List<T>, ICloneable;
-    }
+        public int Height { get; set; }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Microsoft.Design", "CA1012:AbstractTypesShouldNotHaveConstructors")]
-    public abstract class IndexedDisposableBindingValueBase<T> : DisposableBindingValueBase<T>
-    {
-        public IndexedDisposableBindingValueBase() { }
+        public int Width { get; set; }
 
-        public virtual T this[int index]
+        public int Size => this.Height * this.Width;
+
+        public void Deconstruct(out int height, out int width)
         {
-            get => this.Value;
-            set => this.Value = value;
+            height = this.Height;
+            width = this.Width;
         }
     }
 
-    public abstract class BadDisposableBindingBase<T> : DisposableBindingValueBase<T>
+    public class BindableRectangle : BindableRectangleBase
     {
-#pragma warning disable CS0067
-        public sealed override event PropertyChangedEventHandler PropertyChanged;
-#pragma warning restore CS0067
-    }
+        public BindableRectangle() { }
 
-    public class DisposableBindingValue<T> : DisposableBindingValueBase<T>
-    {
-        public DisposableBindingValue() { }
+        public BindableRectangle(int height, int width) : base(height, width) { }
 
-        public DisposableBindingValue(T value) : base(value) { }
+        [RelatedProperties(nameof(Size))]
+        public override int Height { get; set; }
 
-        public override T Value { get; set; }
+        [RelatedProperties(nameof(Size))]
+        public override int Width { get; set; }
 
         public override event PropertyChangedEventHandler PropertyChanged;
 
-        public override void Load<TCollection>(TCollection collection)
+        public override void Deconstruct(out int height, out int width)
         {
-            this.Value = collection[0];
+            height = this.Height;
+            width = this.Width;
         }
 
-        public virtual void OnPropertyChanged(string propertyName) =>
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
             this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
     }
 
-    internal class InternalDisposableBindingValue<T> : DisposableBindingValue<T> { }
-
-    public sealed class SealedDisposableBindingValue<T> : DisposableBindingValue<T> { }
-
-    public class DisposableSealedBindingValue<T> : DisposableBindingValue<T>
+    public class BadBindableRectangle : BindableRectangleBase
     {
-        public DisposableSealedBindingValue() { }
+        public BadBindableRectangle() { }
 
-        public DisposableSealedBindingValue(T value) : base(value) { }
+        public BadBindableRectangle(int height, int width) : base(height, width) { }
 
-        public sealed override T Value { get; set; }
+        [RelatedProperties(nameof(Size))]
+        public override int Height { get; set; }
+
+        [RelatedProperties(nameof(Size))]
+        public override int Width { get; set; }
+
+#pragma warning disable CS0067
+        public sealed override event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CS0067
+
+        public override void Deconstruct(out int height, out int width)
+        {
+            height = this.Height;
+            width = this.Width;
+        }
     }
 
-    internal class CloneableList<T> : List<T>, ICloneable
+    public class NonBindableRectangle : BindableRectangle
     {
-        public CloneableList() : base() { }
+        public NonBindableRectangle() { }
 
-        public CloneableList(int capacity) : base(capacity) { }
+        public NonBindableRectangle(int height, int width) : base(height, width) { }
 
-        public CloneableList(IEnumerable<T> collection) : base(collection) { }
+        public sealed override int Height { get; set; }
 
-        public object Clone() => new CloneableList<T>(this);
+        public sealed override int Width { get; set; }
     }
 }
