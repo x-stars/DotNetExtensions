@@ -45,6 +45,10 @@
 
 原理和使用方法详述于[命令行参数解析器说明文档](Documentations/ParamReaders.md)中。
 
+## 程序集 XstarS.Unions
+
+提供框架原生值类型的联合 (`union`)，使用自定义字段布局的结构 (`struct`) 实现。
+
 ## 程序集 XstarS.ValueValidate
 
 提供连续的对象的值的验证和抛出异常的方法。
