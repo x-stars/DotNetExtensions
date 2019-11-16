@@ -3,7 +3,7 @@
 namespace XstarS.Reflection
 {
     /// <summary>
-    /// 提供基于代理委托 <see cref="ProxyInvokeHandler"/> 的代理类型，并提供创建此代理类型的实例的方法。
+    /// 提供基于代理委托 <see cref="MethodInvokeHandler"/> 的代理类型，并提供创建此代理类型的实例的方法。
     /// </summary>
     /// <typeparam name="T">原型类型，应为接口或非密封类。</typeparam>
     public sealed class ProxyFactory<T> where T : class
@@ -30,14 +30,14 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 以指定的代理委托初始化 <see cref="ProxyFactory{T}"/> 类的新实例。
+        /// 初始化 <see cref="ProxyFactory{T}"/> 类的新实例，并将其代理委托设定为指定的委托。
         /// </summary>
-        /// <param name="handler">方法调用所用的代理。</param>
+        /// <param name="handler">方法调用所用的代理委托。</param>
         /// <exception cref="ArgumentException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="handler"/> 为 <see langword="null"/>。</exception>
-        private ProxyFactory(ProxyInvokeHandler handler)
+        private ProxyFactory(MethodInvokeHandler handler)
         {
             if (handler is null)
             {
@@ -49,26 +49,26 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 返回一个默认的 <see cref="ProxyFactory{T}"/> 类的新实例。
+        /// 获取默认的 <see cref="ProxyFactory{T}"/> 类的新实例。
         /// </summary>
         /// <exception cref="ArgumentException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
         public static ProxyFactory<T> Default => ProxyFactory<T>.LazyDefault.Value;
 
         /// <summary>
-        /// 原型类型的 <see cref="Type"/> 对象。
+        /// 获取原型类型的 <see cref="Type"/> 对象。
         /// </summary>
         public Type BaseType => this.TypeProvider.BaseType;
 
         /// <summary>
-        /// 代理类型的 <see cref="Type"/> 对象。
+        /// 获取代理类型的 <see cref="Type"/> 对象。
         /// </summary>
         public Type ProxyType => this.TypeProvider.ProxyType;
 
         /// <summary>
-        /// 方法调用时所用的代理委托。
+        /// 获取方法调用时所用的代理委托。
         /// </summary>
-        public ProxyInvokeHandler Handler { get; }
+        public MethodInvokeHandler Handler { get; }
 
         /// <summary>
         /// 以指定的方法调用所用的代理创建一个 <see cref="ProxyFactory{T}"/> 类的新实例。
@@ -78,7 +78,7 @@ namespace XstarS.Reflection
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="handler"/> 为 <see langword="null"/>。</exception>
-        public static ProxyFactory<T> WithHandler(ProxyInvokeHandler handler) =>
+        public static ProxyFactory<T> WithHandler(MethodInvokeHandler handler) =>
             new ProxyFactory<T>(handler);
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace XstarS.Reflection
             this.InitializeHandler((T)Activator.CreateInstance(this.ProxyType, arguments));
 
         /// <summary>
-        /// 初始化代理类型的实例的 <see cref="ProxyInvokeHandler"/> 字段。
+        /// 初始化代理类型的实例的 <see cref="MethodInvokeHandler"/> 字段。
         /// </summary>
         /// <param name="proxyInstance">要初始化代理字段的代理类型的实例。</param>
         /// <returns>完成代理字段初始化的 <paramref name="proxyInstance"/>。</returns>

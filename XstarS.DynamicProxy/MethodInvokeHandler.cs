@@ -10,6 +10,6 @@ namespace XstarS.Reflection
     /// <param name="arguments">方法的参数的值。</param>
     /// <param name="delegate">调用当前方法的委托。</param>
     /// <returns>调用方法的 <see cref="MethodDelegate"/> 委托得到返回值。</returns>
-    public delegate object ProxyInvokeHandler(
+    public delegate object MethodInvokeHandler(
         object instance, MethodInfo method, object[] arguments, MethodDelegate @delegate);
 }

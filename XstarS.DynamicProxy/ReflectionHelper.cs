@@ -10,27 +10,10 @@ namespace XstarS.Reflection
     internal static class ReflectionHelper
     {
         /// <summary>
-        /// 将当前方法转换为其名称和句柄的字符串表达形式。
-        /// </summary>
-        /// <param name="method">要转换为字符串的 <see cref="MethodInfo"/> 对象。</param>
-        /// <returns><paramref name="method"/> 的名称和句柄的字符串表达形式。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-        internal static string ToNameHandleString(this MethodInfo method)
-        {
-            if (method is null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
-
-            return $"{method.Name}@{method.MethodHandle.Value.ToString()}";
-        }
-
-        /// <summary>
-        /// 确定当前方法或构造函数是否为程序集外部可继承的实例方法。
+        /// 确定当前 <see cref="MethodBase"/> 是否为程序集外部可继承的实例方法。
         /// </summary>
         /// <param name="method">要进行检查的 <see cref="MethodBase"/> 对象。</param>
-        /// <returns>若 <paramref name="method"/> 是一个程序集外部可继承的实例方法，
+        /// <returns>若 <paramref name="method"/> 是程序集外部可继承的实例方法，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
@@ -46,10 +29,10 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 确定当前方法是否可以在程序集外部重写。
+        /// 确定当前 <see cref="MethodInfo"/> 是否为程序集外部可重写的方法。
         /// </summary>
         /// <param name="method">要进行检查的 <see cref="MethodInfo"/> 对象。</param>
-        /// <returns>若 <paramref name="method"/> 可以在程序集外部重写，
+        /// <returns>若 <paramref name="method"/> 是程序集外部可重写的方法，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
@@ -61,6 +44,31 @@ namespace XstarS.Reflection
             }
 
             return method.IsInheritableInstance() && (method.IsVirtual && !method.IsFinal);
+        }
+
+        /// <summary>
+        /// 确定当前 <see cref="MemberInfo"/> 是否可被 <see cref="MethodInvokeHandler"/> 代理。
+        /// </summary>
+        /// <param name="method">要确定是否可被代理的 <see cref="MethodInfo"/> 对象。</param>
+        /// <returns>若 <paramref name="method"/> 可被 <see cref="MethodInvokeHandler"/> 代理，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
+        internal static bool IsProxySupported(this MethodInfo method)
+        {
+            if (method is null)
+            {
+                throw new ArgumentNullException(nameof(method));
+            }
+
+            return method.IsOverridable() &&
+                Array.TrueForAll(
+                    Array.ConvertAll(method.GetParameters(), param => param.ParameterType),
+                    type => !type.IsPointer && !type.IsByRef) &&
+                (!method.IsGenericMethod || (method.IsGenericMethod &&
+                Array.TrueForAll(
+                    method.GetGenericArguments(),
+                    type => type.GetGenericParameterConstraints().Length == 0)));
         }
 
         /// <summary>

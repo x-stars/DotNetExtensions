@@ -7,7 +7,7 @@ namespace XstarS.Reflection.TestTypes
 {
     internal static class TestHandlers
     {
-        internal static readonly ProxyInvokeHandler WriteMethodAndInvokeBaseHandler =
+        internal static readonly MethodInvokeHandler WriteMethodAndInvokeBaseHandler =
             (instance, method, arguments, @delegate) =>
             {
                 Console.WriteLine($"{instance.GetType()}@" +
@@ -15,7 +15,7 @@ namespace XstarS.Reflection.TestTypes
                 return @delegate.Invoke(instance, arguments);
             };
 
-        internal static readonly ProxyInvokeHandler WriteMethodAndReturnDefaultHandler =
+        internal static readonly MethodInvokeHandler WriteMethodAndReturnDefaultHandler =
             (instance, method, arguments, @delegate) =>
             {
                 Console.WriteLine($"{instance.GetType()}@" +
