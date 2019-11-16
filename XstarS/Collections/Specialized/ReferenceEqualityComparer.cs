@@ -17,7 +17,7 @@ namespace XstarS.Collections.Specialized
         private ReferenceEqualityComparer() : base() { }
 
         /// <summary>
-        /// 返回一个默认的 <see cref="ReferenceEqualityComparer{T}"/> 实例。
+        /// 获取默认的 <see cref="ReferenceEqualityComparer{T}"/> 实例。
         /// </summary>
         public static new ReferenceEqualityComparer<T> Default { get; } = new ReferenceEqualityComparer<T>();
 

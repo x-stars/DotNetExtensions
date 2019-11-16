@@ -17,7 +17,7 @@ namespace XstarS.Collections.Specialized
         private ValueEqualityComparer() : base() { }
 
         /// <summary>
-        /// 返回一个默认的 <see cref="ValueEqualityComparer{T}"/> 实例。
+        /// 获取默认的 <see cref="ValueEqualityComparer{T}"/> 实例。
         /// </summary>
         public static new ValueEqualityComparer<T> Default { get; } = new ValueEqualityComparer<T>();
 

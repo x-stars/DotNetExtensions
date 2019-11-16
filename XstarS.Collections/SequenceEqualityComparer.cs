@@ -34,7 +34,7 @@ namespace XstarS.Collections
         }
 
         /// <summary>
-        /// 返回一个默认的 <see cref="SequenceEqualityComparer"/> 实例。
+        /// 获取默认的 <see cref="SequenceEqualityComparer"/> 实例。
         /// </summary>
         public static SequenceEqualityComparer Default { get; } =
             new SequenceEqualityComparer();

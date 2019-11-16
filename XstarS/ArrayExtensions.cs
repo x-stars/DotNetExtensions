@@ -103,12 +103,11 @@ namespace XstarS
         public static bool ArrayEquals(this Array array, Array other,
             IEqualityComparer comparer = null)
         {
-            // 引用比较。
             if (object.ReferenceEquals(array, other)) { return true; }
             if ((array is null) ^ (other is null)) { return false; }
-            // 类型不同。
+
             if (array.GetType() != other.GetType()) { return false; }
-            // 大小不等。
+
             if (array.Rank != other.Rank) { return false; }
             if (array.Length != other.Length) { return false; }
             for (int i = 0; i < array.Rank; i++)
@@ -119,7 +118,6 @@ namespace XstarS
                 }
             }
 
-            // 通常情况。
             comparer = comparer ?? EqualityComparer<object>.Default;
             bool isMultiDim = array.Rank > 1;
             bool isJagged = array.GetType().GetElementType().IsArray;
@@ -261,7 +259,7 @@ namespace XstarS
             }
             else
             {
-                int Product(params int[] values)
+                int getProduct(params int[] values)
                 {
                     int product = 1;
                     foreach (var value in values)
@@ -279,7 +277,7 @@ namespace XstarS
 
                 while (restLengths.Length > 0)
                 {
-                    result = Array.CreateInstance(itemType.MakeArrayType(), Product(restLengths));
+                    result = Array.CreateInstance(itemType.MakeArrayType(), getProduct(restLengths));
                     for (int i = 0; i < result.Length; i++)
                     {
                         var innerArray = Array.CreateInstance(

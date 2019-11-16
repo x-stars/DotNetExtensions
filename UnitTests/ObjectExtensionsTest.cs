@@ -69,17 +69,7 @@ namespace XstarS
         }
 
         [TestMethod]
-        public void ValueEquals_String_ReturnsTrue()
-        {
-            var o1 = "object";
-            var o2 = "object";
-            Assert.IsTrue(object.ReferenceEquals(o1, o2));
-            Assert.IsTrue(o1.Equals(o2));
-            Assert.IsTrue(o1.ValueEquals(o2));
-        }
-
-        [TestMethod]
-        public void ValueEquals_Object_ReturnsTrue()
+        public void ValueEquals_NewObject_ReturnsTrue()
         {
             var o1 = new object();
             var o2 = new object();
@@ -88,16 +78,7 @@ namespace XstarS
         }
 
         [TestMethod]
-        public void ValueEquals_RandomBySeed_ReturnsTrue()
-        {
-            var o1 = new Random(typeof(Random).GetHashCode());
-            var o2 = new Random(typeof(Random).GetHashCode());
-            Assert.IsFalse(o1.Equals(o2));
-            Assert.IsTrue(o1.ValueEquals(o2));
-        }
-
-        [TestMethod]
-        public void ValueEquals_KeyValuePair_ReturnsTrue()
+        public void ValueEquals_EqualKeyValuePair_ReturnsTrue()
         {
             var o1 = new KeyValuePair<string, int>("0", 0);
             var o2 = new KeyValuePair<string, int>("0", 0);
@@ -106,7 +87,7 @@ namespace XstarS
         }
 
         [TestMethod]
-        public void ValueEquals_Int32Array_ReturnsTrue()
+        public void ValueEquals_EqualInt32Array_ReturnsTrue()
         {
             var o1 = new int[100];
             var o2 = new int[100];
@@ -116,33 +97,17 @@ namespace XstarS
         }
 
         [TestMethod]
-        public void ValueEquals_Int32MultiDimArray_ReturnsFalse()
+        public void ValueEquals_RankLengthDiffEqualInt32Array_ReturnsFalse()
         {
             var o1 = new int[100, 2, 3];
             var o2 = new int[2, 3, 100];
             Assert.IsFalse(o1.Equals(o2));
-            var etor1 = o1.GetEnumerator();
-            var etor2 = o2.GetEnumerator();
-            while (etor1.MoveNext() & etor2.MoveNext())
-            {
-                Assert.IsTrue(etor1.Current.Equals(etor2.Current));
-            }
-            Assert.IsTrue(etor1.MoveNext() == etor2.MoveNext());
+            Assert.IsTrue(o1.Cast<int>().SequenceEqual(o1.Cast<int>()));
             Assert.IsFalse(o1.ValueEquals(o2));
         }
 
         [TestMethod]
-        public void ValueEquals_StringList_ReturnsTrue()
-        {
-            var o1 = new List<string>() { "list", "set", "dictionary" };
-            var o2 = new List<string>() { "list", "set", "dictionary" };
-            Assert.IsFalse(o1.Equals(o2));
-            Assert.IsTrue(o1.SequenceEqual(o2));
-            Assert.IsTrue(o1.ValueEquals(o2));
-        }
-
-        [TestMethod]
-        public void ValueEquals_Int32HashSet_ReturnsFalse()
+        public void ValueEquals_DiffOrderInt32HashSet_ReturnsFalse()
         {
             var o1 = new HashSet<int>() { 1, 2, 3 };
             var o2 = new HashSet<int>() { 2, 3, 1 };
@@ -153,7 +118,7 @@ namespace XstarS
         }
 
         [TestMethod]
-        public void ValueEquals_StringSortedSet_ReturnsTrue()
+        public void ValueEquals_DiffOrderStringSortedSet_ReturnsTrue()
         {
             var o1 = new SortedSet<string>() { "list", "set", "dictionary" };
             var o2 = new SortedSet<string>() { "set", "dictionary", "list" };
@@ -164,15 +129,15 @@ namespace XstarS
         }
 
         [TestMethod]
-        public void ValueEquals_LinkedList_ReturnsTrue()
+        public void ValueEquals_SameOrderObjectLinkedList_ReturnsTrue()
         {
             var l0 = new LinkedList<object>();
-            var l0n0 = l0.AddLast("0");
-            var l0n1 = l0.AddLast("1");
+            var l0n0 = l0.AddLast(0);
+            var l0n1 = l0.AddLast(1.0);
             var l0n2 = l0.AddLast("2");
             var l1 = new LinkedList<object>();
-            var l1n0 = l1.AddLast("0");
-            var l1n1 = l1.AddLast("1");
+            var l1n0 = l1.AddLast(0);
+            var l1n1 = l1.AddLast(1.0);
             var l1n2 = l1.AddLast("2");
             Assert.IsFalse(l0.Equals(l1));
             Assert.IsFalse(l0n0.Equals(l1n0));
