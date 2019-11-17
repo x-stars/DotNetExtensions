@@ -5,12 +5,12 @@ using XstarS.ComponentModel.TestTypes;
 namespace XstarS.ComponentModel
 {
     [TestClass]
-    public class BindableBaseTest
+    public class ObservableBaseTest
     {
         [TestMethod]
-        public void PropertyChanged_BindableObject_CallsHandler()
+        public void PropertyChanged_ObservableObject_CallsHandler()
         {
-            var box = new BindableBox() { Length = 10, Width = 10, Height = 10 };
+            var box = new ObservableBox() { Length = 10, Width = 10, Height = 10 };
             var changedCounts = new Dictionary<string, int>()
             {
                 [nameof(box.Length)] = 0,
@@ -29,9 +29,9 @@ namespace XstarS.ComponentModel
         }
 
         [TestMethod]
-        public void PropertyChanged_BindableStorage_CallsHandler()
+        public void PropertyChanged_ObservableStorage_CallsHandler()
         {
-            var personName = new BindablePersonName()
+            var personName = new ObservablePersonName()
             {
                 FamilyName = "FamilyName",
                 GivenName = "GivenName",

@@ -8,68 +8,68 @@ using XstarS.ComponentModel.TestTypes;
 namespace XstarS.ComponentModel
 {
     [TestClass]
-    public class BindableFactoryTest
+    public class ObservableFactoryTest
     {
         [TestMethod]
-        public void BindableType_Singleton_IsThreadSafe()
+        public void ObservableType_Singleton_IsThreadSafe()
         {
             int testCount = 10000;
-            var factories = new BindableFactory<object>[testCount];
+            var factories = new ObservableFactory<object>[testCount];
             Parallel.For(0, testCount,
-                index => factories[index] = BindableFactory<object>.Default);
+                index => factories[index] = ObservableFactory<object>.Default);
             Assert.IsTrue(factories.All(
                 factory => object.ReferenceEquals(factory, factories[0])));
             Assert.IsTrue(factories.All(
-                factory => object.ReferenceEquals(factory.BindableType, factories[0].BindableType)));
+                factory => object.ReferenceEquals(factory.ObservableType, factories[0].ObservableType)));
         }
 
         [TestMethod]
-        public void BindableType_PublicInheritableType_ReturnsType()
+        public void ObservableType_PublicInheritableType_ReturnsType()
         {
-            Assert.IsNotNull(BindableFactory<IMutableRectangle>.Default.BindableType);
-            Assert.IsNotNull(BindableFactory<BindableRectangleBase>.Default.BindableType);
-            Assert.IsNotNull(BindableFactory<BindableRectangle>.Default.BindableType);
-            Assert.IsNotNull(BindableFactory<NonBindableRectangle>.Default.BindableType);
+            Assert.IsNotNull(ObservableFactory<IMutableRectangle>.Default.ObservableType);
+            Assert.IsNotNull(ObservableFactory<ObservableRectangleBase>.Default.ObservableType);
+            Assert.IsNotNull(ObservableFactory<ObservableRectangle>.Default.ObservableType);
+            Assert.IsNotNull(ObservableFactory<NonObservableRectangle>.Default.ObservableType);
         }
 
         [TestMethod]
-        public void BindableType_NonPublicOrNonInheritableType_ThrowsException()
+        public void ObservableType_NonPublicOrNonInheritableType_ThrowsException()
         {
             Assert.ThrowsException<ArgumentException>(
-                () => BindableFactory<IInternalMutableRectangle>.Default.BindableType);
+                () => ObservableFactory<IInternalMutableRectangle>.Default.ObservableType);
             Assert.ThrowsException<ArgumentException>(
-                () => BindableFactory<SealedMutableRectangle>.Default.BindableType);
+                () => ObservableFactory<SealedMutableRectangle>.Default.ObservableType);
         }
 
         [TestMethod]
-        public void BindableType_NoOnPropertyChangedMethod_ThrowsException()
+        public void ObservableType_NoOnPropertyChangedMethod_ThrowsException()
         {
             Assert.ThrowsException<MissingMethodException>(
-                () => BindableFactory<BadBindableRectangle>.Default.BindableType);
+                () => ObservableFactory<BadObservableRectangle>.Default.ObservableType);
         }
 
         [TestMethod]
         public void CreateInstance_InterfaceAndNonSealedClass_ReturnsInstance()
         {
-            Assert.IsNotNull(BindableFactory<IMutableRectangle>.Default.CreateInstance());
-            Assert.IsNotNull(BindableFactory<BindableRectangleBase>.Default.CreateInstance());
-            Assert.IsNotNull(BindableFactory<BindableRectangle>.Default.CreateInstance(2, 3));
-            Assert.IsNotNull(BindableFactory<NonBindableRectangle>.Default.CreateInstance(2, 3));
+            Assert.IsNotNull(ObservableFactory<IMutableRectangle>.Default.CreateInstance());
+            Assert.IsNotNull(ObservableFactory<ObservableRectangleBase>.Default.CreateInstance());
+            Assert.IsNotNull(ObservableFactory<ObservableRectangle>.Default.CreateInstance(2, 3));
+            Assert.IsNotNull(ObservableFactory<NonObservableRectangle>.Default.CreateInstance(2, 3));
         }
 
         [TestMethod]
         public void CreateInstance_TypeWithAbstractMethod_ThrowsWhenCallMethod()
         {
-            var o1 = BindableFactory<IMutableRectangle>.Default.CreateInstance();
+            var o1 = ObservableFactory<IMutableRectangle>.Default.CreateInstance();
             Assert.ThrowsException<NotImplementedException>(() => o1.Deconstruct(out _, out _));
-            var o2 = BindableFactory<BindableRectangleBase>.Default.CreateInstance();
+            var o2 = ObservableFactory<ObservableRectangleBase>.Default.CreateInstance();
             Assert.ThrowsException<NotImplementedException>(() => o2.Deconstruct(out _, out _));
         }
 
         [TestMethod]
         public void PropertyChanged_OverridableProperty_CallsHandler()
         {
-            var rectangle = BindableFactory<BindableRectangle>.Default.CreateInstance(10, 10);
+            var rectangle = ObservableFactory<ObservableRectangle>.Default.CreateInstance(10, 10);
             var changedCounts = new Dictionary<string, int>()
             {
                 [nameof(rectangle.Height)] = 0,
@@ -88,7 +88,7 @@ namespace XstarS.ComponentModel
         [TestMethod]
         public void PropertyChanged_SealedProperty_NotCallsHandler()
         {
-            var rectangle = BindableFactory<NonBindableRectangle>.Default.CreateInstance(10, 10);
+            var rectangle = ObservableFactory<NonObservableRectangle>.Default.CreateInstance(10, 10);
             var changedCounts = new Dictionary<string, int>()
             {
                 [nameof(rectangle.Height)] = 0,

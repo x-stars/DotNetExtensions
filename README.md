@@ -32,12 +32,12 @@
 
 ## 程序集 XstarS.ObjectModel
 
-提供部分组件模型的实现类型，包括数据绑定和命令等。
+提供部分组件模型的实现类型，包括属性更改通知和命令等。
 
-目前提供的数据绑定的实现方案：方法提取、绑定值封装、动态生成数据绑定派生类。
+目前提供的属性更改通知的实现方案：方法提取、值封装、动态生成属性更改通知派生类。
 
-原理和使用方法详述于[数据绑定接口实现框架说明文档](Documentations/BindableValue.md)中。
-使用此框架的优势叙述于[数据绑定实现方式比较文档](Documentations/BindableValueCompare.md)中。
+原理和使用方法详述于[属性更改通知接口实现框架说明文档](Documentations/ObservableValue.md)中。
+使用此框架的优势叙述于[属性更改通知实现方式比较文档](Documentations/ObservableValueCompare.md)中。
 
 ## 程序集 XstarS.ParamReaders
 
@@ -74,5 +74,5 @@ WPF 相关，目前包含的命名空间：
 
 除基础说明文档外，目前还包含部分功能设计文档可供参考：
 
-* [数据绑定类型提供对象设计文档](Documentations/BindableTypeProvider.md)
+* [属性更改通知类型提供对象设计文档](Documentations/ObservableTypeProvider.md)
 * [对象的通用值相等比较方法设计文档](Documentations/ValueEquals.md)

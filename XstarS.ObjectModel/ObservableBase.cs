@@ -5,15 +5,15 @@ using System.Runtime.CompilerServices;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供可绑定类型 <see cref="INotifyPropertyChanged"/> 的抽象基类。
+    /// 提供属性更改通知类型 <see cref="INotifyPropertyChanged"/> 的抽象基类。
     /// </summary>
     [Serializable]
-    public abstract class BindableBase : INotifyPropertyChanged
+    public abstract class ObservableBase : INotifyPropertyChanged
     {
         /// <summary>
-        /// 初始化 <see cref="BindableBase"/> 类的新实例。
+        /// 初始化 <see cref="ObservableBase"/> 类的新实例。
         /// </summary>
-        protected BindableBase() { }
+        protected ObservableBase() { }
 
         /// <summary>
         /// 在属性值更改时发生。
@@ -22,7 +22,7 @@ namespace XstarS.ComponentModel
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// 引发 <see cref="BindableBase.PropertyChanged"/> 事件。
+        /// 引发 <see cref="ObservableBase.PropertyChanged"/> 事件。
         /// </summary>
         /// <param name="propertyName">已更改属性的名称，可由编译器自动获取。</param>
         protected virtual void OnPropertyChanged(

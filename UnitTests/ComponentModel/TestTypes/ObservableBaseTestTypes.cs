@@ -1,8 +1,8 @@
 ﻿namespace XstarS.ComponentModel.TestTypes
 {
-    public class BindableBox : BindableObject
+    public class ObservableBox : ObservableObject
     {
-        public BindableBox() { }
+        public ObservableBox() { }
 
         private int _Length;
         public int Length
@@ -11,7 +11,7 @@
             set
             {
                 this.SetProperty(ref this._Length, value);
-                this.OnPropertyChanged(nameof(this.Size));
+                this.NotifyPropertyChanged(nameof(this.Size));
             }
         }
 
@@ -22,7 +22,7 @@
             set
             {
                 this.SetProperty(ref this._Width, value);
-                this.OnPropertyChanged(nameof(this.Size));
+                this.NotifyPropertyChanged(nameof(this.Size));
             }
         }
 
@@ -33,16 +33,16 @@
             set
             {
                 this.SetProperty(ref this._Height, value);
-                this.OnPropertyChanged(nameof(this.Size));
+                this.NotifyPropertyChanged(nameof(this.Size));
             }
         }
 
         public int Size => this.Length * this.Width * this.Height;
     }
 
-    public class BindablePersonName : BindableStorage
+    public class ObservablePersonName : ObservableStorage
     {
-        public BindablePersonName() { }
+        public ObservablePersonName() { }
 
         public string FamilyName
         {
@@ -50,7 +50,7 @@
             set
             {
                 this.SetProperty(value);
-                this.OnPropertyChanged(nameof(this.FullName));
+                this.NotifyPropertyChanged(nameof(this.FullName));
             }
         }
 
@@ -60,7 +60,7 @@
             set
             {
                 this.SetProperty(value);
-                this.OnPropertyChanged(nameof(this.FullName));
+                this.NotifyPropertyChanged(nameof(this.FullName));
             }
         }
 
@@ -70,7 +70,7 @@
             set
             {
                 this.SetProperty(value);
-                this.OnPropertyChanged(nameof(this.FullName));
+                this.NotifyPropertyChanged(nameof(this.FullName));
             }
         }
 

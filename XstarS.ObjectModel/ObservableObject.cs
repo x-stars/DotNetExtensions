@@ -5,18 +5,18 @@ using System.Runtime.CompilerServices;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供可绑定类型 <see cref="INotifyPropertyChanged"/> 基于字段的抽象基类。
+    /// 提供属性更改通知类型 <see cref="INotifyPropertyChanged"/> 基于字段的抽象基类。
     /// </summary>
     [Serializable]
-    public abstract class BindableObject : BindableBase
+    public abstract class ObservableObject : ObservableBase
     {
         /// <summary>
-        /// 初始化 <see cref="BindableObject"/> 类的新实例。
+        /// 初始化 <see cref="ObservableObject"/> 类的新实例。
         /// </summary>
-        protected BindableObject() { }
+        protected ObservableObject() { }
 
         /// <summary>
-        /// 更改属性的值，并引发 <see cref="BindableBase.PropertyChanged"/> 事件。
+        /// 更改属性的值，并引发 <see cref="ObservableBase.PropertyChanged"/> 事件。
         /// </summary>
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="field">属性对应的字段。</param>

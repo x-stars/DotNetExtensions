@@ -1,14 +1,14 @@
-﻿# 数据绑定实现方式比较
+﻿# 属性更改通知实现方式比较
 
-相关实现请参看[数据绑定接口实现框架说明文档](BindableValue.md)，此处不再赘述。
+相关实现请参看[属性更改通知接口实现框架说明文档](ObservableValue.md)，此处不再赘述。
 
-以下各种方法实现数据绑定接口的对外表现如无特殊说明均完全相同，但代码量却逐渐减少。
+以下各种方法实现属性更改通知接口的对外表现如无特殊说明均完全相同，但代码量却逐渐减少。
 
 | 实现方式                      | 代码行数 | 可维护性 |
 | ----------------------------- | -------- | -------- |
 | 原始实现                      | 61       | 弱       |
 | 方法提取                      | 34       | 中       |
-| 绑定值封装 (对外表现不同)     | 20       | 中       |
+| 值封装 (对外表现不同)         | 20       | 中       |
 | 运行时代码自动生成 (非密封类) | 21       | 极强     |
 | 运行时代码自动生成 (接口)     | 14       | 强       |
 
@@ -21,13 +21,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 // 类型定义。
-public class BindableBox : INotifyPropertyChanged
+public class ObservableBox : INotifyPropertyChanged
 {
     private double length;
     private double width;
     private double height;
 
-    public BindableBox() { }
+    public ObservableBox() { }
 
     public double Length
     {
@@ -77,12 +77,12 @@ public class BindableBox : INotifyPropertyChanged
 }
 
 // 创建实例。
-new BindableBox();
+new ObservableBox();
 ```
 
 ## 方法提取
 
-继承 `XstarS.ComponentModel.BindableObject` 抽象类以使用 `SetProperty` 方法。
+继承 `XstarS.ComponentModel.ObservableObject` 抽象类以使用 `SetProperty` 方法。
 
 ``` CSharp
 using System.Collections.Generic;
@@ -90,13 +90,13 @@ using System.ComponentModel;
 using XstarS.ComponentModel;
 
 // 类型定义。
-public class BindableBox : BindableObject
+public class ObservableBox : ObservableObject
 {
     private double length;
     private double width;
     private double height;
 
-    public BindableBox() { }
+    public ObservableBox() { }
 
     public double Length
     {
@@ -118,42 +118,41 @@ public class BindableBox : BindableObject
 }
 
 // 创建实例。
-new BindableBox();
+new ObservableBox();
 ```
 
-## 绑定值封装
+## 值封装
 
-使用 `XstarS.ComponentModel.Bindable<T>` 封装要设置绑定的属性。
+使用 `XstarS.ComponentModel.Observable<T>` 封装要实现更改通知的值。
 
 ``` CSharp
 using System.ComponentModel;
 using XstarS.ComponentModel;
 
 // 类型定义。
-public class BindableBox
+public class ObservableBox
 {
-    public BindableBox()
+    public ObservableBox()
     {
-        this.Length = new Bindable<double>();
-        this.Width = new Bindable<double>();
-        this.Height = new Bindable<double>();
+        this.Length = new Observable<double>();
+        this.Width = new Observable<double>();
+        this.Height = new Observable<double>();
     }
 
-    public Bindable<double> Length { get; }
-    public Bindable<double> Width { get; }
-    public Bindable<double> Height { get; }
+    public Observable<double> Length { get; }
+    public Observable<double> Width { get; }
+    public Observable<double> Height { get; }
 }
 
 // 创建实例。
-new BindableBox();
+new ObservableBox();
 ```
 
-此方法实现的数据绑定的表现与其他方法实现的并不相同，设置绑定目标时，应设置到 `(属性名称).Value`。
-这造成了维护的不便，一般仅在需要绑定的属性较少，且相互之间不形成结构时使用。
+此方法实现的属性更改通知的表现与其他方法实现的并不相同，若要设置数据绑定到客户端，路径应为 `(属性名称).Value`。
 
 ## 运行时代码自动生成
 
-使用 `XstarS.ComponentModel.BindableFactory<T>` 动态生成数据绑定派生类。
+使用 `XstarS.ComponentModel.ObservableFactory<T>` 动态生成属性更改通知派生类。
 
 ### 非密封类方式
 
@@ -162,10 +161,10 @@ using System.ComponentModel;
 using XstarS.ComponentModel;
 
 // 原型定义。
-public abstract class BindableBox
+public abstract class ObservableBox
     : INotifyPropertyChanged  // 可不写。
 {
-    public BindableBox() { }
+    public ObservableBox() { }
 
     public abstract double Length { get; set; }
     public abstract double Width { get; set; }
@@ -173,15 +172,15 @@ public abstract class BindableBox
 
     public abstract event PropertyChangedEventHandler PropertyChanged;
 
-    public static BindableBox Create() =>
-        BindableFactory<BindableBox>.Default.CreateInstance();
+    public static ObservableBox Create() =>
+        ObservableFactory<ObservableBox>.Default.CreateInstance();
 }
 
 // 创建实例。
-BindableBox.Create();
+ObservableBox.Create();
 ```
 
-此实现无需在类外调用 `BindableFactory`，可维护性较强。
+此实现无需在类外调用 `ObservableFactory`，可维护性较强。
 
 ### 接口方式
 
@@ -190,7 +189,7 @@ using System.ComponentModel;
 using XstarS.ComponentModel;
 
 // 原型定义。
-public interface IBindableBox
+public interface IObservableBox
     : INotifyPropertyChanged  // 可不写。
 {
     double Length { get; set; }
@@ -199,7 +198,7 @@ public interface IBindableBox
 }
 
 // 创建实例。
-BindableFactory<IBindableBox>.Default.CreateInstance();
+ObservableFactory<IObservableBox>.Default.CreateInstance();
 ```
 
-此实现需要在类外调用 `BindableFactory` 以创建实例，可维护性比非密封类稍差。
+此实现需要在类外调用 `ObservableFactory` 以创建实例，可维护性比非密封类稍差。

@@ -1,15 +1,14 @@
-﻿# 数据绑定类型提供对象
+﻿# 属性更改通知类型提供对象
 
-本文叙述了以原型类型为基础，自动构造可用于数据绑定的类型的 `XstarS.ComponentModel.BindableTypeProvider` 的实现原理和整体思路。
+本文叙述了以原型类型为基础，自动构造属性更改通知的类型的 `XstarS.ComponentModel.ObservableTypeProvider` 的实现原理和整体思路。
 
-## 数据绑定与 `INotifyPropertyChanged` 接口
+## 属性更改通知与 `INotifyPropertyChanged` 接口
 
-.NET 框架中，用于实现服务端和客户端的数据绑定的关键即为 `System.ComponentModel.INotifyPropertyChanged` 接口。
 此接口仅包含一个委托类型为 `System.ComponentModel.PropertyChangedEventHandler` 的 `PropertyChanged` 事件。
 
-数据绑定的实现基于属性值发生更改时同时触发 `PropertyChanged` 事件，以通知客户端属性的值发生更改。
+属性更改通知的实现基于属性值发生更改时同时触发 `PropertyChanged` 事件，以通知客户端属性的值发生更改。
 
-数据绑定的具体实现原理取决于客户端的实现方法，本文不做详细介绍，可参见 WPF 的相关说明。
+属性更改通知可用于服务端数据绑定到客户端，本文不做详细介绍，可参见 WPF 的相关说明。
 
 ### `INotifyPropertyChanged` 接口的实现
 
@@ -18,7 +17,7 @@
 ``` CSharp
 using System.ComponentModel;
 
-public class BindingData : INotifyPropertyChanged
+public class ObservableData : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -37,7 +36,7 @@ public class BindingData : INotifyPropertyChanged
 using System.Collections.Generic;
 using System.ComponentModel;
 
-public class BindingData : INotifyPropertyChanged
+public class ObservableData : INotifyPropertyChanged
 {
     private string text;
 
@@ -66,7 +65,7 @@ public class BindingData : INotifyPropertyChanged
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-public class BindingData : INotifyPropertyChanged
+public class ObservableData : INotifyPropertyChanged
 {
     // Event and On-Event method.
 
@@ -92,7 +91,7 @@ public class BindingData : INotifyPropertyChanged
 using System.Collections.Generic;
 using System.ComponentModel;
 
-public class BindingData : INotifyPropertyChanged
+public class ObservableData : INotifyPropertyChanged
 {
     private string text;
 
@@ -107,9 +106,9 @@ public class BindingData : INotifyPropertyChanged
 }
 ```
 
-> 以上方法已经被封装为 `XstarS.ComponentModel.BindableObject` 抽象类。
+> 以上方法已经被封装为 `XstarS.ComponentModel.ObservableObject` 抽象类。
 
-## 数据绑定的自动化实现
+## 属性更改通知的自动化实现
 
 以下是 C# 中实现属性的两种方法：
 
@@ -132,11 +131,11 @@ public class Properties
 ```
 
 以上两种实现属性的方法完全等效，使用自动属性可以大大减少代码量，降低维护难度。
-但对于用于数据绑定的属性而言，由于属性的 `set` 处的代码并不仅仅是设定字段的新值，因此无法使用自动属性实现。
+但对于提供属性更改通知的属性而言，由于属性的 `set` 处的代码并不仅仅是设定字段的新值，因此无法使用自动属性实现。
 
 针对此种情况，本文提出解决方案为：
 定义一个原型类型，原型类型的属性均定义为虚自动属性或抽象属性；
-由代码动态生成基于原型类型的数据绑定类型，并在数据绑定类型中实现属性的值发生更改时触发 `OnPropertyChanged` 事件。
+由代码动态生成基于原型类型的属性更改通知类型，并在属性更改通知类型中实现属性的值发生更改时触发 `OnPropertyChanged` 事件。
 
 ### .NET 动态类型生成技术
 
@@ -157,7 +156,7 @@ public class Properties
 | 生成速度 | 需要编译，稍慢             | 无需编译，较快             |
 | 技术难度 | 使用编程语言实现，较低     | 需要掌握 IL 汇编指令，较高 |
 
-`BindableTypeProvider` 最终采用了 Emit 技术，原因如下：
+`ObservableTypeProvider` 最终采用了 Emit 技术，原因如下：
 
 * 生成的类型基于原型类型，有大量特性需要反射获取：
   * 将这些特性转换为特定于语言（C#）的特性的工作量较大；
@@ -166,13 +165,13 @@ public class Properties
 
 ### 实现思路
 
-1. 定义数据绑定类型，将原型类型设定为数据绑定类型的基类（若原型为类）或接口（若原型为接口）。
+1. 定义属性更改通知类型，将原型类型设定为属性更改通知类型的基类（若原型为类）或接口（若原型为接口）。
 2. 通过反射获取原型类型的所有成员。
 3. 定义构造函数，并指定其仅调用基类中的对应构造函数。
 4. 若 `PropertyChanged` 事件未定义或为抽象，则以标准模式实现此事件；否则搜索 `OnPropertyChanged` 方法。
-5. 使用 `OnPropertyChanged` 方法，以数据绑定模式定义各属性，以重写原型类型中定义的属性。
+5. 使用 `OnPropertyChanged` 方法，以属性更改通知模式定义各属性，以重写原型类型中定义的属性。
 6. 实现原型类型中的其他抽象成员。
-7. 生成数据绑定类型。
+7. 生成属性更改通知类型。
 
 对于原型类型中除属性以外的抽象成员，处理方法如下：
 
@@ -182,7 +181,7 @@ public class Properties
 
 ### 实现方法
 
-可以作为原型的类型可分为接口和非密封类两类，在定义数据绑定类型时，针对这两种原型类型的处理方法有一定区别。
+可以作为原型的类型可分为接口和非密封类两类，在定义属性更改通知类型时，针对这两种原型类型的处理方法有一定区别。
 
 | 成员     | 接口                            | 非密封类                                                    |
 | -------- | ------------------------------- | ----------------------------------------------------------- |
@@ -209,7 +208,7 @@ public class Properties
 
 相关类型：
 
-* `BindableTypeProvider`: 从原型类型构造数据绑定类型。
-* `BindableFactory<T>`: 提供创建数据绑定类型的实例的方法。
+* `ObservableTypeProvider`: 从原型类型构造属性更改通知类型。
+* `ObservableFactory<T>`: 提供创建属性更改通知类型的实例的方法。
 
 具体实现请参见 [XstarS.ObjectModel](../XstarS.ObjectModel) 工程源代码，此处不再详述。

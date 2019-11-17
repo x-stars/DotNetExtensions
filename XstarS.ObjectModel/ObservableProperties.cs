@@ -6,10 +6,10 @@ using System.Runtime.CompilerServices;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供可绑定类型 <see cref="INotifyPropertyChanged"/> 基于数据结构的抽象基类。
+    /// 提供属性更改通知类型 <see cref="INotifyPropertyChanged"/> 基于属性存储的抽象基类。
     /// </summary>
     [Serializable]
-    public abstract class BindableStorage : BindableBase
+    public abstract class ObservableProperties : ObservableBase
     {
         /// <summary>
         /// 所有属性的数据存储。
@@ -17,9 +17,9 @@ namespace XstarS.ComponentModel
         private readonly ConcurrentDictionary<string, object> PropertyStorage;
 
         /// <summary>
-        /// 初始化 <see cref="BindableStorage"/> 类的新实例。
+        /// 初始化 <see cref="ObservableProperties"/> 类的新实例。
         /// </summary>
-        protected BindableStorage()
+        protected ObservableProperties()
         {
             this.PropertyStorage = new ConcurrentDictionary<string, object>();
         }
@@ -59,7 +59,7 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 设置指定属性的值，并引发 <see cref="BindableBase.PropertyChanged"/> 事件。
+        /// 设置指定属性的值，并引发 <see cref="ObservableBase.PropertyChanged"/> 事件。
         /// </summary>
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="value">属性的新值，一般为 <see langword="value"/>。</param>

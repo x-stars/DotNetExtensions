@@ -9,25 +9,25 @@ using System.Reflection.Emit;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供基于 <see cref="INotifyPropertyChanged"/> 的可绑定类型。
+    /// 提供基于 <see cref="INotifyPropertyChanged"/> 的属性更改通知类型。
     /// </summary>
-    public sealed class BindableTypeProvider
+    public sealed class ObservableTypeProvider
     {
         /// <summary>
-        /// <see cref="BindableTypeProvider.OfType(Type)"/> 的延迟初始化值。
+        /// <see cref="ObservableTypeProvider.OfType(Type)"/> 的延迟初始化值。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Lazy<BindableTypeProvider>> LazyOfTypes =
-            new ConcurrentDictionary<Type, Lazy<BindableTypeProvider>>();
+        private static readonly ConcurrentDictionary<Type, Lazy<ObservableTypeProvider>> LazyOfTypes =
+            new ConcurrentDictionary<Type, Lazy<ObservableTypeProvider>>();
 
         /// <summary>
-        /// <see cref="BindableTypeProvider.BindableType"/> 的延迟初始化值。
+        /// <see cref="ObservableTypeProvider.ObservableType"/> 的延迟初始化值。
         /// </summary>
-        private readonly Lazy<Type> LazyBindableType;
+        private readonly Lazy<Type> LazyObservableType;
 
         /// <summary>
-        /// 可绑定类型的 <see cref="TypeBuilder"/> 对象。
+        /// 属性更改通知类型的 <see cref="TypeBuilder"/> 对象。
         /// </summary>
-        private TypeBuilder BindableTypeBuilder;
+        private TypeBuilder ObservableTypeBuilder;
 
         /// <summary>
         /// <c>void OnPropertyChanged(string)</c> 方法的 <see cref="MethodInfo"/> 对象。
@@ -35,14 +35,14 @@ namespace XstarS.ComponentModel
         private MethodInfo OnPropertyChangedMethod;
 
         /// <summary>
-        /// 使用指定的原型类型初始化 <see cref="BindableTypeProvider"/> 类的新实例。
+        /// 使用指定的原型类型初始化 <see cref="ObservableTypeProvider"/> 类的新实例。
         /// </summary>
         /// <param name="baseType">原型类型，应为接口或非密封类。</param>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseType"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="baseType"/> 为 <see langword="null"/>。</exception>
-        private BindableTypeProvider(Type baseType)
+        private ObservableTypeProvider(Type baseType)
         {
             if (baseType is null)
             {
@@ -55,7 +55,7 @@ namespace XstarS.ComponentModel
             }
 
             this.BaseType = baseType;
-            this.LazyBindableType = new Lazy<Type>(this.CreateBindableType);
+            this.LazyObservableType = new Lazy<Type>(this.CreateObservableType);
         }
 
         /// <summary>
@@ -64,56 +64,56 @@ namespace XstarS.ComponentModel
         public Type BaseType { get; }
 
         /// <summary>
-        /// 获取可绑定类型的 <see cref="Type"/> 对象。
+        /// 获取属性更改通知类型的 <see cref="Type"/> 对象。
         /// </summary>
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
         /// 但未定义公共或保护级别的 <c>void OnPropertyChanged(string)</c> 方法。</exception>
-        public Type BindableType => this.LazyBindableType.Value;
+        public Type ObservableType => this.LazyObservableType.Value;
 
         /// <summary>
-        /// 获取原型类型为指定类型的 <see cref="BindableTypeProvider"/> 类的实例。
+        /// 获取原型类型为指定类型的 <see cref="ObservableTypeProvider"/> 类的实例。
         /// </summary>
         /// <param name="baseType">原型类型，应为接口或非密封类。</param>
         /// <returns>原型类型为 <paramref name="baseType"/> 的
-        /// <see cref="BindableTypeProvider"/> 类的实例。</returns>
+        /// <see cref="ObservableTypeProvider"/> 类的实例。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseType"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="baseType"/> 为 <see langword="null"/>。</exception>
-        public static BindableTypeProvider OfType(Type baseType) =>
-            BindableTypeProvider.LazyOfTypes.GetOrAdd(baseType,
-                newBaseType => new Lazy<BindableTypeProvider>(
-                    () => new BindableTypeProvider(newBaseType))).Value;
+        public static ObservableTypeProvider OfType(Type baseType) =>
+            ObservableTypeProvider.LazyOfTypes.GetOrAdd(baseType,
+                newBaseType => new Lazy<ObservableTypeProvider>(
+                    () => new ObservableTypeProvider(newBaseType))).Value;
 
         /// <summary>
-        /// 创建可绑定类型。
+        /// 创建属性更改通知类型。
         /// </summary>
-        /// <returns>创建的可绑定类型。</returns>
+        /// <returns>创建的属性更改通知类型。</returns>
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
         /// 但未定义公共或保护级别的 <c>void OnPropertyChanged(string)</c> 方法。</exception>
-        private Type CreateBindableType()
+        private Type CreateObservableType()
         {
-            this.DefineBindableType();
+            this.DefineObservableType();
 
-            this.DefineBindableTypeConstructors();
+            this.DefineObservableTypeConstructors();
             this.DefinePropertyChangedEvent();
-            this.DefineBindableTypeProperties();
-            this.DefineBindableTypeEvents();
-            this.DefineBindableTypeMethods();
+            this.DefineObservableTypeProperties();
+            this.DefineObservableTypeEvents();
+            this.DefineObservableTypeMethods();
 
-            return this.BindableTypeBuilder.CreateTypeInfo();
+            return this.ObservableTypeBuilder.CreateTypeInfo();
         }
 
         /// <summary>
-        /// 定义可绑定类型。
+        /// 定义属性更改通知类型。
         /// </summary>
-        private void DefineBindableType()
+        private void DefineObservableType()
         {
             var baseType = this.BaseType;
 
-            var assemblyName = $"Bindable[{baseType.ToString()}]";
+            var assemblyName = $"Observable[{baseType.ToString()}]";
             var assembly = AssemblyBuilder.DefineDynamicAssembly(
                 new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
             var module = assembly.DefineDynamicModule($"{assemblyName}.dll");
@@ -133,7 +133,7 @@ namespace XstarS.ComponentModel
                 baseGenericArgumentNames, name => name.Replace('.', '-').Replace('+', '-'));
             var joinedGenericArgumentNames = baseType.IsGenericType ?
                 $"<{string.Join(",", genericArgumentNames)}>" : "";
-            var fullName = $"{@namespace}$Bindable@{joinedTypeNames}{joinedGenericArgumentNames}";
+            var fullName = $"{@namespace}$Observable@{joinedTypeNames}{joinedGenericArgumentNames}";
 
             var baseInterfaces = baseType.GetInterfaces();
             var parent = !baseType.IsInterface ? baseType : typeof(object);
@@ -145,17 +145,17 @@ namespace XstarS.ComponentModel
             var type = module.DefineType(fullName, TypeAttributes.Class |
                 TypeAttributes.Public | TypeAttributes.BeforeFieldInit, parent, interfaces);
 
-            this.BindableTypeBuilder = type;
+            this.ObservableTypeBuilder = type;
         }
 
         /// <summary>
-        /// 定义可绑定类型的构造函数。
+        /// 定义属性更改通知类型的构造函数。
         /// </summary>
-        private void DefineBindableTypeConstructors()
+        private void DefineObservableTypeConstructors()
         {
             var baseType = this.BaseType;
             var parent = !baseType.IsInterface ? baseType : typeof(object);
-            var type = this.BindableTypeBuilder;
+            var type = this.ObservableTypeBuilder;
 
             var baseConstructors = parent.GetConstructors().Where(
                 constructor => constructor.IsInheritableInstance()).ToArray();
@@ -171,7 +171,7 @@ namespace XstarS.ComponentModel
         private void DefinePropertyChangedEvent()
         {
             var baseType = this.BaseType;
-            var type = this.BindableTypeBuilder;
+            var type = this.ObservableTypeBuilder;
 
             var baseEvent = baseType.GetInterfaces().Contains(typeof(INotifyPropertyChanged)) ?
                 baseType.GetAccessibleEvents().Where(@event =>
@@ -205,12 +205,12 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 定义可绑定类型的属性。
+        /// 定义属性更改通知类型的属性。
         /// </summary>
-        private void DefineBindableTypeProperties()
+        private void DefineObservableTypeProperties()
         {
             var baseType = this.BaseType;
-            var type = this.BindableTypeBuilder;
+            var type = this.ObservableTypeBuilder;
             var onPropertyChangedMethod = this.OnPropertyChangedMethod;
 
             foreach (var baseProperty in baseType.GetAccessibleProperties().Where(
@@ -226,24 +226,24 @@ namespace XstarS.ComponentModel
                         }
                         else
                         {
-                            type.DefineBindableAutoPropertyOverride(baseProperty, onPropertyChangedMethod);
+                            type.DefineObservableAutoPropertyOverride(baseProperty, onPropertyChangedMethod);
                         }
                     }
                     else
                     {
-                        type.DefineBindableBaseInvokePropertyOverride(baseProperty, onPropertyChangedMethod);
+                        type.DefineObservableBaseInvokePropertyOverride(baseProperty, onPropertyChangedMethod);
                     }
                 }
             }
         }
 
         /// <summary>
-        /// 定义可绑定类型的事件。
+        /// 定义属性更改通知类型的事件。
         /// </summary>
-        private void DefineBindableTypeEvents()
+        private void DefineObservableTypeEvents()
         {
             var baseType = this.BaseType;
-            var type = this.BindableTypeBuilder;
+            var type = this.ObservableTypeBuilder;
 
             foreach (var baseEvent in baseType.GetAccessibleEvents().Where(
                 @event => @event.AddMethod.IsInheritableInstance()))
@@ -259,12 +259,12 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 定义可绑定类型的方法。
+        /// 定义属性更改通知类型的方法。
         /// </summary>
-        private void DefineBindableTypeMethods()
+        private void DefineObservableTypeMethods()
         {
             var baseType = this.BaseType;
-            var type = this.BindableTypeBuilder;
+            var type = this.ObservableTypeBuilder;
 
             foreach (var baseMethod in baseType.GetAccessibleMethods().Where(
                 method => method.IsInheritableInstance()))

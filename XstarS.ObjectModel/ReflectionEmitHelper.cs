@@ -148,12 +148,12 @@ namespace XstarS.ComponentModel
         /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseProperty">作为基础的属性。</param>
         /// <param name="onPropertyChangedMethod"><c>void OnPropertyChanged(string)</c> 方法。</param>
-        /// <returns>定义的可绑定属性，调用 <paramref name="baseProperty"/> 属性，
+        /// <returns>定义的属性更改通知属性，调用 <paramref name="baseProperty"/> 属性，
         /// 并在属性更改时触发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 是抽象属性或无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static PropertyBuilder DefineBindableBaseInvokePropertyOverride(
+        internal static PropertyBuilder DefineObservableBaseInvokePropertyOverride(
             this TypeBuilder type, PropertyInfo baseProperty, MethodInfo onPropertyChangedMethod)
         {
             if (type is null)
@@ -375,17 +375,17 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 以指定的属性为基础，定义以可绑定自动属性模式实现的重写属性，并添加到当前类型。
+        /// 以指定的属性为基础，定义以自动属性模式实现并触发属性更改事件的重写属性，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseProperty">作为基础的属性。</param>
         /// <param name="onPropertyChangedMethod"><c>void OnPropertyChanged(string)</c> 方法。</param>
-        /// <returns>定义的可绑定自动属性及其对应的字段，
+        /// <returns>定义的属性更改通知自动属性及其对应的字段，
         /// 在属性更改时触发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 是索引属性或无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static KeyValuePair<PropertyBuilder, FieldBuilder> DefineBindableAutoPropertyOverride(
+        internal static KeyValuePair<PropertyBuilder, FieldBuilder> DefineObservableAutoPropertyOverride(
             this TypeBuilder type, PropertyInfo baseProperty, MethodInfo onPropertyChangedMethod)
         {
             if (type is null)

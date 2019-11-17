@@ -17,11 +17,11 @@ namespace XstarS.ComponentModel.TestTypes
 
     [System.Diagnostics.CodeAnalysis.SuppressMessage(
         "Microsoft.Design", "CA1012:AbstractTypesShouldNotHaveConstructors")]
-    public abstract class BindableRectangleBase : IMutableRectangle, INotifyPropertyChanged
+    public abstract class ObservableRectangleBase : IMutableRectangle, INotifyPropertyChanged
     {
-        public BindableRectangleBase() { }
+        public ObservableRectangleBase() { }
 
-        public BindableRectangleBase(int height, int width)
+        public ObservableRectangleBase(int height, int width)
         {
             this.Height = height;
             this.Width = width;
@@ -63,11 +63,11 @@ namespace XstarS.ComponentModel.TestTypes
         }
     }
 
-    public class BindableRectangle : BindableRectangleBase
+    public class ObservableRectangle : ObservableRectangleBase
     {
-        public BindableRectangle() { }
+        public ObservableRectangle() { }
 
-        public BindableRectangle(int height, int width) : base(height, width) { }
+        public ObservableRectangle(int height, int width) : base(height, width) { }
 
         [RelatedProperties(nameof(Size))]
         public override int Height { get; set; }
@@ -83,17 +83,17 @@ namespace XstarS.ComponentModel.TestTypes
             width = this.Width;
         }
 
-        protected virtual void OnPropertyChanged(string propertyName)
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
         {
-            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            this.PropertyChanged?.Invoke(this, e);
         }
     }
 
-    public class BadBindableRectangle : BindableRectangleBase
+    public class BadObservableRectangle : ObservableRectangleBase
     {
-        public BadBindableRectangle() { }
+        public BadObservableRectangle() { }
 
-        public BadBindableRectangle(int height, int width) : base(height, width) { }
+        public BadObservableRectangle(int height, int width) : base(height, width) { }
 
         [RelatedProperties(nameof(Size))]
         public override int Height { get; set; }
@@ -112,11 +112,11 @@ namespace XstarS.ComponentModel.TestTypes
         }
     }
 
-    public class NonBindableRectangle : BindableRectangle
+    public class NonObservableRectangle : ObservableRectangle
     {
-        public NonBindableRectangle() { }
+        public NonObservableRectangle() { }
 
-        public NonBindableRectangle(int height, int width) : base(height, width) { }
+        public NonObservableRectangle(int height, int width) : base(height, width) { }
 
         public sealed override int Height { get; set; }
 
