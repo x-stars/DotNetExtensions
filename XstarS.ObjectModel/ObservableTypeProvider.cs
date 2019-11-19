@@ -30,7 +30,7 @@ namespace XstarS.ComponentModel
         private TypeBuilder ObservableTypeBuilder;
 
         /// <summary>
-        /// <c>void OnPropertyChanged(string)</c> 方法的 <see cref="MethodInfo"/> 对象。
+        /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的触发方法。
         /// </summary>
         private MethodInfo OnPropertyChangedMethod;
 
@@ -68,7 +68,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
-        /// 但未定义公共或保护级别的 <c>void OnPropertyChanged(string)</c> 方法。</exception>
+        /// 但未定义可访问的 <c>OnPropertyChanged</c> 触发方法。</exception>
         public Type ObservableType => this.LazyObservableType.Value;
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace XstarS.ComponentModel
         /// <returns>创建的属性更改通知类型。</returns>
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
-        /// 但未定义公共或保护级别的 <c>void OnPropertyChanged(string)</c> 方法。</exception>
+        /// 但未定义可访问的 <c>OnPropertyChanged</c> 触发方法。</exception>
         private Type CreateObservableType()
         {
             this.DefineObservableType();
@@ -192,7 +192,7 @@ namespace XstarS.ComponentModel
                     (method.Name == "OnPropertyChanged") &&
                     (method.ReturnParameter.ParameterType == typeof(void)) &&
                     (method.GetParameters().Length == 1) &&
-                    (method.GetParameters()[0].ParameterType == typeof(string)) &&
+                    (method.GetParameters()[0].ParameterType == typeof(PropertyChangedEventArgs)) &&
                     method.IsInheritableInstance() && !method.IsAbstract).FirstOrDefault();
 
                 if (method is null)

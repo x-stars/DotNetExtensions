@@ -6,7 +6,7 @@
 
 | 实现方式                      | 代码行数 | 可维护性 |
 | ----------------------------- | -------- | -------- |
-| 原始实现                      | 61       | 弱       |
+| 原始实现                      | 55       | 弱       |
 | 方法提取                      | 34       | 中       |
 | 值封装 (对外表现不同)         | 20       | 中       |
 | 运行时代码自动生成 (非密封类) | 21       | 极强     |
@@ -34,11 +34,9 @@ public class ObservableBox : INotifyPropertyChanged
         get => this.length;
         set
         {
-            if (!EqualityComparer<double>.Default.Equals(this.length, value))
-            {
-                this.length = value;
-                this.OnPropertyChanged(nameof(this.Length));
-            }
+            this.length = value;
+            this.OnPropertyChanged(
+                new PropertyChangedEventArgs(nameof(this.Length)));
         }
     }
 
@@ -47,11 +45,9 @@ public class ObservableBox : INotifyPropertyChanged
         get => this.width;
         set
         {
-            if (!EqualityComparer<double>.Default.Equals(this.width, value))
-            {
-                this.width = value;
-                this.OnPropertyChanged(nameof(this.Width));
-            }
+            this.width = value;
+            this.OnPropertyChanged(
+                new PropertyChangedEventArgs(nameof(this.Width)));
         }
     }
 
@@ -60,19 +56,17 @@ public class ObservableBox : INotifyPropertyChanged
         get => this.height;
         set
         {
-            if (!EqualityComparer<double>.Default.Equals(this.height, value))
-            {
-                this.height = value;
-                this.OnPropertyChanged(nameof(this.Height));
-            }
+            this.height = value;
+            this.OnPropertyChanged(
+                new PropertyChangedEventArgs(nameof(this.Height)));
         }
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    protected virtual void OnPropertyChanged(string propertyName)
+    protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
     {
-        this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        this.PropertyChanged?.Invoke(this, e);
     }
 }
 

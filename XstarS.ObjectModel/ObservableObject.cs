@@ -16,7 +16,7 @@ namespace XstarS.ComponentModel
         protected ObservableObject() { }
 
         /// <summary>
-        /// 更改属性的值，并引发 <see cref="ObservableBase.PropertyChanged"/> 事件。
+        /// 设置指定属性的值，并通知属性值已更改。
         /// </summary>
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="field">属性对应的字段。</param>
@@ -26,7 +26,7 @@ namespace XstarS.ComponentModel
             [CallerMemberName] string propertyName = null)
         {
             field = value;
-            this.OnPropertyChanged(propertyName);
+            this.NotifyPropertyChanged(propertyName);
         }
     }
 }

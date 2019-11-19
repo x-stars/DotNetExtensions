@@ -21,9 +21,9 @@ public class ObservableData : INotifyPropertyChanged
 {
     public event PropertyChangedEventHandler PropertyChanged;
 
-    protected virtual void OnPropertyChanged(string propertyName)
+    protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
     {
-        this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        this.PropertyChanged?.Invoke(this, e);
     }
 }
 ```
@@ -45,11 +45,9 @@ public class ObservableData : INotifyPropertyChanged
         get => this.text;
         set
         {
-            if (!EqualityComparer<string>.Default.Equals(this.text, value))
-            {
-                this.text = value;
-                this.OnPropertyChanged(nameof(this.Text));
-            }
+            this.text = value;
+            this.OnPropertyChanged(
+                new PropertyChangedEventArgs(nameof(this.Text)));
         }
     }
 
@@ -69,14 +67,17 @@ public class ObservableData : INotifyPropertyChanged
 {
     // Event and On-Event method.
 
-    protected void SetProperty<T>(ref T item, T value,
+    protected void NotifyPropertChanged(
         [CallerMemberName] string propertyName = null)
     {
-        if (!EqualityComparer<T>.Default.Equals(item, value))
-        {
-            item = value;
-            this.OnPropertyChanged(propertyName);
-        }
+        this.OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+    }
+
+    protected void SetProperty<T>(ref T field, T value,
+        [CallerMemberName] string propertyName = null)
+    {
+        field = value;
+        this.NotifyPropertyChanged(propertyName);
     }
 }
 ```

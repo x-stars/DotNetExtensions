@@ -28,7 +28,6 @@ namespace XstarS.ComponentModel
 
         /// <summary>
         /// 获取或设置当前 <see cref="Observable{T}"/> 的值。
-        /// 更改此属性的值将引发 <see cref="ObservableBase.PropertyChanged"/> 事件。
         /// </summary>
         public T Value
         {

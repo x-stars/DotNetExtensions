@@ -6,10 +6,10 @@ using System.Runtime.CompilerServices;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供属性更改通知类型 <see cref="INotifyPropertyChanged"/> 基于属性存储的抽象基类。
+    /// 提供属性更改通知类型 <see cref="INotifyPropertyChanged"/> 基于数据存储的抽象基类。
     /// </summary>
     [Serializable]
-    public abstract class ObservableProperties : ObservableBase
+    public abstract class ObservableStorage : ObservableBase
     {
         /// <summary>
         /// 所有属性的数据存储。
@@ -17,9 +17,9 @@ namespace XstarS.ComponentModel
         private readonly ConcurrentDictionary<string, object> PropertyStorage;
 
         /// <summary>
-        /// 初始化 <see cref="ObservableProperties"/> 类的新实例。
+        /// 初始化 <see cref="ObservableStorage"/> 类的新实例。
         /// </summary>
-        protected ObservableProperties()
+        protected ObservableStorage()
         {
             this.PropertyStorage = new ConcurrentDictionary<string, object>();
         }
@@ -42,16 +42,16 @@ namespace XstarS.ComponentModel
             set
             {
                 this.PropertyStorage[propertyName] = value;
-                this.OnPropertyChanged(propertyName);
+                this.NotifyPropertyChanged(propertyName);
             }
         }
 
         /// <summary>
-        /// 获取指定属性的值；若不存在或类型不匹配，则返回 <see langword="default"/>。
+        /// 获取指定属性的值。
         /// </summary>
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="propertyName">属性的名称，可由编译器自动获取。</param>
-        /// <returns>指定属性的值；若不存在或类型不匹配，则为 <see langword="default"/>。</returns>
+        /// <returns>指定属性的值；若不存在，则为 <see langword="default"/>。</returns>
         protected T GetProperty<T>(
             [CallerMemberName] string propertyName = null)
         {
@@ -59,7 +59,7 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 设置指定属性的值，并引发 <see cref="ObservableBase.PropertyChanged"/> 事件。
+        /// 设置指定属性的值，并通知属性值已更改。
         /// </summary>
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="value">属性的新值，一般为 <see langword="value"/>。</param>

@@ -47,7 +47,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
-        /// 但未定义公共或保护级别的 <c>void OnPropertyChanged(string)</c> 方法。</exception>
+        /// 但未定义可访问的 <c>OnPropertyChanged</c> 触发方法。</exception>
         public Type ObservableType => this.TypeProvider.ObservableType;
 
         /// <summary>

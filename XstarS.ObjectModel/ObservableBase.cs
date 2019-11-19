@@ -22,14 +22,22 @@ namespace XstarS.ComponentModel
         public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// 引发 <see cref="ObservableBase.PropertyChanged"/> 事件。
+        /// 通知指定属性值已更改。
         /// </summary>
         /// <param name="propertyName">已更改属性的名称，可由编译器自动获取。</param>
-        protected virtual void OnPropertyChanged(
+        protected void NotifyPropertyChanged(
             [CallerMemberName] string propertyName = null)
         {
-            this.PropertyChanged?.Invoke(
-                this, new PropertyChangedEventArgs(propertyName));
+            this.OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
+        }
+
+        /// <summary>
+        /// 使用指定的事件数据引发 <see cref="ObservableBase.PropertyChanged"/> 事件。
+        /// </summary>
+        /// <param name="e">包含事件数据的 <see cref="PropertyChangedEventArgs"/>。</param>
+        protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
+        {
+            this.PropertyChanged?.Invoke(this, e);
         }
     }
 }

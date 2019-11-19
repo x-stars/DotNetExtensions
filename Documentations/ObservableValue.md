@@ -40,7 +40,7 @@ public class ObservableRectangle : ObservableObject
         set
         {
             this.SetProperty(ref this.width, value);
-            this.OnPropertyChanged(nameof(this.Size));
+            this.NotifyPropertyChanged(nameof(this.Size));
         }
     }
 
@@ -50,7 +50,7 @@ public class ObservableRectangle : ObservableObject
         set
         {
             this.SetProperty(ref this.height, value);
-            this.OnPropertyChanged(nameof(this.Size));
+            this.NotifyPropertyChanged(nameof(this.Size));
         }
     }
 
@@ -142,7 +142,7 @@ public interface IObservableData : INotifyPropertyChanged
 注意，若定义的原型为一个类 (`class`)，则应将设置更改通知的属性定义为 `virtual` 或 `abstract`，使得此属性能够在派生类中被重写。
 `ObservableFactory<T>` 不会对非 `virtual` 或 `abstract` 的属性生成属性更改通知代码。
 同时，若定义了 `PropertyChanged` 事件，应将其应定义为 `abstract`，
-或是定义一个事件触发函数 `void OnPropertyChanged(string)`，否则会导致无法正确构造派生类。
+或是定义一个事件触发方法 `OnPropertyChanged`，否则会导致无法正确构造派生类。
 
 > 若基类中的属性或方法或未定义为 `virtual` 或 `abstract`，则在派生类仅隐藏了基类中对应的定义，并未重写。
 > 当派生类的实例声明为基类时，则会调用基类中定义的属性或方法。
