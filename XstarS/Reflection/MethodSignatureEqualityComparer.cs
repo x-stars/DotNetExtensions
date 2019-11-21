@@ -34,8 +34,7 @@ namespace XstarS.Reflection
             if ((x is null) ^ (y is null)) { return false; }
 
             if (x.Name != y.Name) { return false; }
-
-            if (x.IsStatic ^ y.IsStatic) { return false; }
+            if (x.CallingConvention != y.CallingConvention) { return false; }
 
             if (x.IsGenericMethod ^ y.IsGenericMethod) { return false; }
             if (x.IsGenericMethod) { x = x.GetGenericMethodDefinition(); }
@@ -96,11 +95,8 @@ namespace XstarS.Reflection
 
             var hashCode = 0;
 
-            var name = obj.Name;
-            hashCode = hashCode * -1521134295 + name.GetHashCode();
-
-            var isStatic = obj.IsStatic;
-            hashCode = hashCode * -1521134295 + (isStatic ? (int)MethodAttributes.Static : 0);
+            hashCode = hashCode * -1521134295 + obj.Name.GetHashCode();
+            hashCode = hashCode * -1521134295 + obj.CallingConvention.GetHashCode();
 
             if (obj.IsGenericMethod) { obj = obj.GetGenericMethodDefinition(); }
             var gTypes = obj.IsGenericMethod ? obj.GetGenericArguments() : Array.Empty<Type>();

@@ -224,6 +224,10 @@ namespace XstarS.ComponentModel
                         {
                             type.DefineNotImplementedPropertyOverride(baseProperty);
                         }
+                        else if (baseProperty.PropertyType.IsStackOnly())
+                        {
+                            type.DefineNotImplementedPropertyOverride(baseProperty);
+                        }
                         else
                         {
                             type.DefineObservableAutoPropertyOverride(baseProperty, onPropertyChangedMethod);
