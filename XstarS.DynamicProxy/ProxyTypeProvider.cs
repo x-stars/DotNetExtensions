@@ -94,7 +94,7 @@ namespace XstarS.Reflection
         public Type ProxyType => this.LazyProxyType.Value;
 
         /// <summary>
-        /// 代理类型中 <see cref="MethodInvokeHandler"/> 字段的 <see cref="FieldInfo"/> 对象。
+        /// 获取代理类型中的代理委托字段的 <see cref="FieldInfo"/> 对象。
         /// </summary>
         public FieldInfo HandlerField => this.LazyHandlerField.Value;
 
@@ -133,9 +133,9 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 搜寻代理类型中 <see cref="MethodInvokeHandler"/> 字段。
+        /// 搜寻代理类型中的代理委托字段。
         /// </summary>
-        /// <returns>代理类型中 <see cref="MethodInvokeHandler"/> 字段。</returns>
+        /// <returns>代理类型中的代理委托字段。</returns>
         private FieldInfo FindHandlerField()
         {
             return this.ProxyType.GetField(nameof(MethodInvokeHandler),

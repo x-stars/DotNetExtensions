@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -9,41 +8,45 @@ using System.Threading;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供反射发出相关的帮助方法。
+    /// 提供运行时类型生成相关的扩展方法。
     /// </summary>
-    internal static class ReflectionEmitHelper
+    internal static class TypeBuildingExtensions
     {
         /// <summary>
-        /// 发出将指定索引处的参数加载到计算堆栈上的指令，并放到当前指令流中。
+        /// 确定当前 <see cref="MethodBase"/> 是否为程序集外部可继承的实例方法。
         /// </summary>
-        /// <param name="il">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
-        /// <param name="position">要加载到计算堆栈的参数的索引。</param>
+        /// <param name="method">要进行检查的 <see cref="MethodBase"/> 对象。</param>
+        /// <returns>若 <paramref name="method"/> 是程序集外部可继承的实例方法，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="il"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="position"/> 小于 0。</exception>
-        internal static void EmitLdarg(this ILGenerator il, int position)
+        /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
+        public static bool IsInheritableInstance(this MethodBase method)
         {
-            if (il is null)
+            if (method is null)
             {
-                throw new ArgumentNullException(nameof(il));
-            }
-            if (position < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(position));
+                throw new ArgumentNullException(nameof(method));
             }
 
-            switch (position)
+            return !method.IsStatic &&
+                (method.IsPublic || method.IsFamily || method.IsFamilyOrAssembly);
+        }
+
+        /// <summary>
+        /// 确定当前 <see cref="MethodInfo"/> 是否为程序集外部可重写的方法。
+        /// </summary>
+        /// <param name="method">要进行检查的 <see cref="MethodInfo"/> 对象。</param>
+        /// <returns>若 <paramref name="method"/> 是程序集外部可重写的方法，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
+        public static bool IsOverridable(this MethodInfo method)
+        {
+            if (method is null)
             {
-                case 0: il.Emit(OpCodes.Ldarg_0); break;
-                case 1: il.Emit(OpCodes.Ldarg_1); break;
-                case 2: il.Emit(OpCodes.Ldarg_2); break;
-                case 3: il.Emit(OpCodes.Ldarg_3); break;
-                default:
-                    il.Emit((position <= byte.MaxValue) ?
-                        OpCodes.Ldarg_S : OpCodes.Ldarg, position);
-                    break;
+                throw new ArgumentNullException(nameof(method));
             }
+
+            return method.IsInheritableInstance() && (method.IsVirtual && !method.IsFinal);
         }
 
         /// <summary>
@@ -55,7 +58,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="ArgumentException">
         /// <paramref name="baseConstructor"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static ConstructorBuilder DefineBaseInvokeConstructor(
+        public static ConstructorBuilder DefineBaseInvokeConstructor(
             this TypeBuilder type, ConstructorInfo baseConstructor)
         {
             if (type is null)
@@ -107,7 +110,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static PropertyBuilder DefineNotImplementedPropertyOverride(
+        public static PropertyBuilder DefineNotImplementedPropertyOverride(
             this TypeBuilder type, PropertyInfo baseProperty)
         {
             if (type is null)
@@ -143,139 +146,6 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 以指定的属性为基础，定义调用此属性并触发属性更改事件的重写属性，并添加到当前类型。
-        /// </summary>
-        /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
-        /// <param name="baseProperty">作为基础的属性。</param>
-        /// <param name="onPropertyChangedMethod">
-        /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的触发方法。</param>
-        /// <returns>定义的属性更改通知属性，调用 <paramref name="baseProperty"/> 属性，
-        /// 并在属性更改时触发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。</returns>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="baseProperty"/> 是抽象属性或无法在程序集外部重写。</exception>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static PropertyBuilder DefineObservableBaseInvokePropertyOverride(
-            this TypeBuilder type, PropertyInfo baseProperty, MethodInfo onPropertyChangedMethod)
-        {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            if (baseProperty is null)
-            {
-                throw new ArgumentNullException(nameof(baseProperty));
-            }
-            if (onPropertyChangedMethod is null)
-            {
-                throw new ArgumentNullException(nameof(onPropertyChangedMethod));
-            }
-            if (baseProperty.GetAccessors().All(accessor => accessor.IsAbstract))
-            {
-                throw new ArgumentException(
-                    new ArgumentException().Message, nameof(baseProperty));
-            }
-            if (!baseProperty.GetAccessors().All(accessor => accessor.IsOverridable()))
-            {
-                throw new ArgumentException(
-                    new ArgumentException().Message, nameof(baseProperty));
-            }
-
-            var rPropertyNames = baseProperty.GetCustomAttribute<
-                RelatedPropertiesAttribute>()?.PropertyNames ?? Array.Empty<string>();
-
-            var property = type.DefineProperty(
-                baseProperty.Name, baseProperty.Attributes, baseProperty.PropertyType,
-                Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
-
-            if (baseProperty.CanRead)
-            {
-                var baseMethod = baseProperty.GetMethod;
-                var baseInInterface = baseMethod.DeclaringType.IsInterface;
-                var baseAttributes = baseMethod.Attributes;
-                var baseReturnParam = baseMethod.ReturnParameter;
-                var baseParameters = baseMethod.GetParameters();
-                var attributes = baseAttributes & ~MethodAttributes.Abstract;
-                if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
-
-                var method = type.DefineMethod(baseMethod.Name,
-                    attributes, baseReturnParam.ParameterType,
-                    Array.ConvertAll(baseMethod.GetParameters(), param => param.ParameterType));
-
-                var returnParam = method.DefineParameter(0,
-                    baseReturnParam.Attributes, baseReturnParam.Name);
-                for (int i = 0; i < baseParameters.Length; i++)
-                {
-                    var baseParameter = baseParameters[i];
-                    var parameter = method.DefineParameter(i + 1,
-                        baseParameter.Attributes, baseParameter.Name);
-                }
-
-                var il = method.GetILGenerator();
-                il.Emit(OpCodes.Ldarg_0);
-                for (int i = 0; i < baseParameters.Length; i++)
-                {
-                    il.EmitLdarg(i + 1);
-                }
-                il.Emit(OpCodes.Call, baseProperty.GetMethod);
-                il.Emit(OpCodes.Ret);
-
-                property.SetGetMethod(method);
-            }
-
-            if (baseProperty.CanWrite)
-            {
-                var baseMethod = baseProperty.SetMethod;
-                var baseInInterface = baseMethod.DeclaringType.IsInterface;
-                var baseAttributes = baseMethod.Attributes;
-                var baseReturnParam = baseMethod.ReturnParameter;
-                var baseParameters = baseMethod.GetParameters();
-                var attributes = baseAttributes & ~MethodAttributes.Abstract;
-                if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
-
-                var method = type.DefineMethod(baseMethod.Name,
-                    attributes, baseReturnParam.ParameterType,
-                    Array.ConvertAll(baseParameters, param => param.ParameterType));
-
-                var returnParam = method.DefineParameter(0,
-                    baseReturnParam.Attributes, baseReturnParam.Name);
-                for (int i = 0; i < baseParameters.Length; i++)
-                {
-                    var baseParameter = baseParameters[i];
-                    var parameter = method.DefineParameter(i + 1,
-                        baseParameter.Attributes, baseParameter.Name);
-                }
-
-                var il = method.GetILGenerator();
-                il.Emit(OpCodes.Ldarg_0);
-                for (int i = 0; i < baseParameters.Length; i++)
-                {
-                    il.EmitLdarg(i + 1);
-                }
-                il.Emit(OpCodes.Call, baseProperty.SetMethod);
-                var propertyName = (baseProperty.GetIndexParameters().Length == 0) ?
-                    baseProperty.Name : $"{baseProperty.Name}[]";
-                var eventArgsConstructor =
-                    typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) });
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldstr, propertyName);
-                il.Emit(OpCodes.Newobj, eventArgsConstructor);
-                il.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
-                foreach (var rPropertyName in rPropertyNames)
-                {
-                    il.Emit(OpCodes.Ldarg_0);
-                    il.Emit(OpCodes.Ldstr, rPropertyName);
-                    il.Emit(OpCodes.Newobj, eventArgsConstructor);
-                    il.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
-                }
-                il.Emit(OpCodes.Ret);
-
-                property.SetSetMethod(method);
-            }
-
-            return property;
-        }
-
-        /// <summary>
         /// 以指定的属性为基础，定义以自动属性模式实现的重写属性，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
@@ -284,7 +154,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 是索引属性或无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static KeyValuePair<PropertyBuilder, FieldBuilder> DefineAutoPropertyOverride(
+        public static KeyValuePair<PropertyBuilder, FieldBuilder> DefineAutoPropertyOverride(
             this TypeBuilder type, PropertyInfo baseProperty)
         {
             if (type is null)
@@ -380,133 +250,6 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 以指定的属性为基础，定义以自动属性模式实现并触发属性更改事件的重写属性，并添加到当前类型。
-        /// </summary>
-        /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
-        /// <param name="baseProperty">作为基础的属性。</param>
-        /// <param name="onPropertyChangedMethod">
-        /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的触发方法。</param>
-        /// <returns>定义的属性更改通知自动属性及其对应的字段，
-        /// 在属性更改时触发 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件。</returns>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="baseProperty"/> 是索引属性或无法在程序集外部重写。</exception>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static KeyValuePair<PropertyBuilder, FieldBuilder> DefineObservableAutoPropertyOverride(
-            this TypeBuilder type, PropertyInfo baseProperty, MethodInfo onPropertyChangedMethod)
-        {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            if (baseProperty is null)
-            {
-                throw new ArgumentNullException(nameof(baseProperty));
-            }
-            if (onPropertyChangedMethod is null)
-            {
-                throw new ArgumentNullException(nameof(onPropertyChangedMethod));
-            }
-            if (baseProperty.GetIndexParameters().Length != 0)
-            {
-                throw new ArgumentException(
-                    new ArgumentException().Message, nameof(baseProperty));
-            }
-            if (!baseProperty.GetAccessors().All(accessor => accessor.IsOverridable()))
-            {
-                throw new ArgumentException(
-                    new ArgumentException().Message, nameof(baseProperty));
-            }
-
-            var rPropertyNames = baseProperty.GetCustomAttribute<
-                RelatedPropertiesAttribute>()?.PropertyNames ?? Array.Empty<string>();
-
-            var property = type.DefineProperty(
-                baseProperty.Name, baseProperty.Attributes, baseProperty.PropertyType,
-                Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
-
-            var field = type.DefineField(
-                baseProperty.Name, baseProperty.PropertyType, FieldAttributes.Private);
-
-            if (baseProperty.CanRead)
-            {
-                var baseMethod = baseProperty.GetMethod;
-                var baseInInterface = baseMethod.DeclaringType.IsInterface;
-                var baseAttributes = baseMethod.Attributes;
-                var baseReturnParam = baseMethod.ReturnParameter;
-                var baseParameters = baseMethod.GetParameters();
-                var attributes = baseAttributes & ~MethodAttributes.Abstract;
-                if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
-
-                var method = type.DefineMethod(baseMethod.Name,
-                    attributes, baseReturnParam.ParameterType,
-                    Array.ConvertAll(baseMethod.GetParameters(), param => param.ParameterType));
-
-                var returnParam = method.DefineParameter(0,
-                    baseReturnParam.Attributes, baseReturnParam.Name);
-                for (int i = 0; i < baseParameters.Length; i++)
-                {
-                    var baseParameter = baseParameters[i];
-                    var parameter = method.DefineParameter(i + 1,
-                        baseParameter.Attributes, baseParameter.Name);
-                }
-
-                var il = method.GetILGenerator();
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldfld, field);
-                il.Emit(OpCodes.Ret);
-
-                property.SetGetMethod(method);
-            }
-
-            if (baseProperty.CanWrite)
-            {
-                var baseMethod = baseProperty.SetMethod;
-                var baseInInterface = baseMethod.DeclaringType.IsInterface;
-                var baseAttributes = baseMethod.Attributes;
-                var baseReturnParam = baseMethod.ReturnParameter;
-                var baseParameters = baseMethod.GetParameters();
-                var attributes = baseAttributes & ~MethodAttributes.Abstract;
-                if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
-
-                var method = type.DefineMethod(baseMethod.Name,
-                    attributes, baseReturnParam.ParameterType,
-                    Array.ConvertAll(baseParameters, param => param.ParameterType));
-
-                var returnParam = method.DefineParameter(0,
-                    baseReturnParam.Attributes, baseReturnParam.Name);
-                for (int i = 0; i < baseParameters.Length; i++)
-                {
-                    var baseParameter = baseParameters[i];
-                    var parameter = method.DefineParameter(i + 1,
-                        baseParameter.Attributes, baseParameter.Name);
-                }
-
-                var il = method.GetILGenerator();
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Stfld, field);
-                var eventArgsConstructor =
-                    typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) });
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldstr, baseProperty.Name);
-                il.Emit(OpCodes.Newobj, eventArgsConstructor);
-                il.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
-                foreach (var rPropertyName in rPropertyNames)
-                {
-                    il.Emit(OpCodes.Ldarg_0);
-                    il.Emit(OpCodes.Ldstr, rPropertyName);
-                    il.Emit(OpCodes.Newobj, eventArgsConstructor);
-                    il.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
-                }
-                il.Emit(OpCodes.Ret);
-
-                property.SetSetMethod(method);
-            }
-
-            return new KeyValuePair<PropertyBuilder, FieldBuilder>(property, field);
-        }
-
-        /// <summary>
         /// 以指定的事件为基础，定义抛出未实现异常的重写事件，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义事件的 <see cref="TypeBuilder"/> 对象。</param>
@@ -515,7 +258,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="ArgumentException">
         /// <paramref name="baseEvent"/> 的方法无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static EventBuilder DefineNotImplementedEventOverride(
+        public static EventBuilder DefineNotImplementedEventOverride(
             this TypeBuilder type, EventInfo baseEvent)
         {
             if (type is null)
@@ -559,7 +302,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="ArgumentException">
         /// <paramref name="baseEvent"/> 的方法无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static KeyValuePair<EventBuilder, FieldBuilder> DefineDefaultEventOverride(
+        public static KeyValuePair<EventBuilder, FieldBuilder> DefineDefaultEventOverride(
             this TypeBuilder type, EventInfo baseEvent)
         {
             if (type is null)
@@ -700,59 +443,6 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 定义 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的触发方法，并添加到当前类型。
-        /// </summary>
-        /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
-        /// <param name="propertyChangedField">
-        /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件委托的字段。</param>
-        /// <returns>定义的 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的触发方法。</returns>
-        /// <exception cref="ArgumentException"><paramref name="propertyChangedField"/>
-        /// 的类型不为 <see cref="PropertyChangedEventHandler"/>。</exception>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static MethodBuilder DefineOnPropertyChangedMethod(
-            this TypeBuilder type, FieldInfo propertyChangedField)
-        {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            if (propertyChangedField is null)
-            {
-                throw new ArgumentNullException(nameof(propertyChangedField));
-            }
-            if (propertyChangedField.FieldType != typeof(PropertyChangedEventHandler))
-            {
-                throw new ArgumentException(
-                    new ArgumentException().Message, nameof(propertyChangedField));
-            }
-
-            var method = type.DefineMethod("OnPropertyChanged",
-                MethodAttributes.Family | MethodAttributes.Virtual |
-                MethodAttributes.HideBySig | MethodAttributes.NewSlot,
-                typeof(void), new[] { typeof(PropertyChangedEventArgs) });
-
-            method.DefineParameter(1, ParameterAttributes.None, "e");
-
-            var il = method.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldfld, propertyChangedField);
-            il.Emit(OpCodes.Dup);
-            var labelInvoke = il.DefineLabel();
-            il.Emit(OpCodes.Brtrue_S, labelInvoke);
-            il.Emit(OpCodes.Pop);
-            il.Emit(OpCodes.Ret);
-            il.MarkLabel(labelInvoke);
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Callvirt, typeof(PropertyChangedEventHandler).GetMethod(
-                nameof(PropertyChangedEventHandler.Invoke),
-                new[] { typeof(object), typeof(PropertyChangedEventArgs) }));
-            il.Emit(OpCodes.Ret);
-
-            return method;
-        }
-
-        /// <summary>
         /// 以指定的方法为基础，定义抛出未实现异常的重写方法，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
@@ -761,7 +451,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static MethodBuilder DefineNotImplementedMethodOverride(
+        public static MethodBuilder DefineNotImplementedMethodOverride(
             this TypeBuilder type, MethodInfo baseMethod)
         {
             if (type is null)

@@ -15,6 +15,12 @@ namespace XstarS.Reflection
             new Lazy<ProxyFactory<T>>(() => new ProxyFactory<T>());
 
         /// <summary>
+        /// <see cref="ProxyFactory{T}.Handler"/> 的默认值。
+        /// </summary>
+        private static readonly MethodInvokeHandler DefaultHandler =
+            (instance, method, arguments, @delegate) => @delegate.Invoke(instance, arguments);
+
+        /// <summary>
         /// 提供代理类型的 <see cref="ProxyTypeProvider"/> 对象。
         /// </summary>
         private readonly ProxyTypeProvider TypeProvider;
@@ -27,6 +33,7 @@ namespace XstarS.Reflection
         private ProxyFactory()
         {
             this.TypeProvider = ProxyTypeProvider.OfType(typeof(T));
+            this.Handler = ProxyFactory<T>.DefaultHandler;
         }
 
         /// <summary>
@@ -39,13 +46,8 @@ namespace XstarS.Reflection
         /// <paramref name="handler"/> 为 <see langword="null"/>。</exception>
         private ProxyFactory(MethodInvokeHandler handler)
         {
-            if (handler is null)
-            {
-                throw new ArgumentNullException(nameof(handler));
-            }
-
             this.TypeProvider = ProxyTypeProvider.OfType(typeof(T));
-            this.Handler = handler;
+            this.Handler = handler ?? throw new ArgumentNullException(nameof(handler));
         }
 
         /// <summary>
@@ -108,10 +110,10 @@ namespace XstarS.Reflection
             this.InitializeHandler((T)Activator.CreateInstance(this.ProxyType, arguments));
 
         /// <summary>
-        /// 初始化代理类型的实例的 <see cref="MethodInvokeHandler"/> 字段。
+        /// 初始化代理类型的实例的代理委托字段。
         /// </summary>
-        /// <param name="proxyInstance">要初始化代理字段的代理类型的实例。</param>
-        /// <returns>完成代理字段初始化的 <paramref name="proxyInstance"/>。</returns>
+        /// <param name="proxyInstance">要初始化代理委托字段的代理类型的实例。</param>
+        /// <returns>完成代理委托字段初始化的 <paramref name="proxyInstance"/>。</returns>
         private T InitializeHandler(T proxyInstance)
         {
             var handlerField = this.TypeProvider.HandlerField;

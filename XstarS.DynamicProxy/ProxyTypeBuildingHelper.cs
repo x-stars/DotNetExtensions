@@ -7,68 +7,33 @@ using System.Reflection.Emit;
 namespace XstarS.Reflection
 {
     /// <summary>
-    /// 提供反射发出相关的帮助方法。
+    /// 提供代理类型运行时类型生成相关的帮助方法。
     /// </summary>
-    internal static class ReflectionEmitHelper
+    internal static class ProxyTypeBuildingHelper
     {
         /// <summary>
-        /// 发出将指定索引处的参数加载到计算堆栈上的指令，并放到当前指令流中。
+        /// 确定当前 <see cref="MemberInfo"/> 是否可被 <see cref="MethodInvokeHandler"/> 代理。
         /// </summary>
-        /// <param name="il">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
-        /// <param name="position">要加载到计算堆栈的参数的索引。</param>
+        /// <param name="method">要确定是否可被代理的 <see cref="MethodInfo"/> 对象。</param>
+        /// <returns>若 <paramref name="method"/> 可被 <see cref="MethodInvokeHandler"/> 代理，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="il"/> 为 <see langword="null"/>。</exception>
-        internal static void EmitLdarg(this ILGenerator il, int position)
+        /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
+        internal static bool IsProxySupported(this MethodInfo method)
         {
-            if (il is null)
+            if (method is null)
             {
-                throw new ArgumentNullException(nameof(il));
+                throw new ArgumentNullException(nameof(method));
             }
 
-            switch (position)
-            {
-                case 0: il.Emit(OpCodes.Ldarg_0); break;
-                case 1: il.Emit(OpCodes.Ldarg_1); break;
-                case 2: il.Emit(OpCodes.Ldarg_2); break;
-                case 3: il.Emit(OpCodes.Ldarg_3); break;
-                default:
-                    il.Emit((position <= byte.MaxValue) ?
-                        OpCodes.Ldarg_S : OpCodes.Ldarg, position);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// 发出将指定 32 位有符号整数加载到计算堆栈上的指令，并放到当前指令流中。
-        /// </summary>
-        /// <param name="il">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
-        /// <param name="value">要加载到计算堆栈的 32 位有符号整数的值。</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="il"/> 为 <see langword="null"/>。</exception>
-        internal static void EmitLdcI4(this ILGenerator il, int value)
-        {
-            if (il is null)
-            {
-                throw new ArgumentNullException(nameof(il));
-            }
-
-            switch (value)
-            {
-                case -1: il.Emit(OpCodes.Ldc_I4_M1); break;
-                case 0: il.Emit(OpCodes.Ldc_I4_0); break;
-                case 1: il.Emit(OpCodes.Ldc_I4_1); break;
-                case 2: il.Emit(OpCodes.Ldc_I4_2); break;
-                case 3: il.Emit(OpCodes.Ldc_I4_3); break;
-                case 4: il.Emit(OpCodes.Ldc_I4_4); break;
-                case 5: il.Emit(OpCodes.Ldc_I4_5); break;
-                case 6: il.Emit(OpCodes.Ldc_I4_6); break;
-                case 7: il.Emit(OpCodes.Ldc_I4_7); break;
-                case 8: il.Emit(OpCodes.Ldc_I4_8); break;
-                default:
-                    il.Emit((value <= byte.MaxValue) ?
-                        OpCodes.Ldc_I4_S : OpCodes.Ldc_I4, value);
-                    break;
-            }
+            return method.IsOverridable() &&
+                Array.TrueForAll(
+                    Array.ConvertAll(method.GetParameters(), param => param.ParameterType),
+                    type => !type.IsNotBoxable()) &&
+                (!method.IsGenericMethod || (method.IsGenericMethod &&
+                Array.TrueForAll(
+                    method.GetGenericArguments(),
+                    type => type.GetGenericParameterConstraints().Length == 0)));
         }
 
         /// <summary>
@@ -116,63 +81,11 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 以指定的构造函数为基础，定义仅调用此构造函数的构造函数，并添加到当前类型。
-        /// </summary>
-        /// <param name="type">要定义构造函数的 <see cref="TypeBuilder"/> 对象。</param>
-        /// <param name="baseConstructor">作为基础的构造函数。</param>
-        /// <returns>定义的构造函数，调用 <paramref name="baseConstructor"/> 构造函数。</returns>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="baseConstructor"/> 的访问级别不为公共或保护。</exception>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static ConstructorBuilder DefineBaseInvokeConstructor(
-            this TypeBuilder type, ConstructorInfo baseConstructor)
-        {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            if (baseConstructor is null)
-            {
-                throw new ArgumentNullException(nameof(baseConstructor));
-            }
-            if (!baseConstructor.IsInheritableInstance())
-            {
-                throw new ArgumentException(
-                    new ArgumentException().Message, nameof(baseConstructor));
-            }
-
-            var baseAttributes = baseConstructor.Attributes;
-            var baseParameters = baseConstructor.GetParameters();
-
-            var constructor = type.DefineConstructor(
-                baseAttributes, baseConstructor.CallingConvention,
-                Array.ConvertAll(baseParameters, param => param.ParameterType));
-
-            for (int i = 0; i < baseParameters.Length; i++)
-            {
-                var baseParameter = baseParameters[i];
-                var parameter = constructor.DefineParameter(i + 1,
-                    baseParameter.Attributes, baseParameter.Name);
-            }
-
-            var il = constructor.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0);
-            for (int i = 0; i < baseParameters.Length; i++)
-            {
-                il.EmitLdarg(i + 1);
-            }
-            il.Emit(OpCodes.Call, baseConstructor);
-            il.Emit(OpCodes.Ret);
-
-            return constructor;
-        }
-
-        /// <summary>
         /// 以指定的方法为基础，定义调用基类方法的新方法，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseMethod">作为基础的方法。</param>
-        /// <returns>定义的新方法，调用 <paramref name="baseMethod"/> 方法。</returns>
+        /// <returns>定义的方法，调用 <paramref name="baseMethod"/> 方法。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
@@ -252,8 +165,7 @@ namespace XstarS.Reflection
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseMethod">作为基础的方法。</param>
         /// <param name="baseInvokeMethod">调用基础方法的当前类型的方法。</param>
-        /// <returns>定义的基类方法的 <see cref="MethodInfo"/>
-        /// 和 <see cref="MethodDelegate"/> 字段</returns>
+        /// <returns>定义的基类方法的 <see cref="MethodInfo"/> 和 <see cref="MethodDelegate"/> 字段</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
@@ -369,66 +281,6 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 以指定的方法为基础，定义抛出未实现异常的重写方法，并添加到当前类型。
-        /// </summary>
-        /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
-        /// <param name="baseMethod">作为基础的方法。</param>
-        /// <returns>定义的方法，抛出 <see cref="NotImplementedException"/> 异常。</returns>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static MethodBuilder DefineNotImplementedMethodOverride(
-            this TypeBuilder type, MethodInfo baseMethod)
-        {
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-            if (baseMethod is null)
-            {
-                throw new ArgumentNullException(nameof(baseMethod));
-            }
-            if (!baseMethod.IsOverridable())
-            {
-                throw new ArgumentException(
-                    new ArgumentException().Message, nameof(baseMethod));
-            }
-
-            var baseInInterface = baseMethod.DeclaringType.IsInterface;
-            var baseAttributes = baseMethod.Attributes;
-            var baseGenericParams = baseMethod.GetGenericArguments();
-            var baseReturnParam = baseMethod.ReturnParameter;
-            var baseParameters = baseMethod.GetParameters();
-            var attributes = baseAttributes & ~MethodAttributes.Abstract;
-            if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
-
-            var method = type.DefineMethod(baseMethod.Name,
-                attributes, baseReturnParam.ParameterType,
-                Array.ConvertAll(baseParameters, param => param.ParameterType));
-
-            var genericParams = (baseGenericParams.Length == 0) ?
-                Array.Empty<GenericTypeParameterBuilder>() :
-                method.DefineGenericParameters(
-                    Array.ConvertAll(baseGenericParams, param => param.Name));
-
-            var returnParam = method.DefineParameter(0,
-                baseReturnParam.Attributes, baseReturnParam.Name);
-            for (int i = 0; i < baseParameters.Length; i++)
-            {
-                var baseParameter = baseParameters[i];
-                var parameter = method.DefineParameter(i + 1,
-                    baseParameter.Attributes, baseParameter.Name);
-            }
-
-            var il = method.GetILGenerator();
-            il.Emit(OpCodes.Newobj,
-                typeof(NotImplementedException).GetConstructor(Type.EmptyTypes));
-            il.Emit(OpCodes.Throw);
-
-            return method;
-        }
-
-        /// <summary>
         /// 以指定的方法为基础，定义调用指定代理委托的方法，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
@@ -515,10 +367,6 @@ namespace XstarS.Reflection
             }
 
             var il = method.GetILGenerator();
-            var invokeBaseLabel = il.DefineLabel();
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldfld, methodInvokeHandlerField);
-            il.Emit(OpCodes.Brfalse_S, invokeBaseLabel);
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldfld, methodInvokeHandlerField);
             il.Emit(OpCodes.Ldarg_0);
@@ -538,25 +386,6 @@ namespace XstarS.Reflection
             il.Emit(OpCodes.Ldsfld, baseMethodDelegateField);
             il.Emit(OpCodes.Call,
                 typeof(MethodInvokeHandler).GetMethod(nameof(MethodInvokeHandler.Invoke)));
-            var returnLabel = il.DefineLabel();
-            il.Emit(OpCodes.Br_S, returnLabel);
-            il.MarkLabel(invokeBaseLabel);
-            il.Emit(OpCodes.Ldsfld, baseMethodDelegateField);
-            il.Emit(OpCodes.Ldarg_0);
-            il.EmitLdcI4(baseParameters.Length);
-            il.Emit(OpCodes.Newarr, typeof(object));
-            for (int i = 0; i < baseParameters.Length; i++)
-            {
-                var baseParameter = baseParameters[i];
-                il.Emit(OpCodes.Dup);
-                il.EmitLdcI4(i);
-                il.EmitLdarg(i + 1);
-                il.Emit(OpCodes.Box, baseParameter.ParameterType);
-                il.Emit(OpCodes.Stelem_Ref);
-            }
-            il.Emit(OpCodes.Call,
-                typeof(MethodDelegate).GetMethod(nameof(MethodDelegate.Invoke)));
-            il.MarkLabel(returnLabel);
             if (baseMethod.ReturnType != typeof(void))
             {
                 il.Emit(OpCodes.Unbox_Any, baseMethod.ReturnType);
