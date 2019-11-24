@@ -8,25 +8,30 @@ using System.Reflection.Emit;
 namespace XstarS.Reflection
 {
     /// <summary>
-    /// 提供基于代理委托 <see cref="MethodInvokeHandler"/> 的代理类型。
+    /// 提供基于代理委托 <see cref="MethodInvokeHandler"/> 的包装代理类型。
     /// </summary>
-    public sealed class ProxyTypeProvider
+    public sealed class WrapProxyTypeProvider
     {
         /// <summary>
-        /// <see cref="ProxyTypeProvider.OfType(Type)"/> 的延迟初始化值。
+        /// <see cref="WrapProxyTypeProvider.OfType(Type)"/> 的延迟初始化值。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Lazy<ProxyTypeProvider>> LazyOfTypes =
-            new ConcurrentDictionary<Type, Lazy<ProxyTypeProvider>>();
+        private static readonly ConcurrentDictionary<Type, Lazy<WrapProxyTypeProvider>> LazyOfTypes =
+            new ConcurrentDictionary<Type, Lazy<WrapProxyTypeProvider>>();
 
         /// <summary>
-        /// <see cref="ProxyTypeProvider.ProxyType"/> 的延迟初始化值。
+        /// <see cref="WrapProxyTypeProvider.ProxyType"/> 的延迟初始化值。
         /// </summary>
         private readonly Lazy<Type> LazyProxyType;
 
         /// <summary>
-        /// <see cref="ProxyTypeProvider.HandlerField"/> 的延迟初始化值。
+        /// <see cref="WrapProxyTypeProvider.HandlerField"/> 的延迟初始化值。
         /// </summary>
         private readonly Lazy<FieldInfo> LazyHandlerField;
+
+        /// <summary>
+        /// <see cref="WrapProxyTypeProvider.InstanceField"/> 的延迟初始化值。
+        /// </summary>
+        private readonly Lazy<FieldInfo> LazyInstanceField;
 
         /// <summary>
         /// 原型类型中所有应按代理模式重写的方法。
@@ -44,6 +49,11 @@ namespace XstarS.Reflection
         private TypeBuilder ProxyTypeBuilder;
 
         /// <summary>
+        /// 代理类型中代理对象的字段。
+        /// </summary>
+        private FieldInfo ProxyInstanceField;
+
+        /// <summary>
         /// 代理类型中所有访问原型类型方法的方法。
         /// </summary>
         private Dictionary<MethodInfo, MethodInfo> BaseInvokeMethods;
@@ -59,21 +69,20 @@ namespace XstarS.Reflection
         private Dictionary<MethodInfo, FieldInfo> BaseMethodInfoFields;
 
         /// <summary>
-        /// 使用指定的原型类型初始化 <see cref="ProxyTypeProvider"/> 类的新实例。
+        /// 使用指定的原型类型初始化 <see cref="WrapProxyTypeProvider"/> 类的新实例。
         /// </summary>
-        /// <param name="baseType">原型类型，应为接口或非密封类。</param>
+        /// <param name="baseType">原型类型，应为接口。</param>
         /// <exception cref="ArgumentException">
-        /// <paramref name="baseType"/> 不是公共接口，也不是公共非密封类。</exception>
+        /// <paramref name="baseType"/> 不是公共接口。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="baseType"/> 为 <see langword="null"/>。</exception>
-        private ProxyTypeProvider(Type baseType)
+        private WrapProxyTypeProvider(Type baseType)
         {
             if (baseType is null)
             {
                 throw new ArgumentNullException(nameof(baseType));
             }
-            if (!(((baseType.IsClass && !baseType.IsSealed) || baseType.IsInterface) &&
-                baseType.IsVisible && !baseType.ContainsGenericParameters))
+            if (!(baseType.IsInterface && baseType.IsVisible && !baseType.ContainsGenericParameters))
             {
                 throw new ArgumentException(new ArgumentException().Message, nameof(baseType));
             }
@@ -81,6 +90,7 @@ namespace XstarS.Reflection
             this.BaseType = baseType;
             this.LazyProxyType = new Lazy<Type>(this.CreateProxyType);
             this.LazyHandlerField = new Lazy<FieldInfo>(this.FindHandlerField);
+            this.LazyInstanceField = new Lazy<FieldInfo>(this.FindInstanceField);
         }
 
         /// <summary>
@@ -94,24 +104,29 @@ namespace XstarS.Reflection
         public Type ProxyType => this.LazyProxyType.Value;
 
         /// <summary>
+        /// 获取代理类型中的代理对象字段的 <see cref="FieldInfo"/> 对象。
+        /// </summary>
+        public FieldInfo InstanceField => this.LazyInstanceField.Value;
+
+        /// <summary>
         /// 获取代理类型中的代理委托字段的 <see cref="FieldInfo"/> 对象。
         /// </summary>
         public FieldInfo HandlerField => this.LazyHandlerField.Value;
 
         /// <summary>
-        /// 获取原型类型为指定类型的 <see cref="ProxyTypeProvider"/> 类的实例。
+        /// 获取原型类型为指定类型的 <see cref="WrapProxyTypeProvider"/> 类的实例。
         /// </summary>
         /// <param name="baseType">原型类型的 <see cref="Type"/> 对象。</param>
         /// <returns>一个原型类型为 <paramref name="baseType"/> 的
-        /// <see cref="ProxyTypeProvider"/> 类的实例。</returns>
+        /// <see cref="WrapProxyTypeProvider"/> 类的实例。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="baseType"/> 不是公共接口，也不是公共非密封类。</exception>
+        /// <paramref name="baseType"/> 不是公共接口。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="baseType"/> 为 <see langword="null"/>。</exception>
-        public static ProxyTypeProvider OfType(Type baseType) =>
-            ProxyTypeProvider.LazyOfTypes.GetOrAdd(baseType,
-                newBaseType => new Lazy<ProxyTypeProvider>(
-                    () => new ProxyTypeProvider(newBaseType))).Value;
+        public static WrapProxyTypeProvider OfType(Type baseType) =>
+            WrapProxyTypeProvider.LazyOfTypes.GetOrAdd(baseType,
+                newBaseType => new Lazy<WrapProxyTypeProvider>(
+                    () => new WrapProxyTypeProvider(newBaseType))).Value;
 
         /// <summary>
         /// 创建代理类型。
@@ -124,6 +139,7 @@ namespace XstarS.Reflection
             this.DefineProxyType();
 
             this.DefineProxyTypeConstructors();
+            this.DefineProxyInstanceField();
             this.DefineBaseInvokeMethods();
             this.DefineBaseMethodInfoAndDelegateFields();
             this.DefineProxyOverrideMethods();
@@ -143,14 +159,24 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
+        /// 搜寻代理类型中的代理对象字段。
+        /// </summary>
+        /// <returns>代理类型中的 <see cref="MethodInvokeHandler"/> 字段。</returns>
+        private FieldInfo FindInstanceField()
+        {
+            return this.ProxyType.GetField("Instance",
+                BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
+        }
+
+        /// <summary>
         /// 初始化原型类型中应该重写的方法。
         /// </summary>
         private void InitializeBaseMethods()
         {
             this.BaseMethods = this.BaseType.GetAccessibleMethods().Where(
-                method => method.IsProxyOverride()).ToArray();
+                method => method.IsWrapProxyOverride()).ToArray();
             this.BaseNonMethods = this.BaseType.GetAccessibleMethods().Where(
-                method => method.IsNonProxyOverride()).ToArray();
+                method => method.IsNonWrapProxyOverride()).ToArray();
         }
 
         /// <summary>
@@ -160,7 +186,7 @@ namespace XstarS.Reflection
         {
             var baseType = this.BaseType;
 
-            var assemblyName = $"Proxy[{baseType.ToString()}]";
+            var assemblyName = $"WrapProxy[{baseType.ToString()}]";
             var assembly = AssemblyBuilder.DefineDynamicAssembly(
                 new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
             var module = assembly.DefineDynamicModule($"{assemblyName}.dll");
@@ -180,12 +206,10 @@ namespace XstarS.Reflection
                 baseGenericArgumentNames, name => name.Replace('.', '-').Replace('+', '-'));
             var joinedGenericArgumentNames = baseType.IsGenericType ?
                 $"<{string.Join(",", genericArgumentNames)}>" : "";
-            var fullName = $"{@namespace}$Proxy@{joinedTypeNames}{joinedGenericArgumentNames}";
+            var fullName = $"{@namespace}$WrapProxy@{joinedTypeNames}{joinedGenericArgumentNames}";
 
-            var isInterface = baseType.IsInterface;
-            var parent = !isInterface ? baseType : typeof(object);
-            var interfaces = !isInterface ? baseType.GetInterfaces() :
-                new[] { baseType }.Concat(baseType.GetInterfaces()).ToArray();
+            var parent = typeof(object);
+            var interfaces = new[] { baseType }.Concat(baseType.GetInterfaces()).ToArray();
 
             var type = module.DefineType(fullName, TypeAttributes.Class |
                 TypeAttributes.Public | TypeAttributes.BeforeFieldInit, parent, interfaces);
@@ -201,8 +225,7 @@ namespace XstarS.Reflection
             var baseType = this.BaseType;
             var type = this.ProxyTypeBuilder;
 
-            var isInterface = baseType.IsInterface;
-            var parent = !isInterface ? baseType : typeof(object);
+            var parent = typeof(object);
             var baseConstructors = parent.GetConstructors().Where(
                 constructor => constructor.IsInheritableInstance()).ToArray();
 
@@ -213,18 +236,33 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
+        /// 定义代理对象字段。
+        /// </summary>
+        private void DefineProxyInstanceField()
+        {
+            var baseType = this.BaseType;
+            var type = this.ProxyTypeBuilder;
+
+            var instanceField = type.DefineField(
+                "Instance", baseType, FieldAttributes.Assembly);
+
+            this.ProxyInstanceField = instanceField;
+        }
+
+        /// <summary>
         /// 定义代理类型中访问原型类型方法的方法。
         /// </summary>
         private void DefineBaseInvokeMethods()
         {
             var type = this.ProxyTypeBuilder;
+            var instanceField = this.ProxyInstanceField;
             var baseMethods = this.BaseMethods;
 
             var methods = new Dictionary<MethodInfo, MethodInfo>();
             for (int i = 0; i < baseMethods.Length; i++)
             {
                 var baseMethod = baseMethods[i];
-                var method = type.DefineBaseInvokeMethod(baseMethod);
+                var method = type.DefineWrapBaseInvokeMethod(baseMethod, instanceField);
                 methods[baseMethod] = method;
             }
 
@@ -262,6 +300,7 @@ namespace XstarS.Reflection
         {
             var baseMethods = this.BaseMethods;
             var type = this.ProxyTypeBuilder;
+            var instanceField = this.ProxyInstanceField;
             var baseMethodInfoFields = this.BaseMethodInfoFields;
             var baseMethodDelegateFields = this.BaseMethodDelegateFields;
 
@@ -272,7 +311,7 @@ namespace XstarS.Reflection
             {
                 var baseMethodInfoField = baseMethodInfoFields[baseMethod];
                 var baseMethodDelegateField = baseMethodDelegateFields[baseMethod];
-                var method = type.DefineProxyMethodOverride(
+                var method = type.DefineWrapProxyMethodOverride(
                     baseMethod, baseMethodInfoField, baseMethodDelegateField, handlerField);
             }
         }
@@ -284,10 +323,11 @@ namespace XstarS.Reflection
         {
             var baseMethods = this.BaseNonMethods;
             var type = this.ProxyTypeBuilder;
+            var instanceField = this.ProxyInstanceField;
 
             foreach (var baseMethod in baseMethods)
             {
-                var method = type.DefineNotImplementedMethodOverride(baseMethod);
+                var method = type.DefineWrapBaseInvokeMethodOverride(baseMethod, instanceField);
             }
         }
     }

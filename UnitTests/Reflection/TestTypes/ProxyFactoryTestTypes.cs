@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 
 namespace XstarS.Reflection.TestTypes
 {
-    internal static class TestHandlers
+    internal static class ProxyFactoryTestHandlers
     {
         internal static readonly MethodInvokeHandler WriteMethodAndInvokeBaseHandler =
             (instance, method, arguments, @delegate) =>

@@ -112,13 +112,13 @@ namespace XstarS.Reflection
         /// <summary>
         /// 初始化代理类型的实例的代理委托字段。
         /// </summary>
-        /// <param name="proxyInstance">要初始化代理委托字段的代理类型的实例。</param>
-        /// <returns>完成代理委托字段初始化的 <paramref name="proxyInstance"/>。</returns>
-        private T InitializeHandler(T proxyInstance)
+        /// <param name="proxy">要初始化代理委托字段的代理类型的实例。</param>
+        /// <returns>完成代理委托字段初始化的 <paramref name="proxy"/>。</returns>
+        private T InitializeHandler(T proxy)
         {
             var handlerField = this.TypeProvider.HandlerField;
-            handlerField.SetValue(proxyInstance, this.Handler);
-            return proxyInstance;
+            handlerField.SetValue(proxy, this.Handler);
+            return proxy;
         }
     }
 }

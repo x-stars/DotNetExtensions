@@ -10,7 +10,8 @@ namespace XstarS.Reflection
         public void CreateInstance_Class_WorksProperly()
         {
             var o = ProxyFactory<ProxyCollection<int>>.WithHandler(
-                TestHandlers.WriteMethodAndInvokeBaseHandler).CreateInstance();
+                ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
+                ).CreateInstance();
             for (int i = 0; i < 10; i++) { o.Add(i); }
             Assert.AreEqual(o.Count, 10);
         }
@@ -19,7 +20,8 @@ namespace XstarS.Reflection
         public void CreateInstance_ClassWithGenericMethod_WorksProperly()
         {
             var o = ProxyFactory<ProxyCreator>.WithHandler(
-                TestHandlers.WriteMethodAndInvokeBaseHandler).CreateInstance();
+                ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
+                ).CreateInstance();
             Assert.IsNotNull(o.Create<object>());
         }
 
@@ -27,7 +29,8 @@ namespace XstarS.Reflection
         public void CreateInstance_AbstractClass_WorksProperly()
         {
             var o = ProxyFactory<ProxyEqualityComparer<object>>.WithHandler(
-                TestHandlers.WriteMethodAndReturnDefaultHandler).CreateInstance();
+                ProxyFactoryTestHandlers.WriteMethodAndReturnDefaultHandler
+                ).CreateInstance();
             Assert.AreEqual(o.Equals(0, 0), false);
         }
 
@@ -35,7 +38,8 @@ namespace XstarS.Reflection
         public void CreateInstance_Interface_WorksProperly()
         {
             var o = ProxyFactory<IProxyList<object>>.WithHandler(
-                TestHandlers.WriteMethodAndReturnDefaultHandler).CreateInstance();
+                ProxyFactoryTestHandlers.WriteMethodAndReturnDefaultHandler
+                ).CreateInstance();
             Assert.AreEqual(o.Count, 0);
             for (int i = 0; i < 10; i++)
             {

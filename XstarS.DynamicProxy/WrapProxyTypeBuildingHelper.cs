@@ -1,32 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 
 namespace XstarS.Reflection
 {
     /// <summary>
-    /// 提供代理类型运行时类型生成相关的帮助方法。
+    /// 提供包装代理类型运行时类型生成相关的帮助方法。
     /// </summary>
-    internal static class ProxyTypeBuildingHelper
+    internal static class WrapProxyTypeBuildingHelper
     {
         /// <summary>
-        /// 确定当前 <see cref="MemberInfo"/> 是否应由 <see cref="ProxyTypeProvider"/> 按照代理模式重写。
+        /// 确定当前 <see cref="MemberInfo"/> 是否应由 <see cref="WrapProxyTypeProvider"/> 按照代理模式重写。
         /// </summary>
-        /// <param name="method">要确定是否按照代理模式重写的 <see cref="MethodInfo"/> 对象。</param>
-        /// <returns>若 <paramref name="method"/> 应由 <see cref="ProxyTypeProvider"/> 按照代理模式重写，
+        /// <param name="method">要确定是否按代理模式重写的 <see cref="MethodInfo"/> 对象。</param>
+        /// <returns>若 <paramref name="method"/> 应由 <see cref="WrapProxyTypeProvider"/> 按照代理模式重写，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-        internal static bool IsProxyOverride(this MethodInfo method)
+        internal static bool IsWrapProxyOverride(this MethodInfo method)
         {
             if (method is null)
             {
                 throw new ArgumentNullException(nameof(method));
             }
 
-            return method.IsOverridable() &&
+            return method.IsPublic && method.IsOverridable() &&
                 Array.TrueForAll(
                     Array.ConvertAll(method.GetParameters(), param => param.ParameterType),
                     type => !type.IsNotBoxable()) &&
@@ -37,77 +35,35 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 确定当前 <see cref="MemberInfo"/> 是否应由 <see cref="ProxyTypeProvider"/> 按照非代理模式重写。
+        /// 确定当前 <see cref="MemberInfo"/> 是否应由 <see cref="WrapProxyTypeProvider"/> 按照非代理模式重写。
         /// </summary>
-        /// <param name="method">要确定是否按照非代理模式重写的 <see cref="MethodInfo"/> 对象。</param>
-        /// <returns>若 <paramref name="method"/> 应由 <see cref="ProxyTypeProvider"/> 按照非代理模式重写，
+        /// <param name="method">要确定是否按非代理模式重写的 <see cref="MethodInfo"/> 对象。</param>
+        /// <returns>若 <paramref name="method"/> 应由 <see cref="WrapProxyTypeProvider"/> 按照非代理模式重写，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-        internal static bool IsNonProxyOverride(this MethodInfo method)
+        internal static bool IsNonWrapProxyOverride(this MethodInfo method)
         {
             if (method is null)
             {
                 throw new ArgumentNullException(nameof(method));
             }
 
-            return method.IsOverridable() && method.IsAbstract && !method.IsProxyOverride();
+            return method.IsPublic && method.IsOverridable() && !method.IsWrapProxyOverride();
         }
 
         /// <summary>
-        /// 以指定的泛型参数为基础，设定当前泛型参数的泛型约束。
-        /// </summary>
-        /// <param name="genericParam">
-        /// 要设定泛型约束的 <see cref="GenericTypeParameterBuilder"/> 对象。</param>
-        /// <param name="baseGenericParam">作为基础的泛型参数。</param>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="baseGenericParam"/> 不为泛型参数。</exception>
-        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static void SetGenericConstraintsAs(
-            this GenericTypeParameterBuilder genericParam, Type baseGenericParam)
-        {
-            if (genericParam is null)
-            {
-                throw new ArgumentNullException(nameof(genericParam));
-            }
-            if (baseGenericParam is null)
-            {
-                throw new ArgumentNullException(nameof(baseGenericParam));
-            }
-            if (!baseGenericParam.IsGenericParameter)
-            {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseGenericParam));
-            }
-
-            var baseGenericConstraints = baseGenericParam.GetGenericParameterConstraints();
-            var baseTypeConstraint = baseGenericConstraints.Where(
-                genericConstraint => genericConstraint.IsClass).SingleOrDefault();
-            var interfaceConstraints = baseGenericConstraints.Where(
-                genericConstraint => genericConstraint.IsInterface).ToArray();
-
-            genericParam.SetGenericParameterAttributes(
-                baseGenericParam.GenericParameterAttributes);
-            if (!(baseTypeConstraint is null))
-            {
-                genericParam.SetBaseTypeConstraint(baseTypeConstraint);
-            }
-            if (interfaceConstraints.Length != 0)
-            {
-                genericParam.SetInterfaceConstraints(interfaceConstraints);
-            }
-        }
-
-        /// <summary>
-        /// 以指定的方法为基础，定义调用基类方法的新方法，并添加到当前类型。
+        /// 以指定的方法为基础，定义调用代理对象方法的新方法，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseMethod">作为基础的方法。</param>
-        /// <returns>定义的方法，调用 <paramref name="baseMethod"/> 方法。</returns>
+        /// <param name="instanceField">代理对象的字段。</param>
+        /// <returns>定义的方法，调用代理对象的 <paramref name="baseMethod"/> 方法。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="baseMethod"/> 的访问级别不为公共或保护。</exception>
+        /// <paramref name="baseMethod"/> 的声明类型不为接口。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static MethodBuilder DefineBaseInvokeMethod(
-            this TypeBuilder type, MethodInfo baseMethod)
+        internal static MethodBuilder DefineWrapBaseInvokeMethod(
+            this TypeBuilder type, MethodInfo baseMethod, FieldInfo instanceField)
         {
             if (type is null)
             {
@@ -117,7 +73,7 @@ namespace XstarS.Reflection
             {
                 throw new ArgumentNullException(nameof(baseMethod));
             }
-            if (!baseMethod.IsProxyOverride())
+            if (!baseMethod.IsWrapProxyOverride())
             {
                 throw new ArgumentException(new ArgumentException().Message, nameof(baseMethod));
             }
@@ -126,7 +82,8 @@ namespace XstarS.Reflection
             var baseReturnParam = baseMethod.ReturnParameter;
             var baseParameters = baseMethod.GetParameters();
 
-            var method = type.DefineMethod($"@{baseMethod.Name}",
+            var method = type.DefineMethod(
+                $"@{baseMethod.Name}#{baseMethod.MethodHandle.Value.ToString()}",
                 MethodAttributes.Assembly | MethodAttributes.HideBySig,
                 baseReturnParam.ParameterType,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));
@@ -152,41 +109,32 @@ namespace XstarS.Reflection
             }
 
             var il = method.GetILGenerator();
-            if (!baseMethod.IsAbstract)
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld, instanceField);
+            for (int i = 0; i < baseParameters.Length; i++)
             {
-                il.Emit(OpCodes.Ldarg_0);
-                for (int i = 0; i < baseParameters.Length; i++)
-                {
-                    il.EmitLdarg(i + 1);
-                }
-                il.Emit(OpCodes.Call,
-                    (baseGenericParams.Length == 0) ? baseMethod :
-                    baseMethod.MakeGenericMethod(method.GetGenericArguments()));
-                il.Emit(OpCodes.Ret);
+                il.EmitLdarg(i + 1);
             }
-            else
-            {
-                il.Emit(OpCodes.Newobj,
-                    typeof(NotImplementedException).GetConstructor(Type.EmptyTypes));
-                il.Emit(OpCodes.Throw);
-            }
+            il.Emit(OpCodes.Callvirt,
+                (baseGenericParams.Length == 0) ? baseMethod :
+                baseMethod.MakeGenericMethod(method.GetGenericArguments()));
+            il.Emit(OpCodes.Ret);
 
             return method;
         }
 
         /// <summary>
-        /// 以指定的方法为基础，定义基类方法的 <see cref="MethodInfo"/>
-        /// 和 <see cref="MethodDelegate"/> 字段，并添加到当前类型。
+        /// 以指定的方法为基础，定义调用调用代理对象方法的重写方法，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseMethod">作为基础的方法。</param>
-        /// <param name="baseInvokeMethod">调用基础方法的当前类型的方法。</param>
-        /// <returns>定义的基类方法的 <see cref="MethodInfo"/> 和 <see cref="MethodDelegate"/> 字段</returns>
+        /// <param name="instanceField">代理对象的字段。</param>
+        /// <returns>定义的方法，调用代理对象的 <paramref name="baseMethod"/> 方法。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="baseMethod"/> 的访问级别不为公共或保护。</exception>
+        /// <paramref name="baseMethod"/> 的声明类型不为接口。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static KeyValuePair<FieldBuilder, FieldBuilder> DefineMethodInfoAndDelegateField(
-            this TypeBuilder type, MethodInfo baseMethod, MethodInfo baseInvokeMethod)
+        internal static MethodBuilder DefineWrapBaseInvokeMethodOverride(
+            this TypeBuilder type, MethodInfo baseMethod, FieldInfo instanceField)
         {
             if (type is null)
             {
@@ -196,11 +144,7 @@ namespace XstarS.Reflection
             {
                 throw new ArgumentNullException(nameof(baseMethod));
             }
-            if (baseInvokeMethod is null)
-            {
-                throw new ArgumentNullException(nameof(baseInvokeMethod));
-            }
-            if (!baseMethod.IsProxyOverride())
+            if (!(baseMethod.IsPublic && baseMethod.IsOverridable()))
             {
                 throw new ArgumentException(new ArgumentException().Message, nameof(baseMethod));
             }
@@ -209,90 +153,41 @@ namespace XstarS.Reflection
             var baseReturnParam = baseMethod.ReturnParameter;
             var baseParameters = baseMethod.GetParameters();
 
-            var nestedType = type.DefineNestedType(
-                $"@{baseMethod.Name}#{baseMethod.MethodHandle.Value.ToString()}",
-                TypeAttributes.Class | TypeAttributes.NestedAssembly |
-                TypeAttributes.Abstract | TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit);
+            var method = type.DefineMethod(
+                $"{baseMethod.Name}#{baseMethod.MethodHandle.Value.ToString()}",
+                MethodAttributes.Assembly | MethodAttributes.HideBySig,
+                baseReturnParam.ParameterType,
+                Array.ConvertAll(baseParameters, param => param.ParameterType));
 
             var genericParams = (baseGenericParams.Length == 0) ?
                 Array.Empty<GenericTypeParameterBuilder>() :
-                nestedType.DefineGenericParameters(
+                method.DefineGenericParameters(
                     Array.ConvertAll(baseGenericParams, param => param.Name));
-            for (int i = 0; i < baseGenericParams.Length; i++)
+
+            var returnParam = method.DefineParameter(0,
+                baseReturnParam.Attributes, baseReturnParam.Name);
+            for (int i = 0; i < baseParameters.Length; i++)
             {
-                var baseGenericParam = baseGenericParams[i];
-                var genericParam = genericParams[i];
-                genericParam.SetGenericConstraintsAs(baseGenericParam);
+                var baseParameter = baseParameters[i];
+                var parameter = method.DefineParameter(i + 1,
+                    baseParameter.Attributes, baseParameter.Name);
             }
 
-            var delegateMethod = nestedType.DefineMethod(nameof(MethodDelegate.Invoke),
-                MethodAttributes.Assembly | MethodAttributes.Static | MethodAttributes.HideBySig,
-                typeof(object), new[] { typeof(object), typeof(object[]) });
+            var il = method.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld, instanceField);
+            for (int i = 0; i < baseParameters.Length; i++)
             {
-                delegateMethod.DefineParameter(1, ParameterAttributes.None, "instance");
-                delegateMethod.DefineParameter(2, ParameterAttributes.None, "arguments");
-
-                var il = delegateMethod.GetILGenerator();
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Castclass, type);
-                for (int i = 0; i < baseParameters.Length; i++)
-                {
-                    var baseParameter = baseParameters[i];
-                    int index = Array.IndexOf(
-                        baseGenericParams, baseParameter.ParameterType);
-                    var parameterType = (index == -1) ?
-                        baseParameter.ParameterType : genericParams[index];
-                    il.Emit(OpCodes.Ldarg_1);
-                    il.EmitLdcI4(i);
-                    il.Emit(OpCodes.Ldelem_Ref);
-                    il.Emit(OpCodes.Unbox_Any, parameterType);
-                }
-                il.Emit(OpCodes.Call,
-                    !baseInvokeMethod.IsGenericMethod ? baseInvokeMethod :
-                    baseInvokeMethod.MakeGenericMethod(nestedType.GetGenericArguments()));
-                if (baseMethod.ReturnType != typeof(void))
-                {
-                    int index = Array.IndexOf(
-                        baseGenericParams, baseReturnParam.ParameterType);
-                    var returnType = (index == -1) ?
-                        baseReturnParam.ParameterType : genericParams[index];
-                    il.Emit(OpCodes.Box, returnType);
-                }
-                else
-                {
-                    il.Emit(OpCodes.Ldnull);
-                }
-                il.Emit(OpCodes.Ret);
+                il.EmitLdarg(i + 1);
             }
+            il.Emit(OpCodes.Callvirt,
+                (baseGenericParams.Length == 0) ? baseMethod :
+                baseMethod.MakeGenericMethod(method.GetGenericArguments()));
+            il.Emit(OpCodes.Ret);
 
-            var infoField = nestedType.DefineField(nameof(MethodInfo), typeof(MethodInfo),
-                FieldAttributes.Assembly | FieldAttributes.Static | FieldAttributes.InitOnly);
+            type.DefineMethodOverride(method, baseMethod);
 
-            var delegateField = nestedType.DefineField(nameof(MethodDelegate), typeof(MethodDelegate),
-                FieldAttributes.Assembly | FieldAttributes.Static | FieldAttributes.InitOnly);
-
-            var constructor = nestedType.DefineTypeInitializer();
-            {
-                var il = constructor.GetILGenerator();
-                il.Emit(OpCodes.Ldtoken,
-                    !baseMethod.IsGenericMethod ? baseMethod :
-                    baseMethod.MakeGenericMethod(nestedType.GetGenericArguments()));
-                il.Emit(OpCodes.Ldtoken, baseMethod.DeclaringType);
-                il.Emit(OpCodes.Call, typeof(MethodBase).GetMethod(
-                    nameof(MethodBase.GetMethodFromHandle),
-                    new[] { typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle) }));
-                il.Emit(OpCodes.Castclass, typeof(MethodInfo));
-                il.Emit(OpCodes.Stsfld, infoField);
-                il.Emit(OpCodes.Ldnull);
-                il.Emit(OpCodes.Ldftn, delegateMethod);
-                il.Emit(OpCodes.Newobj, typeof(MethodDelegate).GetConstructors()[0]);
-                il.Emit(OpCodes.Stsfld, delegateField);
-                il.Emit(OpCodes.Ret);
-            }
-
-            nestedType.CreateTypeInfo();
-
-            return new KeyValuePair<FieldBuilder, FieldBuilder>(infoField, delegateField);
+            return method;
         }
 
         /// <summary>
@@ -305,9 +200,9 @@ namespace XstarS.Reflection
         /// <param name="methodInvokeHandlerField">当前类型的代理委托字段。</param>
         /// <returns>定义的方法，调用 <paramref name="methodInvokeHandlerField"/> 字段的代理委托。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
+        /// <paramref name="baseMethod"/> 的声明类型不为接口。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static MethodBuilder DefineProxyMethodOverride(
+        internal static MethodBuilder DefineWrapProxyMethodOverride(
             this TypeBuilder type, MethodInfo baseMethod,
             FieldInfo baseMethodInfoField, FieldInfo baseMethodDelegateField,
             FieldInfo methodInvokeHandlerField)
@@ -332,20 +227,19 @@ namespace XstarS.Reflection
             {
                 throw new ArgumentNullException(nameof(methodInvokeHandlerField));
             }
-            if (!baseMethod.IsProxyOverride())
+            if (!baseMethod.IsWrapProxyOverride())
             {
                 throw new ArgumentException(new ArgumentException().Message, nameof(baseMethod));
             }
 
-            var baseInInterface = baseMethod.DeclaringType.IsInterface;
             var baseAttributes = baseMethod.Attributes;
             var baseGenericParams = baseMethod.GetGenericArguments();
             var baseReturnParam = baseMethod.ReturnParameter;
             var baseParameters = baseMethod.GetParameters();
-            var attributes = baseAttributes & ~MethodAttributes.Abstract;
-            if (!baseInInterface) { attributes &= ~MethodAttributes.NewSlot; }
+            var attributes = baseAttributes & ~MethodAttributes.Abstract & ~MethodAttributes.NewSlot;
 
-            var method = type.DefineMethod(baseMethod.Name,
+            var method = type.DefineMethod(
+                $"{baseMethod.Name}#{baseMethod.MethodHandle.Value.ToString()}",
                 attributes, baseReturnParam.ParameterType,
                 Array.ConvertAll(baseParameters, param => param.ParameterType));
 
@@ -409,6 +303,8 @@ namespace XstarS.Reflection
                 il.Emit(OpCodes.Pop);
             }
             il.Emit(OpCodes.Ret);
+
+            type.DefineMethodOverride(method, baseMethod);
 
             return method;
         }
