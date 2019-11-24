@@ -67,5 +67,65 @@ namespace XstarS.Reflection
                     break;
             }
         }
+
+        /// <summary>
+        /// 发出将指定类型的值转换为 <see cref="object"/> 的指令，并放到当前指令流中。
+        /// </summary>
+        /// <param name="il">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
+        /// <param name="type">要转换为 <see cref="object"/> 的值的类型。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="il"/>
+        /// 或 <paramref name="type"/> 为 <see langword="null"/>。</exception>
+        public static void EmitBox(this ILGenerator il, Type type)
+        {
+            if (il is null)
+            {
+                throw new ArgumentNullException(nameof(il));
+            }
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (type.IsGenericParameter)
+            {
+                il.Emit(OpCodes.Box, type);
+            }
+            else if (type.IsValueType)
+            {
+                il.Emit(OpCodes.Box, type);
+            }
+        }
+
+        /// <summary>
+        /// 发出将 <see cref="object"/> 转换为指定类型的值的指令，并放到当前指令流中。
+        /// </summary>
+        /// <param name="il">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
+        /// <param name="type">要由 <see cref="object"/> 转换到的值的类型。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="il"/>
+        /// 或 <paramref name="type"/> 为 <see langword="null"/>。</exception>
+        public static void EmitUnbox(this ILGenerator il, Type type)
+        {
+            if (il is null)
+            {
+                throw new ArgumentNullException(nameof(il));
+            }
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            if (type.IsGenericParameter)
+            {
+                il.Emit(OpCodes.Unbox_Any, type);
+            }
+            else if (type.IsValueType)
+            {
+                il.Emit(OpCodes.Unbox_Any, type);
+            }
+            else if (type != typeof(object))
+            {
+                il.Emit(OpCodes.Castclass, type);
+            }
+        }
     }
 }

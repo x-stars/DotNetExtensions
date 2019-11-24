@@ -48,8 +48,7 @@ namespace XstarS.ComponentModel
             {
                 throw new ArgumentNullException(nameof(baseType));
             }
-            if (!(((baseType.IsClass && !baseType.IsSealed) || baseType.IsInterface) &&
-                baseType.IsVisible && !baseType.ContainsGenericParameters))
+            if (!(baseType.IsVisible && !baseType.IsSealed && !baseType.ContainsGenericParameters))
             {
                 throw new ArgumentException(new ArgumentException().Message, nameof(baseType));
             }
@@ -135,11 +134,11 @@ namespace XstarS.ComponentModel
                 $"<{string.Join(",", genericArgumentNames)}>" : "";
             var fullName = $"{@namespace}$Observable@{joinedTypeNames}{joinedGenericArgumentNames}";
 
-            var baseInterfaces = baseType.GetInterfaces();
-            var parent = !baseType.IsInterface ? baseType : typeof(object);
-            var interfaces = !baseType.IsInterface ? baseInterfaces :
-                baseInterfaces.Concat(new[] { baseType }).ToArray();
-            interfaces = baseInterfaces.Contains(typeof(INotifyPropertyChanged)) ?
+            var baseIsInterface = baseType.IsInterface;
+            var parent = !baseIsInterface ? baseType : typeof(object);
+            var interfaces = !baseIsInterface ? baseType.GetInterfaces() :
+                new[] { baseType }.Concat(baseType.GetInterfaces()).ToArray();
+            interfaces = interfaces.Contains(typeof(INotifyPropertyChanged)) ?
                 interfaces : interfaces.Concat(new[] { typeof(INotifyPropertyChanged) }).ToArray();
 
             var type = module.DefineType(fullName, TypeAttributes.Class |
@@ -158,10 +157,10 @@ namespace XstarS.ComponentModel
             var type = this.ObservableTypeBuilder;
 
             var baseConstructors = parent.GetConstructors().Where(
-                constructor => constructor.IsInheritableInstance()).ToArray();
+                constructor => constructor.IsInheritable()).ToArray();
             foreach (var baseConstructor in baseConstructors)
             {
-                type.DefineBaseInvokeConstructor(baseConstructor);
+                type.DefineBaseInvokeConstructorLike(baseConstructor);
             }
         }
 
@@ -181,7 +180,7 @@ namespace XstarS.ComponentModel
 
             if (baseEvent?.AddMethod.IsAbstract == true)
             {
-                var field = type.DefineDefaultEventOverride(baseEvent).Value;
+                var field = type.DefineDefaultEventOverride(baseEvent, explicitOverride: false).Value;
                 var method = type.DefineOnPropertyChangedMethod(field);
 
                 this.OnPropertyChangedMethod = method;
@@ -193,7 +192,7 @@ namespace XstarS.ComponentModel
                     (method.ReturnParameter.ParameterType == typeof(void)) &&
                     (method.GetParameters().Length == 1) &&
                     (method.GetParameters()[0].ParameterType == typeof(PropertyChangedEventArgs)) &&
-                    method.IsInheritableInstance() && !method.IsAbstract).FirstOrDefault();
+                    method.IsInheritable() && !method.IsAbstract).FirstOrDefault();
 
                 if (method is null)
                 {
@@ -214,7 +213,7 @@ namespace XstarS.ComponentModel
             var onPropertyChangedMethod = this.OnPropertyChangedMethod;
 
             foreach (var baseProperty in baseType.GetAccessibleProperties().Where(
-                property => property.GetAccessors(true).All(accessor => accessor.IsInheritableInstance())))
+                property => property.GetAccessors(true).All(accessor => accessor.IsInheritable())))
             {
                 if (baseProperty.GetAccessors(true).All(accessor => accessor.IsOverridable()))
                 {
@@ -222,20 +221,22 @@ namespace XstarS.ComponentModel
                     {
                         if (baseProperty.GetIndexParameters().Length != 0)
                         {
-                            type.DefineNotImplementedPropertyOverride(baseProperty);
+                            type.DefineNotImplementedPropertyOverride(baseProperty, explicitOverride: true);
                         }
                         else if (baseProperty.PropertyType.IsStackOnly())
                         {
-                            type.DefineNotImplementedPropertyOverride(baseProperty);
+                            type.DefineNotImplementedPropertyOverride(baseProperty, explicitOverride: true);
                         }
                         else
                         {
-                            type.DefineObservableAutoPropertyOverride(baseProperty, onPropertyChangedMethod);
+                            type.DefineObservableAutoPropertyOverride(
+                                baseProperty, onPropertyChangedMethod, explicitOverride: true);
                         }
                     }
                     else
                     {
-                        type.DefineObservableBaseInvokePropertyOverride(baseProperty, onPropertyChangedMethod);
+                        type.DefineObservableBaseInvokePropertyOverride(
+                            baseProperty, onPropertyChangedMethod, explicitOverride: true);
                     }
                 }
             }
@@ -250,13 +251,13 @@ namespace XstarS.ComponentModel
             var type = this.ObservableTypeBuilder;
 
             foreach (var baseEvent in baseType.GetAccessibleEvents().Where(
-                @event => @event.AddMethod.IsInheritableInstance()))
+                @event => @event.AddMethod.IsInheritable()))
             {
-                if (baseEvent.Name != nameof(INotifyPropertyChanged.PropertyChanged))
+                if (baseEvent.DeclaringType != typeof(INotifyPropertyChanged))
                 {
                     if (baseEvent.AddMethod.IsAbstract)
                     {
-                        type.DefineNotImplementedEventOverride(baseEvent);
+                        type.DefineNotImplementedEventOverride(baseEvent, explicitOverride: true);
                     }
                 }
             }
@@ -271,11 +272,11 @@ namespace XstarS.ComponentModel
             var type = this.ObservableTypeBuilder;
 
             foreach (var baseMethod in baseType.GetAccessibleMethods().Where(
-                method => method.IsInheritableInstance()))
+                method => method.IsInheritable()))
             {
                 if (!baseMethod.IsSpecialName && baseMethod.IsAbstract)
                 {
-                    type.DefineNotImplementedMethodOverride(baseMethod);
+                    type.DefineNotImplementedMethodOverride(baseMethod, explicitOverride: true);
                 }
             }
         }

@@ -82,7 +82,7 @@ namespace XstarS.Reflection
             {
                 throw new ArgumentNullException(nameof(baseType));
             }
-            if (!(baseType.IsInterface && baseType.IsVisible && !baseType.ContainsGenericParameters))
+            if (!(baseType.IsVisible && baseType.IsInterface && !baseType.ContainsGenericParameters))
             {
                 throw new ArgumentException(new ArgumentException().Message, nameof(baseType));
             }
@@ -210,6 +210,8 @@ namespace XstarS.Reflection
 
             var parent = typeof(object);
             var interfaces = new[] { baseType }.Concat(baseType.GetInterfaces()).ToArray();
+            interfaces = interfaces.Contains(typeof(IWrapProxy)) ?
+                interfaces : interfaces.Concat(new[] { typeof(IWrapProxy) }).ToArray();
 
             var type = module.DefineType(fullName, TypeAttributes.Class |
                 TypeAttributes.Public | TypeAttributes.BeforeFieldInit, parent, interfaces);
@@ -227,11 +229,11 @@ namespace XstarS.Reflection
 
             var parent = typeof(object);
             var baseConstructors = parent.GetConstructors().Where(
-                constructor => constructor.IsInheritableInstance()).ToArray();
+                constructor => constructor.IsInheritable()).ToArray();
 
             foreach (var baseConstructor in baseConstructors)
             {
-                var constructor = type.DefineBaseInvokeConstructor(baseConstructor);
+                var constructor = type.DefineBaseInvokeConstructorLike(baseConstructor);
             }
         }
 
@@ -243,10 +245,16 @@ namespace XstarS.Reflection
             var baseType = this.BaseType;
             var type = this.ProxyTypeBuilder;
 
-            var instanceField = type.DefineField(
-                "Instance", baseType, FieldAttributes.Assembly);
+            var field = type.DefineField("Instance", baseType, FieldAttributes.Assembly);
 
-            this.ProxyInstanceField = instanceField;
+            var baseMethod = typeof(IWrapProxy).GetMethod(nameof(IWrapProxy.GetInstance));
+            var method = type.DefineMethodOverride(baseMethod, explicitOverride: false);
+            var il = method.GetILGenerator();
+            il.Emit(OpCodes.Ldarg_0);
+            il.Emit(OpCodes.Ldfld, field);
+            il.Emit(OpCodes.Ret);
+
+            this.ProxyInstanceField = field;
         }
 
         /// <summary>
@@ -262,7 +270,7 @@ namespace XstarS.Reflection
             for (int i = 0; i < baseMethods.Length; i++)
             {
                 var baseMethod = baseMethods[i];
-                var method = type.DefineWrapBaseInvokeMethod(baseMethod, instanceField);
+                var method = type.DefineWrapBaseInvokeMethodLike(baseMethod, instanceField);
                 methods[baseMethod] = method;
             }
 
@@ -311,8 +319,8 @@ namespace XstarS.Reflection
             {
                 var baseMethodInfoField = baseMethodInfoFields[baseMethod];
                 var baseMethodDelegateField = baseMethodDelegateFields[baseMethod];
-                var method = type.DefineWrapProxyMethodOverride(
-                    baseMethod, baseMethodInfoField, baseMethodDelegateField, handlerField);
+                var method = type.DefineProxyMethodOverride(baseMethod,
+                    baseMethodInfoField, baseMethodDelegateField, handlerField, explicitOverride: true);
             }
         }
 
@@ -327,7 +335,8 @@ namespace XstarS.Reflection
 
             foreach (var baseMethod in baseMethods)
             {
-                var method = type.DefineWrapBaseInvokeMethodOverride(baseMethod, instanceField);
+                var method = type.DefineWrapBaseInvokeMethodOverride(
+                    baseMethod, instanceField, explicitOverride: true);
             }
         }
     }

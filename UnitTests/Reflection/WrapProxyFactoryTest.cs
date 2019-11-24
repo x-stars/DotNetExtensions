@@ -30,12 +30,11 @@ namespace XstarS.Reflection
         [TestMethod]
         public void CreateInstance_DuplicateInterface_WorksProperly()
         {
-            var o0 = new FakeClonable();
             var o = WrapProxyFactory<IFakeClonable>.WithHandler(
                 ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
-                ).CreateInstance(o0);
-            Assert.AreEqual(o0, o.Clone());
-            Assert.AreNotEqual(o0, ((ICloneable)o).Clone());
+                ).CreateInstance(new FakeClonable());
+            Assert.AreEqual(((IWrapProxy)o).GetInstance(), o.Clone());
+            Assert.AreNotEqual(((IWrapProxy)o).GetInstance(), ((ICloneable)o).Clone());
         }
     }
 }

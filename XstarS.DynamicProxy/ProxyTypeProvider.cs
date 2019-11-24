@@ -72,8 +72,7 @@ namespace XstarS.Reflection
             {
                 throw new ArgumentNullException(nameof(baseType));
             }
-            if (!(((baseType.IsClass && !baseType.IsSealed) || baseType.IsInterface) &&
-                baseType.IsVisible && !baseType.ContainsGenericParameters))
+            if (!(baseType.IsVisible && !baseType.IsSealed && !baseType.ContainsGenericParameters))
             {
                 throw new ArgumentException(new ArgumentException().Message, nameof(baseType));
             }
@@ -182,9 +181,9 @@ namespace XstarS.Reflection
                 $"<{string.Join(",", genericArgumentNames)}>" : "";
             var fullName = $"{@namespace}$Proxy@{joinedTypeNames}{joinedGenericArgumentNames}";
 
-            var isInterface = baseType.IsInterface;
-            var parent = !isInterface ? baseType : typeof(object);
-            var interfaces = !isInterface ? baseType.GetInterfaces() :
+            var baseIsInterface = baseType.IsInterface;
+            var parent = !baseIsInterface ? baseType : typeof(object);
+            var interfaces = !baseIsInterface ? baseType.GetInterfaces() :
                 new[] { baseType }.Concat(baseType.GetInterfaces()).ToArray();
 
             var type = module.DefineType(fullName, TypeAttributes.Class |
@@ -204,11 +203,11 @@ namespace XstarS.Reflection
             var isInterface = baseType.IsInterface;
             var parent = !isInterface ? baseType : typeof(object);
             var baseConstructors = parent.GetConstructors().Where(
-                constructor => constructor.IsInheritableInstance()).ToArray();
+                constructor => constructor.IsInheritable()).ToArray();
 
             foreach (var baseConstructor in baseConstructors)
             {
-                var constructor = type.DefineBaseInvokeConstructor(baseConstructor);
+                var constructor = type.DefineBaseInvokeConstructorLike(baseConstructor);
             }
         }
 
@@ -224,7 +223,7 @@ namespace XstarS.Reflection
             for (int i = 0; i < baseMethods.Length; i++)
             {
                 var baseMethod = baseMethods[i];
-                var method = type.DefineBaseInvokeMethod(baseMethod);
+                var method = type.DefineBaseInvokeMethodLike(baseMethod);
                 methods[baseMethod] = method;
             }
 
@@ -272,8 +271,8 @@ namespace XstarS.Reflection
             {
                 var baseMethodInfoField = baseMethodInfoFields[baseMethod];
                 var baseMethodDelegateField = baseMethodDelegateFields[baseMethod];
-                var method = type.DefineProxyMethodOverride(
-                    baseMethod, baseMethodInfoField, baseMethodDelegateField, handlerField);
+                var method = type.DefineProxyMethodOverride(baseMethod,
+                    baseMethodInfoField, baseMethodDelegateField, handlerField, explicitOverride: true);
             }
         }
 
@@ -287,7 +286,7 @@ namespace XstarS.Reflection
 
             foreach (var baseMethod in baseMethods)
             {
-                var method = type.DefineNotImplementedMethodOverride(baseMethod);
+                var method = type.DefineNotImplementedMethodOverride(baseMethod, explicitOverride: true);
             }
         }
     }
