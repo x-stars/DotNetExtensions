@@ -1,50 +1,69 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 
 namespace XstarS.Reflection.TestTypes
 {
-    internal static class ProxyFactoryTestHandlers
+    public static class ProxyFactoryTestHandlers
     {
-        internal static readonly MethodInvokeHandler WriteMethodAndInvokeBaseHandler =
+        public static readonly MethodInvokeHandler WriteMethodAndInvokeBaseHandler =
             (instance, method, arguments, @delegate) =>
             {
-                Console.WriteLine($"{instance.GetType()}@" +
-                    $"{RuntimeHelpers.GetHashCode(instance)}::{method.ToString()}");
+                Console.WriteLine($"{instance.GetType()} " +
+                    $"#{RuntimeHelpers.GetHashCode(instance)} :: {method}");
                 return @delegate.Invoke(instance, arguments);
             };
 
-        internal static readonly MethodInvokeHandler WriteMethodAndReturnDefaultHandler =
+        public static readonly MethodInvokeHandler WriteMethodAndReturnDefaultHandler =
             (instance, method, arguments, @delegate) =>
             {
-                Console.WriteLine($"{instance.GetType()}@" +
-                    $"{RuntimeHelpers.GetHashCode(instance)}::{method.ToString()}");
-                return (method.ReturnType.IsValueType && (method.ReturnType != typeof(void))) ?
-                    Activator.CreateInstance(method.ReturnType) : null;
+                Console.WriteLine($"{instance.GetType()} " +
+                    $"#{RuntimeHelpers.GetHashCode(instance)} :: {method}");
+                var returnT = method.ReturnType;
+                return (returnT.IsByRef || returnT.IsPointer) ? IntPtr.Zero :
+                    (returnT.IsValueType && (returnT != typeof(void))) ?
+                    Activator.CreateInstance(returnT) : null;
             };
     }
-
-    public class ProxyCollection<T> : Collection<T>
+    public interface ICreator
     {
-        public ProxyCollection() { }
-
-        public ProxyCollection(IList<T> list) : base(list) { }
+        T Create<T>();
     }
 
-    public class ProxyCreator
+    public class Creator : ICreator
     {
-        public ProxyCreator() { }
+        public Creator() { }
 
-        public virtual T Create<T>() => Activator.CreateInstance<T>();
+        public T Create<T>() => Activator.CreateInstance<T>();
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Microsoft.Design", "CA1012:AbstractTypesShouldNotHaveConstructors")]
-    public abstract class ProxyEqualityComparer<T> : EqualityComparer<T>
+    public interface IFakeClonable : ICloneable
     {
-        public ProxyEqualityComparer() { }
+        new object Clone();
     }
 
-    public interface IProxyList<T> : IList<T> { }
+    public class FakeClonable : IFakeClonable
+    {
+        public FakeClonable() { }
+
+        public object Clone() => this;
+
+        object ICloneable.Clone() => this.MemberwiseClone();
+    }
+
+    public interface IListCreator<T>
+    {
+        TList Create<TList>() where TList : IList<T>, new();
+    }
+
+    public class ListCreator<T> : IListCreator<T>
+    {
+        public ListCreator() { }
+
+        public virtual TList Create<TList>()
+            where TList : IList<T>, new()
+        {
+            return Activator.CreateInstance<TList>();
+        }
+    }
 }

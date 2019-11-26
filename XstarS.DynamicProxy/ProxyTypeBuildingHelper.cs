@@ -27,10 +27,6 @@ namespace XstarS.Reflection
             }
 
             return method.IsOverridable() &&
-                (!method.IsGenericMethod || (method.IsGenericMethod &&
-                Array.TrueForAll(
-                    method.GetGenericArguments(),
-                    type => type.GetGenericParameterConstraints().Length == 0))) &&
                 !method.ReturnParameter.ParameterType.IsNotILBoxable() &&
                 Array.TrueForAll(
                     Array.ConvertAll(method.GetParameters(), param => param.ParameterType),
@@ -56,45 +52,90 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 以指定的泛型参数为基础，设定当前泛型参数的泛型约束。
+        /// 以指定的泛型参数列表为基础，设定当前泛型参数列表的泛型约束。
         /// </summary>
-        /// <param name="genericParam">
-        /// 要设定泛型约束的 <see cref="GenericTypeParameterBuilder"/> 对象。</param>
-        /// <param name="baseGenericParam">作为基础的泛型参数。</param>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="baseGenericParam"/> 不为泛型参数。</exception>
+        /// <param name="genericParams">
+        /// 要设定泛型约束的 <see cref="GenericTypeParameterBuilder"/> 数组。</param>
+        /// <param name="baseGenericParams">作为基础的泛型参数列表。</param>
+        /// <param name="baseTypeGenericArgs">定义基础泛型参数列表的方法的构造泛型类型的泛型参数列表。</param>
+        /// <exception cref="ArgumentException"><paramref name="baseGenericParams"/>
+        /// 不为泛型参数列表，或与 <paramref name="genericParams"/> 的长度不等。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static void SetGenericConstraintsAs(
-            this GenericTypeParameterBuilder genericParam, Type baseGenericParam)
+        internal static void SetGenericConstraintsLike(
+            this GenericTypeParameterBuilder[] genericParams, Type[] baseGenericParams,
+            Type[] baseTypeGenericArgs)
         {
-            if (genericParam is null)
+            if (genericParams is null)
             {
-                throw new ArgumentNullException(nameof(genericParam));
+                throw new ArgumentNullException(nameof(genericParams));
             }
-            if (baseGenericParam is null)
+            if (baseGenericParams is null)
             {
-                throw new ArgumentNullException(nameof(baseGenericParam));
+                throw new ArgumentNullException(nameof(baseGenericParams));
             }
-            if (!baseGenericParam.IsGenericParameter)
+            if (baseTypeGenericArgs is null)
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseGenericParam));
+                throw new ArgumentNullException(nameof(baseTypeGenericArgs));
+            }
+            if (baseGenericParams.Length != genericParams.Length)
+            {
+                throw new ArgumentException(
+                    new ArgumentException().Message, nameof(baseGenericParams));
+            }
+            if (baseGenericParams.Any(type => !type.IsGenericParameter))
+            {
+                throw new ArgumentException(
+                    new ArgumentException().Message, nameof(baseGenericParams));
             }
 
-            var baseGenericConstraints = baseGenericParam.GetGenericParameterConstraints();
-            var baseTypeConstraint = baseGenericConstraints.Where(
-                genericConstraint => genericConstraint.IsClass).SingleOrDefault();
-            var interfaceConstraints = baseGenericConstraints.Where(
-                genericConstraint => genericConstraint.IsInterface).ToArray();
+            for (int i = 0; i < genericParams.Length; i++)
+            {
+                var genericParam = genericParams[i];
+                var baseGenericParam = baseGenericParams[i];
 
-            genericParam.SetGenericParameterAttributes(
-                baseGenericParam.GenericParameterAttributes);
-            if (!(baseTypeConstraint is null))
-            {
-                genericParam.SetBaseTypeConstraint(baseTypeConstraint);
-            }
-            if (interfaceConstraints.Length != 0)
-            {
-                genericParam.SetInterfaceConstraints(interfaceConstraints);
+                var baseGenericConstraints = baseGenericParam.GetGenericParameterConstraints();
+
+                Type makeConstraint(Type constraintType)
+                {
+                    if (constraintType.IsGenericParameter)
+                    {
+                        var position = constraintType.GenericParameterPosition;
+                        var isInBase = Array.IndexOf(baseGenericParams, constraintType) != -1;
+                        return isInBase ? genericParams[position] : baseTypeGenericArgs[position];
+                    }
+                    else if (constraintType.IsGenericType)
+                    {
+                        var typeGenericDefinition = constraintType.GetGenericTypeDefinition();
+                        var typeGenericArguments = constraintType.GetGenericArguments();
+                        for (int i = 0; i < typeGenericArguments.Length; i++)
+                        {
+                            typeGenericArguments[i] = makeConstraint(typeGenericArguments[i]);
+                        }
+                        return typeGenericDefinition.MakeGenericType(typeGenericArguments);
+                    }
+                    else
+                    {
+                        return constraintType;
+                    }
+                }
+
+                baseGenericConstraints = Array.ConvertAll(baseGenericConstraints, makeConstraint);
+
+                var baseTypeConstraint = baseGenericConstraints.Where(
+                    genericConstraint => genericConstraint.IsClass).SingleOrDefault();
+                var interfaceConstraints = baseGenericConstraints.Where(
+                    genericConstraint => genericConstraint.IsInterface).ToArray();
+
+                genericParam.SetGenericParameterAttributes(
+                    baseGenericParam.GenericParameterAttributes);
+                if (!(baseTypeConstraint is null))
+                {
+                    genericParam.SetBaseTypeConstraint(baseTypeConstraint);
+                }
+                if (interfaceConstraints.Length != 0)
+                {
+                    genericParam.SetInterfaceConstraints(interfaceConstraints);
+                }
             }
         }
 
@@ -103,12 +144,13 @@ namespace XstarS.Reflection
         /// </summary>
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseMethod">作为基础的方法。</param>
+        /// <param name="baseType">定义基础方法的类型，若为泛型类型，则应为构造泛型类型。</param>
         /// <returns>定义的方法，仅包括方法定义，不包括任何实现。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static MethodBuilder DefineMethodLike(
-            this TypeBuilder type, MethodInfo baseMethod)
+            this TypeBuilder type, MethodInfo baseMethod, Type baseType)
         {
             if (type is null)
             {
@@ -117,6 +159,10 @@ namespace XstarS.Reflection
             if (baseMethod is null)
             {
                 throw new ArgumentNullException(nameof(baseMethod));
+            }
+            if (baseType is null)
+            {
+                throw new ArgumentNullException(nameof(baseType));
             }
             if (!baseMethod.IsInheritable())
             {
@@ -137,12 +183,7 @@ namespace XstarS.Reflection
                 Array.Empty<GenericTypeParameterBuilder>() :
                 method.DefineGenericParameters(
                     Array.ConvertAll(baseGenericParams, param => param.Name));
-            for (int i = 0; i < baseGenericParams.Length; i++)
-            {
-                var baseGenericParam = baseGenericParams[i];
-                var genericParam = genericParams[i];
-                genericParam.SetGenericConstraintsAs(baseGenericParam);
-            }
+            genericParams.SetGenericConstraintsLike(baseGenericParams, baseType.GetGenericArguments());
 
             var returnParam = method.DefineParameter(0,
                 baseReturnParam.Attributes, baseReturnParam.Name);
@@ -161,12 +202,13 @@ namespace XstarS.Reflection
         /// </summary>
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseMethod">作为基础的方法。</param>
+        /// <param name="baseType">定义基础方法的类型，若为泛型类型，则应为构造泛型类型。</param>
         /// <returns>定义的方法，调用 <paramref name="baseMethod"/> 方法。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static MethodBuilder DefineBaseInvokeMethodLike(
-            this TypeBuilder type, MethodInfo baseMethod)
+            this TypeBuilder type, MethodInfo baseMethod, Type baseType)
         {
             if (type is null)
             {
@@ -176,12 +218,16 @@ namespace XstarS.Reflection
             {
                 throw new ArgumentNullException(nameof(baseMethod));
             }
+            if (baseType is null)
+            {
+                throw new ArgumentNullException(nameof(baseType));
+            }
             if (!baseMethod.IsProxyOverride())
             {
                 throw new ArgumentException(new ArgumentException().Message, nameof(baseMethod));
             }
 
-            var method = type.DefineMethodLike(baseMethod);
+            var method = type.DefineMethodLike(baseMethod, baseType);
 
             var il = method.GetILGenerator();
             if (!baseMethod.IsAbstract)
@@ -212,13 +258,14 @@ namespace XstarS.Reflection
         /// </summary>
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseMethod">作为基础的方法。</param>
+        /// <param name="baseType">定义基础方法的类型，若为泛型类型，则应为构造泛型类型。</param>
         /// <param name="baseInvokeMethod">调用基础方法的当前类型的方法。</param>
         /// <returns>定义的基类方法的 <see cref="MethodInfo"/> 和 <see cref="MethodDelegate"/> 字段</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static KeyValuePair<FieldBuilder, FieldBuilder> DefineMethodInfoAndDelegateField(
-            this TypeBuilder type, MethodInfo baseMethod, MethodInfo baseInvokeMethod)
+            this TypeBuilder type, MethodInfo baseMethod, Type baseType, MethodInfo baseInvokeMethod)
         {
             if (type is null)
             {
@@ -227,6 +274,10 @@ namespace XstarS.Reflection
             if (baseMethod is null)
             {
                 throw new ArgumentNullException(nameof(baseMethod));
+            }
+            if (baseType is null)
+            {
+                throw new ArgumentNullException(nameof(baseType));
             }
             if (baseInvokeMethod is null)
             {
@@ -250,12 +301,7 @@ namespace XstarS.Reflection
                 Array.Empty<GenericTypeParameterBuilder>() :
                 nestedType.DefineGenericParameters(
                     Array.ConvertAll(baseGenericParams, param => param.Name));
-            for (int i = 0; i < baseGenericParams.Length; i++)
-            {
-                var baseGenericParam = baseGenericParams[i];
-                var genericParam = genericParams[i];
-                genericParam.SetGenericConstraintsAs(baseGenericParam);
-            }
+            genericParams.SetGenericConstraintsLike(baseGenericParams, baseType.GetGenericArguments());
 
             var delegateMethod = nestedType.DefineMethod(nameof(MethodDelegate.Invoke),
                 MethodAttributes.Assembly | MethodAttributes.Static | MethodAttributes.HideBySig,
@@ -382,12 +428,28 @@ namespace XstarS.Reflection
                         method.GetGenericArguments()), baseMethodInfoField);
             }
 
+            var baseHasGenericConstraints = baseMethod.GetGenericArguments().Any(
+                param => param.GetGenericParameterConstraints().Length != 0);
+
             var il = method.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldfld, methodInvokeHandlerField);
             il.Emit(OpCodes.Ldarg_0);
             il.EmitBox(type);
-            il.Emit(OpCodes.Ldsfld, baseMethodInfoField);
+            if (baseHasGenericConstraints)
+            {
+                il.Emit(OpCodes.Ldtoken, baseMethodInfoField);
+                il.Emit(OpCodes.Ldtoken, baseMethodInfoField.DeclaringType);
+                il.Emit(OpCodes.Call, typeof(FieldInfo).GetMethod(
+                    nameof(FieldInfo.GetFieldFromHandle),
+                    new[] { typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle) }));
+                il.Emit(OpCodes.Ldnull);
+                il.Emit(OpCodes.Callvirt, typeof(FieldInfo).GetMethod(nameof(FieldInfo.GetValue)));
+            }
+            else
+            {
+                il.Emit(OpCodes.Ldsfld, baseMethodInfoField);
+            }
             var baseParameters = baseMethod.GetParameters();
             il.EmitLdcI4(baseParameters.Length);
             il.Emit(OpCodes.Newarr, typeof(object));
@@ -400,8 +462,21 @@ namespace XstarS.Reflection
                 il.EmitBox(baseParameter.ParameterType);
                 il.Emit(OpCodes.Stelem_Ref);
             }
-            il.Emit(OpCodes.Ldsfld, baseMethodDelegateField);
-            il.Emit(OpCodes.Call,
+            if (baseHasGenericConstraints)
+            {
+                il.Emit(OpCodes.Ldtoken, baseMethodDelegateField);
+                il.Emit(OpCodes.Ldtoken, baseMethodDelegateField.DeclaringType);
+                il.Emit(OpCodes.Call, typeof(FieldInfo).GetMethod(
+                    nameof(FieldInfo.GetFieldFromHandle),
+                    new[] { typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle) }));
+                il.Emit(OpCodes.Ldnull);
+                il.Emit(OpCodes.Callvirt, typeof(FieldInfo).GetMethod(nameof(FieldInfo.GetValue)));
+            }
+            else
+            {
+                il.Emit(OpCodes.Ldsfld, baseMethodDelegateField);
+            }
+            il.Emit(OpCodes.Callvirt,
                 typeof(MethodInvokeHandler).GetMethod(nameof(MethodInvokeHandler.Invoke)));
             if (baseMethod.ReturnType != typeof(void))
             {

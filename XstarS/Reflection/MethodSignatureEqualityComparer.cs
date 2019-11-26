@@ -48,7 +48,7 @@ namespace XstarS.Reflection
                 if (xType.IsGenericParameter ^ yType.IsGenericParameter) { return false; }
                 if (xType.IsGenericParameter && yType.IsGenericParameter)
                 {
-                    return Array.IndexOf(xGTypes, xType) == Array.IndexOf(yGTypes, yType);
+                    return xType.GenericParameterPosition == yType.GenericParameterPosition;
                 }
 
                 if (xType.IsGenericType ^ yType.IsGenericType) { return false; }
@@ -109,7 +109,7 @@ namespace XstarS.Reflection
             {
                 if (type.IsGenericParameter)
                 {
-                    hashCode = hashCode * -1521134295 + Array.IndexOf(gTypes, type);
+                    hashCode = hashCode * -1521134295 + type.GenericParameterPosition;
                 }
                 else if (!type.IsGenericType)
                 {

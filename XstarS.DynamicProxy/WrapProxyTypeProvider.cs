@@ -262,6 +262,7 @@ namespace XstarS.Reflection
         /// </summary>
         private void DefineBaseInvokeMethods()
         {
+            var baseType = this.BaseType;
             var type = this.ProxyTypeBuilder;
             var instanceField = this.ProxyInstanceField;
             var baseMethods = this.BaseMethods;
@@ -270,7 +271,8 @@ namespace XstarS.Reflection
             for (int i = 0; i < baseMethods.Length; i++)
             {
                 var baseMethod = baseMethods[i];
-                var method = type.DefineWrapBaseInvokeMethodLike(baseMethod, instanceField);
+                var method = type.DefineWrapBaseInvokeMethodLike(
+                    baseMethod, baseType, instanceField);
                 methods[baseMethod] = method;
             }
 
@@ -282,6 +284,7 @@ namespace XstarS.Reflection
         /// </summary>
         private void DefineBaseMethodInfoAndDelegateFields()
         {
+            var baseType = this.BaseType;
             var baseMethods = this.BaseMethods;
             var type = this.ProxyTypeBuilder;
             var baseInvokeMethods = this.BaseInvokeMethods;
@@ -292,7 +295,7 @@ namespace XstarS.Reflection
             foreach (var baseMethod in baseMethods)
             {
                 var baseInvokeMethod = baseInvokeMethods[baseMethod];
-                var fields = type.DefineMethodInfoAndDelegateField(baseMethod, baseInvokeMethod);
+                var fields = type.DefineMethodInfoAndDelegateField(baseMethod, baseType, baseInvokeMethod);
                 infoFields[baseMethod] = fields.Key;
                 delegateFields[baseMethod] = fields.Value;
             }

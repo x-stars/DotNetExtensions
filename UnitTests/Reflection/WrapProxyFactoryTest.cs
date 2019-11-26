@@ -36,5 +36,14 @@ namespace XstarS.Reflection
             Assert.AreEqual(((IWrapProxy)o).GetInstance(), o.Clone());
             Assert.AreNotEqual(((IWrapProxy)o).GetInstance(), ((ICloneable)o).Clone());
         }
+
+        [TestMethod]
+        public void CreateInstance_InterfaceWithConstraintGenericMethod_WorksProperly()
+        {
+            var o = WrapProxyFactory<IListCreator<object>>.WithHandler(
+                ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
+                ).CreateInstance(new ListCreator<object>());
+            Assert.IsNotNull(o.Create<List<object>>());
+        }
     }
 }

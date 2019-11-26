@@ -25,10 +25,6 @@ namespace XstarS.Reflection
             }
 
             return method.IsPublic && method.IsOverridable() &&
-                (!method.IsGenericMethod || (method.IsGenericMethod &&
-                Array.TrueForAll(
-                    method.GetGenericArguments(),
-                    type => type.GetGenericParameterConstraints().Length == 0))) &&
                 !method.ReturnParameter.ParameterType.IsNotILBoxable() &&
                 Array.TrueForAll(
                     Array.ConvertAll(method.GetParameters(), param => param.ParameterType),
@@ -58,13 +54,14 @@ namespace XstarS.Reflection
         /// </summary>
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseMethod">作为基础的方法。</param>
+        /// <param name="baseType">定义基础方法的类型，若为泛型类型，则应为构造泛型类型。</param>
         /// <param name="instanceField">代理对象的字段。</param>
         /// <returns>定义的方法，调用代理对象的 <paramref name="baseMethod"/> 方法。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的声明类型不为接口。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static MethodBuilder DefineWrapBaseInvokeMethodLike(
-            this TypeBuilder type, MethodInfo baseMethod, FieldInfo instanceField)
+            this TypeBuilder type, MethodInfo baseMethod, Type baseType, FieldInfo instanceField)
         {
             if (type is null)
             {
@@ -74,12 +71,16 @@ namespace XstarS.Reflection
             {
                 throw new ArgumentNullException(nameof(baseMethod));
             }
+            if (baseType is null)
+            {
+                throw new ArgumentNullException(nameof(baseType));
+            }
             if (!(baseMethod.IsPublic && baseMethod.IsInheritable()))
             {
                 throw new ArgumentException(new ArgumentException().Message, nameof(baseMethod));
             }
 
-            var method = type.DefineMethodLike(baseMethod);
+            var method = type.DefineMethodLike(baseMethod, baseType);
 
             var il = method.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
