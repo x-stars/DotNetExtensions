@@ -10,24 +10,24 @@ namespace XstarS.Reflection
     public static class SpecialTypeExtensions
     {
         /// <summary>
-        /// 与 vararg 方法相关的类型的 <see cref="HashSet{T}"/>。
+        /// 与可变参数列表方法相关的类型的 <see cref="HashSet{T}"/>。
         /// </summary>
         private static readonly HashSet<Type> VarArgTypes = new HashSet<Type>(
             new[] { "System.ArgIterator", "System.RuntimeArgumentHandle",
                 "System.TypedReference" }.Select(Type.GetType).OfType<Type>());
 
         /// <summary>
-        /// 确定类型是否是 byref-like 结构类型的方法的委托。
+        /// 确定类型是否是类引用传递结构类型的方法的委托。
         /// </summary>
         private static readonly Func<Type, bool> IsByRefLikeDelegate =
             (typeof(Type).GetProperty("IsByRefLike")?.GetMethod?.CreateDelegate(
                 typeof(Func<Type, bool>)) as Func<Type, bool>) ?? (type => false);
 
         /// <summary>
-        /// 确定当前 <see cref="Type"/> 是否是与 vararg 方法相关的类型。
+        /// 确定当前 <see cref="Type"/> 是否是与可变参数列表方法相关的类型。
         /// </summary>
-        /// <param name="type">要确定是否与 vararg 方法相关的 <see cref="Type"/> 对象。</param>
-        /// <returns>若 <paramref name="type"/> 是与 vararg 方法相关的类型，
+        /// <param name="type">要确定是否相关的 <see cref="Type"/> 对象。</param>
+        /// <returns>若 <paramref name="type"/> 是与可变参数列表方法相关的类型，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
@@ -56,15 +56,15 @@ namespace XstarS.Reflection
                 throw new ArgumentNullException(nameof(type));
             }
 
-            return SpecialTypeExtensions.IsByRefLikeDelegate.Invoke(type) ||
-                type.IsByRef || type.IsVarArgType();
+            return type.IsByRef || type.IsVarArgType() ||
+                SpecialTypeExtensions.IsByRefLikeDelegate.Invoke(type);
         }
 
         /// <summary>
-        /// 确定当前 <see cref="Type"/> 的实例是否不能进行装箱操作。
+        /// 确定当前 <see cref="Type"/> 的实例是否不能转换为 <see cref="object"/>。
         /// </summary>
-        /// <param name="type">要确定是否不能装箱的 <see cref="Type"/> 对象。</param>
-        /// <returns>若 <paramref name="type"/> 的实例不能进行装箱操作，
+        /// <param name="type">要确定是否不能转换的 <see cref="Type"/> 对象。</param>
+        /// <returns>若 <paramref name="type"/> 的实例不能转换为 <see cref="object"/>，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>

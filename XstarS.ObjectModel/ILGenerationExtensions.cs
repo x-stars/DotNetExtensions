@@ -9,6 +9,24 @@ namespace XstarS.ComponentModel
     internal static class ILGenerationExtensions
     {
         /// <summary>
+        /// 确定当前 <see cref="Type"/> 的实例是否不能由 IL 指令转换为 <see cref="object"/>。
+        /// </summary>
+        /// <param name="type">要确定是否不能转换的 <see cref="Type"/> 对象。</param>
+        /// <returns>若 <paramref name="type"/> 的实例不能由 IL 指令转换为 <see cref="object"/>，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
+        public static bool IsNotILBoxable(this Type type)
+        {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            return type.IsNotBoxable() && !(type.IsByRef || type.IsPointer);
+        }
+
+        /// <summary>
         /// 发出将指定索引处的参数加载到计算堆栈上的指令，并放到当前指令流中。
         /// </summary>
         /// <param name="il">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
@@ -94,6 +112,10 @@ namespace XstarS.ComponentModel
             {
                 il.Emit(OpCodes.Box, type);
             }
+            else if (type.IsByRef || type.IsPointer)
+            {
+                il.Emit(OpCodes.Box, typeof(IntPtr));
+            }
         }
 
         /// <summary>
@@ -120,7 +142,11 @@ namespace XstarS.ComponentModel
             }
             else if (type.IsValueType)
             {
-                il.Emit(OpCodes.Unbox, type);
+                il.Emit(OpCodes.Unbox_Any, type);
+            }
+            else if (type.IsByRef || type.IsPointer)
+            {
+                il.Emit(OpCodes.Unbox_Any, typeof(IntPtr));
             }
             else if (type != typeof(object))
             {

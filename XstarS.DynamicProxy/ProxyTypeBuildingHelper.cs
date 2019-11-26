@@ -31,10 +31,10 @@ namespace XstarS.Reflection
                 Array.TrueForAll(
                     method.GetGenericArguments(),
                     type => type.GetGenericParameterConstraints().Length == 0))) &&
-                !method.ReturnParameter.ParameterType.IsNotBoxable() &&
+                !method.ReturnParameter.ParameterType.IsNotILBoxable() &&
                 Array.TrueForAll(
                     Array.ConvertAll(method.GetParameters(), param => param.ParameterType),
-                    type => !type.IsNotBoxable());
+                    type => !type.IsNotILBoxable());
         }
 
         /// <summary>
