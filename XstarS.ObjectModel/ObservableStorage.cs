@@ -14,37 +14,13 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 所有属性的数据存储。
         /// </summary>
-        private readonly ConcurrentDictionary<string, object> PropertyStorage;
+        private readonly ConcurrentDictionary<string, object> Properties =
+            new ConcurrentDictionary<string, object>();
 
         /// <summary>
         /// 初始化 <see cref="ObservableStorage"/> 类的新实例。
         /// </summary>
-        protected ObservableStorage()
-        {
-            this.PropertyStorage = new ConcurrentDictionary<string, object>();
-        }
-
-        /// <summary>
-        /// 获取或设置指定属性的值。
-        /// </summary>
-        /// <param name="propertyName">属性的名称。</param>
-        /// <returns>指定属性的值；若不存在，则为 <see langword="null"/>。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="propertyName"/> 为 <see langword="null"/>。</exception>
-        protected object this[string propertyName]
-        {
-            get
-            {
-                this.PropertyStorage.TryGetValue(propertyName, out var value);
-                return value;
-            }
-
-            set
-            {
-                this.PropertyStorage[propertyName] = value;
-                this.NotifyPropertyChanged(propertyName);
-            }
-        }
+        protected ObservableStorage() { }
 
         /// <summary>
         /// 获取指定属性的值。
@@ -55,7 +31,8 @@ namespace XstarS.ComponentModel
         protected T GetProperty<T>(
             [CallerMemberName] string propertyName = null)
         {
-            return (this[propertyName] is T value) ? value : default(T);
+            this.Properties.TryGetValue(propertyName, out var oValue);
+            return (oValue is T value) ? value : default(T);
         }
 
         /// <summary>
@@ -67,7 +44,8 @@ namespace XstarS.ComponentModel
         protected void SetProperty<T>(T value,
             [CallerMemberName] string propertyName = null)
         {
-            this[propertyName] = (object)value;
+            this.Properties[propertyName] = (object)value;
+            this.NotifyPropertyChanged(propertyName);
         }
     }
 }
