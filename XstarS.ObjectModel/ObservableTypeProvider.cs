@@ -180,7 +180,7 @@ namespace XstarS.ComponentModel
 
             if (baseEvent?.AddMethod.IsAbstract == true)
             {
-                var field = type.DefineDefaultEventOverride(baseEvent, explicitOverride: false).Value;
+                var field = type.DefineDefaultEventOverride(baseEvent).Value;
                 var method = type.DefineOnPropertyChangedMethod(field);
 
                 this.OnPropertyChangedMethod = method;
@@ -221,22 +221,20 @@ namespace XstarS.ComponentModel
                     {
                         if (baseProperty.GetIndexParameters().Length != 0)
                         {
-                            type.DefineNotImplementedPropertyOverride(baseProperty, explicitOverride: true);
+                            type.DefineNotImplementedPropertyOverride(baseProperty);
                         }
                         else if (baseProperty.PropertyType.IsStackOnly())
                         {
-                            type.DefineNotImplementedPropertyOverride(baseProperty, explicitOverride: true);
+                            type.DefineNotImplementedPropertyOverride(baseProperty);
                         }
                         else
                         {
-                            type.DefineObservableAutoPropertyOverride(
-                                baseProperty, onPropertyChangedMethod, explicitOverride: true);
+                            type.DefineObservableAutoPropertyOverride(baseProperty, onPropertyChangedMethod);
                         }
                     }
                     else
                     {
-                        type.DefineObservableBaseInvokePropertyOverride(
-                            baseProperty, onPropertyChangedMethod, explicitOverride: true);
+                        type.DefineObservableBaseInvokePropertyOverride(baseProperty, onPropertyChangedMethod);
                     }
                 }
             }
@@ -257,7 +255,7 @@ namespace XstarS.ComponentModel
                 {
                     if (baseEvent.AddMethod.IsAbstract)
                     {
-                        type.DefineNotImplementedEventOverride(baseEvent, explicitOverride: true);
+                        type.DefineNotImplementedEventOverride(baseEvent);
                     }
                 }
             }
@@ -276,7 +274,7 @@ namespace XstarS.ComponentModel
             {
                 if (!baseMethod.IsSpecialName && baseMethod.IsAbstract)
                 {
-                    type.DefineNotImplementedMethodOverride(baseMethod, explicitOverride: true);
+                    type.DefineNotImplementedMethodOverride(baseMethod);
                 }
             }
         }
