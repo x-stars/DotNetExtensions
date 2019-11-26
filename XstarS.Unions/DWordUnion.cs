@@ -12,6 +12,11 @@ namespace XstarS.Unions
     public struct DWordUnion : IEquatable<DWordUnion>, ISerializable
     {
         /// <summary>
+        /// 表示已经初始化为零的 <see cref="DWordUnion"/>。
+        /// </summary>
+        public static readonly DWordUnion Zero;
+
+        /// <summary>
         /// 当前 <see cref="DWordUnion"/> 的 32 位有符号整数。
         /// </summary>
         [FieldOffset(0)] public int Int32;

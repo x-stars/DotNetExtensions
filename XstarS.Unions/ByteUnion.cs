@@ -12,6 +12,11 @@ namespace XstarS.Unions
     public struct ByteUnion : IEquatable<ByteUnion>, ISerializable
     {
         /// <summary>
+        /// 表示已经初始化为零的 <see cref="ByteUnion"/>。
+        /// </summary>
+        public static readonly ByteUnion Zero;
+
+        /// <summary>
         /// 当前 <see cref="ByteUnion"/> 的 8 位无符号整数。
         /// </summary>
         [FieldOffset(0)] public byte Byte;

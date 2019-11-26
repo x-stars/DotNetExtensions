@@ -12,6 +12,11 @@ namespace XstarS.Unions
     public struct WordUnion : IEquatable<WordUnion>, ISerializable
     {
         /// <summary>
+        /// 表示已经初始化为零的 <see cref="WordUnion"/>。
+        /// </summary>
+        public static readonly WordUnion Zero;
+
+        /// <summary>
         /// 当前 <see cref="WordUnion"/> 的 16 位有符号整数。
         /// </summary>
         [FieldOffset(0)] public short Int16;

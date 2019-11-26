@@ -15,6 +15,11 @@ namespace XstarS.Unions
     public struct HandleUnion : IEquatable<HandleUnion>, ISerializable
     {
         /// <summary>
+        /// 表示已经初始化为零的 <see cref="HandleUnion"/>。
+        /// </summary>
+        public static readonly HandleUnion Zero;
+
+        /// <summary>
         /// 当前 <see cref="HandleUnion"/> 的有符号指针或句柄。
         /// </summary>
         [FieldOffset(0)] public nint IntPtr;

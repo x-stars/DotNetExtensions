@@ -12,6 +12,11 @@ namespace XstarS.Unions
     public struct QWordUnion : IEquatable<QWordUnion>, ISerializable
     {
         /// <summary>
+        /// 表示已经初始化为零的 <see cref="QWordUnion"/>。
+        /// </summary>
+        public static readonly QWordUnion Zero;
+
+        /// <summary>
         /// 当前 <see cref="QWordUnion"/> 的 64 位有符号整数。
         /// </summary>
         [FieldOffset(0)] public long Int64;
