@@ -12,7 +12,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// <see cref="CommandBase.IsExecutable"/> 的值。
         /// </summary>
-        private bool InternalIsExecutable = true;
+        private bool _IsExecutable = true;
 
         /// <summary>
         /// 初始化 <see cref="CommandBase"/> 类的新实例。
@@ -30,8 +30,8 @@ namespace XstarS.ComponentModel
         /// </summary>
         protected bool IsExecutable
         {
-            get => this.InternalIsExecutable;
-            set { this.InternalIsExecutable = value; this.OnCanExecuteChanged(); }
+            get => this._IsExecutable;
+            set { this._IsExecutable = value; this.OnCanExecuteChanged(); }
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// <see cref="CommandBase{TParameter}.IsExecutable"/> 的值。
         /// </summary>
-        private bool InternalIsExecutable = true;
+        private bool _IsExecutable = true;
 
         /// <summary>
         /// 初始化 <see cref="CommandBase{TParameter}"/> 类的新实例。
@@ -97,8 +97,8 @@ namespace XstarS.ComponentModel
         /// </summary>
         protected bool IsExecutable
         {
-            get => this.InternalIsExecutable;
-            set { this.InternalIsExecutable = value; this.OnCanExecuteChanged(); }
+            get => this._IsExecutable;
+            set { this._IsExecutable = value; this.OnCanExecuteChanged(); }
         }
 
         /// <summary>

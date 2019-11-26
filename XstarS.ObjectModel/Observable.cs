@@ -13,7 +13,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// <see cref="Observable{T}.Value"/> 的值。
         /// </summary>
-        private T InternalValue;
+        private T _Value;
 
         /// <summary>
         /// 初始化 <see cref="Observable{T}"/> 类的新实例。
@@ -31,8 +31,8 @@ namespace XstarS.ComponentModel
         /// </summary>
         public T Value
         {
-            get => this.InternalValue;
-            set => this.SetProperty(ref this.InternalValue, value);
+            get => this._Value;
+            set => this.SetProperty(ref this._Value, value);
         }
 
         /// <summary>
