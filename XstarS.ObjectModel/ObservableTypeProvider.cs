@@ -251,7 +251,8 @@ namespace XstarS.ComponentModel
             foreach (var baseEvent in baseType.GetAccessibleEvents().Where(
                 @event => @event.AddMethod.IsInheritable()))
             {
-                if (baseEvent.DeclaringType != typeof(INotifyPropertyChanged))
+                if ((baseEvent.Name != nameof(INotifyPropertyChanged.PropertyChanged)) &&
+                    (baseEvent.EventHandlerType != typeof(PropertyChangedEventHandler)))
                 {
                     if (baseEvent.AddMethod.IsAbstract)
                     {

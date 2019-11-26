@@ -24,7 +24,9 @@ namespace XstarS.Reflection
                 throw new ArgumentNullException(nameof(method));
             }
 
-            return method.IsPublic && method.IsOverridable() &&
+            return (method.DeclaringType != typeof(IWrapProxy)) &&
+                ((method.DeclaringType == typeof(object)) || method.DeclaringType.IsInterface) &&
+                method.IsPublic && method.IsOverridable() &&
                 !method.ReturnParameter.ParameterType.IsNotILBoxable() &&
                 Array.TrueForAll(
                     Array.ConvertAll(method.GetParameters(), param => param.ParameterType),
@@ -46,7 +48,9 @@ namespace XstarS.Reflection
                 throw new ArgumentNullException(nameof(method));
             }
 
-            return method.IsPublic && method.IsOverridable() && !method.IsWrapProxyOverride();
+            return (method.DeclaringType != typeof(IWrapProxy)) &&
+                ((method.DeclaringType == typeof(object)) || method.DeclaringType.IsInterface) &&
+                method.IsPublic && method.IsOverridable() && !method.IsWrapProxyOverride();
         }
 
         /// <summary>
