@@ -26,9 +26,15 @@
 可析构类型可使用值元组 `System.ValueTuple` 表达式将实例按成员析构为多个变量，
 详情可参考微软提供的文档：[析构元组和其他类型](https://docs.microsoft.com/zh-cn/dotnet/csharp/deconstruct)。
 
+## 程序集 XstarS.DispatchProxy
+
+提供转发代理类型 `System.Reflection.DispatchProxy` 基于委托的简易实现。
+
 ## 程序集 XstarS.DynamicProxy
 
-提供以反射发出 (Emit) 实现的代理类型构造方法，保持动态代理灵活性的同时避免了反射带来的低效率问题。
+提供以反射发出 `System.Reflection.Emit` 构造的动态代理类型。
+
+方法调用包装为通用静态委托 `XstarS.Reflection.MethodDelegate`，保持动态代理灵活性的同时避免了反射调用的低效率问题。
 
 ## 程序集 XstarS.ObjectModel
 
