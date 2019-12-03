@@ -9,15 +9,21 @@ namespace XstarS.ComponentModel
         [TestMethod]
         public void DelegateCommand_WriteToConsole_WorksProperly()
         {
+            var canExecute = true;
             var command = default(DelegateCommand);
             command = new DelegateCommand(
                 () =>
                 {
-                    var token = command.GetCanExecuteToken();
-                    token.IsExecutable = false;
-                    Console.WriteLine(DateTime.Now);
-                    token.IsExecutable = true;
-                });
+                    if (canExecute)
+                    {
+                        canExecute = false;
+                        command.NotifyCanExecuteChanged();
+                        Console.WriteLine(DateTime.Now);
+                        canExecute = true;
+                        command.NotifyCanExecuteChanged();
+                    }
+                },
+                () => canExecute);
             command.CanExecuteChanged += (sender, e) => Console.WriteLine(
                 $"{nameof(command.CanExecuteChanged)}: {command.CanExecute()}");
             command.Execute();
