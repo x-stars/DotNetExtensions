@@ -31,7 +31,7 @@
     <ProjectReference Include="..\XstarS.Deconstructable\XstarS.Deconstructable.csproj" />
     <ProjectReference Include="..\XstarS.DynamicProxy\XstarS.DynamicProxy.csproj" />
     <ProjectReference Include="..\XstarS.ObjectModel\XstarS.ObjectModel.csproj" />
-    <ProjectReference Include="..\XstarS.ParamReaders\XstarS.ParamReaders.csproj" />
+    <ProjectReference Include="..\XstarS.ArgumentReaders\XstarS.ArgumentReaders.csproj" />
     <ProjectReference Include="..\XstarS.Unions\XstarS.Unions.csproj" />
     <ProjectReference Include="..\XstarS.ValueValidate\XstarS.ValueValidate.csproj" />
     <ProjectReference Include="..\XstarS\XstarS.csproj" />

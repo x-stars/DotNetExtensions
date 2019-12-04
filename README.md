@@ -12,6 +12,12 @@
 * `XstarS.IO`
 * `XstarS.Reflection`
 
+## 程序集 XstarS.ArgumentReaders
+
+提供简易的命令行参数解析器，以及 CMD, PowerShell, Unix Shell 等多种风格的实现。
+
+特征和使用方法简述于[命令行参数解析器说明文档](Documentations/ArgumentReaders.md)中。
+
 ## 程序集 XstarS.Collections
 
 集合类型相关，目前包含的命名空间：
@@ -44,12 +50,6 @@
 
 原理和使用方法详述于[属性更改通知接口实现框架说明文档](Documentations/ObservableValue.md)中。
 使用此框架的优势叙述于[属性更改通知实现方式比较文档](Documentations/ObservableValueCompare.md)中。
-
-## 程序集 XstarS.ParamReaders
-
-提供简易的命令行参数解析器，以及 CMD, PowerShell, Unix Shell 等多种风格的实现。
-
-原理和使用方法详述于[命令行参数解析器说明文档](Documentations/ParamReaders.md)中。
 
 ## 程序集 XstarS.Unions
 
