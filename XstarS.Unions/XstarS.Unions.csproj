@@ -14,7 +14,7 @@
     <Authors>XstarS</Authors>
     <Description>$(AssemblyName)</Description>
     <Copyright>Copyright © XstarS 2019</Copyright>
-    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/x-stars/DotNetExtensions</PackageProjectUrl>
     <PackageIconUrl></PackageIconUrl>
     <RepositoryUrl>https://github.com/x-stars/DotNetExtensions</RepositoryUrl>

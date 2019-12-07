@@ -10,8 +10,8 @@
     </DocumentationFile>
     <Authors>XstarS</Authors>
     <Description>$(AssemblyName)</Description>
-    <Copyright>Copyright © XstarS 2018-2019</Copyright>
-    <PackageLicenseExpression>BSD-2-Clause</PackageLicenseExpression>
+    <Copyright>Copyright © XstarS 2018</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/x-stars/DotNetExtensions</PackageProjectUrl>
     <PackageIconUrl></PackageIconUrl>
     <RepositoryUrl>https://github.com/x-stars/DotNetExtensions</RepositoryUrl>
