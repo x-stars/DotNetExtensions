@@ -28,7 +28,7 @@ namespace XstarS.Win32
                     using (var regKeyIE = Registry.LocalMachine.OpenSubKey(
                         @"SOFTWARE\Microsoft\Internet Explorer"))
                     {
-                        string versionSz = (regKeyIE.GetValue("svcVersion") ??
+                        var versionSz = (regKeyIE.GetValue("svcVersion") ??
                             regKeyIE.GetValue("Version")) as string;
                         return (versionSz is null) ? null : new Version(versionSz);
                     }
@@ -59,7 +59,7 @@ namespace XstarS.Win32
             /// 程序无法以写访问权限打开注册表项。</exception>
             /// <exception cref="SecurityException">
             /// 程序没有足够的权限读取注册表。</exception>
-            public static int? VersionCurrentUser
+            public static int? VersionInCurrentUser
             {
                 get
                 {
@@ -67,7 +67,7 @@ namespace XstarS.Win32
                         @"SOFTWARE\Microsoft\Internet Explorer\" +
                         @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", false))
                     {
-                        string appName = AppDomain.CurrentDomain.FriendlyName;
+                        var appName = AppDomain.CurrentDomain.FriendlyName;
                         return regKeyBrowser.GetValue(appName) as int?;
                     }
                 }
@@ -84,7 +84,7 @@ namespace XstarS.Win32
                         @"SOFTWARE\Microsoft\Internet Explorer\" +
                         @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", true))
                     {
-                        string appName = AppDomain.CurrentDomain.FriendlyName;
+                        var appName = AppDomain.CurrentDomain.FriendlyName;
                         if (value is null)
                         {
                             regKeyBrowser.DeleteValue(appName);
@@ -107,10 +107,10 @@ namespace XstarS.Win32
             /// 程序无法以写访问权限打开注册表项。</exception>
             /// <exception cref="SecurityException">
             /// 程序没有足够的权限读取注册表。</exception>
-            public static int? MajorVersionCurrentUser
+            public static int? MajorVersionInCurrentUser
             {
-                get => SystemComponents.WebBrowser.VersionCurrentUser / 1000;
-                set => SystemComponents.WebBrowser.VersionCurrentUser = value * 1000;
+                get => SystemComponents.WebBrowser.VersionInCurrentUser / 1000;
+                set => SystemComponents.WebBrowser.VersionInCurrentUser = value * 1000;
             }
 
             /// <summary>
@@ -123,7 +123,7 @@ namespace XstarS.Win32
             /// 程序无法以写访问权限打开注册表项。</exception>
             /// <exception cref="SecurityException">
             /// 程序没有足够的权限读取注册表。</exception>
-            public static int? VersionLocalMachine
+            public static int? VersionInLocalMachine
             {
                 get
                 {
@@ -131,7 +131,7 @@ namespace XstarS.Win32
                         @"SOFTWARE\Microsoft\Internet Explorer\" +
                         @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", false))
                     {
-                        string appName = AppDomain.CurrentDomain.FriendlyName;
+                        var appName = AppDomain.CurrentDomain.FriendlyName;
                         return regKeyBrowser.GetValue(appName) as int?;
                     }
                 }
@@ -148,7 +148,7 @@ namespace XstarS.Win32
                         @"SOFTWARE\Microsoft\Internet Explorer\" +
                         @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", true))
                     {
-                        string appName = AppDomain.CurrentDomain.FriendlyName;
+                        var appName = AppDomain.CurrentDomain.FriendlyName;
                         if (value is null)
                         {
                             regKeyBrowser.DeleteValue(appName);
@@ -171,21 +171,21 @@ namespace XstarS.Win32
             /// 程序无法以写访问权限打开注册表项。</exception>
             /// <exception cref="SecurityException">
             /// 程序没有足够的权限读取注册表。</exception>
-            public static int? MajorVersionLocalMachine
+            public static int? MajorVersionInLocalMachine
             {
-                get => SystemComponents.WebBrowser.VersionLocalMachine / 1000;
-                set => SystemComponents.WebBrowser.VersionLocalMachine = value * 1000;
+                get => SystemComponents.WebBrowser.VersionInLocalMachine / 1000;
+                set => SystemComponents.WebBrowser.VersionInLocalMachine = value * 1000;
             }
 
             /// <summary>
-            /// 获取当前程序的内置网络浏览器运行的 Internet Explorer 的主要版本和渲染模式。
+            /// 获取或设置当前程序的内置网络浏览器运行的 Internet Explorer 的主要版本和渲染模式。
             /// <see langword="null"/> 表示运行默认主要版本 (7) 和默认渲染模式 (000)。
             /// </summary>
             /// <exception cref="SecurityException">
             /// 程序没有足够的权限读取注册表。</exception>
             public static int? Version =>
-                SystemComponents.WebBrowser.VersionCurrentUser ??
-                SystemComponents.WebBrowser.VersionLocalMachine;
+                SystemComponents.WebBrowser.VersionInCurrentUser ??
+                SystemComponents.WebBrowser.VersionInLocalMachine;
 
             /// <summary>
             /// 获取当前程序的内置网络浏览器运行的 Internet Explorer 的主要版本。
