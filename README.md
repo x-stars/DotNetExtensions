@@ -74,6 +74,12 @@ WPF 相关，目前包含的命名空间：
 * `XstarS.Windows.Controls`
 * `XstarS.Windows.Media`
 
+XAML 命名空间：
+
+``` XML
+xmlns:xswpf="https://github.com/x-stars/xswpf"
+```
+
 ## 功能设计文档
 
 本工程基础说明文档均置于工程根目录的 [Documentations](Documentations) 文件夹下。
