@@ -36,7 +36,8 @@ namespace XstarS.Reflection
         protected InvokeHandler Handler;
 
         /// <summary>
-        /// 初始化 <see cref="DispatchProxy{TInterface}"/> 类的新实例。用于内部实现，请勿调用。
+        /// 初始化 <see cref="DispatchProxy{TInterface}"/> 类的新实例。用于内部实现，请勿直接调用；
+        /// 应使用 <see cref="DispatchProxy{TInterface}.Create(TInterface, InvokeHandler)"/> 方法。
         /// </summary>
         [EditorBrowsable(EditorBrowsableState.Never)]
         public DispatchProxy() : base() { }
@@ -78,7 +79,11 @@ namespace XstarS.Reflection
         /// <typeparam name="TProxy">定义代理过程的 <see cref="DispatchProxy"/> 类型。</typeparam>
         /// <returns>不支持调用此方法，总是引发 <see cref="NotSupportedException"/> 异常。</returns>
         /// <exception cref="NotSupportedException">不支持调用此方法。</exception>
+        [Obsolete("Not supported.", error: true)]
         [EditorBrowsable(EditorBrowsableState.Never)]
-        public static new T Create<T, TProxy>() => throw new NotSupportedException();
+        public static new T Create<T, TProxy>() where TProxy : DispatchProxy
+        {
+            throw new NotSupportedException();
+        }
     }
 }
