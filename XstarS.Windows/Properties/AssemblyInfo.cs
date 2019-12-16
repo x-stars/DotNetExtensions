@@ -5,8 +5,8 @@ using System.Windows.Markup;
 [assembly: CLSCompliant(true)]
 
 // 定义 XAML 命名空间映射。
-[assembly: XmlnsDefinition("https://github.com/x-stars/xswpf", "XstarS.Windows")]
-[assembly: XmlnsDefinition("https://github.com/x-stars/xswpf", "XstarS.Windows.Controls")]
-[assembly: XmlnsDefinition("https://github.com/x-stars/xswpf", "XstarS.Windows.Input")]
-[assembly: XmlnsDefinition("https://github.com/x-stars/xswpf", "XstarS.Windows.Media")]
-[assembly: XmlnsPrefix("https://github.com/x-stars/xswpf", "xswpf")]
+[assembly: XmlnsPrefix("https://github.com/x-stars/DotNetExtensions", "xsext")]
+[assembly: XmlnsDefinition("https://github.com/x-stars/DotNetExtensions", "XstarS.Windows")]
+[assembly: XmlnsDefinition("https://github.com/x-stars/DotNetExtensions", "XstarS.Windows.Controls")]
+[assembly: XmlnsDefinition("https://github.com/x-stars/DotNetExtensions", "XstarS.Windows.Input")]
+[assembly: XmlnsDefinition("https://github.com/x-stars/DotNetExtensions", "XstarS.Windows.Media")]
