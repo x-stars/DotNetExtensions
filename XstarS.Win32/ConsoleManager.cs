@@ -15,25 +15,20 @@ namespace XstarS.Win32
         /// 提供控制台相关的原生方法。
         /// </summary>
         [SuppressUnmanagedCodeSecurity]
-        private static class SafeNativeMethods
+        private static class UnsafeNativeMethods
         {
-            /// <summary>
-            /// kernel32.dll 的名称。
-            /// </summary>
-            private const string Kernel32DllName = "kernel32.dll";
-
             /// <summary>
             /// 为当前应用程序分配控制台窗口。
             /// </summary>
             /// <returns>是否成功分配控制台窗口。</returns>
-            [DllImport(Kernel32DllName)]
+            [DllImport("kernel32.dll")]
             internal static extern bool AllocConsole();
 
             /// <summary>
             /// 释放当前已经分配的控制台窗口。
             /// </summary>
             /// <returns>是否成功释放控制台窗口。</returns>
-            [DllImport(Kernel32DllName)]
+            [DllImport("kernel32.dll")]
             internal static extern bool FreeConsole();
 
             /// <summary>
@@ -41,7 +36,7 @@ namespace XstarS.Win32
             /// </summary>
             /// <returns>当前已分配的控制台窗口的句柄。
             /// 若并未分配控制台窗口，则返回 <see cref="IntPtr.Zero"/>。</returns>
-            [DllImport(Kernel32DllName)]
+            [DllImport("kernel32.dll")]
             internal static extern IntPtr GetConsoleWindow();
         }
 
@@ -49,16 +44,16 @@ namespace XstarS.Win32
         /// 指示当前是否已经分配了控制台窗口。
         /// </summary>
         public static bool HasConsole =>
-            ConsoleManager.SafeNativeMethods.GetConsoleWindow() != IntPtr.Zero;
+            ConsoleManager.UnsafeNativeMethods.GetConsoleWindow() != IntPtr.Zero;
 
         /// <summary>  
         /// 为当前应用程序分配控制台窗口。
         /// </summary>  
-        public static void Show()
+        public static void ShowConsole()
         {
             if (!ConsoleManager.HasConsole)
             {
-                ConsoleManager.SafeNativeMethods.AllocConsole();
+                ConsoleManager.UnsafeNativeMethods.AllocConsole();
                 ConsoleManager.InitializeStdOutError();
             }
         }
@@ -66,27 +61,12 @@ namespace XstarS.Win32
         /// <summary>  
         /// 释放当前已经分配的控制台窗口。
         /// </summary>  
-        public static void Hide()
+        public static void CloseConsole()
         {
             if (ConsoleManager.HasConsole)
             {
-                ConsoleManager.SetStdOutErrorNull();
-                ConsoleManager.SafeNativeMethods.FreeConsole();
-            }
-        }
-
-        /// <summary>
-        /// 切换控制台窗口的显示状态。
-        /// </summary>
-        public static void Toggle()
-        {
-            if (ConsoleManager.HasConsole)
-            {
-                ConsoleManager.Hide();
-            }
-            else
-            {
-                ConsoleManager.Show();
+                ConsoleManager.RealeaseStdOutError();
+                ConsoleManager.UnsafeNativeMethods.FreeConsole();
             }
         }
 
@@ -95,23 +75,21 @@ namespace XstarS.Win32
         /// </summary>
         private static void InitializeStdOutError()
         {
-            var t_Console = typeof(Console);
-            var staticNoPublic = BindingFlags.Static | BindingFlags.NonPublic;
-
-            var sf__out = t_Console.GetField("_out", staticNoPublic);
-            var sf__error = t_Console.GetField("_error", staticNoPublic);
-            var sm_InitializeStdOutError =
-                t_Console.GetMethod("InitializeStdOutError", staticNoPublic);
-
-            sf__out.SetValue(null, null);
-            sf__error.SetValue(null, null);
-            sm_InitializeStdOutError.Invoke(null, new object[] { true });
+            var fieldStdOut = typeof(Console).GetField(
+                "_out", BindingFlags.Static | BindingFlags.NonPublic);
+            var fieldStdError = typeof(Console).GetField(
+                "_error", BindingFlags.Static | BindingFlags.NonPublic);
+            var methodInitializeStdOutError = typeof(Console).GetMethod(
+                "InitializeStdOutError", BindingFlags.Static | BindingFlags.NonPublic);
+            fieldStdOut.SetValue(null, null);
+            fieldStdError.SetValue(null, null);
+            methodInitializeStdOutError.Invoke(null, new object[] { true });
         }
 
         /// <summary>
-        /// 将 <see cref="Console"/> 的标准输出流和错误流重定向至 <see cref="TextWriter.Null"/>。
+        /// 释放 <see cref="Console"/> 的标准输出流和错误流。
         /// </summary>
-        private static void SetStdOutErrorNull()
+        private static void RealeaseStdOutError()
         {
             Console.SetOut(TextWriter.Null);
             Console.SetError(TextWriter.Null);
