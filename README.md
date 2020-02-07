@@ -77,7 +77,7 @@ WPF 相关，目前包含的命名空间：
 XAML 命名空间：
 
 ``` XML
-xmlns:xswpf="https://github.com/x-stars/xswpf"
+xmlns:xsext="https://github.com/x-stars/DotNetExtensions"
 ```
 
 ## 功能设计文档
