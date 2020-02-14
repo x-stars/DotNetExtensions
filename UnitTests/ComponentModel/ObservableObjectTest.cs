@@ -5,7 +5,7 @@ using XstarS.ComponentModel.TestTypes;
 namespace XstarS.ComponentModel
 {
     [TestClass]
-    public class ObservableBaseTest
+    public class ObservableObjectTest
     {
         [TestMethod]
         public void PropertyChanged_ObservableObject_CallsHandler()

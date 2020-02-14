@@ -40,7 +40,7 @@
         public int Size => this.Length * this.Width * this.Height;
     }
 
-    public class ObservablePersonName : ObservableStorage
+    public class ObservablePersonName : ObservableDataObject
     {
         public ObservablePersonName() { }
 
