@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection.Emit;
 
-namespace XstarS.Reflection
+namespace XstarS.Reflection.Emit
 {
     /// <summary>
     /// 提供 IL 指令生成相关的扩展方法。
@@ -108,13 +108,13 @@ namespace XstarS.Reflection
             {
                 il.Emit(OpCodes.Box, type);
             }
-            else if (type.IsValueType)
-            {
-                il.Emit(OpCodes.Box, type);
-            }
             else if (type.IsByRef || type.IsPointer)
             {
                 il.Emit(OpCodes.Box, typeof(IntPtr));
+            }
+            else if (type.IsValueType)
+            {
+                il.Emit(OpCodes.Box, type);
             }
         }
 
@@ -140,13 +140,13 @@ namespace XstarS.Reflection
             {
                 il.Emit(OpCodes.Unbox_Any, type);
             }
-            else if (type.IsValueType)
-            {
-                il.Emit(OpCodes.Unbox_Any, type);
-            }
             else if (type.IsByRef || type.IsPointer)
             {
                 il.Emit(OpCodes.Unbox_Any, typeof(IntPtr));
+            }
+            else if (type.IsValueType)
+            {
+                il.Emit(OpCodes.Unbox_Any, type);
             }
             else if (type != typeof(object))
             {

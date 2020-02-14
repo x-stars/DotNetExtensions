@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using XstarS.Reflection;
+using XstarS.Reflection.Emit;
 
 namespace XstarS.ComponentModel
 {

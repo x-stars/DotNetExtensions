@@ -5,7 +5,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
 
-namespace XstarS.ComponentModel
+namespace XstarS.Reflection.Emit
 {
     /// <summary>
     /// 提供运行时类型生成相关的扩展方法。

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace XstarS.ComponentModel
+namespace XstarS.Reflection
 {
     /// <summary>
     /// 提供特殊类型相关的扩展方法。

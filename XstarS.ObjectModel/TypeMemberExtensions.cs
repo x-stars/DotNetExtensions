@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace XstarS.ComponentModel
+namespace XstarS.Reflection
 {
     /// <summary>
     /// 提供反射相关的帮助方法。

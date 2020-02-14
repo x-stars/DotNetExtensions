@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace XstarS.Reflection
+namespace XstarS.Reflection.Emit
 {
     /// <summary>
     /// 提供包装代理类型运行时类型生成相关的帮助方法。
