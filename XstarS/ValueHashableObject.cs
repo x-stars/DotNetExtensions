@@ -13,11 +13,6 @@ namespace XstarS
     internal sealed class ValueHashableObject
     {
         /// <summary>
-        /// 要获取基于值的哈希代码的对象。
-        /// </summary>
-        public readonly object Value;
-
-        /// <summary>
         /// 当前对象的基于值的哈希代码。
         /// </summary>
         [NonSerialized]
@@ -37,6 +32,11 @@ namespace XstarS
         {
             this.Value = value;
         }
+
+        /// <summary>
+        /// 要获取基于值的哈希代码的对象。
+        /// </summary>
+        public object Value { get; }
 
         /// <summary>
         /// 获取当前实例包含的对象基于值的哈希代码。

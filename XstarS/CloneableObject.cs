@@ -20,11 +20,6 @@ namespace XstarS
                     typeof(Func<object, object>)) as Func<object, object>;
 
         /// <summary>
-        /// 要创建副本的对象。
-        /// </summary>
-        public readonly object Value;
-
-        /// <summary>
         /// 已经创建副本的对象及其对应的副本。
         /// </summary>
         [NonSerialized]
@@ -38,6 +33,11 @@ namespace XstarS
         {
             this.Value = value;
         }
+
+        /// <summary>
+        /// 要创建副本的对象。
+        /// </summary>
+        public object Value { get; }
 
         /// <summary>
         /// 创建当前对象的浅表副本。
