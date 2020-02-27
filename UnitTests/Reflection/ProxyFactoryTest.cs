@@ -58,5 +58,28 @@ namespace XstarS.Reflection
                 ).CreateInstance();
             Assert.IsNotNull(o.Create<List<object>>());
         }
+
+        [TestMethod]
+        public void CreateInstance_ClassWithByRefParameterMethod_WorksProperly()
+        {
+            var o = ProxyFactory<Int32Increaser>.WithHandler(
+                ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
+                ).CreateInstance();
+            var i = 0;
+            o.Increase(ref i);
+            Assert.AreEqual(i, 1);
+        }
+
+        [TestMethod]
+        public void CreateInstance_ClassWithByRefReturnMethod_WorksProperly()
+        {
+            var o = ProxyFactory<ByRefValueBox<int>>.WithHandler(
+                ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
+                ).CreateInstance();
+            Assert.AreEqual(o.Value, 0);
+            ref var i = ref o.RefValue;
+            i = 1;
+            Assert.AreEqual(o.Value, 1);
+        }
     }
 }

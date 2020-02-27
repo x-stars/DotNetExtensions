@@ -66,4 +66,27 @@ namespace XstarS.Reflection.TestTypes
             return Activator.CreateInstance<TList>();
         }
     }
+
+    public class Int32Increaser
+    {
+        public Int32Increaser() { }
+
+        public virtual void Increase(ref int value) => value++;
+    }
+
+    public class ByRefValueBox<T>
+    {
+        private T _Value;
+
+        public ByRefValueBox(){}
+
+        public ByRefValueBox(T value)
+        {
+            this._Value = value;
+        }
+
+        public virtual T Value { get => this._Value; set => this._Value = value; }
+
+        public virtual ref T RefValue => ref this._Value;
+    }
 }
