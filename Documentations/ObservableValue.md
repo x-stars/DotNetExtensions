@@ -1,6 +1,6 @@
 ﻿# 属性更改通知接口实现框架
 
-本文叙述了 XstarS.ObjectModel 程序集中包含的若干实现属性更改通知接口
+本文叙述了 XstarS.ObjectModel 和 XstarS.ObservableProxy 程序集中包含的若干实现属性更改通知接口
 `System.ComponentModel.INotifyPropertyChanged` 的类型的使用方法。
 结合集合更改通知集合 `System.Collections.ObjectModel.ObservableCollection<T>`，可实现数据绑定到客户端。
 

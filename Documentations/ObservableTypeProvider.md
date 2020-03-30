@@ -212,4 +212,4 @@ public class Properties
 * `ObservableTypeProvider`: 从原型类型构造属性更改通知类型。
 * `ObservableFactory<T>`: 提供创建属性更改通知类型的实例的方法。
 
-具体实现请参见 [XstarS.ObjectModel](../XstarS.ObjectModel) 工程源代码，此处不再详述。
+具体实现请参见 [XstarS.ObservableProxy](../XstarS.ObservableProxy) 工程源代码，此处不再详述。

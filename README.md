@@ -44,12 +44,12 @@
 
 ## 程序集 XstarS.ObjectModel
 
-提供部分组件模型的实现类型，包括属性更改通知和命令等。
+提供部分组件模型的实现类型，包括属性更改通知 `System.ComponentModel.INotifyPropertyChanged`
+和命令 `System.Windows.Input.ICommand` 等。
 
-目前提供的属性更改通知的实现方案：方法提取、值封装、动态生成属性更改通知派生类。
+## 程序集 XstarS.ObservableProxy
 
-原理和使用方法详述于[属性更改通知接口实现框架说明文档](Documentations/ObservableValue.md)中。
-使用此框架的优势叙述于[属性更改通知实现方式比较文档](Documentations/ObservableValueCompare.md)中。
+提供以反射发出 `System.Reflection.Emit` 构造的属性更改通知类型 `System.ComponentModel.INotifyPropertyChanged`。
 
 ## 程序集 XstarS.Unions
 
@@ -80,11 +80,11 @@ XAML 命名空间：
 xmlns:xsext="https://github.com/x-stars/DotNetExtensions"
 ```
 
-## 功能设计文档
+## 说明文档
 
-本工程基础说明文档均置于工程根目录的 [Documentations](Documentations) 文件夹下。
+本工程说明文档置于工程根目录的 [Documentations](Documentations) 文件夹下。
 
-除基础说明文档外，目前还包含部分功能设计文档可供参考：
-
+* [属性更改通知接口实现框架说明文档](Documentations/ObservableValue.md)中。
+* [属性更改通知实现方式比较文档](Documentations/ObservableValueCompare.md)中。
 * [属性更改通知类型提供对象设计文档](Documentations/ObservableTypeProvider.md)
 * [对象的通用值相等比较方法设计文档](Documentations/ValueEquals.md)
