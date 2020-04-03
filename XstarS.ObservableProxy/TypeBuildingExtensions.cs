@@ -485,8 +485,8 @@ namespace XstarS.Reflection.Emit
                 il.Emit(OpCodes.Ldloc_2);
                 il.Emit(OpCodes.Ldloc_1);
                 il.Emit(OpCodes.Call, typeof(Interlocked).GetMethods().Where(
-                    method => method.Name == nameof(Interlocked.CompareExchange) &&
-                    method.IsGenericMethod).First().MakeGenericMethod(eventType));
+                    iMethod => iMethod.Name == nameof(Interlocked.CompareExchange) &&
+                    iMethod.IsGenericMethod).Single().MakeGenericMethod(eventType));
                 il.Emit(OpCodes.Stloc_0);
                 il.Emit(OpCodes.Ldloc_0);
                 il.Emit(OpCodes.Ldloc_1);
@@ -525,8 +525,8 @@ namespace XstarS.Reflection.Emit
                 il.Emit(OpCodes.Ldloc_2);
                 il.Emit(OpCodes.Ldloc_1);
                 il.Emit(OpCodes.Call, typeof(Interlocked).GetMethods().Where(
-                    method => method.Name == nameof(Interlocked.CompareExchange) &&
-                    method.IsGenericMethod).First().MakeGenericMethod(eventType));
+                    iMethod => iMethod.Name == nameof(Interlocked.CompareExchange) &&
+                    iMethod.IsGenericMethod).Single().MakeGenericMethod(eventType));
                 il.Emit(OpCodes.Stloc_0);
                 il.Emit(OpCodes.Ldloc_0);
                 il.Emit(OpCodes.Ldloc_1);

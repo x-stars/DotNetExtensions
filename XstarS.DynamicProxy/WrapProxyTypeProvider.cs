@@ -175,13 +175,9 @@ namespace XstarS.Reflection
         private void InitializeBaseMethods()
         {
             this.BaseMethods = this.BaseType.GetAccessibleMethods().Where(
-#pragma warning disable CS1061 // '“MethodInfo”未包含“IsWrapProxyOverride”的定义，并且找不到可接受第一个“MethodInfo”类型参数的可访问扩展方法“IsWrapProxyOverride”(是否缺少 using 指令或程序集引用?)
                 method => method.IsWrapProxyOverride()).ToArray();
-#pragma warning restore CS1061 // '“MethodInfo”未包含“IsWrapProxyOverride”的定义，并且找不到可接受第一个“MethodInfo”类型参数的可访问扩展方法“IsWrapProxyOverride”(是否缺少 using 指令或程序集引用?)
             this.BaseNonMethods = this.BaseType.GetAccessibleMethods().Where(
-#pragma warning disable CS1061 // '“MethodInfo”未包含“IsNonWrapProxyOverride”的定义，并且找不到可接受第一个“MethodInfo”类型参数的可访问扩展方法“IsNonWrapProxyOverride”(是否缺少 using 指令或程序集引用?)
                 method => method.IsNonWrapProxyOverride()).ToArray();
-#pragma warning restore CS1061 // '“MethodInfo”未包含“IsNonWrapProxyOverride”的定义，并且找不到可接受第一个“MethodInfo”类型参数的可访问扩展方法“IsNonWrapProxyOverride”(是否缺少 using 指令或程序集引用?)
         }
 
         /// <summary>
@@ -234,15 +230,11 @@ namespace XstarS.Reflection
 
             var parent = typeof(object);
             var baseConstructors = parent.GetConstructors().Where(
-#pragma warning disable CS1061 // '“ConstructorInfo”未包含“IsInheritable”的定义，并且找不到可接受第一个“ConstructorInfo”类型参数的可访问扩展方法“IsInheritable”(是否缺少 using 指令或程序集引用?)
                 constructor => constructor.IsInheritable()).ToArray();
-#pragma warning restore CS1061 // '“ConstructorInfo”未包含“IsInheritable”的定义，并且找不到可接受第一个“ConstructorInfo”类型参数的可访问扩展方法“IsInheritable”(是否缺少 using 指令或程序集引用?)
 
             foreach (var baseConstructor in baseConstructors)
             {
-#pragma warning disable CS1061 // '“TypeBuilder”未包含“DefineBaseInvokeConstructorLike”的定义，并且找不到可接受第一个“TypeBuilder”类型参数的可访问扩展方法“DefineBaseInvokeConstructorLike”(是否缺少 using 指令或程序集引用?)
                 var constructor = type.DefineBaseInvokeConstructorLike(baseConstructor);
-#pragma warning restore CS1061 // '“TypeBuilder”未包含“DefineBaseInvokeConstructorLike”的定义，并且找不到可接受第一个“TypeBuilder”类型参数的可访问扩展方法“DefineBaseInvokeConstructorLike”(是否缺少 using 指令或程序集引用?)
             }
         }
 
@@ -257,11 +249,7 @@ namespace XstarS.Reflection
             var field = type.DefineField("Instance", baseType, FieldAttributes.Assembly);
 
             var baseMethod = typeof(IWrapProxy).GetMethod(nameof(IWrapProxy.GetInstance));
-#pragma warning disable CS0815 // 无法将 void 赋予隐式类型化的变量
-#pragma warning disable CS1739 // “DefineMethodOverride”的最佳重载没有名为“explicitOverride”的参数
             var method = type.DefineMethodOverride(baseMethod, explicitOverride: false);
-#pragma warning restore CS1739 // “DefineMethodOverride”的最佳重载没有名为“explicitOverride”的参数
-#pragma warning restore CS0815 // 无法将 void 赋予隐式类型化的变量
             var il = method.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldfld, field);
@@ -284,9 +272,7 @@ namespace XstarS.Reflection
             for (int i = 0; i < baseMethods.Length; i++)
             {
                 var baseMethod = baseMethods[i];
-#pragma warning disable CS1061 // '“TypeBuilder”未包含“DefineWrapBaseInvokeMethodLike”的定义，并且找不到可接受第一个“TypeBuilder”类型参数的可访问扩展方法“DefineWrapBaseInvokeMethodLike”(是否缺少 using 指令或程序集引用?)
                 var method = type.DefineWrapBaseInvokeMethodLike(
-#pragma warning restore CS1061 // '“TypeBuilder”未包含“DefineWrapBaseInvokeMethodLike”的定义，并且找不到可接受第一个“TypeBuilder”类型参数的可访问扩展方法“DefineWrapBaseInvokeMethodLike”(是否缺少 using 指令或程序集引用?)
                     baseMethod, baseType, instanceField);
                 methods[baseMethod] = method;
             }
@@ -310,9 +296,7 @@ namespace XstarS.Reflection
             foreach (var baseMethod in baseMethods)
             {
                 var baseInvokeMethod = baseInvokeMethods[baseMethod];
-#pragma warning disable CS1061 // '“TypeBuilder”未包含“DefineMethodInfoAndDelegateField”的定义，并且找不到可接受第一个“TypeBuilder”类型参数的可访问扩展方法“DefineMethodInfoAndDelegateField”(是否缺少 using 指令或程序集引用?)
                 var fields = type.DefineMethodInfoAndDelegateField(baseMethod, baseType, baseInvokeMethod);
-#pragma warning restore CS1061 // '“TypeBuilder”未包含“DefineMethodInfoAndDelegateField”的定义，并且找不到可接受第一个“TypeBuilder”类型参数的可访问扩展方法“DefineMethodInfoAndDelegateField”(是否缺少 using 指令或程序集引用?)
                 infoFields[baseMethod] = fields.Key;
                 delegateFields[baseMethod] = fields.Value;
             }
@@ -339,9 +323,7 @@ namespace XstarS.Reflection
             {
                 var baseMethodInfoField = baseMethodInfoFields[baseMethod];
                 var baseMethodDelegateField = baseMethodDelegateFields[baseMethod];
-#pragma warning disable CS1061 // '“TypeBuilder”未包含“DefineProxyMethodOverride”的定义，并且找不到可接受第一个“TypeBuilder”类型参数的可访问扩展方法“DefineProxyMethodOverride”(是否缺少 using 指令或程序集引用?)
                 var method = type.DefineProxyMethodOverride(baseMethod,
-#pragma warning restore CS1061 // '“TypeBuilder”未包含“DefineProxyMethodOverride”的定义，并且找不到可接受第一个“TypeBuilder”类型参数的可访问扩展方法“DefineProxyMethodOverride”(是否缺少 using 指令或程序集引用?)
                     baseMethodInfoField, baseMethodDelegateField, handlerField, explicitOverride: true);
             }
         }
@@ -357,9 +339,7 @@ namespace XstarS.Reflection
 
             foreach (var baseMethod in baseMethods)
             {
-#pragma warning disable CS1061 // '“TypeBuilder”未包含“DefineWrapBaseInvokeMethodOverride”的定义，并且找不到可接受第一个“TypeBuilder”类型参数的可访问扩展方法“DefineWrapBaseInvokeMethodOverride”(是否缺少 using 指令或程序集引用?)
                 var method = type.DefineWrapBaseInvokeMethodOverride(
-#pragma warning restore CS1061 // '“TypeBuilder”未包含“DefineWrapBaseInvokeMethodOverride”的定义，并且找不到可接受第一个“TypeBuilder”类型参数的可访问扩展方法“DefineWrapBaseInvokeMethodOverride”(是否缺少 using 指令或程序集引用?)
                     baseMethod, instanceField, explicitOverride: true);
             }
         }

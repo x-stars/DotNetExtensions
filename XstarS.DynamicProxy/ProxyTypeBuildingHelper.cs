@@ -88,36 +88,36 @@ namespace XstarS.Reflection.Emit
                     new ArgumentException().Message, nameof(baseGenericParams));
             }
 
+            Type makeConstraint(Type constraintType)
+            {
+                if (constraintType.IsGenericParameter)
+                {
+                    var position = constraintType.GenericParameterPosition;
+                    var isInBase = Array.IndexOf(baseGenericParams, constraintType) != -1;
+                    return isInBase ? genericParams[position] : baseTypeGenericArgs[position];
+                }
+                else if (constraintType.IsGenericType)
+                {
+                    var typeGenericDefinition = constraintType.GetGenericTypeDefinition();
+                    var typeGenericArguments = constraintType.GetGenericArguments();
+                    for (int i = 0; i < typeGenericArguments.Length; i++)
+                    {
+                        typeGenericArguments[i] = makeConstraint(typeGenericArguments[i]);
+                    }
+                    return typeGenericDefinition.MakeGenericType(typeGenericArguments);
+                }
+                else
+                {
+                    return constraintType;
+                }
+            }
+
             for (int i = 0; i < genericParams.Length; i++)
             {
                 var genericParam = genericParams[i];
                 var baseGenericParam = baseGenericParams[i];
 
                 var baseGenericConstraints = baseGenericParam.GetGenericParameterConstraints();
-
-                Type makeConstraint(Type constraintType)
-                {
-                    if (constraintType.IsGenericParameter)
-                    {
-                        var position = constraintType.GenericParameterPosition;
-                        var isInBase = Array.IndexOf(baseGenericParams, constraintType) != -1;
-                        return isInBase ? genericParams[position] : baseTypeGenericArgs[position];
-                    }
-                    else if (constraintType.IsGenericType)
-                    {
-                        var typeGenericDefinition = constraintType.GetGenericTypeDefinition();
-                        var typeGenericArguments = constraintType.GetGenericArguments();
-                        for (int i = 0; i < typeGenericArguments.Length; i++)
-                        {
-                            typeGenericArguments[i] = makeConstraint(typeGenericArguments[i]);
-                        }
-                        return typeGenericDefinition.MakeGenericType(typeGenericArguments);
-                    }
-                    else
-                    {
-                        return constraintType;
-                    }
-                }
 
                 baseGenericConstraints = Array.ConvertAll(baseGenericConstraints, makeConstraint);
 

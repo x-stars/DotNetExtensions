@@ -1,13 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>XstarS</RootNamespace>
     <AssemblyName>XstarS.UnitTests</AssemblyName>
-    <TargetFrameworks>net461;net472;netcoreapp2.1;netcoreapp3.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <IsPackable>false</IsPackable>
+    <RootNamespace>XstarS</RootNamespace>
+    <TargetFrameworks>net461;net472;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Authors>XstarS</Authors>
+    <Company>XstarS</Company>
     <Description>$(AssemblyName)</Description>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
