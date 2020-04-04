@@ -3,7 +3,7 @@
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 为发送消息事件 <see cref="ISendMessage.Message"/> 提供数据。
+    /// 为 <see cref="ISendMessage.Message"/> 事件提供数据。
     /// </summary>
     public class MessageEventArgs : EventArgs
     {

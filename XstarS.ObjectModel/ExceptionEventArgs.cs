@@ -14,7 +14,7 @@ namespace XstarS.ComponentModel
         public ExceptionEventArgs(Exception exception)
         {
             this.Exception = exception;
-            this.IsHandled = false;
+            this.Handled = false;
         }
 
         /// <summary>
@@ -25,6 +25,6 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 获取或设置当前异常是否已经被处理。
         /// </summary>
-        public bool IsHandled { get; set; }
+        public bool Handled { get; set; }
     }
 }
