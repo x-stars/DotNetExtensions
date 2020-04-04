@@ -8,7 +8,7 @@
 
 属性更改通知的实现基于属性值发生更改时同时触发 `PropertyChanged` 事件，以通知客户端属性的值发生更改。
 
-属性更改通知可用于服务端数据绑定到客户端，本文不做详细介绍，可参见 WPF 的相关说明。
+属性更改通知可用于服务端数据绑定到客户端，本文不做详细介绍，可参见数据绑定的相关说明。
 
 ### `INotifyPropertyChanged` 接口的实现
 
@@ -30,32 +30,32 @@ public class ObservableData : INotifyPropertyChanged
 
 ### `PropertyChanged` 事件的触发方法
 
-传统上，直接在属性的 `set` 处调用 `OnPropertyChanged` 方法即可。
+传统上，直接在属性的 `set` 处调用 `OnPropertyChanged` 方法即可。此处另外定义一个以属性名称为参数的 `OnPropertyChanged` 方法，以更便捷地触发 `PropertyChanged` 事件。
 
 ``` CSharp
-using System.Collections.Generic;
 using System.ComponentModel;
 
 public class ObservableData : INotifyPropertyChanged
 {
     private string text;
-
     public string Text
     {
         get => this.text;
         set
         {
             this.text = value;
-            this.OnPropertyChanged(
-                new PropertyChangedEventArgs(nameof(this.Text)));
+            this.OnPropertyChanged(nameof(this.Text));
         }
+    }
+
+    protected void OnPropertyChanged(string propertyName)
+    {
+        this.OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
     }
 
     // Event and On-Event method.
 }
 ```
-
-> 为避免频繁触发事件造成性能浪费，仅在当前值与新值不相等时触发 `PropertyChanged` 事件。
 
 但容易发现，以上 `set` 处的代码可直接封装成一个泛型方法，我们将其命名为 `SetProperty`。
 
@@ -67,7 +67,7 @@ public class ObservableData : INotifyPropertyChanged
 {
     // Event and On-Event method.
 
-    protected void NotifyPropertChanged(
+    protected void NotifyPropertyChanged(
         [CallerMemberName] string propertyName = null)
     {
         this.OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
@@ -82,9 +82,7 @@ public class ObservableData : INotifyPropertyChanged
 }
 ```
 
-> `System.Runtime.CompilerServices.CallerMemberNameAttribute` 为 .NET Framework 4.5 中加入的新特性。
-> 当此特性用在 `System.String` 类型的可选参数上时，编译器将会自动给此参数输入**调用此方法的成员**的短名称（对于属性则是属性的名称）。
-> 详细请参见微软提供的文档：[CallerMemberNameAttribute Class](https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.compilerservices.callermembernameattribute)。
+> `System.Runtime.CompilerServices.CallerMemberNameAttribute` 为 .NET Framework 4.5 中加入的新特性。当此特性用在 `System.String` 类型的可选参数上时，编译器将会自动给此参数输入**调用此方法的成员**的短名称（对于属性则是属性的名称）。详细请参见微软提供的文档：[CallerMemberNameAttribute Class](https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.compilerservices.callermembernameattribute)。
 
 定义此方法之后，属性的定义即可简化为如下所示。
 
@@ -95,7 +93,6 @@ using System.ComponentModel;
 public class ObservableData : INotifyPropertyChanged
 {
     private string text;
-
     public string Text
     {
         get => this.text;
@@ -118,7 +115,6 @@ public class Properties
 {
     // 传统属性的字段部分。
     private object legacyProperty;
-
     // 传统属性的属性部分。
     public object LegacyProperty
     {
@@ -131,36 +127,31 @@ public class Properties
 }
 ```
 
-以上两种实现属性的方法完全等效，使用自动属性可以大大减少代码量，降低维护难度。
-但对于提供属性更改通知的属性而言，由于属性的 `set` 处的代码并不仅仅是设定字段的新值，因此无法使用自动属性实现。
+以上两种实现属性的方法完全等效，使用自动属性可以大大减少代码量，降低维护难度。但对于提供属性更改通知的属性而言，由于属性的 `set` 处的代码并不仅仅是设定字段的新值，因此无法使用自动属性实现。
 
-针对此种情况，本文提出解决方案为：
-定义一个原型类型，原型类型的属性均定义为虚自动属性或抽象属性；
-由代码动态生成基于原型类型的属性更改通知类型，并在属性更改通知类型中实现属性的值发生更改时触发 `OnPropertyChanged` 事件。
+针对此种情况，本文提出解决方案为：定义一个原型类型，原型类型的属性均定义为虚自动属性或抽象属性；由代码动态生成基于原型类型的属性更改通知类型，并在属性更改通知类型中实现属性的值发生更改时触发 `PropertyChanged` 事件。
 
 ### .NET 动态类型生成技术
 
 .NET 主要有两项用于动态类型生成类型的技术：
 
 1. 基于动态编译技术的 CodeDOM（`Microsoft.(语言).(语言)CodeProvider` 类、`System.CodeDom` 命名空间）
-2. 基于 IL 指令发射技术的 Emit（`System.Reflection.Emit` 命名空间）
+2. 基于 IL 指令生成技术的反射发出（`System.Reflection.Emit` 命名空间）
 
-关于两者各自的优缺点，已有相当数量的论述，本文不再详细比较。
+两项技术各自有着以下的特点：
 
-简单而言，两项技术各自有着以下的特点：
+| 特点     | CodeDOM            | 反射发出               |
+| -------- | ------------------ | ---------------------- |
+| 使用技术 | 动态编译           | IL 指令生成            |
+| 编程语言 | .NET 编程语言      | IL 汇编指令            |
+| 组件地位 | 特定语言的组件     | 系统框架组件           |
+| 生成速度 | 需要编译，稍慢     | 无需编译，较快         |
+| 技术难度 | 基于编程语言，较低 | 基于 IL 汇编指令，较高 |
 
-| 特点     | CodeDOM                    | Emit                       |
-| -------- | -------------------------- | -------------------------- |
-| 使用技术 | 动态编译                   | 汇编指令发射               |
-| 编程语言 | .NET 编程语言（C#、VB 等） | IL 汇编指令                |
-| 组件地位 | 特定语言的组件             | 系统框架组件               |
-| 生成速度 | 需要编译，稍慢             | 无需编译，较快             |
-| 技术难度 | 使用编程语言实现，较低     | 需要掌握 IL 汇编指令，较高 |
-
-`ObservableTypeProvider` 最终采用了 Emit 技术，原因如下：
+`ObservableTypeProvider` 最终采用了反射发出技术，原因如下：
 
 * 生成的类型基于原型类型，有大量特性需要反射获取：
-  * 将这些特性转换为特定于语言（C#）的特性的工作量较大；
+  * 将这些特性转换为特定于编程语言的特性的工作量较大；
   * 框架应尽量实现语言无关性，但其他语言的部分特性在 C# 中不一定受支持。
 * 需要生成的代码大量重复，且无复杂逻辑，容易使用汇编指令实现。
 
@@ -196,14 +187,11 @@ public class Properties
 
 #### 类型定义
 
-.NET 中动态定义的类型包含在一个动态程序集 (Assembly) 中，若生成文件，即为一个 *.dll 或 *.exe 文件。
-从程序集到类型，中间还包含一个称为模块的结构，一个程序集可以包含多个模块（但通常仅包含一个模块）。
-因此，定义动态类型要经过程序集、模块，再到类型的三个步骤。
+.NET 中动态定义的类型包含在一个动态程序集 (Assembly) 中，若生成文件，即为一个 *.dll 或 *.exe 文件。从程序集到类型，中间还包含一个称为模块的结构，一个程序集可以包含多个模块（但通常仅包含一个模块）。因此，定义动态类型要经过程序集、模块，再到类型的三个步骤。
 
-使用 `System.Reflection.Emit.AssemblyBuilder` 的静态方法 `DefineDynamicAssembly` 定义一个动态程序集，
-而后继续使用 `DefineDynamicModule` 和 `DefineType` 方法即可实现动态类型的定义。
+使用 `System.Reflection.Emit.AssemblyBuilder` 的静态方法 `DefineDynamicAssembly` 定义一个动态程序集，而后继续使用 `DefineDynamicModule` 和 `DefineType` 方法即可实现动态类型的定义。
 
-> 反射发出 Emit 的基础教程可参考微软提供的文档：[发出动态方法和程序集](https://docs.microsoft.com/zh-cn/dotnet/framework/reflection-and-codedom/emitting-dynamic-methods-and-assemblies)。
+> 反射发出 `System.Reflection.Emit` 的基础教程可参考官方文档：[发出动态方法和程序集](https://docs.microsoft.com/zh-cn/dotnet/framework/reflection-and-codedom/emitting-dynamic-methods-and-assemblies)。
 
 #### 具体实现
 
@@ -212,4 +200,4 @@ public class Properties
 * `ObservableTypeProvider`: 从原型类型构造属性更改通知类型。
 * `ObservableFactory<T>`: 提供创建属性更改通知类型的实例的方法。
 
-具体实现请参见 [XstarS.ObservableProxy](../XstarS.ObservableProxy) 工程源代码，此处不再详述。
+具体实现请参见 [XstarS.ObservableProxy](../XstarS.ObservableProxy) 工程源代码。
