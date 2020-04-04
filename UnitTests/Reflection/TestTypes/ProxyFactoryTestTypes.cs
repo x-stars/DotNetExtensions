@@ -78,7 +78,7 @@ namespace XstarS.Reflection.TestTypes
     {
         private T _Value;
 
-        public ByRefValueBox(){}
+        public ByRefValueBox() { }
 
         public ByRefValueBox(T value)
         {

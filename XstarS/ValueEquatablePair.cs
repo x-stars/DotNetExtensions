@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Reflection;
 using XstarS.Collections.Specialized;
-using XstarS.Reflection;
 
 namespace XstarS
 {
@@ -119,9 +118,9 @@ namespace XstarS
         /// <returns>若 <paramref name="value"/> 和 <paramref name="other"/>
         /// 均为指针包装 <see cref="Pointer"/>，且指针的值和类型都相等，
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        private bool PointerValueEquals(Pointer value, Pointer other)
+        private unsafe bool PointerValueEquals(Pointer value, Pointer other)
         {
-            return value.GetPointerValue() == other.GetPointerValue();
+            return Pointer.Unbox(value) == Pointer.Unbox(other);
         }
 
         /// <summary>
