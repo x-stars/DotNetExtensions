@@ -49,8 +49,11 @@
 
 ## 程序集 XstarS.ObjectModel
 
-提供部分组件模型的实现类型，包括属性更改通知 `System.ComponentModel.INotifyPropertyChanged`
-和命令 `System.Windows.Input.ICommand` 等。
+提供部分组件模型类型的实现，包括：
+
+* 数据实体验证 `System.ComponentModel.INotifyDataErrorInfo`
+* 属性更改通知 `System.ComponentModel.INotifyPropertyChanged`
+* 命令 `System.Windows.Input.ICommand`
 
 相关文档：
 

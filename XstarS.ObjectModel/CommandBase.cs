@@ -10,12 +10,7 @@ namespace XstarS.ComponentModel
     public abstract class CommandBase : ICommand
     {
         /// <summary>
-        /// <see cref="CommandBase.IsExecutable"/> 的值。
-        /// </summary>
-        private bool _IsExecutable = true;
-
-        /// <summary>
-        /// 创建当前命令的线程的同步上下文。
+        /// 表示创建当前命令的线程的同步上下文。
         /// </summary>
         private readonly SynchronizationContext InitSyncContext;
 
@@ -25,15 +20,6 @@ namespace XstarS.ComponentModel
         protected CommandBase()
         {
             this.InitSyncContext = SynchronizationContext.Current;
-        }
-
-        /// <summary>
-        /// 获取或设置此命令是否可在其当前状态下执行。
-        /// </summary>
-        protected bool IsExecutable
-        {
-            get => this._IsExecutable;
-            set { this._IsExecutable = value; this.OnCanExecuteChanged(); }
         }
 
         /// <summary>
@@ -51,7 +37,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <returns>如果可执行此命令，则为 <see langword="true"/>；
         /// 否则为 <see langword="false"/>。</returns>
-        public virtual bool CanExecute() => this.IsExecutable;
+        public virtual bool CanExecute() => true;
 
         /// <summary>
         /// 引发 <see cref="CommandBase.CanExecuteChanged"/> 事件。
@@ -100,12 +86,7 @@ namespace XstarS.ComponentModel
     public abstract class CommandBase<TParameter> : ICommand
     {
         /// <summary>
-        /// <see cref="CommandBase{TParameter}.IsExecutable"/> 的值。
-        /// </summary>
-        private bool _IsExecutable = true;
-
-        /// <summary>
-        /// 创建当前命令的线程的同步上下文。
+        /// 表示创建当前命令的线程的同步上下文。
         /// </summary>
         private readonly SynchronizationContext InitSyncContext;
 
@@ -115,15 +96,6 @@ namespace XstarS.ComponentModel
         protected CommandBase()
         {
             this.InitSyncContext = SynchronizationContext.Current;
-        }
-
-        /// <summary>
-        /// 获取或设置此命令是否可在其当前状态下执行。
-        /// </summary>
-        protected bool IsExecutable
-        {
-            get => this._IsExecutable;
-            set { this._IsExecutable = value; this.OnCanExecuteChanged(); }
         }
 
         /// <summary>
@@ -143,7 +115,7 @@ namespace XstarS.ComponentModel
         /// <param name="parameter">此命令使用的数据。</param>
         /// <returns>如果可执行此命令，则为 <see langword="true"/>；
         /// 否则为 <see langword="false"/>。</returns>
-        public virtual bool CanExecute(TParameter parameter) => this.IsExecutable;
+        public virtual bool CanExecute(TParameter parameter) => true;
 
         /// <summary>
         /// 引发 <see cref="CommandBase.CanExecuteChanged"/> 事件。

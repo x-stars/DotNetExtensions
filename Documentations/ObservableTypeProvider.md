@@ -30,25 +30,25 @@ public class ObservableData : INotifyPropertyChanged
 
 ### `PropertyChanged` 事件的触发方法
 
-传统上，直接在属性的 `set` 处调用 `OnPropertyChanged` 方法即可。此处另外定义一个以属性名称为参数的 `OnPropertyChanged` 方法，以更便捷地触发 `PropertyChanged` 事件。
+传统上，直接在属性的 `set` 处调用 `OnPropertyChanged` 方法即可。此处定义一个以属性名称为参数的 `NotifyPropertyChanged` 方法，以更便捷地触发 `PropertyChanged` 事件。
 
 ``` CSharp
 using System.ComponentModel;
 
 public class ObservableData : INotifyPropertyChanged
 {
-    private string text;
+    private string _Text;
     public string Text
     {
-        get => this.text;
+        get => this._Text;
         set
         {
-            this.text = value;
-            this.OnPropertyChanged(nameof(this.Text));
+            this._Text = value;
+            this.NotifyPropertyChanged(nameof(this.Text));
         }
     }
 
-    protected void OnPropertyChanged(string propertyName)
+    protected void NotifyPropertyChanged(string propertyName)
     {
         this.OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
     }
@@ -56,55 +56,6 @@ public class ObservableData : INotifyPropertyChanged
     // Event and On-Event method.
 }
 ```
-
-但容易发现，以上 `set` 处的代码可直接封装成一个泛型方法，我们将其命名为 `SetProperty`。
-
-``` CSharp
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-
-public class ObservableData : INotifyPropertyChanged
-{
-    // Event and On-Event method.
-
-    protected void NotifyPropertyChanged(
-        [CallerMemberName] string propertyName = null)
-    {
-        this.OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-    }
-
-    protected void SetProperty<T>(ref T field, T value,
-        [CallerMemberName] string propertyName = null)
-    {
-        field = value;
-        this.NotifyPropertyChanged(propertyName);
-    }
-}
-```
-
-> `System.Runtime.CompilerServices.CallerMemberNameAttribute` 为 .NET Framework 4.5 中加入的新特性。当此特性用在 `System.String` 类型的可选参数上时，编译器将会自动给此参数输入**调用此方法的成员**的短名称（对于属性则是属性的名称）。详细请参见微软提供的文档：[CallerMemberNameAttribute Class](https://docs.microsoft.com/zh-cn/dotnet/api/system.runtime.compilerservices.callermembernameattribute)。
-
-定义此方法之后，属性的定义即可简化为如下所示。
-
-``` CSharp
-using System.Collections.Generic;
-using System.ComponentModel;
-
-public class ObservableData : INotifyPropertyChanged
-{
-    private string text;
-    public string Text
-    {
-        get => this.text;
-        set => this.SetProperty(ref this.text, value);
-    }
-
-    // Event and On-Event method.
-    // SetProperty method.
-}
-```
-
-> 以上方法已经被封装为 `XstarS.ComponentModel.ObservableObject` 抽象类。
 
 ## 属性更改通知的自动化实现
 
@@ -114,12 +65,12 @@ public class ObservableData : INotifyPropertyChanged
 public class Properties
 {
     // 传统属性的字段部分。
-    private object legacyProperty;
+    private object _LegacyProperty;
     // 传统属性的属性部分。
     public object LegacyProperty
     {
-        get => this.legacyProperty;
-        set => this.legacyProperty = value;
+        get => this._LegacyProperty;
+        set => this._LegacyProperty = value;
     }
 
     // 自动属性。

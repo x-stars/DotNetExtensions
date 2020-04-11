@@ -3,7 +3,6 @@
 | 实现方式       | 代码行数 | 定义字段 |
 | -------------- | -------- | -------- |
 | 原始实现       | 57       | 是       |
-| 方法提取       | 31       | 是       |
 | 属性委托       | 28       | 否       |
 | 运行时类型生成 | 22       | 否       |
 
@@ -22,35 +21,35 @@ public class ObservableBox : INotifyPropertyChanged
 {
     public ObservableBox() { }
 
-    private double length;
+    private double _Length;
     public double Length
     {
-        get => this.length;
+        get => this._Length;
         set
         {
-            this.length = value;
+            this._Length = value;
             this.NotifyPropertyChanged();
         }
     }
 
-    private double width;
+    private double _Width;
     public double Width
     {
-        get => this.width;
+        get => this._Width;
         set
         {
-            this.width = value;
+            this._Width = value;
             this.NotifyPropertyChanged();
         }
     }
 
-    private double height;
+    private double _Height;
     public double Height
     {
-        get => this.height;
+        get => this._Height;
         set
         {
-            this.height = value;
+            this._Height = value;
             this.NotifyPropertyChanged();
         }
     }
@@ -66,44 +65,6 @@ public class ObservableBox : INotifyPropertyChanged
     protected virtual void OnPropertyChanged(PropertyChangedEventArgs e)
     {
         this.PropertyChanged?.Invoke(this, e);
-    }
-}
-
-// 创建实例。
-new ObservableBox();
-```
-
-## 方法提取
-
-继承 `XstarS.ComponentModel.ObservableObject` 抽象类以使用 `SetProperty` 方法。
-
-``` CSharp
-using XstarS.ComponentModel;
-
-// 类型定义。
-public class ObservableBox : ObservableObject
-{
-    public ObservableBox() { }
-
-    private double length;
-    public double Length
-    {
-        get => this.length;
-        set => this.SetProperty(ref this.length, value);
-    }
-
-    private double width;
-    public double Width
-    {
-        get => this.width;
-        set => this.SetProperty(ref this.width, value);
-    }
-
-    private double height;
-    public double Height
-    {
-        get => this.height;
-        set => this.SetProperty(ref this.height, value);
     }
 }
 

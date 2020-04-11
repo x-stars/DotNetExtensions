@@ -2,59 +2,10 @@
 
 本文叙述了 XstarS.ObjectModel 和 XstarS.ObservableProxy 程序集中包含的若干实现属性更改通知接口 `System.ComponentModel.INotifyPropertyChanged` 的类型的使用方法。结合集合更改通知列表 `System.Collections.ObjectModel.ObservableCollection<T>`，可实现数据绑定到客户端。
 
-目前提供三种方案：
+目前提供的方案：
 
-* 方法提取：原生方法，读写效率高，需要定义属性对应的字段。
 * 属性委托：使用字典存储数据，读写效率稍低，无需定义属性对应的字段。
-* 运行时类型生成：基于反射发出生成的动态类型，读写效率高但需要较多时间生成类型，无需定义属性对应的字段。
-
-## 方法提取
-
-将属性更改通知的公用代码提取为方法，并在属性的 `set` 处调用。
-
-### 抽象类 `XstarS.ComponentModel.ObservableObject`
-
-`System.ComponentModel.INotifyPropertyChanged` 接口的实现，用于实现通知客户端属性更改的抽象类。
-
-此类包含了 `SetProperty<T>(ref T, T, string)` 方法，应在设置属性更改通知的属性的 `set` 处调用此方法，实现更改属性值的同时通知客户端属性值发生更改。
-
-### 方法使用说明
-
-``` CSharp
-using System.ComponentModel;
-using XstarS.ComponentModel;
-
-public class ObservableRectangle : ObservableObject
-{
-    public ObservableRectangle() { }
-
-    private double width;
-    public double Width
-    {
-        get => this.width;
-        set
-        {
-            this.SetProperty(ref this.width, value);
-            this.NotifyPropertyChanged(nameof(this.Size));
-        }
-    }
-
-    private double height;
-    public double Height
-    {
-        get => this.height;
-        set
-        {
-            this.SetProperty(ref this.height, value);
-            this.NotifyPropertyChanged(nameof(this.Size));
-        }
-    }
-
-    public double Size => this.width * this.height;
-}
-```
-
-当更改 `Width` 或 `Height` 属性时，会通知客户端 `Width` 或 `Height` 的值发生更改，并同时通知 `Size` 的值发生更改。
+* 运行时类型生成：基于反射发出生成的动态类型，使用字段存储数据，读写效率高但需要较多时间生成类型，无需定义属性对应的字段。
 
 ## 属性委托
 
@@ -72,7 +23,7 @@ public class ObservableRectangle : ObservableObject
 using System.ComponentModel;
 using XstarS.ComponentModel;
 
-public class ObservableRectangle : ObservableObject
+public class ObservableRectangle : ObservableDataObject
 {
     public ObservableRectangle() { }
 

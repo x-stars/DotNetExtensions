@@ -9,12 +9,12 @@ namespace XstarS.ComponentModel
     public sealed class DelegateCommand : CommandBase
     {
         /// <summary>
-        /// <see cref="DelegateCommand.Execute()"/> 方法的委托。
+        /// 表示 <see cref="DelegateCommand.Execute()"/> 方法的委托。
         /// </summary>
         private readonly Action ExecuteDelegate;
 
         /// <summary>
-        /// <see cref="DelegateCommand.CanExecute()"/> 方法的委托。
+        /// 表示 <see cref="DelegateCommand.CanExecute()"/> 方法的委托。
         /// </summary>
         private readonly Func<bool> CanExecuteDelegate;
 
@@ -41,7 +41,8 @@ namespace XstarS.ComponentModel
         /// <see cref="DelegateCommand.CanExecute()"/> 方法的委托。</param>
         /// <exception cref="ArgumentNullException"><paramref name="executeDelegate"/>
         /// 或 <paramref name="canExecuteDelegate"/> 为 <see langword="null"/>。</exception>
-        public DelegateCommand(Action executeDelegate, Func<bool> canExecuteDelegate)
+        public DelegateCommand(Action executeDelegate,
+            Func<bool> canExecuteDelegate)
         {
             this.ExecuteDelegate = executeDelegate ??
                 throw new ArgumentNullException(nameof(executeDelegate));
@@ -80,12 +81,12 @@ namespace XstarS.ComponentModel
     public sealed class DelegateCommand<TParameter> : CommandBase<TParameter>
     {
         /// <summary>
-        /// <see cref="DelegateCommand{TParameter}.Execute(TParameter)"/> 方法的委托。
+        /// 表示 <see cref="DelegateCommand{TParameter}.Execute(TParameter)"/> 方法的委托。
         /// </summary>
         private readonly Action<TParameter> ExecuteDelegate;
 
         /// <summary>
-        /// <see cref="DelegateCommand{TParameter}.CanExecute(TParameter)"/> 方法的委托。
+        /// 表示 <see cref="DelegateCommand{TParameter}.CanExecute(TParameter)"/> 方法的委托。
         /// </summary>
         private readonly Func<TParameter, bool> CanExecuteDelegate;
 
