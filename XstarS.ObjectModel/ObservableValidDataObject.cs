@@ -32,16 +32,16 @@ namespace XstarS.ComponentModel
         public bool HasErrors => !this.PropertiesErrors.IsEmpty;
 
         /// <summary>
-        /// 当验证错误针对属性或整个实体更改时发生。
+        /// 当验证错误更改时发生。
         /// </summary>
         [field: NonSerialized]
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
         /// <summary>
-        /// 获取针对指定属性或整个实体的验证错误。
+        /// 获取指定属性的验证错误。
         /// </summary>
-        /// <param name="propertyName">要检索验证错误的属性的名称。</param>
-        /// <returns>针对属性或实体的验证错误。</returns>
+        /// <param name="propertyName">要获取验证错误的属性的名称。</param>
+        /// <returns>指定属性的验证错误。</returns>
         public IEnumerable GetErrors(
             [CallerMemberName] string propertyName = null)
         {
@@ -53,7 +53,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 设置指定属性的验证错误。
         /// </summary>
-        /// <param name="errors">指定属性的验证错误。</param>
+        /// <param name="errors">属性的验证错误。</param>
         /// <param name="propertyName">要设置验证错误的属性的名称。</param>
         protected void SetErrors(IEnumerable errors,
             [CallerMemberName] string propertyName = null)
@@ -68,7 +68,7 @@ namespace XstarS.ComponentModel
         /// 设置指定属性的值。
         /// </summary>
         /// <typeparam name="T">属性的类型。</typeparam>
-        /// <param name="value">属性的新值，一般为 <see langword="value"/>。</param>
+        /// <param name="value">属性的新值。</param>
         /// <param name="propertyName">要设置值的属性的名称。</param>
         protected override void SetProperty<T>(T value,
             [CallerMemberName] string propertyName = null)

@@ -35,7 +35,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="propertyName">要获取值的属性的名称。</param>
-        /// <returns>指定属性的值；若不存在，则为 <see langword="default"/>。</returns>
+        /// <returns>指定属性的值。</returns>
         protected T GetProperty<T>(
             [CallerMemberName] string propertyName = null)
         {
@@ -48,7 +48,7 @@ namespace XstarS.ComponentModel
         /// 设置指定属性的值。
         /// </summary>
         /// <typeparam name="T">属性的类型。</typeparam>
-        /// <param name="value">属性的新值，一般为 <see langword="value"/>。</param>
+        /// <param name="value">属性的新值。</param>
         /// <param name="propertyName">要设置值的属性的名称。</param>
         protected virtual void SetProperty<T>(T value,
             [CallerMemberName] string propertyName = null)
@@ -59,7 +59,7 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 通知指定属性值已更改。
+        /// 通知指定属性的值已更改。
         /// </summary>
         /// <param name="propertyName">已更改属性的名称。</param>
         protected void NotifyPropertyChanged(

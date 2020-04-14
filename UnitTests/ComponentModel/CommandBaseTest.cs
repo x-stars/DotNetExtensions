@@ -12,7 +12,7 @@ namespace XstarS.ComponentModel
             var canExecute = true;
             var command = default(DelegateCommand);
             command = new DelegateCommand(
-                () =>
+                _ =>
                 {
                     if (canExecute)
                     {
@@ -23,10 +23,10 @@ namespace XstarS.ComponentModel
                         command.NotifyCanExecuteChanged();
                     }
                 },
-                () => canExecute);
+                _ => canExecute);
             command.CanExecuteChanged += (sender, e) => Console.WriteLine(
-                $"{nameof(command.CanExecuteChanged)}: {command.CanExecute()}");
-            command.Execute();
+                $"{nameof(command.CanExecuteChanged)}: {command.CanExecute(null)}");
+            command.Execute(null);
         }
     }
 }

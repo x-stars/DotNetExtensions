@@ -5,97 +5,28 @@ using System.Windows.Input;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供命令 <see cref="ICommand"/> 的无参数的抽象基类。
+    /// 提供命令 <see cref="ICommand"/> 的抽象基类。
     /// </summary>
     public abstract class CommandBase : ICommand
     {
         /// <summary>
+        /// 表示默认的同步上下文。
+        /// </summary>
+        private static readonly SynchronizationContext DefaultSyncContext =
+            new SynchronizationContext();
+
+        /// <summary>
         /// 表示创建当前命令的线程的同步上下文。
         /// </summary>
-        private readonly SynchronizationContext InitSyncContext;
+        private readonly SynchronizationContext InitialSyncContext;
 
         /// <summary>
         /// 初始化 <see cref="CommandBase"/> 类的新实例。
         /// </summary>
         protected CommandBase()
         {
-            this.InitSyncContext = SynchronizationContext.Current;
-        }
-
-        /// <summary>
-        /// 当出现影响是否应执行该命令的更改时发生。
-        /// </summary>
-        public event EventHandler CanExecuteChanged;
-
-        /// <summary>
-        /// 在当前状态下执行此命令。
-        /// </summary>
-        public abstract void Execute();
-
-        /// <summary>
-        /// 确定此命令是否可在其当前状态下执行。
-        /// </summary>
-        /// <returns>如果可执行此命令，则为 <see langword="true"/>；
-        /// 否则为 <see langword="false"/>。</returns>
-        public virtual bool CanExecute() => true;
-
-        /// <summary>
-        /// 引发 <see cref="CommandBase.CanExecuteChanged"/> 事件。
-        /// </summary>
-        protected virtual void OnCanExecuteChanged()
-        {
-            if ((this.InitSyncContext is null) ||
-                (this.InitSyncContext == SynchronizationContext.Current))
-            {
-                this.OnCanExecuteChanged(null);
-            }
-            else
-            {
-                this.InitSyncContext.Post(this.OnCanExecuteChanged, null);
-            }
-        }
-
-        /// <summary>
-        /// 引发 <see cref="CommandBase.CanExecuteChanged"/> 事件。
-        /// </summary>
-        /// <param name="unused">不使用此参数。</param>
-        private void OnCanExecuteChanged(object unused)
-        {
-            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-        }
-
-        /// <summary>
-        /// 在当前状态下执行此命令。
-        /// </summary>
-        /// <param name="parameter">此命令使用的数据。不使用此参数。</param>
-        void ICommand.Execute(object parameter) => this.Execute();
-
-        /// <summary>
-        /// 确定此命令是否可在其当前状态下执行。
-        /// </summary>
-        /// <param name="parameter">此命令使用的数据。不使用此参数。</param>
-        /// <returns>如果可执行此命令，则为 <see langword="true"/>；
-        /// 否则为 <see langword="false"/>。</returns>
-        bool ICommand.CanExecute(object parameter) => this.CanExecute();
-    }
-
-    /// <summary>
-    /// 提供命令 <see cref="ICommand"/> 的有参数的抽象基类。
-    /// </summary>
-    /// <typeparam name="TParameter">命令使用的数据的类型。</typeparam>
-    public abstract class CommandBase<TParameter> : ICommand
-    {
-        /// <summary>
-        /// 表示创建当前命令的线程的同步上下文。
-        /// </summary>
-        private readonly SynchronizationContext InitSyncContext;
-
-        /// <summary>
-        /// 初始化 <see cref="CommandBase{TParameter}"/> 类的新实例。
-        /// </summary>
-        protected CommandBase()
-        {
-            this.InitSyncContext = SynchronizationContext.Current;
+            this.InitialSyncContext =
+                SynchronizationContext.Current ?? CommandBase.DefaultSyncContext;
         }
 
         /// <summary>
@@ -107,7 +38,7 @@ namespace XstarS.ComponentModel
         /// 在当前状态下执行此命令。
         /// </summary>
         /// <param name="parameter">此命令使用的数据。</param>
-        public abstract void Execute(TParameter parameter);
+        public abstract void Execute(object parameter);
 
         /// <summary>
         /// 确定此命令是否可在其当前状态下执行。
@@ -115,49 +46,32 @@ namespace XstarS.ComponentModel
         /// <param name="parameter">此命令使用的数据。</param>
         /// <returns>如果可执行此命令，则为 <see langword="true"/>；
         /// 否则为 <see langword="false"/>。</returns>
-        public virtual bool CanExecute(TParameter parameter) => true;
+        public virtual bool CanExecute(object parameter) => true;
 
         /// <summary>
-        /// 引发 <see cref="CommandBase.CanExecuteChanged"/> 事件。
+        /// 通知当前命令的可执行状态已更改。
         /// </summary>
-        protected virtual void OnCanExecuteChanged()
+        protected void NotifyCanExecuteChanged()
         {
-            if ((this.InitSyncContext is null) ||
-                (this.InitSyncContext == SynchronizationContext.Current))
-            {
-                this.OnCanExecuteChanged(null);
-            }
-            else
-            {
-                this.InitSyncContext.Post(this.OnCanExecuteChanged, null);
-            }
+            this.OnCanExecuteChanged(EventArgs.Empty);
         }
 
         /// <summary>
-        /// 引发 <see cref="CommandBase.CanExecuteChanged"/> 事件。
+        /// 使用指定的事件数据引发 <see cref="CommandBase.CanExecuteChanged"/> 事件。
         /// </summary>
-        /// <param name="unused">不使用此参数。</param>
-        private void OnCanExecuteChanged(object unused)
+        /// <param name="e">包含事件数据的 <see cref="EventArgs"/>。</param>
+        protected virtual void OnCanExecuteChanged(EventArgs e)
         {
-            this.CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+            this.InitialSyncContext.Post(this.OnCanExecuteChanged, e);
         }
 
         /// <summary>
-        /// 在当前状态下执行此命令。
+        /// 使用指定的事件数据引发 <see cref="CommandBase.CanExecuteChanged"/> 事件。
         /// </summary>
-        /// <param name="parameter">此命令使用的数据。</param>
-        /// <exception cref="InvalidCastException">
-        /// <paramref name="parameter"/> 不为 <typeparamref name="TParameter"/> 类型。</exception>
-        void ICommand.Execute(object parameter) => this.Execute((TParameter)parameter);
-
-        /// <summary>
-        /// 确定此命令是否可在其当前状态下执行。
-        /// </summary>
-        /// <param name="parameter">此命令使用的数据。</param>
-        /// <returns>如果可执行此命令，则为 <see langword="true"/>；
-        /// 否则为 <see langword="false"/>。</returns>
-        /// <exception cref="InvalidCastException">
-        /// <paramref name="parameter"/> 不为 <typeparamref name="TParameter"/> 类型。</exception>
-        bool ICommand.CanExecute(object parameter) => this.CanExecute((TParameter)parameter);
+        /// <param name="e">包含事件数据的 <see cref="EventArgs"/>。</param>
+        private void OnCanExecuteChanged(object e)
+        {
+            this.CanExecuteChanged?.Invoke(this, (EventArgs)e);
+        }
     }
 }
