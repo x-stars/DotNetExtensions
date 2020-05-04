@@ -6,7 +6,7 @@ namespace XstarS.Diagnostics
     /// <summary>
     /// 提供用于程序诊断和测试的帮助方法。
     /// </summary>
-    public static class DiagnosticHelper
+    public static class DiagnosticsHelper
     {
         /// <summary>
         /// 返回指定过程的执行指定次数的总时间。

@@ -2,20 +2,6 @@
 
 天南十字星 (XstarS) 的自用 .NET 扩展库，程序集名称和命名空间均仿照 .NET 框架。
 
-## 程序集 XstarS
-
-系统基础相关，目前包含的命名空间：
-
-* `XstarS`
-* `XstarS.Collections.Specialized`
-* `XstarS.Diagnostics`
-* `XstarS.IO`
-* `XstarS.Reflection`
-
-相关文档：
-
-* [对象的通用值相等比较方法](Documentations/ValueEquals.md)
-
 ## 程序集 XstarS.ArgumentReaders
 
 提供简易的命令行参数解析器，以及 CMD, PowerShell, Unix Shell 等多种风格的实现。
@@ -30,6 +16,20 @@
 
 * `XstarS.Collections`
 * `XstarS.Collections.Generic`
+
+## 程序集 XstarS.Core
+
+系统基础相关，目前包含的命名空间：
+
+* `XstarS`
+* `XstarS.Collections.Specialized`
+* `XstarS.Diagnostics`
+* `XstarS.IO`
+* `XstarS.Reflection`
+
+相关文档：
+
+* [对象的通用值相等比较方法](Documentations/ValueEquals.md)
 
 ## 程序集 XstarS.Deconstructable
 
