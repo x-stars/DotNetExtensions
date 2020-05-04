@@ -17,23 +17,23 @@ namespace XstarS.Unions
         public static readonly ByteUnion Zero;
 
         /// <summary>
-        /// 当前 <see cref="ByteUnion"/> 的 8 位无符号整数。
+        /// 表示当前 <see cref="ByteUnion"/> 的 8 位无符号整数。
         /// </summary>
         [FieldOffset(0)] public byte Byte;
 
         /// <summary>
-        /// 当前 <see cref="ByteUnion"/> 的 8 位有符号整数。
+        /// 表示当前 <see cref="ByteUnion"/> 的 8 位有符号整数。
         /// </summary>
         [CLSCompliant(false)]
         [FieldOffset(0)] public sbyte SByte;
 
         /// <summary>
-        /// 当前 <see cref="ByteUnion"/> 的布尔值。
+        /// 表示当前 <see cref="ByteUnion"/> 的布尔值。
         /// </summary>
         [FieldOffset(0)] public bool Boolean;
 
         /// <summary>
-        /// 当前 <see cref="ByteUnion"/> 的固定字节缓冲区。
+        /// 表示当前 <see cref="ByteUnion"/> 的固定字节缓冲区。
         /// </summary>
         [CLSCompliant(false)]
         [FieldOffset(0)] public unsafe fixed byte Bytes[1];
@@ -41,26 +41,26 @@ namespace XstarS.Unions
         /// <summary>
         /// 将 <see cref="ByteUnion"/> 结构的新实例初始化为指定的 8 位无符号整数。
         /// </summary>
-        /// <param name="value">一个 8 位无符号整数。</param>
+        /// <param name="value">作为值的 8 位无符号整数。</param>
         public ByteUnion(byte value) : this() { this.Byte = value; }
 
         /// <summary>
         /// 将 <see cref="ByteUnion"/> 结构的新实例初始化为指定的 8 位无符号整数。
         /// </summary>
-        /// <param name="value">一个 8 位有符号整数。</param>
+        /// <param name="value">作为值的 8 位有符号整数。</param>
         [CLSCompliant(false)]
         public ByteUnion(sbyte value) : this() { this.SByte = value; }
 
         /// <summary>
         /// 将 <see cref="ByteUnion"/> 结构的新实例初始化为指定的布尔值。
         /// </summary>
-        /// <param name="value">一个布尔值。</param>
+        /// <param name="value">作为值的布尔值。</param>
         public ByteUnion(bool value) : this() { this.Boolean = value; }
 
         /// <summary>
         /// 将 <see cref="ByteUnion"/> 结构的新实例初始化为指定字节数组表示的值，并指定数组的偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">包含值的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
@@ -82,7 +82,7 @@ namespace XstarS.Unions
         /// <summary>
         /// 将当前 <see cref="ByteUnion"/> 的值复制到指定字节数组中，并指定数组的偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">作为复制目标的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
@@ -118,7 +118,7 @@ namespace XstarS.Unions
         /// <summary>
         /// 将指定字节数组的值复制到当前 <see cref="ByteUnion"/> 中，并指定数组偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">作为复制源字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>

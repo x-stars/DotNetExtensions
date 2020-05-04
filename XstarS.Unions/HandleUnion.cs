@@ -20,18 +20,18 @@ namespace XstarS.Unions
         public static readonly HandleUnion Zero;
 
         /// <summary>
-        /// 当前 <see cref="HandleUnion"/> 的有符号指针或句柄。
+        /// 表示当前 <see cref="HandleUnion"/> 的有符号指针或句柄。
         /// </summary>
         [FieldOffset(0)] public nint IntPtr;
 
         /// <summary>
-        /// 当前 <see cref="HandleUnion"/> 的无符号指针或句柄。
+        /// 表示当前 <see cref="HandleUnion"/> 的无符号指针或句柄。
         /// </summary>
         [CLSCompliant(false)]
         [FieldOffset(0)] public nuint UIntPtr;
 
         /// <summary>
-        /// 当前 <see cref="HandleUnion"/> 的指向未指定类型的指针。
+        /// 表示当前 <see cref="HandleUnion"/> 的指向未指定类型的指针。
         /// </summary>
         [CLSCompliant(false)]
         [FieldOffset(0)] public unsafe void* Pointer;
@@ -59,7 +59,7 @@ namespace XstarS.Unions
         /// <summary>
         /// 将 <see cref="HandleUnion"/> 结构的新实例初始化为指定字节数组表示的值，并指定数组的偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">包含值的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
@@ -81,7 +81,7 @@ namespace XstarS.Unions
         /// <summary>
         /// 将当前 <see cref="HandleUnion"/> 的值复制到指定字节数组中，并指定数组的偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">作为复制目标的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
@@ -117,7 +117,7 @@ namespace XstarS.Unions
         /// <summary>
         /// 将指定字节数组的值复制到当前 <see cref="HandleUnion"/> 中，并指定数组偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">作为复制源的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>

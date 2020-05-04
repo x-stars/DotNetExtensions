@@ -17,33 +17,33 @@ namespace XstarS.Unions
         public static readonly DWordUnion Zero;
 
         /// <summary>
-        /// 当前 <see cref="DWordUnion"/> 的 32 位有符号整数。
+        /// 表示当前 <see cref="DWordUnion"/> 的 32 位有符号整数。
         /// </summary>
         [FieldOffset(0)] public int Int32;
 
         /// <summary>
-        /// 当前 <see cref="DWordUnion"/> 的 32 位无符号整数。
+        /// 表示当前 <see cref="DWordUnion"/> 的 32 位无符号整数。
         /// </summary>
         [CLSCompliant(false)]
         [FieldOffset(0)] public uint UInt32;
 
         /// <summary>
-        /// 当前 <see cref="DWordUnion"/> 的单精度浮点数。
+        /// 表示当前 <see cref="DWordUnion"/> 的单精度浮点数。
         /// </summary>
         [FieldOffset(0)] public float Single;
 
         /// <summary>
-        /// 当前 <see cref="DWordUnion"/> 低 16 位的 <see cref="WordUnion"/>。
+        /// 表示当前 <see cref="DWordUnion"/> 低 16 位的 <see cref="WordUnion"/>。
         /// </summary>
         [FieldOffset(0)] public WordUnion LowWord;
 
         /// <summary>
-        /// 当前 <see cref="DWordUnion"/> 高 16 位的 <see cref="WordUnion"/>。
+        /// 表示当前 <see cref="DWordUnion"/> 高 16 位的 <see cref="WordUnion"/>。
         /// </summary>
         [FieldOffset(2)] public WordUnion HighWord;
 
         /// <summary>
-        /// 当前 <see cref="DWordUnion"/> 的固定字节缓冲区。
+        /// 表示当前 <see cref="DWordUnion"/> 的固定字节缓冲区。
         /// </summary>
         [CLSCompliant(false)]
         [FieldOffset(0)] public unsafe fixed byte Bytes[4];
@@ -51,26 +51,26 @@ namespace XstarS.Unions
         /// <summary>
         /// 将 <see cref="DWordUnion"/> 结构的新实例初始化为指定的 32 位有符号整数。
         /// </summary>
-        /// <param name="value">一个 32 位有符号整数。</param>
+        /// <param name="value">作为值的 32 位有符号整数。</param>
         public DWordUnion(int value) : this() { this.Int32 = value; }
 
         /// <summary>
         /// 将 <see cref="DWordUnion"/> 结构的新实例初始化为指定的 32 位无符号整数。
         /// </summary>
-        /// <param name="value">一个 32 位无符号整数。</param>
+        /// <param name="value">作为值的 32 位无符号整数。</param>
         [CLSCompliant(false)]
         public DWordUnion(uint value) : this() { this.UInt32 = value; }
 
         /// <summary>
         /// 将 <see cref="DWordUnion"/> 结构的新实例初始化为指定的单精度浮点数。
         /// </summary>
-        /// <param name="value">一个单精度浮点数。</param>
+        /// <param name="value">作为值的单精度浮点数。</param>
         public DWordUnion(float value) : this() { this.Single = value; }
 
         /// <summary>
         /// 将 <see cref="DWordUnion"/> 结构的新实例初始化为指定字节数组表示的值，并指定数组的偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">包含值的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
@@ -92,7 +92,7 @@ namespace XstarS.Unions
         /// <summary>
         /// 将当前 <see cref="DWordUnion"/> 的值复制到指定字节数组中，并指定数组的偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">作为复制目标的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
@@ -128,7 +128,7 @@ namespace XstarS.Unions
         /// <summary>
         /// 将指定字节数组的值复制到当前 <see cref="DWordUnion"/> 中，并指定数组偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">作为复制源的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>

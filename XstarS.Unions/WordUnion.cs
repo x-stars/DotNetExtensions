@@ -17,33 +17,33 @@ namespace XstarS.Unions
         public static readonly WordUnion Zero;
 
         /// <summary>
-        /// 当前 <see cref="WordUnion"/> 的 16 位有符号整数。
+        /// 表示当前 <see cref="WordUnion"/> 的 16 位有符号整数。
         /// </summary>
         [FieldOffset(0)] public short Int16;
 
         /// <summary>
-        /// 当前 <see cref="WordUnion"/> 的 16 位无符号整数。
+        /// 表示当前 <see cref="WordUnion"/> 的 16 位无符号整数。
         /// </summary>
         [CLSCompliant(false)]
         [FieldOffset(0)] public ushort UInt16;
 
         /// <summary>
-        /// 当前 <see cref="WordUnion"/> 的 UTF-16 字符。
+        /// 表示当前 <see cref="WordUnion"/> 的 UTF-16 字符。
         /// </summary>
         [FieldOffset(0)] public char Char;
 
         /// <summary>
-        /// 当前 <see cref="WordUnion"/> 低 8 位的 <see cref="ByteUnion"/>。
+        /// 表示当前 <see cref="WordUnion"/> 低 8 位的 <see cref="ByteUnion"/>。
         /// </summary>
         [FieldOffset(0)] public ByteUnion LowByte;
 
         /// <summary>
-        /// 当前 <see cref="WordUnion"/> 的高 8 位的 <see cref="ByteUnion"/>。
+        /// 表示当前 <see cref="WordUnion"/> 高 8 位的 <see cref="ByteUnion"/>。
         /// </summary>
         [FieldOffset(1)] public ByteUnion HighByte;
 
         /// <summary>
-        /// 当前 <see cref="WordUnion"/> 的固定字节缓冲区。
+        /// 表示当前 <see cref="WordUnion"/> 的固定字节缓冲区。
         /// </summary>
         [CLSCompliant(false)]
         [FieldOffset(0)] public unsafe fixed byte Bytes[2];
@@ -51,26 +51,26 @@ namespace XstarS.Unions
         /// <summary>
         /// 将 <see cref="WordUnion"/> 结构的新实例初始化为指定的 16 位有符号整数。
         /// </summary>
-        /// <param name="value">一个 16 位有符号整数。</param>
+        /// <param name="value">作为值的 16 位有符号整数。</param>
         public WordUnion(short value) : this() { this.Int16 = value; }
 
         /// <summary>
         /// 将 <see cref="WordUnion"/> 结构的新实例初始化为指定的 16 位无符号整数。
         /// </summary>
-        /// <param name="value">一个 16 位无符号整数。</param>
+        /// <param name="value">作为值的 16 位无符号整数。</param>
         [CLSCompliant(false)]
         public WordUnion(ushort value) : this() { this.UInt16 = value; }
 
         /// <summary>
         /// 将 <see cref="WordUnion"/> 结构的新实例初始化为指定的 UTF-16 字符。
         /// </summary>
-        /// <param name="value">一个 UTF-16 字符。</param>
+        /// <param name="value">作为值的 UTF-16 字符。</param>
         public WordUnion(char value) : this() { this.Char = value; }
 
         /// <summary>
         /// 将 <see cref="WordUnion"/> 结构的新实例初始化为指定字节数组表示的值，并指定数组的偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">包含值的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
@@ -92,7 +92,7 @@ namespace XstarS.Unions
         /// <summary>
         /// 将当前 <see cref="WordUnion"/> 的值复制到指定字节数组中，并指定数组的偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">作为复制目标的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
@@ -128,7 +128,7 @@ namespace XstarS.Unions
         /// <summary>
         /// 将指定字节数组的值复制到当前 <see cref="WordUnion"/> 中，并指定数组偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">作为复制源的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>

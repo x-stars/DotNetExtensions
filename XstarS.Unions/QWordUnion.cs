@@ -17,33 +17,33 @@ namespace XstarS.Unions
         public static readonly QWordUnion Zero;
 
         /// <summary>
-        /// 当前 <see cref="QWordUnion"/> 的 64 位有符号整数。
+        /// 表示当前 <see cref="QWordUnion"/> 的 64 位有符号整数。
         /// </summary>
         [FieldOffset(0)] public long Int64;
 
         /// <summary>
-        /// 当前 <see cref="QWordUnion"/> 的 64 位无符号整数。
+        /// 表示当前 <see cref="QWordUnion"/> 的 64 位无符号整数。
         /// </summary>
         [CLSCompliant(false)]
         [FieldOffset(0)] public ulong UInt64;
 
         /// <summary>
-        /// 当前 <see cref="QWordUnion"/> 的双精度浮点数。
+        /// 表示当前 <see cref="QWordUnion"/> 的双精度浮点数。
         /// </summary>
         [FieldOffset(0)] public double Double;
 
         /// <summary>
-        /// 当前 <see cref="QWordUnion"/> 低 32 位的 <see cref="DWordUnion"/>。
+        /// 表示当前 <see cref="QWordUnion"/> 低 32 位的 <see cref="DWordUnion"/>。
         /// </summary>
         [FieldOffset(0)] public DWordUnion LowDWord;
 
         /// <summary>
-        /// 当前 <see cref="QWordUnion"/> 高 32 位的 <see cref="DWordUnion"/>。
+        /// 表示当前 <see cref="QWordUnion"/> 高 32 位的 <see cref="DWordUnion"/>。
         /// </summary>
         [FieldOffset(4)] public DWordUnion HighDWord;
 
         /// <summary>
-        /// 当前 <see cref="QWordUnion"/> 的固定字节缓冲区。
+        /// 表示当前 <see cref="QWordUnion"/> 的固定字节缓冲区。
         /// </summary>
         [CLSCompliant(false)]
         [FieldOffset(0)] public unsafe fixed byte Bytes[8];
@@ -51,26 +51,26 @@ namespace XstarS.Unions
         /// <summary>
         /// 将 <see cref="QWordUnion"/> 结构的新实例初始化为指定的 64 位有符号整数。
         /// </summary>
-        /// <param name="value">一个 64 位有符号整数。</param>
+        /// <param name="value">作为值的 64 位有符号整数。</param>
         public QWordUnion(long value) : this() { this.Int64 = value; }
 
         /// <summary>
         /// 将 <see cref="QWordUnion"/> 结构的新实例初始化为指定的 64 位无符号整数。
         /// </summary>
-        /// <param name="value">一个 64 位无符号整数。</param>
+        /// <param name="value">作为值的 64 位无符号整数。</param>
         [CLSCompliant(false)]
         public QWordUnion(ulong value) : this() { this.UInt64 = value; }
 
         /// <summary>
         /// 将 <see cref="QWordUnion"/> 结构的新实例初始化为指定的双精度浮点数。
         /// </summary>
-        /// <param name="value">一个双精度浮点数。</param>
+        /// <param name="value">作为值的双精度浮点数。</param>
         public QWordUnion(double value) : this() { this.Double = value; }
 
         /// <summary>
         /// 将 <see cref="QWordUnion"/> 结构的新实例初始化为指定字节数组表示的值，并指定数组的偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">包含值的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
@@ -92,7 +92,7 @@ namespace XstarS.Unions
         /// <summary>
         /// 将当前 <see cref="QWordUnion"/> 的值复制到指定字节数组中，并指定数组的偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">作为复制目标的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
@@ -128,7 +128,7 @@ namespace XstarS.Unions
         /// <summary>
         /// 将指定字节数组的值复制到当前 <see cref="QWordUnion"/> 中，并指定数组偏移量。
         /// </summary>
-        /// <param name="bytes">一个字节数组。</param>
+        /// <param name="bytes">作为复制源的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
