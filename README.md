@@ -70,9 +70,23 @@
 * [属性更改通知实现方式比较](Documentations/ObservableObjectCompare.md)
 * [属性更改通知类型提供对象](Documentations/ObservableTypeProvider.md)
 
+## 程序集 XstarS.Primitives
+
+提供框架原生值类型的补充类型，包括：
+
+* 24 位有符号整数 `XstarS.Int24`
+* 24 位无符号整数 `XstarS.UInt24`
+* 半精度浮点数 `XstarS.Half`
+
 ## 程序集 XstarS.Unions
 
-提供框架原生值类型的联合 (`union`)，使用自定义字段布局的结构 (`struct`) 实现。
+提供框架原生值类型的联合 `union`，包括：
+
+* 8 位数据类型联合 `XstarS.ByteUnion`: `Byte`, `SByte`, `Boolean`
+* 16 位数据类型联合 `XstarS.WordUnion`: `Int16`, `UInt16`, `Char`
+* 32 位数据类型联合 `XstarS.DWordUnion`: `Int32`, `UInt32`, `Single`
+* 64 位数据类型联合 `XstarS.QWordUnion`: `Int64`, `UInt64`, `Double`
+* 指针或句柄类型联合 `XstarS.HandleUnion`: `IntPtr`, `UIntPtr`, `Void*`
 
 ## 程序集 XstarS.ValueValidate
 
