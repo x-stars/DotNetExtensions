@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 为枚举的布尔值向量视图提供抽象基类。
+    /// 提供枚举的布尔值向量视图的抽象基类。
     /// </summary>
     /// <typeparam name="TEnum">枚举的类型。</typeparam>
     [Serializable]
@@ -61,11 +61,5 @@ namespace XstarS.ComponentModel
                 new List<string>(enumNames).ForEach(this.NotifyPropertyChanged);
             }
         }
-
-        /// <summary>
-        /// 将此实例的值转换为其等效的字符串表示形式。
-        /// </summary>
-        /// <returns>此实例的值的字符串表示形式。</returns>
-        public override string ToString() => this.Value.ToString();
     }
 }

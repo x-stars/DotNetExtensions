@@ -67,17 +67,5 @@ namespace XstarS.ComponentModel
             this.OnPropertyChanged(
                 new PropertyChangedEventArgs(nameof(this.SelectedItem)));
         }
-
-        /// <summary>
-        /// 将此实例的值转换为其等效的字符串表示形式。
-        /// </summary>
-        /// <returns>此实例的值的字符串表示形式。</returns>
-        public override string ToString()
-        {
-            var index = this.SelectedIndex;
-            var names = Enum.GetNames(typeof(TEnum));
-            names[index] = $"*{names[index]}";
-            return string.Join(", ", names);
-        }
     }
 }

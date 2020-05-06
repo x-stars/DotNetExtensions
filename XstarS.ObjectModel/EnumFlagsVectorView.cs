@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 为位域枚举的布尔值向量视图提供抽象基类。
+    /// 提供位域枚举的布尔值向量视图的抽象基类。
     /// </summary>
     /// <typeparam name="TEnum">位域枚举的类型。</typeparam>
     [Serializable]
