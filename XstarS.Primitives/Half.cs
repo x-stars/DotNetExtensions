@@ -526,94 +526,6 @@ namespace XstarS
         public static bool operator >=(Half left, Half right) => (float)left >= (float)right;
 
         /// <summary>
-        /// 将指定的 <see cref="Half"/> 值显式转换为 8 位无符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
-        /// <returns>转换后的 8 位无符号整数。</returns>
-        public static explicit operator byte(Half value) => (byte)(float)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="Half"/> 值显式转换为 8 位有符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
-        /// <returns>转换后的 8 位有符号整数。</returns>
-        [CLSCompliant(false)]
-        public static explicit operator sbyte(Half value) => (sbyte)(float)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="Half"/> 值显式转换为 UTF-16 字符。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
-        /// <returns>转换后的 UTF-16 字符。</returns>
-        public static explicit operator char(Half value) => (char)(float)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="Half"/> 值显式转换为 16 位有符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
-        /// <returns>转换后的 16 位有符号整数。</returns>
-        public static explicit operator short(Half value) => (short)(float)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="Half"/> 值显式转换为 16 位无符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
-        /// <returns>转换后的 16 位无符号整数。</returns>
-        [CLSCompliant(false)]
-        public static explicit operator ushort(Half value) => (ushort)(float)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="Half"/> 值显式转换为 32 位有符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
-        /// <returns>转换后的 32 位有符号整数。</returns>
-        public static explicit operator int(Half value) => (int)(float)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="Half"/> 值显式转换为 32 位无符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
-        /// <returns>转换后的 32 位无符号整数。</returns>
-        [CLSCompliant(false)]
-        public static explicit operator uint(Half value) => (uint)(float)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="Half"/> 值显式转换为 64 位有符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
-        /// <returns>转换后的 64 位有符号整数。</returns>
-        public static explicit operator long(Half value) => (long)(float)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="Half"/> 值显式转换为 64 位无符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
-        /// <returns>转换后的 64 位无符号整数。</returns>
-        [CLSCompliant(false)]
-        public static explicit operator ulong(Half value) => (ulong)(float)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="Half"/> 值隐式转换为单精度浮点数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
-        /// <returns>转换后的单精度浮点数。</returns>
-        public static implicit operator float(Half value) => value.ToSingle();
-
-        /// <summary>
-        /// 将指定的 <see cref="Half"/> 值隐式转换为双精度浮点数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
-        /// <returns>转换后的双精度浮点数。</returns>
-        public static implicit operator double(Half value) => (double)(float)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="Half"/> 值显式转换为十进制浮点数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
-        /// <returns>转换后的十进制浮点数。</returns>
-        public static explicit operator decimal(Half value) => (decimal)(float)value;
-
-        /// <summary>
         /// 将指定的 8 位无符号整数隐式转换为 <see cref="Half"/> 值。
         /// </summary>
         /// <param name="value">要转换的 8 位无符号整数。</param>
@@ -700,5 +612,93 @@ namespace XstarS
         /// <param name="value">要转换的十进制浮点数。</param>
         /// <returns>转换后的 <see cref="Half"/> 值。</returns>
         public static explicit operator Half(decimal value) => (Half)(float)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="Half"/> 值显式转换为 8 位无符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
+        /// <returns>转换后的 8 位无符号整数。</returns>
+        public static explicit operator byte(Half value) => (byte)(float)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="Half"/> 值显式转换为 8 位有符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
+        /// <returns>转换后的 8 位有符号整数。</returns>
+        [CLSCompliant(false)]
+        public static explicit operator sbyte(Half value) => (sbyte)(float)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="Half"/> 值显式转换为 UTF-16 字符。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
+        /// <returns>转换后的 UTF-16 字符。</returns>
+        public static explicit operator char(Half value) => (char)(float)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="Half"/> 值显式转换为 16 位有符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
+        /// <returns>转换后的 16 位有符号整数。</returns>
+        public static explicit operator short(Half value) => (short)(float)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="Half"/> 值显式转换为 16 位无符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
+        /// <returns>转换后的 16 位无符号整数。</returns>
+        [CLSCompliant(false)]
+        public static explicit operator ushort(Half value) => (ushort)(float)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="Half"/> 值显式转换为 32 位有符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
+        /// <returns>转换后的 32 位有符号整数。</returns>
+        public static explicit operator int(Half value) => (int)(float)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="Half"/> 值显式转换为 32 位无符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
+        /// <returns>转换后的 32 位无符号整数。</returns>
+        [CLSCompliant(false)]
+        public static explicit operator uint(Half value) => (uint)(float)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="Half"/> 值显式转换为 64 位有符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
+        /// <returns>转换后的 64 位有符号整数。</returns>
+        public static explicit operator long(Half value) => (long)(float)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="Half"/> 值显式转换为 64 位无符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
+        /// <returns>转换后的 64 位无符号整数。</returns>
+        [CLSCompliant(false)]
+        public static explicit operator ulong(Half value) => (ulong)(float)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="Half"/> 值隐式转换为单精度浮点数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
+        /// <returns>转换后的单精度浮点数。</returns>
+        public static implicit operator float(Half value) => value.ToSingle();
+
+        /// <summary>
+        /// 将指定的 <see cref="Half"/> 值隐式转换为双精度浮点数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
+        /// <returns>转换后的双精度浮点数。</returns>
+        public static implicit operator double(Half value) => (double)(float)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="Half"/> 值显式转换为十进制浮点数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="Half"/> 值。</param>
+        /// <returns>转换后的十进制浮点数。</returns>
+        public static explicit operator decimal(Half value) => (decimal)(float)value;
     }
 }

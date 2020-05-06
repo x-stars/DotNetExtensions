@@ -465,104 +465,6 @@ namespace XstarS
         public static bool operator >=(UInt24 left, UInt24 right) => (uint)left >= (uint)right;
 
         /// <summary>
-        /// 将指定的 <see cref="UInt24"/> 值显式转换为 8 位无符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
-        /// <returns>转换后的 8 位无符号整数。</returns>
-        /// <exception cref="OverflowException">
-        /// <paramref name="value"/> 的值超出 <see cref="byte"/> 的表示范围。</exception>
-        public static explicit operator byte(UInt24 value) => (byte)(uint)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="UInt24"/> 值显式转换为 8 位有符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
-        /// <returns>转换后的 8 位有符号整数。</returns>
-        /// <exception cref="OverflowException">
-        /// <paramref name="value"/> 的值超出 <see cref="sbyte"/> 的表示范围。</exception>
-        [CLSCompliant(false)]
-        public static explicit operator sbyte(UInt24 value) => (sbyte)(uint)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="UInt24"/> 值显式转换为 UTF-16 字符。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
-        /// <returns>转换后的 UTF-16 字符。</returns>
-        /// <exception cref="OverflowException">
-        /// <paramref name="value"/> 的值超出 <see cref="char"/> 的表示范围。</exception>
-        public static explicit operator char(UInt24 value) => (char)(uint)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="UInt24"/> 值显式转换为 16 位有符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
-        /// <returns>转换后的 16 位有符号整数。</returns>
-        /// <exception cref="OverflowException">
-        /// <paramref name="value"/> 的值超出 <see cref="short"/> 的表示范围。</exception>
-        public static explicit operator short(UInt24 value) => (short)(uint)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="UInt24"/> 值显式转换为 16 位无符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
-        /// <returns>转换后的 16 位无符号整数。</returns>
-        /// <exception cref="OverflowException">
-        /// <paramref name="value"/> 的值超出 <see cref="ushort"/> 的表示范围。</exception>
-        [CLSCompliant(false)]
-        public static explicit operator ushort(UInt24 value) => (ushort)(uint)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="UInt24"/> 值隐式转换为 32 位有符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
-        /// <returns>转换后的 32 位有符号整数。</returns>
-        public static implicit operator int(UInt24 value) => (int)(uint)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="UInt24"/> 值隐式转换为 32 位无符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
-        /// <returns>转换后的 32 位无符号整数。</returns>
-        [CLSCompliant(false)]
-        public static implicit operator uint(UInt24 value) => value.ToUInt32();
-
-        /// <summary>
-        /// 将指定的 <see cref="UInt24"/> 值隐式转换为 64 位有符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
-        /// <returns>转换后的 64 位有符号整数。</returns>
-        public static implicit operator long(UInt24 value) => (long)(uint)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="UInt24"/> 值隐式转换为 64 位无符号整数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
-        /// <returns>转换后的 64 位无符号整数。</returns>
-        [CLSCompliant(false)]
-        public static implicit operator ulong(UInt24 value) => (ulong)(uint)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="UInt24"/> 值隐式转换为单精度浮点数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
-        /// <returns>转换后的单精度浮点数。</returns>
-        public static implicit operator float(UInt24 value) => (float)(uint)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="UInt24"/> 值隐式转换为双精度浮点数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
-        /// <returns>转换后的双精度浮点数。</returns>
-        public static implicit operator double(UInt24 value) => (double)(uint)value;
-
-        /// <summary>
-        /// 将指定的 <see cref="UInt24"/> 值隐式转换为十进制浮点数。
-        /// </summary>
-        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
-        /// <returns>转换后的十进制浮点数。</returns>
-        public static implicit operator decimal(UInt24 value) => (decimal)(uint)value;
-
-        /// <summary>
         /// 将指定的 8 位无符号整数隐式转换为 <see cref="UInt24"/> 值。
         /// </summary>
         /// <param name="value">要转换的 8 位无符号整数。</param>
@@ -663,5 +565,103 @@ namespace XstarS
         /// <exception cref="OverflowException">
         /// <paramref name="value"/> 的值超出 <see cref="UInt24"/> 的表示范围。</exception>
         public static explicit operator UInt24(decimal value) => (UInt24)(uint)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="UInt24"/> 值显式转换为 8 位无符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
+        /// <returns>转换后的 8 位无符号整数。</returns>
+        /// <exception cref="OverflowException">
+        /// <paramref name="value"/> 的值超出 <see cref="byte"/> 的表示范围。</exception>
+        public static explicit operator byte(UInt24 value) => (byte)(uint)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="UInt24"/> 值显式转换为 8 位有符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
+        /// <returns>转换后的 8 位有符号整数。</returns>
+        /// <exception cref="OverflowException">
+        /// <paramref name="value"/> 的值超出 <see cref="sbyte"/> 的表示范围。</exception>
+        [CLSCompliant(false)]
+        public static explicit operator sbyte(UInt24 value) => (sbyte)(uint)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="UInt24"/> 值显式转换为 UTF-16 字符。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
+        /// <returns>转换后的 UTF-16 字符。</returns>
+        /// <exception cref="OverflowException">
+        /// <paramref name="value"/> 的值超出 <see cref="char"/> 的表示范围。</exception>
+        public static explicit operator char(UInt24 value) => (char)(uint)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="UInt24"/> 值显式转换为 16 位有符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
+        /// <returns>转换后的 16 位有符号整数。</returns>
+        /// <exception cref="OverflowException">
+        /// <paramref name="value"/> 的值超出 <see cref="short"/> 的表示范围。</exception>
+        public static explicit operator short(UInt24 value) => (short)(uint)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="UInt24"/> 值显式转换为 16 位无符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
+        /// <returns>转换后的 16 位无符号整数。</returns>
+        /// <exception cref="OverflowException">
+        /// <paramref name="value"/> 的值超出 <see cref="ushort"/> 的表示范围。</exception>
+        [CLSCompliant(false)]
+        public static explicit operator ushort(UInt24 value) => (ushort)(uint)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="UInt24"/> 值隐式转换为 32 位有符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
+        /// <returns>转换后的 32 位有符号整数。</returns>
+        public static implicit operator int(UInt24 value) => (int)(uint)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="UInt24"/> 值隐式转换为 32 位无符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
+        /// <returns>转换后的 32 位无符号整数。</returns>
+        [CLSCompliant(false)]
+        public static implicit operator uint(UInt24 value) => value.ToUInt32();
+
+        /// <summary>
+        /// 将指定的 <see cref="UInt24"/> 值隐式转换为 64 位有符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
+        /// <returns>转换后的 64 位有符号整数。</returns>
+        public static implicit operator long(UInt24 value) => (long)(uint)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="UInt24"/> 值隐式转换为 64 位无符号整数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
+        /// <returns>转换后的 64 位无符号整数。</returns>
+        [CLSCompliant(false)]
+        public static implicit operator ulong(UInt24 value) => (ulong)(uint)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="UInt24"/> 值隐式转换为单精度浮点数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
+        /// <returns>转换后的单精度浮点数。</returns>
+        public static implicit operator float(UInt24 value) => (float)(uint)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="UInt24"/> 值隐式转换为双精度浮点数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
+        /// <returns>转换后的双精度浮点数。</returns>
+        public static implicit operator double(UInt24 value) => (double)(uint)value;
+
+        /// <summary>
+        /// 将指定的 <see cref="UInt24"/> 值隐式转换为十进制浮点数。
+        /// </summary>
+        /// <param name="value">要转换的 <see cref="UInt24"/> 值。</param>
+        /// <returns>转换后的十进制浮点数。</returns>
+        public static implicit operator decimal(UInt24 value) => (decimal)(uint)value;
     }
 }
