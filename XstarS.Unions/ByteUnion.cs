@@ -154,7 +154,7 @@ namespace XstarS.Unions
         }
 
         /// <summary>
-        /// 确定两个 <see cref="ByteUnion"/> 是否相等。
+        /// 确定两个指定的 <see cref="ByteUnion"/> 是否相等。
         /// </summary>
         /// <param name="union1">要比较的第一个 <see cref="ByteUnion"/>。</param>
         /// <param name="union2">要比较的第二个 <see cref="ByteUnion"/>。</param>
@@ -163,7 +163,7 @@ namespace XstarS.Unions
         public static bool operator ==(ByteUnion union1, ByteUnion union2) => union1.Byte == union2.Byte;
 
         /// <summary>
-        /// 确定两个 <see cref="ByteUnion"/> 是否不等。
+        /// 确定两个指定的 <see cref="ByteUnion"/> 是否不等。
         /// </summary>
         /// <param name="union1">要比较的第一个 <see cref="ByteUnion"/>。</param>
         /// <param name="union2">要比较的第二个 <see cref="ByteUnion"/>。</param>
@@ -172,14 +172,14 @@ namespace XstarS.Unions
         public static bool operator !=(ByteUnion union1, ByteUnion union2) => union1.Byte != union2.Byte;
 
         /// <summary>
-        /// 将指定的 8 位无符号整数转换为 <see cref="ByteUnion"/>。
+        /// 将指定的 8 位无符号整数隐式转换为 <see cref="ByteUnion"/>。
         /// </summary>
         /// <param name="value">要转换的 8 位无符号整数。</param>
         /// <returns>转换得到的 <see cref="ByteUnion"/>。</returns>
         public static implicit operator ByteUnion(byte value) => new ByteUnion(value);
 
         /// <summary>
-        /// 将指定的 8 位有符号整数转换为 <see cref="ByteUnion"/>。
+        /// 将指定的 8 位有符号整数隐式转换为 <see cref="ByteUnion"/>。
         /// </summary>
         /// <param name="value">要转换的 8 位有符号整数。</param>
         /// <returns>转换得到的 <see cref="ByteUnion"/>。</returns>
@@ -187,30 +187,21 @@ namespace XstarS.Unions
         public static implicit operator ByteUnion(sbyte value) => new ByteUnion(value);
 
         /// <summary>
-        /// 将指定的布尔值转换为 <see cref="ByteUnion"/>。
+        /// 将指定的布尔值隐式转换为 <see cref="ByteUnion"/>。
         /// </summary>
         /// <param name="value">要转换的布尔值。</param>
         /// <returns>转换得到的 <see cref="ByteUnion"/>。</returns>
         public static implicit operator ByteUnion(bool value) => new ByteUnion(value);
 
         /// <summary>
-        /// 将指定的字节数组转换为 <see cref="ByteUnion"/>。
-        /// </summary>
-        /// <param name="bytes">要转换的字节数组。</param>
-        /// <returns>转换得到的 <see cref="ByteUnion"/>。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
-        public static implicit operator ByteUnion(byte[] bytes) => new ByteUnion(bytes);
-
-        /// <summary>
-        /// 将指定的 <see cref="ByteUnion"/> 转换为 8 位无符号整数。
+        /// 将指定的 <see cref="ByteUnion"/> 隐式转换为 8 位无符号整数。
         /// </summary>
         /// <param name="union">要转换的 <see cref="ByteUnion"/>。</param>
         /// <returns>转换得到的 8 位无符号整数。</returns>
         public static implicit operator byte(ByteUnion union) => union.Byte;
 
         /// <summary>
-        /// 将指定的 <see cref="ByteUnion"/> 转换为 8 位有符号整数。
+        /// 将指定的 <see cref="ByteUnion"/> 隐式转换为 8 位有符号整数。
         /// </summary>
         /// <param name="union">要转换的 <see cref="ByteUnion"/>。</param>
         /// <returns>转换得到的 8 位有符号整数。</returns>
@@ -218,42 +209,35 @@ namespace XstarS.Unions
         public static implicit operator sbyte(ByteUnion union) => union.SByte;
 
         /// <summary>
-        /// 将指定的 <see cref="ByteUnion"/> 转换为布尔值。
+        /// 将指定的 <see cref="ByteUnion"/> 隐式转换为布尔值。
         /// </summary>
         /// <param name="union">要转换的 <see cref="ByteUnion"/>。</param>
         /// <returns>转换得到的布尔值。</returns>
         public static implicit operator bool(ByteUnion union) => union.Boolean;
 
         /// <summary>
-        /// 将指定的 <see cref="ByteUnion"/> 转换为字节数组。
-        /// </summary>
-        /// <param name="union">要转换的 <see cref="ByteUnion"/>。</param>
-        /// <returns>转换得到的字节数组。</returns>
-        public static implicit operator byte[](ByteUnion union) => union.ToByteArray();
-
-        /// <summary>
-        /// 将指定的 <see cref="WordUnion"/> 转换为 <see cref="ByteUnion"/>。
+        /// 将指定的 <see cref="WordUnion"/> 显式转换为 <see cref="ByteUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="WordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="ByteUnion"/>。</returns>
         public static explicit operator ByteUnion(WordUnion union) => new ByteUnion((byte)union.Int16);
 
         /// <summary>
-        /// 将指定的 <see cref="DWordUnion"/> 转换为 <see cref="ByteUnion"/>。
+        /// 将指定的 <see cref="DWordUnion"/> 显式转换为 <see cref="ByteUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="DWordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="ByteUnion"/>。</returns>
         public static explicit operator ByteUnion(DWordUnion union) => new ByteUnion((byte)union.Int32);
 
         /// <summary>
-        /// 将指定的 <see cref="QWordUnion"/> 转换为 <see cref="ByteUnion"/>。
+        /// 将指定的 <see cref="QWordUnion"/> 显式转换为 <see cref="ByteUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="QWordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="ByteUnion"/>。</returns>
         public static explicit operator ByteUnion(QWordUnion union) => new ByteUnion((byte)union.Int64);
 
         /// <summary>
-        /// 将指定的 <see cref="HandleUnion"/> 转换为 <see cref="ByteUnion"/>。
+        /// 将指定的 <see cref="HandleUnion"/> 显式转换为 <see cref="ByteUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="HandleUnion"/>。</param>
         /// <returns>转换得到的 <see cref="ByteUnion"/>。</returns>

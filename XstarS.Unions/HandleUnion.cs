@@ -153,7 +153,7 @@ namespace XstarS.Unions
         }
 
         /// <summary>
-        /// 确定两个 <see cref="HandleUnion"/> 是否相等。
+        /// 确定两个指定的 <see cref="HandleUnion"/> 是否相等。
         /// </summary>
         /// <param name="union1">要比较的第一个 <see cref="HandleUnion"/>。</param>
         /// <param name="union2">要比较的第二个 <see cref="HandleUnion"/>。</param>
@@ -162,7 +162,7 @@ namespace XstarS.Unions
         public static bool operator ==(HandleUnion union1, HandleUnion union2) => union1.IntPtr == union2.IntPtr;
 
         /// <summary>
-        /// 确定两个 <see cref="HandleUnion"/> 是否不等。
+        /// 确定两个指定的 <see cref="HandleUnion"/> 是否不等。
         /// </summary>
         /// <param name="union1">要比较的第一个 <see cref="HandleUnion"/>。</param>
         /// <param name="union2">要比较的第二个 <see cref="HandleUnion"/>。</param>
@@ -171,14 +171,14 @@ namespace XstarS.Unions
         public static bool operator !=(HandleUnion union1, HandleUnion union2) => union1.IntPtr != union2.IntPtr;
 
         /// <summary>
-        /// 将指定的有符号指针或句柄转换为 <see cref="HandleUnion"/>。
+        /// 将指定的有符号指针或句柄隐式转换为 <see cref="HandleUnion"/>。
         /// </summary>
         /// <param name="value">要转换的有符号指针或句柄。</param>
         /// <returns>转换得到的 <see cref="HandleUnion"/>。</returns>
         public static implicit operator HandleUnion(nint value) => new HandleUnion(value);
 
         /// <summary>
-        /// 将指定的无符号指针或句柄转换为 <see cref="HandleUnion"/>。
+        /// 将指定的无符号指针或句柄隐式转换为 <see cref="HandleUnion"/>。
         /// </summary>
         /// <param name="value">要转换的无符号指针或句柄。</param>
         /// <returns>转换得到的 <see cref="HandleUnion"/>。</returns>
@@ -186,7 +186,7 @@ namespace XstarS.Unions
         public static implicit operator HandleUnion(nuint value) => new HandleUnion(value);
 
         /// <summary>
-        /// 将指定的指向未指定类型的指针转换为 <see cref="HandleUnion"/>。
+        /// 将指定的指向未指定类型的指针隐式转换为 <see cref="HandleUnion"/>。
         /// </summary>
         /// <param name="value">要转换的指向未指定类型的指针。</param>
         /// <returns>转换得到的 <see cref="HandleUnion"/>。</returns>
@@ -194,14 +194,14 @@ namespace XstarS.Unions
         public static unsafe implicit operator HandleUnion(void* value) => new HandleUnion(value);
 
         /// <summary>
-        /// 将指定的 <see cref="HandleUnion"/> 转换为有符号指针或句柄。
+        /// 将指定的 <see cref="HandleUnion"/> 隐式转换为有符号指针或句柄。
         /// </summary>
         /// <param name="union">要转换的 <see cref="HandleUnion"/>。</param>
         /// <returns>转换得到的有符号指针或句柄。</returns>
         public static implicit operator nint(HandleUnion union) => union.IntPtr;
 
         /// <summary>
-        /// 将指定的 <see cref="HandleUnion"/> 转换为无符号指针或句柄。
+        /// 将指定的 <see cref="HandleUnion"/> 隐式转换为无符号指针或句柄。
         /// </summary>
         /// <param name="union">要转换的 <see cref="HandleUnion"/>。</param>
         /// <returns>转换得到的无符号指针或句柄。</returns>
@@ -209,7 +209,7 @@ namespace XstarS.Unions
         public static implicit operator nuint(HandleUnion union) => union.UIntPtr;
 
         /// <summary>
-        /// 将指定的 <see cref="HandleUnion"/> 转换为指向未指定类型的指针。
+        /// 将指定的 <see cref="HandleUnion"/> 隐式转换为指向未指定类型的指针。
         /// </summary>
         /// <param name="union">要转换的 <see cref="HandleUnion"/>。</param>
         /// <returns>转换得到的指向未指定类型的指针。</returns>
@@ -217,28 +217,28 @@ namespace XstarS.Unions
         public static unsafe implicit operator void*(HandleUnion union) => union.Pointer;
 
         /// <summary>
-        /// 将指定的 <see cref="ByteUnion"/> 转换为 <see cref="HandleUnion"/>。
+        /// 将指定的 <see cref="ByteUnion"/> 显式转换为 <see cref="HandleUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="ByteUnion"/>。</param>
         /// <returns>转换得到的 <see cref="HandleUnion"/>。</returns>
         public static explicit operator HandleUnion(ByteUnion union) => new HandleUnion((nint)union.Byte);
 
         /// <summary>
-        /// 将指定的 <see cref="WordUnion"/> 转换为 <see cref="HandleUnion"/>。
+        /// 将指定的 <see cref="WordUnion"/> 显式转换为 <see cref="HandleUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="WordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="HandleUnion"/>。</returns>
         public static explicit operator HandleUnion(WordUnion union) => new HandleUnion((nint)union.Int16);
 
         /// <summary>
-        /// 将指定的 <see cref="DWordUnion"/> 转换为 <see cref="HandleUnion"/>。
+        /// 将指定的 <see cref="DWordUnion"/> 显式转换为 <see cref="HandleUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="DWordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="HandleUnion"/>。</returns>
         public static explicit operator HandleUnion(DWordUnion union) => new HandleUnion((nint)union.Int32);
 
         /// <summary>
-        /// 将指定的 <see cref="QWordUnion"/> 转换为 <see cref="HandleUnion"/>。
+        /// 将指定的 <see cref="QWordUnion"/> 显式转换为 <see cref="HandleUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="QWordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="HandleUnion"/>。</returns>

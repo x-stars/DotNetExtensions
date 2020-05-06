@@ -164,7 +164,7 @@ namespace XstarS.Unions
         }
 
         /// <summary>
-        /// 确定两个 <see cref="WordUnion"/> 是否相等。
+        /// 确定两个指定的 <see cref="WordUnion"/> 是否相等。
         /// </summary>
         /// <param name="union1">要比较的第一个 <see cref="WordUnion"/>。</param>
         /// <param name="union2">要比较的第二个 <see cref="WordUnion"/>。</param>
@@ -173,7 +173,7 @@ namespace XstarS.Unions
         public static bool operator ==(WordUnion union1, WordUnion union2) => union1.Int16 == union2.Int16;
 
         /// <summary>
-        /// 确定两个 <see cref="WordUnion"/> 是否不等。
+        /// 确定两个指定的 <see cref="WordUnion"/> 是否不等。
         /// </summary>
         /// <param name="union1">要比较的第一个 <see cref="WordUnion"/>。</param>
         /// <param name="union2">要比较的第二个 <see cref="WordUnion"/>。</param>
@@ -182,14 +182,14 @@ namespace XstarS.Unions
         public static bool operator !=(WordUnion union1, WordUnion union2) => union1.Int16 != union2.Int16;
 
         /// <summary>
-        /// 将指定的 16 位有符号整数转换为 <see cref="WordUnion"/>。
+        /// 将指定的 16 位有符号整数隐式转换为 <see cref="WordUnion"/>。
         /// </summary>
         /// <param name="value">要转换的 16 位有符号整数。</param>
         /// <returns>转换得到的 <see cref="WordUnion"/>。</returns>
         public static implicit operator WordUnion(short value) => new WordUnion(value);
 
         /// <summary>
-        /// 将指定的 16 位无符号整数转换为 <see cref="WordUnion"/>。
+        /// 将指定的 16 位无符号整数隐式转换为 <see cref="WordUnion"/>。
         /// </summary>
         /// <param name="value">要转换的 16 位无符号整数。</param>
         /// <returns>转换得到的 <see cref="WordUnion"/>。</returns>
@@ -197,30 +197,21 @@ namespace XstarS.Unions
         public static implicit operator WordUnion(ushort value) => new WordUnion(value);
 
         /// <summary>
-        /// 将指定的 UTF-16 字符转换为 <see cref="WordUnion"/>。
+        /// 将指定的 UTF-16 字符隐式转换为 <see cref="WordUnion"/>。
         /// </summary>
         /// <param name="value">要转换的 UTF-16 字符。</param>
         /// <returns>转换得到的 <see cref="WordUnion"/>。</returns>
         public static implicit operator WordUnion(char value) => new WordUnion(value);
 
         /// <summary>
-        /// 将指定的字节数组转换为 <see cref="WordUnion"/>。
-        /// </summary>
-        /// <param name="bytes">要转换的字节数组。</param>
-        /// <returns>转换得到的 <see cref="WordUnion"/>。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
-        public static implicit operator WordUnion(byte[] bytes) => new WordUnion(bytes);
-
-        /// <summary>
-        /// 将指定的 <see cref="WordUnion"/> 转换为 16 位有符号整数。
+        /// 将指定的 <see cref="WordUnion"/> 隐式转换为 16 位有符号整数。
         /// </summary>
         /// <param name="union">要转换的 <see cref="WordUnion"/>。</param>
         /// <returns>转换得到的 16 位有符号整数。</returns>
         public static implicit operator short(WordUnion union) => union.Int16;
 
         /// <summary>
-        /// 将指定的 <see cref="WordUnion"/> 转换为 16 位无符号整数。
+        /// 将指定的 <see cref="WordUnion"/> 隐式转换为 16 位无符号整数。
         /// </summary>
         /// <param name="union">要转换的 <see cref="WordUnion"/>。</param>
         /// <returns>转换得到的 16 位无符号整数。</returns>
@@ -228,42 +219,35 @@ namespace XstarS.Unions
         public static implicit operator ushort(WordUnion union) => union.UInt16;
 
         /// <summary>
-        /// 将指定的 <see cref="WordUnion"/> 转换为 UTF-16 字符。
+        /// 将指定的 <see cref="WordUnion"/> 隐式转换为 UTF-16 字符。
         /// </summary>
         /// <param name="union">要转换的 <see cref="WordUnion"/>。</param>
         /// <returns>转换得到的 UTF-16 字符。</returns>
         public static implicit operator char(WordUnion union) => union.Char;
 
         /// <summary>
-        /// 将指定的 <see cref="WordUnion"/> 转换为字节数组。
-        /// </summary>
-        /// <param name="union">要转换的 <see cref="WordUnion"/>。</param>
-        /// <returns>转换得到的字节数组。</returns>
-        public static implicit operator byte[](WordUnion union) => union.ToByteArray();
-
-        /// <summary>
-        /// 将指定的 <see cref="ByteUnion"/> 转换为 <see cref="WordUnion"/>。
+        /// 将指定的 <see cref="ByteUnion"/> 隐式转换为 <see cref="WordUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="ByteUnion"/>。</param>
         /// <returns>转换得到的 <see cref="WordUnion"/>。</returns>
         public static implicit operator WordUnion(ByteUnion union) => new WordUnion((short)union.Byte);
 
         /// <summary>
-        /// 将指定的 <see cref="DWordUnion"/> 对象转换为 <see cref="WordUnion"/>。
+        /// 将指定的 <see cref="DWordUnion"/> 显式转换为 <see cref="WordUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="DWordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="WordUnion"/>。</returns>
         public static explicit operator WordUnion(DWordUnion union) => new WordUnion((short)union.Int32);
 
         /// <summary>
-        /// 将指定的 <see cref="QWordUnion"/> 转换为 <see cref="WordUnion"/>。
+        /// 将指定的 <see cref="QWordUnion"/> 显式转换为 <see cref="WordUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="QWordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="WordUnion"/>。</returns>
         public static explicit operator WordUnion(QWordUnion union) => new WordUnion((short)union.Int64);
 
         /// <summary>
-        /// 将指定的 <see cref="HandleUnion"/> 转换为 <see cref="WordUnion"/>。
+        /// 将指定的 <see cref="HandleUnion"/> 显式转换为 <see cref="WordUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="HandleUnion"/>。</param>
         /// <returns>转换得到的 <see cref="WordUnion"/>。</returns>

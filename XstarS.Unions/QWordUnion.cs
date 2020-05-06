@@ -164,7 +164,7 @@ namespace XstarS.Unions
         }
 
         /// <summary>
-        /// 确定两个 <see cref="QWordUnion"/> 是否相等。
+        /// 确定两个指定的 <see cref="QWordUnion"/> 是否相等。
         /// </summary>
         /// <param name="union1">要比较的第一个 <see cref="QWordUnion"/>。</param>
         /// <param name="union2">要比较的第二个 <see cref="QWordUnion"/>。</param>
@@ -173,7 +173,7 @@ namespace XstarS.Unions
         public static bool operator ==(QWordUnion union1, QWordUnion union2) => union1.Int64 == union2.Int64;
 
         /// <summary>
-        /// 确定两个 <see cref="QWordUnion"/> 是否不等。
+        /// 确定两个指定的 <see cref="QWordUnion"/> 是否不等。
         /// </summary>
         /// <param name="union1">要比较的第一个 <see cref="QWordUnion"/>。</param>
         /// <param name="union2">要比较的第二个 <see cref="QWordUnion"/>。</param>
@@ -182,14 +182,14 @@ namespace XstarS.Unions
         public static bool operator !=(QWordUnion union1, QWordUnion union2) => union1.Int64 != union2.Int64;
 
         /// <summary>
-        /// 将指定的 64 位有符号整数转换为 <see cref="QWordUnion"/>。
+        /// 将指定的 64 位有符号整数隐式转换为 <see cref="QWordUnion"/>。
         /// </summary>
         /// <param name="value">要转换的 64 位有符号整数。</param>
         /// <returns>转换得到的 <see cref="QWordUnion"/>。</returns>
         public static implicit operator QWordUnion(long value) => new QWordUnion(value);
 
         /// <summary>
-        /// 将指定的 64 位无符号整数转换为 <see cref="QWordUnion"/>。
+        /// 将指定的 64 位无符号整数隐式转换为 <see cref="QWordUnion"/>。
         /// </summary>
         /// <param name="value">要转换的 64 位无符号整数。</param>
         /// <returns>转换得到的 <see cref="QWordUnion"/>。</returns>
@@ -197,30 +197,21 @@ namespace XstarS.Unions
         public static implicit operator QWordUnion(ulong value) => new QWordUnion(value);
 
         /// <summary>
-        /// 将指定的双精度浮点数转换为 <see cref="QWordUnion"/>。
+        /// 将指定的双精度浮点数隐式转换为 <see cref="QWordUnion"/>。
         /// </summary>
         /// <param name="value">要转换的双精度浮点数。</param>
         /// <returns>转换得到的 <see cref="QWordUnion"/>。</returns>
         public static implicit operator QWordUnion(double value) => new QWordUnion(value);
 
         /// <summary>
-        /// 将指定的字节数组转换为 <see cref="QWordUnion"/>。
-        /// </summary>
-        /// <param name="bytes">要转换的字节数组。</param>
-        /// <returns>转换得到的 <see cref="QWordUnion"/>。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
-        public static implicit operator QWordUnion(byte[] bytes) => new QWordUnion(bytes);
-
-        /// <summary>
-        /// 将指定的 <see cref="QWordUnion"/> 转换为 64 位有符号整数。
+        /// 将指定的 <see cref="QWordUnion"/> 隐式转换为 64 位有符号整数。
         /// </summary>
         /// <param name="union">要转换的 <see cref="QWordUnion"/>。</param>
         /// <returns>转换得到的 64 位有符号整数。</returns>
         public static implicit operator long(QWordUnion union) => union.Int64;
 
         /// <summary>
-        /// 将指定的 <see cref="QWordUnion"/> 转换为 64 位无符号整数。
+        /// 将指定的 <see cref="QWordUnion"/> 隐式转换为 64 位无符号整数。
         /// </summary>
         /// <param name="union">要转换的 <see cref="QWordUnion"/>。</param>
         /// <returns>转换得到的 64 位无符号整数。</returns>
@@ -228,42 +219,35 @@ namespace XstarS.Unions
         public static implicit operator ulong(QWordUnion union) => union.UInt64;
 
         /// <summary>
-        /// 将指定的 <see cref="QWordUnion"/> 转换为双精度浮点数。
+        /// 将指定的 <see cref="QWordUnion"/> 隐式转换为双精度浮点数。
         /// </summary>
         /// <param name="union">要转换的 <see cref="QWordUnion"/>。</param>
         /// <returns>转换得到的双精度浮点数。</returns>
         public static implicit operator double(QWordUnion union) => union.Double;
 
         /// <summary>
-        /// 将指定的 <see cref="QWordUnion"/> 转换为字节数组。
-        /// </summary>
-        /// <param name="union">要转换的 <see cref="QWordUnion"/>。</param>
-        /// <returns>转换得到的字节数组。</returns>
-        public static implicit operator byte[](QWordUnion union) => union.ToByteArray();
-
-        /// <summary>
-        /// 将指定的 <see cref="ByteUnion"/> 转换为 <see cref="QWordUnion"/>。
+        /// 将指定的 <see cref="ByteUnion"/> 隐式转换为 <see cref="QWordUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="ByteUnion"/>。</param>
         /// <returns>转换得到的 <see cref="QWordUnion"/>。</returns>
         public static implicit operator QWordUnion(ByteUnion union) => new QWordUnion((long)union.Byte);
 
         /// <summary>
-        /// 将指定的 <see cref="WordUnion"/> 转换为 <see cref="QWordUnion"/>。
+        /// 将指定的 <see cref="WordUnion"/> 隐式转换为 <see cref="QWordUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="WordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="QWordUnion"/>。</returns>
         public static implicit operator QWordUnion(WordUnion union) => new QWordUnion((long)union.Int16);
 
         /// <summary>
-        /// 将指定的 <see cref="DWordUnion"/> 转换为 <see cref="QWordUnion"/>。
+        /// 将指定的 <see cref="DWordUnion"/> 隐式转换为 <see cref="QWordUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="DWordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="QWordUnion"/>。</returns>
         public static implicit operator QWordUnion(DWordUnion union) => new QWordUnion((long)union.Int32);
 
         /// <summary>
-        /// 将指定的 <see cref="HandleUnion"/> 转换为 <see cref="QWordUnion"/>。
+        /// 将指定的 <see cref="HandleUnion"/> 显式转换为 <see cref="QWordUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="HandleUnion"/>。</param>
         /// <returns>转换得到的 <see cref="QWordUnion"/>。</returns>
