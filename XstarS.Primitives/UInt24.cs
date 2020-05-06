@@ -15,12 +15,12 @@ namespace XstarS
         /// <summary>
         /// 表示 <see cref="UInt24"/> 的可能最大值。
         /// </summary>
-        public static readonly UInt24 MaxValue = new UInt24(0x00FFFFFF);
+        public static readonly UInt24 MaxValue = UInt24.FromBytes(0x00FFFFFF);
 
         /// <summary>
         /// 表示 <see cref="UInt24"/> 的可能最小值。
         /// </summary>
-        public static readonly UInt24 MinValue = new UInt24(0x00000000);
+        public static readonly UInt24 MinValue = UInt24.FromBytes(0x00000000);
 
         /// <summary>
         /// 表示当前 <see cref="UInt24"/> 低 16 位的字节值。
@@ -41,7 +41,7 @@ namespace XstarS
         [CLSCompliant(false)]
         public unsafe UInt24(uint value)
         {
-            if ((value & 0xFF000000) != 0)
+            if (value > UInt24.MaxValue)
             {
                 throw new OverflowException();
             }
@@ -61,6 +61,14 @@ namespace XstarS
             ((byte*)&result)[2] = this.HighByte;
             return result;
         }
+
+        /// <summary>
+        /// 由指定的 32 位字节创建 <see cref="UInt24"/> 结构的实例。
+        /// </summary>
+        /// <param name="dword">作为字节的 32 位无符号整数。</param>
+        /// <returns>由 <paramref name="dword"/> 创建的 <see cref="UInt24"/> 结构的实例。</returns>
+        [CLSCompliant(false)]
+        public static unsafe UInt24 FromBytes(uint dword) => *(UInt24*)&dword;
 
         /// <summary>
         /// 将数字的字符串表示形式转换为它的等效 24 位无符号整数。
