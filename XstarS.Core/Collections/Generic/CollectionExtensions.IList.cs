@@ -37,6 +37,34 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
+        /// 确定 <see cref="IList{T}"/> 中特定项的所有索引。
+        /// </summary>
+        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="list">要获取索引的 <see cref="IList{T}"/> 对象。</param>
+        /// <param name="item">要在 <see cref="IList{T}"/> 中定位的对象。</param>
+        /// <returns><paramref name="list"/> 中所有与 <paramref name="item"/> 相等的元素的索引；
+        /// 若未在 <paramref name="list"/> 中找到 <paramref name="item"/>，则为空列表。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="list"/> 为 <see langword="null"/>。</exception>
+        public static int[] IndicesOf<T>(this IList<T> list, T item)
+        {
+            if (list is null)
+            {
+                throw new ArgumentNullException(nameof(list));
+            }
+
+            var indices = new List<int>();
+            for (int i = 0; i < list.Count; i++)
+            {
+                if (EqualityComparer<T>.Default.Equals(list[i], item))
+                {
+                    indices.Add(i);
+                }
+            }
+            return indices.ToArray();
+        }
+
+        /// <summary>
         /// 将指定集合的元素插入到 <see cref="IList{T}"/> 的的指定索引处。
         /// </summary>
         /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
@@ -63,32 +91,6 @@ namespace XstarS.Collections.Generic
             {
                 list.Insert(index, item);
                 index++;
-            }
-        }
-
-        /// <summary>
-        /// 从 <see cref="IList{T}"/> 中移除一定范围的元素。
-        /// </summary>
-        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
-        /// <param name="list">要移除元素的 <see cref="IList{T}"/> 对象。</param>
-        /// <param name="index">要移除的元素范围的从零开始的起始索引。</param>
-        /// <param name="count">要移除的元素数。</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="list"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="index"/> 小于 0。或 <paramref name="count"/> 小于 0。</exception>
-        /// <exception cref="ArgumentException"><paramref name="index"/>
-        /// 和 <paramref name="count"/> 不表示 <see cref="IList{T}"/> 中元素的有效范围。</exception>
-        public static void RemoveRange<T>(this IList<T> list, int index, int count)
-        {
-            if (list is null)
-            {
-                throw new ArgumentNullException(nameof(list));
-            }
-
-            for (int i = 0; i < count; i++)
-            {
-                list.RemoveAt(index);
             }
         }
 
@@ -122,31 +124,53 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
-        /// 确定 <see cref="IList{T}"/> 中特定项的所有索引。
+        /// 从 <see cref="IList{T}"/> 中移除一定范围的元素。
         /// </summary>
         /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
-        /// <param name="list">要获取索引的 <see cref="IList{T}"/> 对象。</param>
-        /// <param name="item">要在 <see cref="IList{T}"/> 中定位的对象。</param>
-        /// <returns><paramref name="list"/> 中所有与 <paramref name="item"/> 相等的元素的索引；
-        /// 若未在 <paramref name="list"/> 中找到 <paramref name="item"/>，则为空列表。</returns>
+        /// <param name="list">要移除元素的 <see cref="IList{T}"/> 对象。</param>
+        /// <param name="index">要移除的元素范围的从零开始的起始索引。</param>
+        /// <param name="count">要移除的元素数。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="list"/> 为 <see langword="null"/>。</exception>
-        public static int[] IndicesOf<T>(this IList<T> list, T item)
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> 小于 0。或 <paramref name="count"/> 小于 0。</exception>
+        /// <exception cref="ArgumentException"><paramref name="index"/>
+        /// 和 <paramref name="count"/> 不表示 <see cref="IList{T}"/> 中元素的有效范围。</exception>
+        public static void RemoveRange<T>(this IList<T> list, int index, int count)
         {
             if (list is null)
             {
                 throw new ArgumentNullException(nameof(list));
             }
 
-            var indices = new List<int>();
+            for (int i = 0; i < count; i++)
+            {
+                list.RemoveAt(index);
+            }
+        }
+
+        /// <summary>
+        /// 将 <see cref="IList{T}"/> 中的元素随机重新排列。
+        /// </summary>
+        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="list">要进行随机重排的 <see cref="IList{T}"/> 对象。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="list"/> 为 <see langword="null"/>。</exception>
+        public static void Shuffle<T>(this IList<T> list)
+        {
+            if (list is null)
+            {
+                throw new ArgumentNullException(nameof(list));
+            }
+
+            var randGen = new Random();
             for (int i = 0; i < list.Count; i++)
             {
-                if (EqualityComparer<T>.Default.Equals(list[i], item))
-                {
-                    indices.Add(i);
-                }
+                int r = randGen.Next(list.Count);
+                var temp = list[i];
+                list[i] = list[r];
+                list[r] = temp;
             }
-            return indices.ToArray();
         }
 
         /// <summary>
@@ -193,30 +217,6 @@ namespace XstarS.Collections.Generic
         public static void Sort<T>(this IList<T> list, IComparer<T> comparer = null)
         {
             list.Sort(item => item, comparer);
-        }
-
-        /// <summary>
-        /// 将 <see cref="IList{T}"/> 中的元素随机重新排列。
-        /// </summary>
-        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
-        /// <param name="list">要进行随机重排的 <see cref="IList{T}"/> 对象。</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="list"/> 为 <see langword="null"/>。</exception>
-        public static void Shuffle<T>(this IList<T> list)
-        {
-            if (list is null)
-            {
-                throw new ArgumentNullException(nameof(list));
-            }
-
-            var randGen = new Random();
-            for (int i = 0; i < list.Count; i++)
-            {
-                int r = randGen.Next(list.Count);
-                var temp = list[i];
-                list[i] = list[r];
-                list[r] = temp;
-            }
         }
     }
 }

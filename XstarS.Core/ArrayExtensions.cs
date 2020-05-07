@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using XstarS.Collections;
+using XstarS.Collections.Generic;
 
 namespace XstarS
 {
@@ -16,25 +18,13 @@ namespace XstarS
         /// <param name="array">要进行相等比较的数组。</param>
         /// <param name="other">要与当前数组进行相等比较的数组。</param>
         /// <param name="comparer">用于比较数组元素的比较器。</param>
-        /// <returns>若 <paramref name="array"/> 与 <paramref name="other"/> 的每个元素都对应相等，
+        /// <returns>若 <paramref name="array"/> 与
+        /// <paramref name="other"/> 的每个元素都对应相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public static bool ArrayEquals<T>(this T[] array, T[] other,
             IEqualityComparer<T> comparer = null)
         {
-            if (object.ReferenceEquals(array, other)) { return true; }
-            if ((array is null) ^ (other is null)) { return false; }
-
-            if (array.Length != other.Length) { return false; }
-
-            comparer = comparer ?? EqualityComparer<T>.Default;
-            for (int i = 0; i < array.Length; i++)
-            {
-                if (comparer.Equals(array[i], other[i]))
-                {
-                    return false;
-                }
-            }
-            return true;
+            return new ArrayEqualityComparer<T>(comparer).Equals(array, other);
         }
 
         /// <summary>
@@ -44,51 +34,15 @@ namespace XstarS
         /// <param name="other">要与当前数组进行相等比较的数组。</param>
         /// <param name="recurse">指示是否对内层数组递归。</param>
         /// <param name="comparer">用于比较数组元素的比较器。</param>
-        /// <returns>若 <paramref name="array"/> 与 <paramref name="other"/> 的维度和各维度大小都相等，
-        /// 且每个元素都对应相等，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="NotSupportedException"><paramref name="array"/> 的最内层元素为指针。</exception>
+        /// <returns>若 <paramref name="array"/> 与
+        /// <paramref name="other"/> 的维度和各维度大小都相等，且每个元素都对应相等，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <exception cref="NotSupportedException">
+        /// <paramref name="array"/> 的最内层元素为指针。</exception>
         public static bool ArrayEquals(this Array array, Array other,
             bool recurse = false, IEqualityComparer comparer = null)
         {
-            if (object.ReferenceEquals(array, other)) { return true; }
-            if ((array is null) ^ (other is null)) { return false; }
-
-            if (array.GetType() != other.GetType()) { return false; }
-
-            if (array.Rank != other.Rank) { return false; }
-            if (array.Length != other.Length) { return false; }
-            for (int i = 0; i < array.Rank; i++)
-            {
-                if (array.GetLength(i) != other.GetLength(i))
-                {
-                    return false;
-                }
-            }
-
-            comparer = comparer ?? EqualityComparer<object>.Default;
-            var isMultiDim = array.Rank > 1;
-            var isJagged = array.GetType().GetElementType().IsArray;
-            for (int i = 0; i < array.Length; i++)
-            {
-                var xi = isMultiDim ? array.GetValue(array.OffsetToIndices(i)) : array.GetValue(i);
-                var yi = isMultiDim ? other.GetValue(other.OffsetToIndices(i)) : other.GetValue(i);
-
-                if (recurse && isJagged)
-                {
-                    if (!ArrayExtensions.ArrayEquals((Array)xi, (Array)yi, recurse, comparer))
-                    {
-                        return false;
-                    }
-                }
-                else
-                {
-                    if (!comparer.Equals(xi, yi))
-                    {
-                        return false;
-                    }
-                }
-            }
-            return true;
+            return new ArrayEqualityComparer(recurse, comparer).Equals(array, other);
         }
 
         /// <summary>
@@ -125,8 +79,6 @@ namespace XstarS
         /// <returns>一个新数组，此数组为指定交错数组中包含的数组顺序连接后的结果。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="arrays"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="arrays"/> 包含为 <see langword="null"/> 的数组。</exception>
         public static T[] Concat<T>(this T[][] arrays)
         {
             if (arrays is null)
@@ -137,12 +89,7 @@ namespace XstarS
             int length = 0;
             for (int i = 0; i < arrays.Length; i++)
             {
-                var array = arrays[i];
-                if (array is null)
-                {
-                    throw new ArgumentException(
-                        new ArgumentException().Message, nameof(arrays));
-                }
+                var array = arrays[i] ?? Array.Empty<T>();
                 length += array.Length;
             }
 
@@ -150,7 +97,7 @@ namespace XstarS
             int index = 0;
             for (int i = 0; i < arrays.Length; i++)
             {
-                var array = arrays[i];
+                var array = arrays[i] ?? Array.Empty<T>();
                 Array.Copy(array, 0, result, index, array.Length);
                 index += array.Length;
             }
@@ -246,12 +193,7 @@ namespace XstarS
                 throw new ArgumentOutOfRangeException(nameof(offset));
             }
 
-            var scale = 1;
-            for (int i = 0; i < array.Rank; i++)
-            {
-                scale *= array.GetLength(i);
-            }
-
+            var scale = array.Length;
             var result = new int[array.Rank];
             for (int i = 0; i < array.Rank; i++)
             {
@@ -267,15 +209,13 @@ namespace XstarS
         /// </summary>
         /// <param name="array">要枚举元素数组。</param>
         /// <returns>数组元素的公开枚举数 <see cref="IEnumerable"/> 对象。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="NotSupportedException">
         /// <paramref name="array"/> 的最内层元素为指针。</exception>
         public static IEnumerable RecurseEnumerate(this Array array)
         {
             if (array is null)
             {
-                throw new ArgumentNullException(nameof(array));
+                yield break;
             }
 
             if (array.GetType().GetElementType().IsArray)
@@ -311,10 +251,10 @@ namespace XstarS
         /// <param name="lengths">新数组的每个维度的大小。</param>
         /// <returns>一个大小等于 <paramref name="lengths"/> 的数组，
         /// 其每个元素都由 <paramref name="array"/> 的最内层元素按顺序复制得到。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="array"/> 或
+        /// <paramref name="lengths"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
-        /// <paramref name="lengths"/> 所表示的数组元素数量小于 0。</exception>
+        /// <paramref name="lengths"/> 中没有任何元素。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="lengths"/>
         /// 所表示的数组元素数量与 <paramref name="array"/> 中的元素数量不一致。</exception>
         /// <exception cref="NotSupportedException">
@@ -379,10 +319,10 @@ namespace XstarS
         /// <param name="lengths">新数组的每个维度的大小。</param>
         /// <returns>一个大小等于 <paramref name="lengths"/> 的交错数组，
         /// 其每个元素都由 <paramref name="array"/> 的最内层元素按顺序复制得到。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="array"/> 或
+        /// <paramref name="lengths"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
-        /// <paramref name="lengths"/> 所表示的数组元素数量小于 0。</exception>
+        /// <paramref name="lengths"/> 中没有任何元素。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="lengths"/>
         /// 所表示的数组元素数量与 <paramref name="array"/> 中的元素数量不一致。</exception>
         /// <exception cref="NotSupportedException">

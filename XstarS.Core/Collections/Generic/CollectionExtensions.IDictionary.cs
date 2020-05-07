@@ -30,6 +30,39 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
+        /// 将 <see cref="IDictionary{TKey, TValue}"/> 的键和值反转并返回。
+        /// </summary>
+        /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
+        /// <typeparam name="TValue"><see cref="IDictionary{TKey, TValue}"/> 中的值的类型。</typeparam>
+        /// <param name="dictionary">一个 <see cref="IDictionary{TKey, TValue}"/> 对象。</param>
+        /// <param name="valueComparer">用于比较值的 <see cref="IEqualityComparer{T}"/> 实现。</param>
+        /// <returns>将 <paramref name="dictionary"/> 的键和值反转后的结果。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
+        public static IDictionary<TValue, ICollection<TKey>> Inverse<TKey, TValue>(
+            this IDictionary<TKey, TValue> dictionary,
+            IEqualityComparer<TValue> valueComparer = null)
+        {
+            if (dictionary is null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+
+            valueComparer = valueComparer ?? EqualityComparer<TValue>.Default;
+
+            var result = new Dictionary<TValue, ICollection<TKey>>(valueComparer);
+            foreach (var item in dictionary)
+            {
+                if (!result.ContainsKey(item.Value))
+                {
+                    result.Add(item.Value, new List<TKey>());
+                }
+                result[item.Value].Add(item.Key);
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 根据指定的值获取 <see cref="IDictionary{TKey, TValue}"/> 中对应的所有键。
         /// </summary>
         /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
@@ -92,39 +125,6 @@ namespace XstarS.Collections.Generic
                 {
                     result++;
                 }
-            }
-            return result;
-        }
-
-        /// <summary>
-        /// 将 <see cref="IDictionary{TKey, TValue}"/> 的键和值反转并返回。
-        /// </summary>
-        /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
-        /// <typeparam name="TValue"><see cref="IDictionary{TKey, TValue}"/> 中的值的类型。</typeparam>
-        /// <param name="dictionary">一个 <see cref="IDictionary{TKey, TValue}"/> 对象。</param>
-        /// <param name="valueComparer">用于比较值的 <see cref="IEqualityComparer{T}"/> 实现。</param>
-        /// <returns>将 <paramref name="dictionary"/> 的键和值反转后的结果。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
-        public static IDictionary<TValue, ICollection<TKey>> Inverse<TKey, TValue>(
-            this IDictionary<TKey, TValue> dictionary,
-            IEqualityComparer<TValue> valueComparer = null)
-        {
-            if (dictionary is null)
-            {
-                throw new ArgumentNullException(nameof(dictionary));
-            }
-
-            valueComparer = valueComparer ?? EqualityComparer<TValue>.Default;
-
-            var result = new Dictionary<TValue, ICollection<TKey>>(valueComparer);
-            foreach (var item in dictionary)
-            {
-                if (!result.ContainsKey(item.Value))
-                {
-                    result.Add(item.Value, new List<TKey>());
-                }
-                result[item.Value].Add(item.Key);
             }
             return result;
         }

@@ -6,6 +6,20 @@ namespace XstarS.Collections.Generic
     partial class CollectionExtensions
     {
         /// <summary>
+        /// 确定当前 <see cref="IEnumerable{T}"/> 与指定 <see cref="IEnumerable{T}"/> 的元素是否对应相等。
+        /// </summary>
+        /// <param name="enumerable">要进行相等比较的 <see cref="IEnumerable{T}"/> 对象。</param>
+        /// <param name="other">要与当前集合进行相等比较的 <see cref="IEnumerable{T}"/> 对象。</param>
+        /// <param name="comparer">用于比较集合元素的比较器。</param>
+        /// <returns>若 <paramref name="enumerable"/> 与 <paramref name="other"/> 的每个元素都对应相等，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        public static bool CollectionEquals<T>(this IEnumerable<T> enumerable, IEnumerable<T> other,
+            IEqualityComparer<T> comparer = null)
+        {
+            return new CollectionEqualityComparer<T>(comparer).Equals(enumerable, other);
+        }
+
+        /// <summary>
         /// 获取当前 <see cref="IEnumerable{T}"/> 对象中指定对象的数量。
         /// </summary>
         /// <typeparam name="T"><see cref="IEnumerable{T}"/> 中的元素的类型。</typeparam>
