@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace XstarS.Collections.Generic
 {
-    public static partial class GenericCollectionExtensions
+    partial class CollectionExtensions
     {
         /// <summary>
         /// 反转当前比较器 <see cref="IComparer{T}"/> 并返回。

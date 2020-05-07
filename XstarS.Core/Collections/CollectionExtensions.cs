@@ -16,7 +16,7 @@ namespace XstarS.Collections
         /// <returns><paramref name="enumerable"/> 包含和递归包含的所有不可枚举的元素。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="enumerable"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable EnumerateEnumerable(this IEnumerable enumerable)
+        public static IEnumerable RecurseEnumerate(this IEnumerable enumerable)
         {
             if (enumerable is null)
             {
@@ -27,7 +27,7 @@ namespace XstarS.Collections
             {
                 if (item is IEnumerable innerEnumerable)
                 {
-                    foreach (var innerItem in innerEnumerable.EnumerateEnumerable())
+                    foreach (var innerItem in innerEnumerable.RecurseEnumerate())
                     {
                         yield return innerItem;
                     }
@@ -43,10 +43,12 @@ namespace XstarS.Collections
         /// 返回当前 <see cref="IEnumerable"/> 对象的所有元素的字符串表达形式。
         /// </summary>
         /// <param name="enumerable">要获取字符串表达形式的 <see cref="IEnumerable"/> 对象。</param>
+        /// <param name="recurse">指示是否对内层 <see cref="IEnumerable"/> 递归。</param>
         /// <returns><paramref name="enumerable"/> 的所有元素的字符串表达形式。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="enumerable"/> 为 <see langword="null"/>。</exception>
-        public static string SequenceToString(this IEnumerable enumerable)
+        public static string SequenceToString(this IEnumerable enumerable,
+            bool recurse = false)
         {
             if (enumerable is null)
             {
@@ -56,9 +58,9 @@ namespace XstarS.Collections
             var sequence = new List<string>();
             foreach (var item in enumerable)
             {
-                if (item is IEnumerable innerEnumerable)
+                if (recurse && (item is IEnumerable innerEnum))
                 {
-                    sequence.Add(innerEnumerable.SequenceToString());
+                    sequence.Add(innerEnum.SequenceToString(recurse));
                 }
                 else
                 {

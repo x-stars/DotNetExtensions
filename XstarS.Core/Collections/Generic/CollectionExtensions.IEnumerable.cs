@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace XstarS.Collections.Generic
 {
-    partial class GenericCollectionExtensions
+    partial class CollectionExtensions
     {
         /// <summary>
         /// 获取当前 <see cref="IEnumerable{T}"/> 对象中指定对象的数量。

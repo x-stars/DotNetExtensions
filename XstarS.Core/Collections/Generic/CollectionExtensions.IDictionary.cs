@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace XstarS.Collections.Generic
 {
-    partial class GenericCollectionExtensions
+    partial class CollectionExtensions
     {
         /// <summary>
         /// 根据指定的键获取 <see cref="IDictionary{TKey, TValue}"/> 中对应值。

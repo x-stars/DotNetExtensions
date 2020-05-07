@@ -10,18 +10,13 @@
 
 * [命令行参数解析器](Documentations/ArgumentReaders.md)
 
-## 程序集 XstarS.Collections
-
-集合类型相关，目前包含的命名空间：
-
-* `XstarS.Collections`
-* `XstarS.Collections.Generic`
-
 ## 程序集 XstarS.Core
 
 系统基础相关，目前包含的命名空间：
 
 * `XstarS`
+* `XstarS.Collections`
+* `XstarS.Collections.Generic`
 * `XstarS.Collections.Specialized`
 * `XstarS.Diagnostics`
 * `XstarS.IO`

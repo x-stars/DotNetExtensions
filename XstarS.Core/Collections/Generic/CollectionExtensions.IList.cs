@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace XstarS.Collections.Generic
 {
-    partial class GenericCollectionExtensions
+    partial class CollectionExtensions
     {
         /// <summary>
         /// 创建 <see cref="IList{T}"/> 中指定元素范围的浅表复制。

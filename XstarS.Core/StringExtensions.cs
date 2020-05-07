@@ -11,20 +11,6 @@ namespace XstarS
     public static class StringExtensions
     {
         /// <summary>
-        /// 返回一个新字符串，此字符串将当前字符串重复指定次数。
-        /// </summary>
-        /// <param name="text">要重复的字符串。</param>
-        /// <param name="count">字符串重复的次数。</param>
-        /// <returns>将 <paramref name="text"/>
-        /// 重复 <paramref name="count"/> 次得到的新字符串。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="count"/> 小于 0。</exception>
-        public static string Repeat(this string text, int count) =>
-            new string('*', count).Replace("*", text);
-
-        /// <summary>
         /// 指示当前字符串是否匹配指定正则表达式。
         /// </summary>
         /// <param name="text">要进行匹配的字符串。</param>
@@ -37,6 +23,20 @@ namespace XstarS
         /// <paramref name="pattern"/> 的正则表达式分析错误。</exception>
         public static bool IsMatch(this string text, string pattern) =>
             new Regex(pattern).IsMatch(text);
+
+        /// <summary>
+        /// 返回一个新字符串，此字符串将当前字符串重复指定次数。
+        /// </summary>
+        /// <param name="text">要重复的字符串。</param>
+        /// <param name="count">字符串重复的次数。</param>
+        /// <returns>将 <paramref name="text"/>
+        /// 重复 <paramref name="count"/> 次得到的新字符串。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="count"/> 小于 0。</exception>
+        public static string Repeat(this string text, int count) =>
+            new string('*', count).Replace("*", text);
 
         /// <summary>
         /// 返回一个新字符串，此字符串中所有匹配指定正则表达式模式的子字符串都被替换为指定值。
