@@ -29,6 +29,27 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Win32", "XstarS.Win3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Windows", "XstarS.Windows\XstarS.Windows.csproj", "{665560E7-547C-42EF-A1C7-2887E2089430}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RepositoryFiles", "RepositoryFiles", "{B262C00E-D990-4C24-93AC-9D11B260552A}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentations", "Documentations", "{8E0839A9-20F2-4E6B-A054-952A32BEED8D}"
+	ProjectSection(SolutionItems) = preProject
+		Documentations\ArgumentReaders.md = Documentations\ArgumentReaders.md
+		Documentations\ObservableObject.md = Documentations\ObservableObject.md
+		Documentations\ObservableObjectCompare.md = Documentations\ObservableObjectCompare.md
+		Documentations\ObservableTypeProvider.md = Documentations\ObservableTypeProvider.md
+		Documentations\ValueEquals.md = Documentations\ValueEquals.md
+		Documentations\ValueValidate.md = Documentations\ValueValidate.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StrongNameKeys", "StrongNameKeys", "{39421A54-3AA8-40D6-BAAA-6B0E75AB9D61}"
+	ProjectSection(SolutionItems) = preProject
+		DotNetExtensions.snk = DotNetExtensions.snk
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

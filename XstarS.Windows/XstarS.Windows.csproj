@@ -25,6 +25,11 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\DotNetExtensions.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <DocumentationFile>
       obj\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml
     </DocumentationFile>
