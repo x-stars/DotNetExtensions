@@ -13,7 +13,7 @@ namespace XstarS.Collections.Generic
         /// <returns>将 <paramref name="comparer"/> 反转后得到的 <see cref="IComparer{T}"/> 对象。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="comparer"/> 为 <see langword="null"/>。</exception>
-        public static IComparer<T> Reverse<T>(IComparer<T> comparer)
+        public static IComparer<T> Reverse<T>(this IComparer<T> comparer)
         {
             if (comparer is null)
             {

@@ -107,5 +107,17 @@ namespace XstarS.Collections.Generic
                 action(item);
             }
         }
+
+        /// <summary>
+        /// 获取当前 <see cref="IEnumerable{T}"/> 遍历元素得到的哈希代码。
+        /// </summary>
+        /// <param name="enumerable">要为其获取哈希代码的 <see cref="IEnumerable{T}"/> 对象。</param>
+        /// <param name="comparer">用于获取集合元素的哈希代码的比较器。</param>
+        /// <returns>遍历 <paramref name="enumerable"/> 的元素得到的哈希代码。</returns>
+        public static int GetCollectionHashCode<T>(this IEnumerable<T> enumerable,
+            IEqualityComparer<T> comparer = null)
+        {
+            return new CollectionEqualityComparer<T>(comparer).GetHashCode(enumerable);
+        }
     }
 }

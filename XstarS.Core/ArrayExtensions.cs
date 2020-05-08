@@ -105,6 +105,31 @@ namespace XstarS
         }
 
         /// <summary>
+        /// 获取当前数组遍历元素得到的哈希代码。
+        /// </summary>
+        /// <param name="array">要为其获取哈希代码的数组。</param>
+        /// <param name="comparer">用于获取数组元素的哈希代码的比较器。</param>
+        /// <returns>遍历 <paramref name="array"/> 的元素得到的哈希代码。</returns>
+        public static int GetArrayHashCode<T>(this T[] array,
+            IEqualityComparer<T> comparer = null)
+        {
+            return new ArrayEqualityComparer<T>(comparer).GetHashCode(array);
+        }
+
+        /// <summary>
+        /// 获取当前数组遍历元素得到的哈希代码。
+        /// </summary>
+        /// <param name="array">要为其获取哈希代码的数组。</param>
+        /// <param name="recurse">指示是否对内层数组递归。</param>
+        /// <param name="comparer">用于获取数组元素的哈希代码的比较器。</param>
+        /// <returns>遍历 <paramref name="array"/> 的元素得到的哈希代码。</returns>
+        public static int GetArrayHashCode(this Array array,
+            bool recurse = false, IEqualityComparer comparer = null)
+        {
+            return new ArrayEqualityComparer(recurse, comparer).GetHashCode(array);
+        }
+
+        /// <summary>
         /// 返回一个长度等于当前 32 位有符号整数的指定类型的数组，
         /// 数组的每个元素由 <see cref="Converter{TInput, TOutput}"/> 转换索引得到。
         /// </summary>
