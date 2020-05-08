@@ -12,6 +12,11 @@ namespace XstarS.ComponentModel
     public abstract class ObservableDataObject : INotifyPropertyChanged
     {
         /// <summary>
+        /// 表示索引属性的默认名称。
+        /// </summary>
+        protected const string IndexerName = "Item[]";
+
+        /// <summary>
         /// 表示所有属性的值。
         /// </summary>
         private readonly ConcurrentDictionary<string, object> Properties;
