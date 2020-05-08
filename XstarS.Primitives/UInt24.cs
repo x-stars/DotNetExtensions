@@ -39,14 +39,14 @@ namespace XstarS
         /// <exception cref="OverflowException">
         /// <paramref name="value"/> 的值超出 <see cref="UInt24"/> 的表示范围。</exception>
         [CLSCompliant(false)]
-        public unsafe UInt24(uint value)
+        public UInt24(uint value)
         {
             if (value > UInt24.MaxValue)
             {
                 throw new OverflowException();
             }
-            this.LowWord = *(ushort*)&value;
-            this.HighByte = ((byte*)&value)[2];
+            this.LowWord = (ushort)value;
+            this.HighByte = (byte)(value >> 16);
         }
 
         /// <summary>
@@ -54,11 +54,11 @@ namespace XstarS
         /// </summary>
         /// <returns>转换得到的 32 位无符号整数。</returns>
         [CLSCompliant(false)]
-        public unsafe uint ToUInt32()
+        public uint ToUInt32()
         {
             var result = 0U;
-            *(ushort*)&result = this.LowWord;
-            ((byte*)&result)[2] = this.HighByte;
+            result |= (uint)this.LowWord;
+            result |= (uint)this.HighByte << 16;
             return result;
         }
 
