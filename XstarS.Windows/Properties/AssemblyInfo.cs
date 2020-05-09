@@ -8,5 +8,6 @@ using System.Windows.Markup;
 [assembly: XmlnsPrefix("https://x-stars.github.io/dotnet/extensions", "xsext")]
 [assembly: XmlnsDefinition("https://x-stars.github.io/dotnet/extensions", "XstarS.Windows")]
 [assembly: XmlnsDefinition("https://x-stars.github.io/dotnet/extensions", "XstarS.Windows.Controls")]
+[assembly: XmlnsDefinition("https://x-stars.github.io/dotnet/extensions", "XstarS.Windows.Data")]
 [assembly: XmlnsDefinition("https://x-stars.github.io/dotnet/extensions", "XstarS.Windows.Input")]
 [assembly: XmlnsDefinition("https://x-stars.github.io/dotnet/extensions", "XstarS.Windows.Media")]
