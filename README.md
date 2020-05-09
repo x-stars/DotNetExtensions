@@ -2,6 +2,16 @@
 
 天南十字星 (XstarS) 的自用 .NET 扩展库，程序集名称和命名空间均仿照 .NET 框架。
 
+## 框架支持
+
+| .NET      | 版本         |
+| --------- | ------------ |
+| Core      | 2.1, 3.1     |
+| Framework | 4.6.1, 4.7.2 |
+| Standard  | 2.0, 2.1     |
+
+> C# 版本 >= 7.3
+
 ## 程序集 XstarS.ArgumentReaders
 
 提供简易的命令行参数解析器，以及 CMD, PowerShell, Unix Shell 等多种风格的实现。
@@ -102,6 +112,7 @@ Win32 相关，目前包含的命名空间：
 WPF 相关，目前包含的命名空间：
 
 * `XstarS.Windows.Controls`
+* `XstarS.Windows.Data`
 * `XstarS.Windows.Media`
 
 XAML 命名空间：
