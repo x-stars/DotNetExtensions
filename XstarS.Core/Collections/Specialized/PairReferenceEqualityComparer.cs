@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 namespace XstarS.Collections.Specialized
@@ -6,12 +7,13 @@ namespace XstarS.Collections.Specialized
     /// <summary>
     /// 用于比较两个 <see cref="KeyValuePair{TKey, TValue}"/> 包含的对象的引用是否相等的比较器。
     /// </summary>
+    [Serializable]
     internal sealed class PairReferenceEqualityComparer : EqualityComparer<KeyValuePair<object, object>>
     {
         /// <summary>
         /// 初始化 <see cref="PairReferenceEqualityComparer"/> 类的新实例。
         /// </summary>
-        private PairReferenceEqualityComparer() : base() { }
+        public PairReferenceEqualityComparer() { }
 
         /// <summary>
         /// 返回一个默认的 <see cref="PairReferenceEqualityComparer"/> 实例。
@@ -26,7 +28,7 @@ namespace XstarS.Collections.Specialized
         /// <returns>若 <paramref name="x"/> 与 <paramref name="y"/> 的包含的对象的引用分别相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public override bool Equals(KeyValuePair<object, object> x, KeyValuePair<object, object> y) =>
-            ReferenceEquals(x.Key, y.Key) && ReferenceEquals(x.Value, y.Value);
+            object.ReferenceEquals(x.Key, y.Key) && object.ReferenceEquals(x.Value, y.Value);
 
         /// <summary>
         /// 获取指定 <see cref="KeyValuePair{TKey, TValue}"/> 包含的对象基于引用的哈希代码。

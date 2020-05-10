@@ -13,7 +13,7 @@ namespace XstarS.Reflection
         /// <summary>
         /// 初始化 <see cref="MethodSignatureEqualityComparer"/> 类的新实例。
         /// </summary>
-        private MethodSignatureEqualityComparer() { }
+        public MethodSignatureEqualityComparer() { }
 
         /// <summary>
         /// 获取默认的 <see cref="MethodSignatureEqualityComparer"/> 类的实例。
