@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Input;
 
-namespace XstarS.ComponentModel
+namespace XstarS.Windows.Input
 {
     /// <summary>
     /// 表示由委托 <see cref="Delegate"/> 定义的命令 <see cref="ICommand"/>。

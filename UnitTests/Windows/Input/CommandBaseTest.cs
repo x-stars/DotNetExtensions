@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XstarS.ComponentModel
+namespace XstarS.Windows.Input
 {
     [TestClass]
     public class CommandBaseTest
