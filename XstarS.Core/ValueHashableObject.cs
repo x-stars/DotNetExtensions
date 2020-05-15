@@ -8,19 +8,18 @@ namespace XstarS
     /// <summary>
     /// 提供获取指定对象基于值的哈希代码的方法。
     /// </summary>
-    [Serializable]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
     internal sealed class ValueHashableObject
     {
         /// <summary>
         /// 当前对象的基于值的哈希代码。
         /// </summary>
-        [NonSerialized]
         private int HashCode;
 
         /// <summary>
         /// 已经计算过哈希代码的对象。
         /// </summary>
-        [NonSerialized]
         private HashSet<object> Computed;
 
         /// <summary>
@@ -72,12 +71,10 @@ namespace XstarS
         /// <param name="value">要将其基于值的哈希代码追加到当前哈希代码的对象。</param>
         private void AppendValueHashCode(object value)
         {
-            // 空引用。
             if (value is null) { this.AppendEmptyValueHashCode(); return; }
-            // 已计算过的对象。
+
             if (!this.Computed.Add(value)) { this.AppendEmptyValueHashCode(); return; }
 
-            // 根据类型附加哈希代码。
             var type = value.GetType();
             if (type.IsPrimitive) { this.AppendPrimitiveValueHashCode(value); }
             else if (type == typeof(string)) { this.AppendStringValueHashCode((string)value); }
@@ -131,7 +128,6 @@ namespace XstarS
             this.AppendEmptyValueHashCode();
 
             var typeArray = value.GetType();
-            // 指针数组，反射调用无法访问的 Get 方法。
             if (typeArray.GetElementType().IsPointer)
             {
                 var methodGet = typeArray.GetMethod("Get");
@@ -142,7 +138,6 @@ namespace XstarS
                             value.OffsetToIndices(i), index => (object)index)));
                 }
             }
-            // 一般数组。
             else
             {
                 bool isMultiDim = value.Rank > 1;
@@ -163,13 +158,10 @@ namespace XstarS
         {
             this.AppendEmptyValueHashCode();
 
-            // 循环获取基类。
             for (var type = value.GetType(); !(type is null); type = type.BaseType)
             {
-                // 获取每个实例字段。
                 var fields = type.GetFields(BindingFlags.DeclaredOnly |
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                // 依次递归获取每个字段的哈希代码。
                 foreach (var field in fields)
                 {
                     this.AppendValueHashCode(field.GetValue(value));

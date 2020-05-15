@@ -28,13 +28,13 @@ namespace XstarS.Collections.Specialized
         /// <param name="y">要比较的第二个对象。</param>
         /// <returns>若 <paramref name="x"/> 与 <paramref name="y"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public override bool Equals(T x, T y) => ObjectExtensions.ValueEquals(x, y);
+        public override bool Equals(T x, T y) => new ValueEquatablePair(x, y).ValueEquals();
 
         /// <summary>
         /// 获取指定对象基于值的哈希代码。
         /// </summary>
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <returns><paramref name="obj"/> 基于值的哈希代码。</returns>
-        public override int GetHashCode(T obj) => ObjectExtensions.GetValueHashCode(obj);
+        public override int GetHashCode(T obj) => new ValueHashableObject(obj).GetValueHashCode();
     }
 }

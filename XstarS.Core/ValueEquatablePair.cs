@@ -8,13 +8,13 @@ namespace XstarS
     /// <summary>
     /// 提供两个对象的值相等比较的方法。
     /// </summary>
-    [Serializable]
+    [System.Diagnostics.CodeAnalysis.SuppressMessage(
+        "Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
     internal sealed class ValueEquatablePair
     {
         /// <summary>
         /// 已经比较过的对象的 <see cref="KeyValuePair{TKey, TValue}"/>。
         /// </summary>
-        [NonSerialized]
         private HashSet<KeyValuePair<object, object>> Compared;
 
         /// <summary>
@@ -66,16 +66,14 @@ namespace XstarS
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         private bool ValueEquals(object value, object other)
         {
-            // 已比较过的对象。
             var pair = new KeyValuePair<object, object>(value, other);
             if (!this.Compared.Add(pair)) { return true; }
-            // 引用比较。
+
             if (object.ReferenceEquals(value, other)) { return true; }
             if ((value is null) ^ (other is null)) { return false; }
-            // 类型不同。
+
             if (value.GetType() != other.GetType()) { return false; }
 
-            // 根据类型进行值相等比较。
             var type = value.GetType();
             return
                 type.IsPrimitive ? this.PrimitiveValueEquals(value, other) :
@@ -133,7 +131,6 @@ namespace XstarS
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
         private bool ArrayValueEquals(Array value, Array other)
         {
-            // 大小不等。
             if (value.Rank != other.Rank) { return false; }
             if (value.Length != other.Length) { return false; }
             for (int i = 0; i < value.Rank; i++)
@@ -145,7 +142,6 @@ namespace XstarS
             }
 
             var typeArray = value.GetType();
-            // 指针数组，反射调用无法访问的 Get 方法。
             if (typeArray.GetElementType().IsPointer)
             {
                 var methodGet = typeArray.GetMethod("Get");
@@ -161,7 +157,6 @@ namespace XstarS
                     }
                 }
             }
-            // 一般数组。
             else
             {
                 bool isMultiDim = value.Rank > 1;
@@ -188,13 +183,10 @@ namespace XstarS
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
         private bool ObjectValueEquals(object value, object other)
         {
-            // 循环获取基类。
             for (var type = value.GetType(); !(type is null); type = type.BaseType)
             {
-                // 获取每个实例字段。
                 var fields = type.GetFields(BindingFlags.DeclaredOnly |
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-                // 依次递归比较每个字段。
                 foreach (var field in fields)
                 {
                     if (!this.ValueEquals(field.GetValue(value), field.GetValue(other)))
