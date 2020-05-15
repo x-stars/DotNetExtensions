@@ -3,6 +3,33 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28701.123
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configurations", "Configurations", "{4F2CED81-4FE5-40E9-90FB-5B2C75349EE2}"
+	ProjectSection(SolutionItems) = preProject
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentations", "Documentations", "{8E0839A9-20F2-4E6B-A054-952A32BEED8D}"
+	ProjectSection(SolutionItems) = preProject
+		Documentations\ArgumentReaders.md = Documentations\ArgumentReaders.md
+		Documentations\ObservableObject.md = Documentations\ObservableObject.md
+		Documentations\ObservableObjectCompare.md = Documentations\ObservableObjectCompare.md
+		Documentations\ObservableTypeProvider.md = Documentations\ObservableTypeProvider.md
+		Documentations\ValueEquals.md = Documentations\ValueEquals.md
+		Documentations\ValueValidate.md = Documentations\ValueValidate.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RepositoryItems", "RepositoryItems", "{B262C00E-D990-4C24-93AC-9D11B260552A}"
+	ProjectSection(SolutionItems) = preProject
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{39421A54-3AA8-40D6-BAAA-6B0E75AB9D61}"
+	ProjectSection(SolutionItems) = preProject
+		DotNetExtensions.snk = DotNetExtensions.snk
+	EndProjectSection
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{BA4F1AD2-DACC-4B0D-BBC8-771D83C32CED}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.ArgumentReaders", "XstarS.ArgumentReaders\XstarS.ArgumentReaders.csproj", "{B5EF52C2-DE52-4ADD-ACD7-191A6BBC426E}"
@@ -28,27 +55,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Win32", "XstarS.Win32\XstarS.Win32.csproj", "{0B423D1F-050E-4843-86EC-A41D77CD5AF4}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Windows", "XstarS.Windows\XstarS.Windows.csproj", "{665560E7-547C-42EF-A1C7-2887E2089430}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RepositoryFiles", "RepositoryFiles", "{B262C00E-D990-4C24-93AC-9D11B260552A}"
-	ProjectSection(SolutionItems) = preProject
-		LICENSE.txt = LICENSE.txt
-		README.md = README.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentations", "Documentations", "{8E0839A9-20F2-4E6B-A054-952A32BEED8D}"
-	ProjectSection(SolutionItems) = preProject
-		Documentations\ArgumentReaders.md = Documentations\ArgumentReaders.md
-		Documentations\ObservableObject.md = Documentations\ObservableObject.md
-		Documentations\ObservableObjectCompare.md = Documentations\ObservableObjectCompare.md
-		Documentations\ObservableTypeProvider.md = Documentations\ObservableTypeProvider.md
-		Documentations\ValueEquals.md = Documentations\ValueEquals.md
-		Documentations\ValueValidate.md = Documentations\ValueValidate.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StrongNameKeys", "StrongNameKeys", "{39421A54-3AA8-40D6-BAAA-6B0E75AB9D61}"
-	ProjectSection(SolutionItems) = preProject
-		DotNetExtensions.snk = DotNetExtensions.snk
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

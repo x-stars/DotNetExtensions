@@ -47,7 +47,8 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='net461'">
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.01234567890`))'=='net' And
+                        '$(TargetFramework.CompareTo(`net47`))'&lt;'0'">
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 

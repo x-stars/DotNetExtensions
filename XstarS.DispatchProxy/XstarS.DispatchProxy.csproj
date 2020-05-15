@@ -47,11 +47,12 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
-  <ItemGroup Condition="$(TargetFramework.TrimEnd('.0123456789'))=='net'">
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='net'">
     <PackageReference Include="System.Reflection.DispatchProxy" Version="4.7.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard' And
+                        '$(TargetFramework.CompareTo(`netstandard2.1`))'&lt;'0'">
     <PackageReference Include="System.Reflection.DispatchProxy" Version="4.7.0" />
   </ItemGroup>
 
