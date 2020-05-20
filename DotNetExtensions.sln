@@ -9,14 +9,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Configurations", "Configura
 		.gitignore = .gitignore
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentations", "Documentations", "{8E0839A9-20F2-4E6B-A054-952A32BEED8D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentation", "{8E0839A9-20F2-4E6B-A054-952A32BEED8D}"
 	ProjectSection(SolutionItems) = preProject
-		Documentations\ArgumentReaders.md = Documentations\ArgumentReaders.md
-		Documentations\ObservableObject.md = Documentations\ObservableObject.md
-		Documentations\ObservableObjectCompare.md = Documentations\ObservableObjectCompare.md
-		Documentations\ObservableTypeProvider.md = Documentations\ObservableTypeProvider.md
-		Documentations\ValueEquals.md = Documentations\ValueEquals.md
-		Documentations\ValueValidate.md = Documentations\ValueValidate.md
+		Documentation\ArgumentReaders.md = Documentation\ArgumentReaders.md
+		Documentation\ObservableObject.md = Documentation\ObservableObject.md
+		Documentation\ObservableObjectCompare.md = Documentation\ObservableObjectCompare.md
+		Documentation\ObservableTypeProvider.md = Documentation\ObservableTypeProvider.md
+		Documentation\ValueEquals.md = Documentation\ValueEquals.md
+		Documentation\ValueValidate.md = Documentation\ValueValidate.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "RepositoryItems", "RepositoryItems", "{B262C00E-D990-4C24-93AC-9D11B260552A}"

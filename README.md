@@ -18,7 +18,7 @@
 
 相关文档：
 
-* [命令行参数解析器](Documentations/ArgumentReaders.md)
+* [命令行参数解析器](Documentation/ArgumentReaders.md)
 
 ## 程序集 XstarS.Core
 
@@ -34,7 +34,7 @@
 
 相关文档：
 
-* [对象的通用值相等比较方法](Documentations/ValueEquals.md)
+* [对象的通用值相等比较方法](Documentation/ValueEquals.md)
 
 ## 程序集 XstarS.Deconstructable
 
@@ -62,8 +62,8 @@
 
 相关文档：
 
-* [属性更改通知接口实现框架](Documentations/ObservableObject.md)
-* [属性更改通知实现方式比较](Documentations/ObservableObjectCompare.md)
+* [属性更改通知接口实现框架](Documentation/ObservableObject.md)
+* [属性更改通知实现方式比较](Documentation/ObservableObjectCompare.md)
 
 ## 程序集 XstarS.ObservableProxy
 
@@ -71,9 +71,9 @@
 
 相关文档：
 
-* [属性更改通知接口实现框架](Documentations/ObservableObject.md)
-* [属性更改通知实现方式比较](Documentations/ObservableObjectCompare.md)
-* [属性更改通知类型提供对象](Documentations/ObservableTypeProvider.md)
+* [属性更改通知接口实现框架](Documentation/ObservableObject.md)
+* [属性更改通知实现方式比较](Documentation/ObservableObjectCompare.md)
+* [属性更改通知类型提供对象](Documentation/ObservableTypeProvider.md)
 
 ## 程序集 XstarS.Primitives
 
@@ -99,7 +99,7 @@
 
 相关文档：
 
-* [对象的值的验证](Documentations/ValueValidate.md)
+* [对象的值的验证](Documentation/ValueValidate.md)
 
 ## 程序集 XstarS.Win32
 
