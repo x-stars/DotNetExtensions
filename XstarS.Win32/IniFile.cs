@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using mstring = System.Text.StringBuilder;
 
 namespace XstarS.Win32
@@ -52,6 +53,19 @@ namespace XstarS.Win32
         }
 
         /// <summary>
+        /// 获取或设置当前 INI 配置文件中指定区块的指定键对应的值。
+        /// </summary>
+        /// <param name="app">区块名称。</param>
+        /// <param name="key">键名称。</param>
+        /// <returns>当前 INI 配置文件中指定区块的指定键对应的值。</returns>
+        [IndexerName("Profile")]
+        public string this[string app, string key]
+        {
+            get => this.ReadProfile(app, key);
+            set => this.WriteProfile(app, key, value);
+        }
+
+        /// <summary>
         /// 获取 INI 配置文件的路径。
         /// </summary>
         public string FilePath { get; }
@@ -62,7 +76,7 @@ namespace XstarS.Win32
         /// <param name="app">区块名称。</param>
         /// <param name="key">键名称。</param>
         /// <returns>当前 INI 配置文件中指定区块的指定键对应的值。</returns>
-        public string ReadValue(string app, string key)
+        public string ReadProfile(string app, string key)
         {
             var result = new mstring(ushort.MaxValue);
             IniFile.NativeMethods.GetPrivateProfileString(
@@ -78,7 +92,7 @@ namespace XstarS.Win32
         /// <param name="value">要写入的值。</param>
         /// <returns>若写入成功，则为 <see langword="true"/>；
         /// 否则为 <see langword="false"/>。</returns>
-        public void WriteValue(string app, string key, string value)
+        public void WriteProfile(string app, string key, string value)
         {
             IniFile.NativeMethods.WritePrivateProfileString(
                 app, key, value, this.FilePath);
