@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
+using mstring = System.Text.StringBuilder;
 
 namespace XstarS
 {
@@ -80,28 +80,28 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(isSeparator));
             }
 
-            var builder = new StringBuilder();
+            var token = new mstring();
             foreach (var c in text)
             {
                 if (isSeparator(c))
                 {
-                    if ((builder.Length > 0) ||
+                    if ((token.Length > 0) ||
                         (options == StringSplitOptions.None))
                     {
-                        yield return builder.ToString();
-                        builder.Clear();
+                        yield return token.ToString();
+                        token.Clear();
                     }
                 }
                 else
                 {
-                    builder.Append(c);
+                    token.Append(c);
                 }
             }
-            if ((builder.Length > 0) ||
+            if ((token.Length > 0) ||
                 (options == StringSplitOptions.None))
             {
-                yield return builder.ToString();
-                builder.Clear();
+                yield return token.ToString();
+                token.Clear();
             }
         }
     }

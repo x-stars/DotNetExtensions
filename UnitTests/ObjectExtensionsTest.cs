@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -52,7 +51,7 @@ namespace XstarS
             var n0 = l.AddLast("0");
             var n1 = l.AddLast("1");
             var n2 = l.AddLast("2");
-            var lc = (LinkedList<object>)l.DeepClone();
+            var lc = l.DeepClone();
             var n0c = lc.First;
             var n1c = n0c.Next;
             var n2c = n1c.Next;

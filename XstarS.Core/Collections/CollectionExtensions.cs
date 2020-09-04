@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace XstarS.Collections
 {
     /// <summary>
-    /// 提供非泛型集合的扩展方法。
+    /// 提供集合的扩展方法。
     /// </summary>
     public static class CollectionExtensions
     {

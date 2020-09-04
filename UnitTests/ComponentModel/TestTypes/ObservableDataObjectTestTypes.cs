@@ -1,5 +1,4 @@
-﻿using System;
-using System.Runtime.CompilerServices;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace XstarS.ComponentModel.TestTypes
 {
@@ -45,6 +44,7 @@ namespace XstarS.ComponentModel.TestTypes
     {
         public ObservableBox() { }
 
+        [Range(0, int.MaxValue)]
         public int Length
         {
             get => this.GetProperty<int>();
@@ -55,6 +55,7 @@ namespace XstarS.ComponentModel.TestTypes
             }
         }
 
+        [Range(0, int.MaxValue)]
         public int Width
         {
             get => this.GetProperty<int>();
@@ -65,6 +66,7 @@ namespace XstarS.ComponentModel.TestTypes
             }
         }
 
+        [Range(0, int.MaxValue)]
         public int Height
         {
             get => this.GetProperty<int>();
@@ -73,15 +75,6 @@ namespace XstarS.ComponentModel.TestTypes
                 this.SetProperty(value);
                 this.NotifyPropertyChanged(nameof(this.Size));
             }
-        }
-
-        protected override void ValidateProperty(
-            [CallerMemberName] string propertyName = null)
-        {
-            base.ValidateProperty(propertyName);
-            var errors = (this.GetProperty<int>(propertyName) < 0) ?
-                new[] { new ArgumentOutOfRangeException().Message } : null;
-            this.SetErrors(errors, propertyName);
         }
 
         public int Size => this.Length * this.Width * this.Height;

@@ -42,7 +42,8 @@ namespace XstarS.ComponentModel
                 [nameof(box.Length)] = 0,
                 [nameof(box.Width)] = 0,
                 [nameof(box.Height)] = 0,
-                [nameof(box.Size)] = 0
+                [nameof(box.Size)] = 0,
+                [nameof(box.HasErrors)] = 0
             };
             box.PropertyChanged += (sender, e) => changedCounts[e.PropertyName]++;
             Assert.AreEqual(box.Size, box.Length * box.Width * box.Height);

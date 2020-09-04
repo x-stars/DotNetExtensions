@@ -32,6 +32,14 @@
     <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='net'">
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard'">
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\XstarS.ArgumentReaders\XstarS.ArgumentReaders.csproj" />
     <ProjectReference Include="..\XstarS.Core\XstarS.Core.csproj" />
