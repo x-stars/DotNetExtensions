@@ -49,13 +49,12 @@ namespace XstarS.ComponentModel
         /// <param name="flagName">要确定的枚举位域的名称。</param>
         /// <returns>若当前视图表示的枚举值包含指定的枚举位域值，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="flagName"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="flagName"/> 不为有效的枚举值名称。</exception>
         protected bool HasFlag(
             [CallerMemberName] string flagName = null)
         {
+            flagName = flagName ?? string.Empty;
             return this[(TEnum)Enum.Parse(typeof(TEnum), flagName)];
         }
 
@@ -64,13 +63,12 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="flagName">要设置的枚举位域的名称。</param>
         /// <param name="value">指示是添加位域还是移除位域。</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="flagName"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="flagName"/> 不为有效的枚举值名称。</exception>
         protected virtual void SetFlag(bool value,
             [CallerMemberName] string flagName = null)
         {
+            flagName = flagName ?? string.Empty;
             this[(TEnum)Enum.Parse(typeof(TEnum), flagName)] = value;
         }
 
