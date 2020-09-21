@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using mstring = System.Text.StringBuilder;
 
@@ -59,6 +60,14 @@ namespace XstarS
             }
             return text;
         }
+
+        /// <summary>
+        /// 返回一个新字符串，此字符串的顺序与当前字符串的顺序相反。
+        /// </summary>
+        /// <param name="text">要反转顺序的字符串。</param>
+        /// <returns>将 <paramref name="text"/> 反转顺序得到的新字符串。</returns>
+        public static string Reverse(this string text) =>
+            (text is null) ? null : new string(text.ToCharArray().Reverse().ToArray());
 
         /// <summary>
         /// 使用满足指定条件的所有字符为分隔符将字符串拆分为多个子字符串。
