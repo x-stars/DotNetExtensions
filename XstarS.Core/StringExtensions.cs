@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using mstring = System.Text.StringBuilder;
 
@@ -66,8 +65,13 @@ namespace XstarS
         /// </summary>
         /// <param name="text">要反转顺序的字符串。</param>
         /// <returns>将 <paramref name="text"/> 反转顺序得到的新字符串。</returns>
-        public static string Reverse(this string text) =>
-            (text is null) ? null : new string(text.ToCharArray().Reverse().ToArray());
+        public static string Reverse(this string text)
+        {
+            if (text is null) { return null; }
+            var chars = text.ToCharArray();
+            Array.Reverse(chars);
+            return new string(chars);
+        }
 
         /// <summary>
         /// 使用满足指定条件的所有字符为分隔符将字符串拆分为多个子字符串。
@@ -77,6 +81,8 @@ namespace XstarS
         /// <param name="options">指定是否要忽略分隔得到的空子字符串。</param>
         /// <returns><paramref name="text"/> 根据满足 <paramref name="isSeparator"/> 条件的字符分隔得到的子字符串，
         /// 并根据 <paramref name="options"/> 的指示去除空字符串。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// 存在为 <see langword="null"/> 的参数。</exception>
         public static IEnumerable<string> Split(this string text,
             Predicate<char> isSeparator, StringSplitOptions options = StringSplitOptions.None)
         {
