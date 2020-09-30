@@ -35,19 +35,14 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 表示标准输入流的同步锁对象。
+        /// 表示读取方法的同步锁对象。
         /// </summary>
-        private static readonly object InSyncRoot = new object();
+        private static readonly object ReadSyncRoot = new object();
 
         /// <summary>
-        /// 表示标准输出流的同步锁对象。
+        /// 表示写入方法的同步锁对象。
         /// </summary>
-        private static readonly object OutSyncRoot = new object();
-
-        /// <summary>
-        /// 表示标准错误输出流的同步锁对象。
-        /// </summary>
-        private static readonly object ErrorSyncRoot = new object();
+        private static readonly object WriteSyncRoot = new object();
 
         /// <summary>
         /// 表示所有空白字符的集合。
@@ -81,7 +76,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static string ReadToken()
         {
-            lock (ConsoleEx.InSyncRoot)
+            lock (ConsoleEx.ReadSyncRoot)
             {
                 var iChar = -1;
                 while ((iChar = Console.Read()) != -1)
@@ -167,7 +162,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteInColor(string value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.OutSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -184,7 +179,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteInColor(string value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.OutSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
@@ -202,7 +197,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteInColor(object value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.OutSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -219,7 +214,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteInColor(object value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.OutSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
@@ -237,7 +232,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteLineInColor(string value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.OutSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -254,7 +249,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteLineInColor(string value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.OutSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
@@ -272,7 +267,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteLineInColor(object value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.OutSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -289,7 +284,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteLineInColor(object value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.OutSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
@@ -326,6 +321,13 @@ namespace XstarS
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static void WriteError(string format, params object[] args) =>
             Console.Error.Write(format, args);
+
+        /// <summary>
+        /// 将当前行终止符写入标准输出流。
+        /// </summary>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteErrorLine() => Console.Error.WriteLine();
 
         /// <summary>
         /// 将指定的字符串值（后跟当前行终止符）写入标准错误输出流。
@@ -365,7 +367,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorInColor(string value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.ErrorSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -382,7 +384,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorInColor(string value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.ErrorSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
@@ -400,7 +402,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorInColor(object value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.ErrorSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -417,7 +419,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorInColor(object value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.ErrorSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
@@ -435,7 +437,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorLineInColor(string value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.ErrorSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -452,7 +454,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorLineInColor(string value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.ErrorSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
@@ -470,7 +472,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorLineInColor(object value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.ErrorSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -487,7 +489,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorLineInColor(object value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.ErrorSyncRoot)
+            lock (ConsoleEx.WriteSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
