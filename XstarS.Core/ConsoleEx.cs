@@ -310,20 +310,46 @@ namespace XstarS
         public static void WriteError(object value) => Console.Error.Write(value);
 
         /// <summary>
+        /// 将指定的 Unicode 字符数组写入标准错误输出流。
+        /// </summary>
+        /// <param name="buffer">Unicode 字符数组。</param>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteError(char[] buffer) => Console.Error.Write(buffer);
+
+        /// <summary>
+        /// 将指定的 Unicode 字符子数组写入标准错误输出流。
+        /// </summary>
+        /// <param name="buffer">Unicode 字符的数组。</param>
+        /// <param name="index"><paramref name="buffer"/> 中的起始位置。</param>
+        /// <param name="count">要写入的字符数。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="buffer"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> 或 <paramref name="count"/> 小于零。</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="index"/> 加 <paramref name="count"/>
+        /// 指定不在 <paramref name="buffer"/> 内的位置。</exception>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteError(char[] buffer, int index, int count) =>
+            Console.Error.Write(buffer, index, count);
+
+        /// <summary>
         /// 使用指定的格式信息，将指定对象的文本表示形式写入标准错误输出流。
         /// </summary>
         /// <param name="format">复合格式字符串。</param>
-        /// <param name="args">要使用 <paramref name="format"/> 写入的对象的数组。</param>
+        /// <param name="arg">要使用 <paramref name="format"/> 写入的对象的数组。</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="format"/> 或 <paramref name="args"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="format"/> 或 <paramref name="arg"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="FormatException"><paramref name="format"/> 中的格式规范无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteError(string format, params object[] args) =>
-            Console.Error.Write(format, args);
+        public static void WriteError(string format, params object[] arg) =>
+            Console.Error.Write(format, arg);
 
         /// <summary>
-        /// 将当前行终止符写入标准输出流。
+        /// 将当前行终止符写入标准错误输出流。
         /// </summary>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
@@ -346,17 +372,43 @@ namespace XstarS
         public static void WriteErrorLine(object value) => Console.Error.WriteLine(value);
 
         /// <summary>
+        /// 将指定的 Unicode 字符数组（后跟当前行终止符）写入标准错误输出流。
+        /// </summary>
+        /// <param name="buffer">Unicode 字符数组。</param>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteErrorLine(char[] buffer) => Console.Error.WriteLine(buffer);
+
+        /// <summary>
+        /// 将指定的 Unicode 字符子数组（后跟当前行终止符）写入标准错误输出流。
+        /// </summary>
+        /// <param name="buffer">Unicode 字符的数组。</param>
+        /// <param name="index"><paramref name="buffer"/> 中的起始位置。</param>
+        /// <param name="count">要写入的字符数。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="buffer"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> 或 <paramref name="count"/> 小于零。</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="index"/> 加 <paramref name="count"/>
+        /// 指定不在 <paramref name="buffer"/> 内的位置。</exception>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteErrorLine(char[] buffer, int index, int count) =>
+            Console.Error.WriteLine(buffer, index, count);
+
+        /// <summary>
         /// 使用指定的格式信息，将指定对象的文本表示形式（后跟当前行终止符）写入标准错误输出流。
         /// </summary>
         /// <param name="format">复合格式字符串。</param>
-        /// <param name="args">要使用 <paramref name="format"/> 写入的对象的数组。</param>
+        /// <param name="arg">要使用 <paramref name="format"/> 写入的对象的数组。</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="format"/> 或 <paramref name="args"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="format"/> 或 <paramref name="arg"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="FormatException"><paramref name="format"/> 中的格式规范无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteErrorLine(string format, params object[] args) =>
-            Console.Error.WriteLine(format, args);
+        public static void WriteErrorLine(string format, params object[] arg) =>
+            Console.Error.WriteLine(format, arg);
 
         /// <summary>
         /// 将指定的字符串值以指定的前景色和背景色写入标准错误输出流。
