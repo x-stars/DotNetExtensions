@@ -37,17 +37,17 @@ namespace XstarS
         /// <summary>
         /// 表示标准输入流的同步锁对象。
         /// </summary>
-        private static readonly object InLock = new object();
+        private static readonly object InSyncRoot = new object();
 
         /// <summary>
         /// 表示标准输出流的同步锁对象。
         /// </summary>
-        private static readonly object OutLock = new object();
+        private static readonly object OutSyncRoot = new object();
 
         /// <summary>
         /// 表示标准错误输出流的同步锁对象。
         /// </summary>
-        private static readonly object ErrorLock = new object();
+        private static readonly object ErrorSyncRoot = new object();
 
         /// <summary>
         /// 表示所有空白字符的集合。
@@ -81,7 +81,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static string ReadToken()
         {
-            lock (ConsoleEx.InLock)
+            lock (ConsoleEx.InSyncRoot)
             {
                 var iChar = -1;
                 while ((iChar = Console.Read()) != -1)
@@ -159,7 +159,7 @@ namespace XstarS
             Array.ConvertAll(ConsoleEx.ReadTokensToEnd(), ConsoleEx.ParseAs<T>);
 
         /// <summary>
-        /// 将指定的字符串值以指定的前景色和背景色写入到标准输出流。
+        /// 将指定的字符串值以指定的前景色和背景色写入标准输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
@@ -167,7 +167,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteInColor(string value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.OutLock)
+            lock (ConsoleEx.OutSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -177,14 +177,14 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定的字符串值以指定的前景色写入到标准输出流。
+        /// 将指定的字符串值以指定的前景色写入标准输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteInColor(string value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.OutLock)
+            lock (ConsoleEx.OutSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
@@ -194,7 +194,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定对象的文本表示形式以指定的前景色和背景色写入到标准输出流。
+        /// 将指定对象的文本表示形式以指定的前景色和背景色写入标准输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
@@ -202,7 +202,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteInColor(object value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.OutLock)
+            lock (ConsoleEx.OutSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -212,14 +212,14 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定对象的文本表示形式以指定的前景色写入到标准输出流。
+        /// 将指定对象的文本表示形式以指定的前景色写入标准输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteInColor(object value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.OutLock)
+            lock (ConsoleEx.OutSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
@@ -229,7 +229,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定的字符串值（后跟当前行终止符）以指定的前景色和背景色写入到标准输出流。
+        /// 将指定的字符串值（后跟当前行终止符）以指定的前景色和背景色写入标准输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
@@ -237,7 +237,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteLineInColor(string value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.OutLock)
+            lock (ConsoleEx.OutSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -247,14 +247,14 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定的字符串值（后跟当前行终止符）以指定的前景色写入到标准输出流。
+        /// 将指定的字符串值（后跟当前行终止符）以指定的前景色写入标准输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteLineInColor(string value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.OutLock)
+            lock (ConsoleEx.OutSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
@@ -264,7 +264,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定对象的文本表示形式（后跟当前行终止符）以指定的前景色和背景色写入到标准输出流。
+        /// 将指定对象的文本表示形式（后跟当前行终止符）以指定的前景色和背景色写入标准输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
@@ -272,7 +272,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteLineInColor(object value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.OutLock)
+            lock (ConsoleEx.OutSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -282,14 +282,14 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定对象的文本表示形式（后跟当前行终止符）以指定的前景色写入到标准输出流。
+        /// 将指定对象的文本表示形式（后跟当前行终止符）以指定的前景色写入标准输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteLineInColor(object value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.OutLock)
+            lock (ConsoleEx.OutSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
@@ -299,7 +299,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定的字符串值写入到标准错误输出流。
+        /// 将指定的字符串值写入标准错误输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
@@ -307,7 +307,7 @@ namespace XstarS
         public static void WriteError(string value) => Console.Error.Write(value);
 
         /// <summary>
-        /// 将指定对象的文本表示形式写入到标准错误输出流。
+        /// 将指定对象的文本表示形式写入标准错误输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
@@ -315,7 +315,20 @@ namespace XstarS
         public static void WriteError(object value) => Console.Error.Write(value);
 
         /// <summary>
-        /// 将指定的字符串值（后跟当前行终止符）写入到标准错误输出流。
+        /// 使用指定的格式信息，将指定对象的文本表示形式写入标准错误输出流。
+        /// </summary>
+        /// <param name="format">复合格式字符串。</param>
+        /// <param name="args">要使用 <paramref name="format"/> 写入的对象的数组。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="format"/> 或 <paramref name="args"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="FormatException"><paramref name="format"/> 中的格式规范无效。</exception>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteError(string format, params object[] args) =>
+            Console.Error.Write(format, args);
+
+        /// <summary>
+        /// 将指定的字符串值（后跟当前行终止符）写入标准错误输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
@@ -323,7 +336,7 @@ namespace XstarS
         public static void WriteErrorLine(string value) => Console.Error.WriteLine(value);
 
         /// <summary>
-        /// 将指定对象的文本表示形式（后跟当前行终止符）写入到标准错误输出流。
+        /// 将指定对象的文本表示形式（后跟当前行终止符）写入标准错误输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
@@ -331,7 +344,20 @@ namespace XstarS
         public static void WriteErrorLine(object value) => Console.Error.WriteLine(value);
 
         /// <summary>
-        /// 将指定的字符串值以指定的前景色和背景色写入到标准错误输出流。
+        /// 使用指定的格式信息，将指定对象的文本表示形式（后跟当前行终止符）写入标准错误输出流。
+        /// </summary>
+        /// <param name="format">复合格式字符串。</param>
+        /// <param name="args">要使用 <paramref name="format"/> 写入的对象的数组。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="format"/> 或 <paramref name="args"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="FormatException"><paramref name="format"/> 中的格式规范无效。</exception>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteErrorLine(string format, params object[] args) =>
+            Console.Error.WriteLine(format, args);
+
+        /// <summary>
+        /// 将指定的字符串值以指定的前景色和背景色写入标准错误输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
@@ -339,7 +365,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorInColor(string value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.ErrorLock)
+            lock (ConsoleEx.ErrorSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -349,14 +375,14 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定的字符串值以指定的前景色写入到标准错误输出流。
+        /// 将指定的字符串值以指定的前景色写入标准错误输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorInColor(string value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.ErrorLock)
+            lock (ConsoleEx.ErrorSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
@@ -366,7 +392,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定对象的文本表示形式以指定的前景色和背景色写入到标准错误输出流。
+        /// 将指定对象的文本表示形式以指定的前景色和背景色写入标准错误输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
@@ -374,7 +400,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorInColor(object value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.ErrorLock)
+            lock (ConsoleEx.ErrorSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -384,14 +410,14 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定对象的文本表示形式以指定的前景色写入到标准错误输出流。
+        /// 将指定对象的文本表示形式以指定的前景色写入标准错误输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorInColor(object value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.ErrorLock)
+            lock (ConsoleEx.ErrorSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
@@ -401,7 +427,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定的字符串值（后跟当前行终止符）以指定的前景色和背景色写入到标准错误输出流。
+        /// 将指定的字符串值（后跟当前行终止符）以指定的前景色和背景色写入标准错误输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
@@ -409,7 +435,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorLineInColor(string value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.ErrorLock)
+            lock (ConsoleEx.ErrorSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -419,14 +445,14 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定的字符串值（后跟当前行终止符）以指定的前景色写入到标准错误输出流。
+        /// 将指定的字符串值（后跟当前行终止符）以指定的前景色写入标准错误输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorLineInColor(string value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.ErrorLock)
+            lock (ConsoleEx.ErrorSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
@@ -436,7 +462,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定对象的文本表示形式（后跟当前行终止符）以指定的前景色和背景色写入到标准错误输出流。
+        /// 将指定对象的文本表示形式（后跟当前行终止符）以指定的前景色和背景色写入标准错误输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
@@ -444,7 +470,7 @@ namespace XstarS
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorLineInColor(object value, ConsoleColor foreground, ConsoleColor background)
         {
-            lock (ConsoleEx.ErrorLock)
+            lock (ConsoleEx.ErrorSyncRoot)
             {
                 Console.ForegroundColor = foreground;
                 Console.BackgroundColor = background;
@@ -454,14 +480,14 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定对象的文本表示形式（后跟当前行终止符）以指定的前景色写入到标准错误输出流。
+        /// 将指定对象的文本表示形式（后跟当前行终止符）以指定的前景色写入标准错误输出流。
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorLineInColor(object value, ConsoleColor foreground)
         {
-            lock (ConsoleEx.ErrorLock)
+            lock (ConsoleEx.ErrorSyncRoot)
             {
                 Console.ResetColor();
                 Console.ForegroundColor = foreground;
