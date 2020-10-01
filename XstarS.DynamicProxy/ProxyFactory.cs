@@ -9,19 +9,19 @@ namespace XstarS.Reflection
     public sealed class ProxyFactory<T> where T : class
     {
         /// <summary>
-        /// <see cref="ProxyFactory{T}.Default"/> 的延迟初始化值。
+        /// 表示 <see cref="ProxyFactory{T}.Default"/> 的延迟初始化值。
         /// </summary>
         private static readonly Lazy<ProxyFactory<T>> LazyDefault =
             new Lazy<ProxyFactory<T>>(() => new ProxyFactory<T>());
 
         /// <summary>
-        /// <see cref="ProxyFactory{T}.Handler"/> 的默认值。
+        /// 表示 <see cref="ProxyFactory{T}.Handler"/> 的默认值。
         /// </summary>
         private static readonly MethodInvokeHandler DefaultHandler =
             (instance, method, arguments, @delegate) => @delegate.Invoke(instance, arguments);
 
         /// <summary>
-        /// 提供代理类型的 <see cref="ProxyTypeProvider"/> 对象。
+        /// 表示提供代理类型的 <see cref="ProxyTypeProvider"/> 对象。
         /// </summary>
         private readonly ProxyTypeProvider TypeProvider;
 
@@ -51,8 +51,9 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 获取默认的 <see cref="ProxyFactory{T}"/> 类的新实例。
+        /// 获取默认的 <see cref="ProxyFactory{T}"/> 类的实例。
         /// </summary>
+        /// <returns>默认的 <see cref="ProxyFactory{T}"/> 类的实例。</returns>
         /// <exception cref="ArgumentException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
         public static ProxyFactory<T> Default => ProxyFactory<T>.LazyDefault.Value;
@@ -60,16 +61,19 @@ namespace XstarS.Reflection
         /// <summary>
         /// 获取原型类型的 <see cref="Type"/> 对象。
         /// </summary>
+        /// <returns>原型类型的 <see cref="Type"/> 对象。</returns>
         public Type BaseType => this.TypeProvider.BaseType;
 
         /// <summary>
         /// 获取代理类型的 <see cref="Type"/> 对象。
         /// </summary>
+        /// <returns>代理类型的 <see cref="Type"/> 对象。</returns>
         public Type ProxyType => this.TypeProvider.ProxyType;
 
         /// <summary>
         /// 获取方法调用时所用的代理委托。
         /// </summary>
+        /// <returns>方法调用时所用的代理委托。</returns>
         public MethodInvokeHandler Handler { get; }
 
         /// <summary>

@@ -8,7 +8,7 @@ using mstring = System.Text.StringBuilder;
 namespace XstarS
 {
     /// <summary>
-    /// 提供控制台输入输出的扩展方法。
+    /// 提供控制台应用程序的输入流、输出流和错误流的扩展方法。
     /// </summary>
     public static class ConsoleEx
     {
@@ -22,7 +22,6 @@ namespace XstarS
             /// 表示 <typeparamref name="T"/> 类型的字符串解析方法的委托。
             /// </summary>
             internal static readonly Converter<string, T> Delegate = ParseMethod<T>.CreateDelegate();
-
 
             /// <summary>
             /// 创建 <typeparamref name="T"/> 类型的字符串解析方法的委托。

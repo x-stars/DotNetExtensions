@@ -26,7 +26,7 @@ namespace XstarS.Reflection
             (instance, method, arguments) => method.Invoke(instance, arguments);
 
         /// <summary>
-        /// 当前 <see cref="DispatchProxy{TInterface}"/> 的代理对象。
+        /// 表示当前 <see cref="DispatchProxy{TInterface}"/> 的代理对象。
         /// </summary>
         protected TInterface Instance;
 

@@ -36,11 +36,14 @@ namespace XstarS.Collections
         /// <summary>
         /// 获取当前比较器是否对内层数组进行递归比较。
         /// </summary>
+        /// <returns>若 <see cref="ArrayEqualityComparer"/> 对内层数组进行递归比较，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public bool Recurse { get; }
 
         /// <summary>
         /// 获取比较数组中的元素时使用的比较器。
         /// </summary>
+        /// <returns>比较数组中的元素时使用的比较器。</returns>
         protected IEqualityComparer ItemComparer { get; }
 
         /// <summary>

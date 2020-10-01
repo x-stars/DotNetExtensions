@@ -19,8 +19,19 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 与当前属性相关的属性的名称。
+        /// 使用与当前属性相关的属性的名称初始化 <see cref="RelatedPropertiesAttribute"/> 类的新实例。
         /// </summary>
+        /// <param name="propertyNames">与当前属性相关的属性的名称。</param>
+        [CLSCompliant(false)]
+        public RelatedPropertiesAttribute(params string[] propertyNames)
+        {
+            this.PropertyNames = propertyNames ?? Array.Empty<string>();
+        }
+
+        /// <summary>
+        /// 获取与当前属性相关的属性的名称。
+        /// </summary>
+        /// <returns>与当前属性相关的属性的名称。</returns>
         public string[] PropertyNames { get; }
     }
 }

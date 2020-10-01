@@ -48,6 +48,7 @@ namespace XstarS.Collections.Generic
         /// 获取或设置指定索引处的元素。
         /// </summary>
         /// <param name="index">要获取或设置的元素的从零开始的索引。</param>
+        /// <returns>指定索引处的元素。</returns>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，
         /// 或 <paramref name="index"/> 大于或等于 <see cref="LinkedList{T}.Count"/>。</exception>
         public T this[int index]
@@ -60,6 +61,7 @@ namespace XstarS.Collections.Generic
         /// 获取或设置指定索引处的元素。
         /// </summary>
         /// <param name="index">要获取或设置的元素的从零开始的索引。</param>
+        /// <returns>当前 <see cref="IList"/>指定索引处的元素。</returns>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="index"/> 不是 <see cref="IList"/> 中的有效索引。</exception>
         /// <exception cref="InvalidCastException">
@@ -73,11 +75,15 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 获取一个值，该值指示 <see cref="IList"/> 是否为只读。
         /// </summary>
+        /// <returns>若 <see cref="IList"/> 是只读的，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         bool IList.IsReadOnly => false;
 
         /// <summary>
         /// 获取一个值，该值指示 <see cref="IList"/> 是否具有固定大小。
         /// </summary>
+        /// <returns>若 <see cref="IList"/> 具有固定大小，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         bool IList.IsFixedSize => false;
 
         /// <summary>

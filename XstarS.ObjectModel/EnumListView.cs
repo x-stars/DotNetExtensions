@@ -30,6 +30,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 获取或设置当前视图表示的枚举值的索引。
         /// </summary>
+        /// <returns>当前视图表示的枚举值的索引。</returns>
         public int Index
         {
             get => this.IndexValue;
@@ -39,6 +40,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 获取或设置当前视图表示的枚举值。
         /// </summary>
+        /// <returns>当前视图表示的枚举值。</returns>
         public TEnum Value
         {
             get => this.Index < 0 ? default(TEnum) : this[this.Index];

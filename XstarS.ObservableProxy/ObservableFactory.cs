@@ -11,13 +11,13 @@ namespace XstarS.ComponentModel
     public sealed class ObservableFactory<T> where T : class
     {
         /// <summary>
-        /// <see cref="ObservableFactory{T}.Default"/> 的延迟初始化值。
+        /// 表示 <see cref="ObservableFactory{T}.Default"/> 的延迟初始化值。
         /// </summary>
         private static readonly Lazy<ObservableFactory<T>> LazyDefault =
             new Lazy<ObservableFactory<T>>(() => new ObservableFactory<T>());
 
         /// <summary>
-        /// 提供属性更改通知类型的 <see cref="ObservableTypeProvider"/> 对象。
+        /// 表示提供属性更改通知类型的 <see cref="ObservableTypeProvider"/> 对象。
         /// </summary>
         private readonly ObservableTypeProvider TypeProvider;
 
@@ -34,17 +34,20 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 获取默认的 <see cref="ObservableFactory{T}"/> 类的实例。
         /// </summary>
+        /// <returns>默认的 <see cref="ObservableFactory{T}"/> 类的实例。</returns>
         public static ObservableFactory<T> Default =>
             ObservableFactory<T>.LazyDefault.Value;
 
         /// <summary>
         /// 获取原型类型的 <see cref="Type"/> 对象。
         /// </summary>
+        /// <returns>原型类型的 <see cref="Type"/> 对象。</returns>
         public Type BaseType => this.TypeProvider.BaseType;
 
         /// <summary>
         /// 获取属性更改通知类型的 <see cref="Type"/> 对象。
         /// </summary>
+        /// <returns>属性更改通知类型的 <see cref="Type"/> 对象。</returns>
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
         /// 但未定义可访问的 <c>OnPropertyChanged</c> 触发方法。</exception>

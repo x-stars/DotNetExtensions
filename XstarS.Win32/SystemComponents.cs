@@ -19,8 +19,8 @@ namespace XstarS.Win32
             /// <summary>
             /// 获取计算机上运行的 Internet Explorer 的版本。
             /// </summary>
-            /// <exception cref="SecurityException">
-            /// 程序没有足够的权限读取注册表。</exception>
+            /// <returns>计算机上运行的 Internet Explorer 的版本。</returns>
+            /// <exception cref="SecurityException">程序没有足够的权限读取注册表。</exception>
             public static Version Version
             {
                 get
@@ -38,8 +38,8 @@ namespace XstarS.Win32
             /// <summary>
             /// 获取计算机上运行的 Internet Explorer 的主要版本。
             /// </summary>
-            /// <exception cref="SecurityException">
-            /// 程序没有足够的权限读取注册表。</exception>
+            /// <returns>计算机上运行的 Internet Explorer 的主要版本。</returns>
+            /// <exception cref="SecurityException">程序没有足够的权限读取注册表。</exception>
             public static int? MajorVersion =>
                 SystemComponents.InternetExplorer.Version?.Major;
         }
@@ -53,12 +53,12 @@ namespace XstarS.Win32
             /// 获取或设置当前程序的内置网络浏览器在当前用户下运行的 Internet Explorer 的主要版本和渲染模式。
             /// <see langword="null"/> 表示运行默认主要版本 (7) 和默认渲染模式 (000)。
             /// </summary>
+            /// <returns>当前程序的内置网络浏览器在当前用户下运行的 Internet Explorer 的主要版本和渲染模式。
+            /// <see langword="null"/> 表示运行默认主要版本 (7) 和默认渲染模式 (000)。</returns>
             /// <exception cref="ArgumentOutOfRangeException">
             /// <see langword="value"/> 的千位的不在 7 和当前 Internet Explorer 主要版本之间。</exception>
-            /// <exception cref="UnauthorizedAccessException">
-            /// 程序无法以写访问权限打开注册表项。</exception>
-            /// <exception cref="SecurityException">
-            /// 程序没有足够的权限读取注册表。</exception>
+            /// <exception cref="UnauthorizedAccessException">程序无法以写访问权限打开注册表项。</exception>
+            /// <exception cref="SecurityException">程序没有足够的权限读取注册表。</exception>
             public static int? VersionInCurrentUser
             {
                 get
@@ -101,12 +101,12 @@ namespace XstarS.Win32
             /// 获取或设置当前程序的内置网络浏览器在当前用户下运行的 Internet Explorer 的主要版本。
             /// <see langword="null"/> 表示运行默认主要版本 (7)。
             /// </summary>
+            /// <returns>当前程序的内置网络浏览器在当前用户下运行的 Internet Explorer 的主要版本。
+            /// <see langword="null"/> 表示运行默认主要版本 (7)。</returns>
             /// <exception cref="ArgumentOutOfRangeException">
             /// <see langword="value"/> 不在 7 和当前 Internet Explorer 版本之间。</exception>
-            /// <exception cref="UnauthorizedAccessException">
-            /// 程序无法以写访问权限打开注册表项。</exception>
-            /// <exception cref="SecurityException">
-            /// 程序没有足够的权限读取注册表。</exception>
+            /// <exception cref="UnauthorizedAccessException">程序无法以写访问权限打开注册表项。</exception>
+            /// <exception cref="SecurityException">程序没有足够的权限读取注册表。</exception>
             public static int? MajorVersionInCurrentUser
             {
                 get => SystemComponents.WebBrowser.VersionInCurrentUser / 1000;
@@ -117,12 +117,12 @@ namespace XstarS.Win32
             /// 获取或设置当前程序的内置网络浏览器在所有用户下运行的 Internet Explorer 的主要版本和渲染模式。
             /// <see langword="null"/> 表示运行默认主要版本 (7) 和默认渲染模式 (000)。
             /// </summary>
+            /// <returns>当前程序的内置网络浏览器在所有用户下运行的 Internet Explorer 的主要版本和渲染模式。
+            /// <see langword="null"/> 表示运行默认主要版本 (7) 和默认渲染模式 (000)。</returns>
             /// <exception cref="ArgumentOutOfRangeException">
             /// <see langword="value"/> 的千位的不在 7 和当前 Internet Explorer 主要版本之间。</exception>
-            /// <exception cref="UnauthorizedAccessException">
-            /// 程序无法以写访问权限打开注册表项。</exception>
-            /// <exception cref="SecurityException">
-            /// 程序没有足够的权限读取注册表。</exception>
+            /// <exception cref="UnauthorizedAccessException">程序无法以写访问权限打开注册表项。</exception>
+            /// <exception cref="SecurityException">程序没有足够的权限读取注册表。</exception>
             public static int? VersionInLocalMachine
             {
                 get
@@ -165,12 +165,12 @@ namespace XstarS.Win32
             /// 获取或设置当前程序的内置网络浏览器在所有用户下运行的 Internet Explorer 的主要版本。
             /// <see langword="null"/> 表示运行默认主要版本 (7)。
             /// </summary>
+            /// <returns>当前程序的内置网络浏览器在所有用户下运行的 Internet Explorer 的主要版本。
+            /// <see langword="null"/> 表示运行默认主要版本 (7)。</returns>
             /// <exception cref="ArgumentOutOfRangeException">
             /// <see langword="value"/> 不在 7 和当前 Internet Explorer 版本之间。</exception>
-            /// <exception cref="UnauthorizedAccessException">
-            /// 程序无法以写访问权限打开注册表项。</exception>
-            /// <exception cref="SecurityException">
-            /// 程序没有足够的权限读取注册表。</exception>
+            /// <exception cref="UnauthorizedAccessException">程序无法以写访问权限打开注册表项。</exception>
+            /// <exception cref="SecurityException">程序没有足够的权限读取注册表。</exception>
             public static int? MajorVersionInLocalMachine
             {
                 get => SystemComponents.WebBrowser.VersionInLocalMachine / 1000;
@@ -181,8 +181,9 @@ namespace XstarS.Win32
             /// 获取或设置当前程序的内置网络浏览器运行的 Internet Explorer 的主要版本和渲染模式。
             /// <see langword="null"/> 表示运行默认主要版本 (7) 和默认渲染模式 (000)。
             /// </summary>
-            /// <exception cref="SecurityException">
-            /// 程序没有足够的权限读取注册表。</exception>
+            /// <returns>当前程序的内置网络浏览器运行的 Internet Explorer 的主要版本和渲染模式。
+            /// <see langword="null"/> 表示运行默认主要版本 (7) 和默认渲染模式 (000)。</returns>
+            /// <exception cref="SecurityException">程序没有足够的权限读取注册表。</exception>
             public static int? Version =>
                 SystemComponents.WebBrowser.VersionInCurrentUser ??
                 SystemComponents.WebBrowser.VersionInLocalMachine;
@@ -191,8 +192,9 @@ namespace XstarS.Win32
             /// 获取当前程序的内置网络浏览器运行的 Internet Explorer 的主要版本。
             /// <see langword="null"/> 表示运行默认主要版本 (7)。
             /// </summary>
-            /// <exception cref="SecurityException">
-            /// 程序没有足够的权限读取注册表。</exception>
+            /// <returns>当前程序的内置网络浏览器运行的 Internet Explorer 的主要版本。
+            /// <see langword="null"/> 表示运行默认主要版本 (7)。</returns>
+            /// <exception cref="SecurityException">程序没有足够的权限读取注册表。</exception>
             public static int? MajorVersion =>
                 SystemComponents.WebBrowser.Version / 1000;
         }

@@ -31,16 +31,20 @@ namespace XstarS.Collections
         /// <summary>
         /// 获取默认的 <see cref="CollectionEqualityComparer"/> 实例。
         /// </summary>
+        /// <returns>默认的 <see cref="CollectionEqualityComparer"/> 实例。</returns>
         public static new CollectionEqualityComparer Default { get; } = new CollectionEqualityComparer();
 
         /// <summary>
         /// 获取当前比较器是否对内层 <see cref="IEnumerable"/> 进行递归比较。
         /// </summary>
+        /// <returns>若 <see cref="CollectionExtensions"/> 对内层 <see cref="IEnumerable"/> 进行递归比较，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public bool Recurse { get; }
 
         /// <summary>
         /// 获取比较集合中的元素时使用的比较器。
         /// </summary>
+        /// <returns>比较集合中的元素时使用的比较器。</returns>
         protected IEqualityComparer ItemComparer { get; }
 
         /// <summary>

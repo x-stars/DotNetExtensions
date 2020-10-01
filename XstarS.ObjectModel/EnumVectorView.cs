@@ -31,6 +31,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 获取或设置当前视图表示的枚举值。
         /// </summary>
+        /// <returns>当前视图表示的枚举值。</returns>
         public TEnum Value
         {
             get => this.GetProperty<TEnum>();

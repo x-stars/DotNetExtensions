@@ -68,6 +68,7 @@ namespace XstarS.Win32
         /// <summary>
         /// 获取 INI 配置文件的路径。
         /// </summary>
+        /// <returns>INI 配置文件的路径。</returns>
         public string FilePath { get; }
 
         /// <summary>

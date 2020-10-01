@@ -13,7 +13,7 @@ namespace XstarS
     internal sealed class ValueEquatablePair
     {
         /// <summary>
-        /// 已经比较过的对象的 <see cref="KeyValuePair{TKey, TValue}"/>。
+        /// 表示已经比较过的对象的 <see cref="KeyValuePair{TKey, TValue}"/>。
         /// </summary>
         private HashSet<KeyValuePair<object, object>> Compared;
 
@@ -29,13 +29,15 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 要进行值相等比较的第一个对象。
+        /// 获取要进行值相等比较的第一个对象。
         /// </summary>
+        /// <returns>要进行值相等比较的第一个对象。</returns>
         public object Value { get; }
 
         /// <summary>
-        /// 要进行值相等比较的第二个对象。
+        /// 获取要进行值相等比较的第二个对象。
         /// </summary>
+        /// <returns>要进行值相等比较的第二个对象。</returns>
         public object Other { get; }
 
         /// <summary>

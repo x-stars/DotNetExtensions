@@ -7,13 +7,15 @@
     public interface IValueInfo<out T>
     {
         /// <summary>
-        /// 待验证的对象的值。
+        /// 获取待验证的对象的值。
         /// </summary>
+        /// <returns>待验证的对象的值。</returns>
         T Value { get; }
 
         /// <summary>
-        /// 待验证的对象的名称。
+        /// 获取待验证的对象的名称。
         /// </summary>
+        /// <returns>待验证的对象的名称。</returns>
         string Name { get; }
     }
 }

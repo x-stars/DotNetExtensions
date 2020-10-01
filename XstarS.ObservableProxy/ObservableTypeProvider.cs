@@ -16,23 +16,23 @@ namespace XstarS.ComponentModel
     public sealed class ObservableTypeProvider
     {
         /// <summary>
-        /// <see cref="ObservableTypeProvider.OfType(Type)"/> 的延迟初始化值。
+        /// 表示 <see cref="ObservableTypeProvider.OfType(Type)"/> 的延迟初始化值。
         /// </summary>
         private static readonly ConcurrentDictionary<Type, Lazy<ObservableTypeProvider>> LazyOfTypes =
             new ConcurrentDictionary<Type, Lazy<ObservableTypeProvider>>();
 
         /// <summary>
-        /// <see cref="ObservableTypeProvider.ObservableType"/> 的延迟初始化值。
+        /// 表示 <see cref="ObservableTypeProvider.ObservableType"/> 的延迟初始化值。
         /// </summary>
         private readonly Lazy<Type> LazyObservableType;
 
         /// <summary>
-        /// 属性更改通知类型的 <see cref="TypeBuilder"/> 对象。
+        /// 表示属性更改通知类型的 <see cref="TypeBuilder"/> 对象。
         /// </summary>
         private TypeBuilder ObservableTypeBuilder;
 
         /// <summary>
-        /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的触发方法。
+        /// 表示 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的触发方法。
         /// </summary>
         private MethodInfo OnPropertyChangedMethod;
 
@@ -62,11 +62,13 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 获取原型类型的 <see cref="Type"/> 对象。
         /// </summary>
+        /// <returns>原型类型的 <see cref="Type"/> 对象。</returns>
         public Type BaseType { get; }
 
         /// <summary>
         /// 获取属性更改通知类型的 <see cref="Type"/> 对象。
         /// </summary>
+        /// <returns>属性更改通知类型的 <see cref="Type"/> 对象。</returns>
         /// <exception cref="MissingMethodException">
         /// <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件已经实现，
         /// 但未定义可访问的 <c>OnPropertyChanged</c> 触发方法。</exception>

@@ -18,6 +18,7 @@ namespace XstarS.Collections.Specialized
         /// <summary>
         /// 返回一个默认的 <see cref="PairReferenceEqualityComparer"/> 实例。
         /// </summary>
+        /// <returns>默认的 <see cref="PairReferenceEqualityComparer"/> 实例。</returns>
         public static new PairReferenceEqualityComparer Default { get; } = new PairReferenceEqualityComparer();
 
         /// <summary>

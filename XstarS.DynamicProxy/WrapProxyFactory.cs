@@ -9,19 +9,19 @@ namespace XstarS.Reflection
     public sealed class WrapProxyFactory<T> where T : class
     {
         /// <summary>
-        /// <see cref="WrapProxyFactory{T}.Default"/> 的延迟初始化值。
+        /// 表示 <see cref="WrapProxyFactory{T}.Default"/> 的延迟初始化值。
         /// </summary>
         private static readonly Lazy<WrapProxyFactory<T>> LazyDefault =
             new Lazy<WrapProxyFactory<T>>(() => new WrapProxyFactory<T>());
 
         /// <summary>
-        /// <see cref="WrapProxyFactory{T}.Handler"/> 的默认值。
+        /// 表示 <see cref="WrapProxyFactory{T}.Handler"/> 的默认值。
         /// </summary>
         private static readonly MethodInvokeHandler DefaultHandler =
             (instance, method, arguments, @delegate) => @delegate.Invoke(instance, arguments);
 
         /// <summary>
-        /// 提供代理类型的 <see cref="WrapProxyTypeProvider"/> 对象。
+        /// 表示提供代理类型的 <see cref="WrapProxyTypeProvider"/> 对象。
         /// </summary>
         private readonly WrapProxyTypeProvider TypeProvider;
 
@@ -60,16 +60,19 @@ namespace XstarS.Reflection
         /// <summary>
         /// 获取原型类型的 <see cref="Type"/> 对象。
         /// </summary>
+        /// <returns>原型类型的 <see cref="Type"/> 对象。</returns>
         public Type BaseType => this.TypeProvider.BaseType;
 
         /// <summary>
         /// 获取代理类型的 <see cref="Type"/> 对象。
         /// </summary>
+        /// <returns>原型类型的 <see cref="Type"/> 对象。</returns>
         public Type ProxyType => this.TypeProvider.ProxyType;
 
         /// <summary>
         /// 获取方法调用时所用的代理委托。
         /// </summary>
+        /// <returns>原型类型的 <see cref="Type"/> 对象。</returns>
         public MethodInvokeHandler Handler { get; }
 
         /// <summary>

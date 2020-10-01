@@ -13,12 +13,12 @@ namespace XstarS
     internal sealed class ValueHashableObject
     {
         /// <summary>
-        /// 当前对象的基于值的哈希代码。
+        /// 表示当前对象的基于值的哈希代码。
         /// </summary>
         private int HashCode;
 
         /// <summary>
-        /// 已经计算过哈希代码的对象。
+        /// 表示已经计算过哈希代码的对象。
         /// </summary>
         private HashSet<object> Computed;
 
@@ -32,8 +32,9 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 要获取基于值的哈希代码的对象。
+        /// 获取要获取基于值的哈希代码的对象。
         /// </summary>
+        /// <returns>要获取基于值的哈希代码的对象。</returns>
         public object Value { get; }
 
         /// <summary>

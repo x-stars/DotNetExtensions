@@ -37,23 +37,27 @@ namespace XstarS.CommandLine
         }
 
         /// <summary>
-        /// 待解析的参数列表。
+        /// 获取待解析的参数列表。
         /// </summary>
+        /// <returns>待解析的参数列表。</returns>
         public IReadOnlyList<string> Arguments { get; }
 
         /// <summary>
-        /// 有名参数名称列表。
+        /// 获取有名参数名称列表。
         /// </summary>
+        /// <returns>有名参数名称列表。</returns>
         public IReadOnlyList<string> ParameterNames { get; }
 
         /// <summary>
-        /// 开关参数名称列表。
+        /// 获取开关参数名称列表。
         /// </summary>
+        /// <returns>开关参数名称列表。</returns>
         public IReadOnlyList<string> SwitchNames { get; }
 
         /// <summary>
-        /// 比较参数名称时采用的字符串比较器。
+        /// 获取比较参数名称时采用的字符串比较器。
         /// </summary>
+        /// <returns>开关参数名称列表。</returns>
         protected IEqualityComparer<string> NameComparer { get; }
 
         /// <summary>

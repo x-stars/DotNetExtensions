@@ -21,7 +21,7 @@ namespace XstarS
                     typeof(Converter<object, object>)) as Converter<object, object>;
 
         /// <summary>
-        /// 已经创建副本的对象及其对应的副本。
+        /// 表示已经创建副本的对象及其对应的副本。
         /// </summary>
         private Dictionary<object, object> Cloned;
 
@@ -35,8 +35,9 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 要创建副本的对象。
+        /// 获取要为其创建副本的对象。
         /// </summary>
+        /// <returns>要为其创建副本的对象。</returns>
         public object Value { get; }
 
         /// <summary>

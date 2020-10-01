@@ -31,6 +31,7 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 获取默认的 <see cref="ReversedComparer{T}"/> 类的实例。
         /// </summary>
+        /// <returns>默认的 <see cref="ReversedComparer{T}"/> 类的实例。</returns>
         public static new ReversedComparer<T> Default { get; } =
             new ReversedComparer<T>(Comparer<T>.Default);
 

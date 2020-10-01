@@ -14,48 +14,48 @@ namespace XstarS.Reflection
     public sealed class ProxyTypeProvider
     {
         /// <summary>
-        /// <see cref="ProxyTypeProvider.OfType(Type)"/> 的延迟初始化值。
+        /// 表示 <see cref="ProxyTypeProvider.OfType(Type)"/> 的延迟初始化值。
         /// </summary>
         private static readonly ConcurrentDictionary<Type, Lazy<ProxyTypeProvider>> LazyOfTypes =
             new ConcurrentDictionary<Type, Lazy<ProxyTypeProvider>>();
 
         /// <summary>
-        /// <see cref="ProxyTypeProvider.ProxyType"/> 的延迟初始化值。
+        /// 表示 <see cref="ProxyTypeProvider.ProxyType"/> 的延迟初始化值。
         /// </summary>
         private readonly Lazy<Type> LazyProxyType;
 
         /// <summary>
-        /// <see cref="ProxyTypeProvider.HandlerField"/> 的延迟初始化值。
+        /// 表示 <see cref="ProxyTypeProvider.HandlerField"/> 的延迟初始化值。
         /// </summary>
         private readonly Lazy<FieldInfo> LazyHandlerField;
 
         /// <summary>
-        /// 原型类型中所有应按代理模式重写的方法。
+        /// 表示原型类型中所有应按代理模式重写的方法。
         /// </summary>
         private MethodInfo[] BaseMethods;
 
         /// <summary>
-        /// 原型类型中所有应按非代理模式重写的方法。
+        /// 表示原型类型中所有应按非代理模式重写的方法。
         /// </summary>
         private MethodInfo[] BaseNonMethods;
 
         /// <summary>
-        /// 代理类型的 <see cref="TypeBuilder"/> 对象。
+        /// 表示代理类型的 <see cref="TypeBuilder"/> 对象。
         /// </summary>
         private TypeBuilder ProxyTypeBuilder;
 
         /// <summary>
-        /// 代理类型中所有访问原型类型方法的方法。
+        /// 表示代理类型中所有访问原型类型方法的方法。
         /// </summary>
         private Dictionary<MethodInfo, MethodInfo> BaseInvokeMethods;
 
         /// <summary>
-        /// 代理类型中所有原型类型方法的 <see cref="MethodDelegate"/> 委托的字段。
+        /// 表示代理类型中所有原型类型方法的 <see cref="MethodDelegate"/> 委托的字段。
         /// </summary>
         private Dictionary<MethodInfo, FieldInfo> BaseMethodDelegateFields;
 
         /// <summary>
-        /// 代理类型中存储原型类型方法的 <see cref="MethodInfo"/> 的字段。
+        /// 表示代理类型中存储原型类型方法的 <see cref="MethodInfo"/> 的字段。
         /// </summary>
         private Dictionary<MethodInfo, FieldInfo> BaseMethodInfoFields;
 
@@ -86,16 +86,19 @@ namespace XstarS.Reflection
         /// <summary>
         /// 获取原型类型的 <see cref="Type"/> 对象。
         /// </summary>
+        /// <returns>原型类型的 <see cref="Type"/> 对象。</returns>
         public Type BaseType { get; }
 
         /// <summary>
         /// 获取代理类型的 <see cref="Type"/> 对象。
         /// </summary>
+        /// <returns>代理类型的 <see cref="Type"/> 对象。</returns>
         public Type ProxyType => this.LazyProxyType.Value;
 
         /// <summary>
         /// 获取代理类型中的代理委托字段的 <see cref="FieldInfo"/> 对象。
         /// </summary>
+        /// <returns>代理类型中的代理委托字段的 <see cref="FieldInfo"/> 对象。</returns>
         public FieldInfo HandlerField => this.LazyHandlerField.Value;
 
         /// <summary>

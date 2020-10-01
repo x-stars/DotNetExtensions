@@ -27,11 +27,13 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 获取默认的 <see cref="ArrayEqualityComparer{T}"/> 实例。
         /// </summary>
+        /// <returns>默认的 <see cref="ArrayEqualityComparer{T}"/> 实例。</returns>
         public static new ArrayEqualityComparer<T> Default { get; } = new ArrayEqualityComparer<T>();
 
         /// <summary>
         /// 获取比较数组中的元素时使用的比较器。
         /// </summary>
+        /// <returns>比较数组中的元素时使用的比较器。</returns>
         protected IEqualityComparer<T> ItemComparer { get; }
 
         /// <summary>
