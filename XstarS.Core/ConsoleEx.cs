@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Security;
 using mstring = System.Text.StringBuilder;
 
 namespace XstarS
@@ -22,15 +23,22 @@ namespace XstarS
             /// </summary>
             internal static readonly Converter<string, T> Delegate = ParseMethod<T>.CreateDelegate();
 
+
             /// <summary>
             /// 创建 <typeparamref name="T"/> 类型的字符串解析方法的委托。
             /// </summary>
             /// <returns><typeparamref name="T"/> 类型的字符串解析方法的委托。</returns>
+            [System.Diagnostics.CodeAnalysis.SuppressMessage(
+                "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
             private static Converter<string, T> CreateDelegate()
             {
-                var method = typeof(T).GetMethod(nameof(int.Parse), new[] { typeof(string) });
-                return ((method is null) || !method.IsStatic || (method.ReturnType != typeof(T))) ? null :
-                    (Converter<string, T>)method.CreateDelegate(typeof(Converter<string, T>));
+                try
+                {
+                    var method = typeof(T).GetMethod(nameof(int.Parse), new[] { typeof(string) });
+                    return (!(method is null) && method.IsStatic && (method.ReturnType == typeof(T))) ?
+                        (Converter<string, T>)method.CreateDelegate(typeof(Converter<string, T>)) : null;
+                }
+                catch (Exception) { return null; }
             }
         }
 
@@ -52,20 +60,22 @@ namespace XstarS
 
         /// <summary>
         /// 将当前字符串表示形式转换为其等效的数值形式。
-        /// 数值形式的类型需包含类似 <see cref="int.Parse(string)"/> 的方法。
         /// </summary>
-        /// <typeparam name="T">数值形式的类型。</typeparam>
+        /// <typeparam name="T">数值形式的类型，
+        /// 应为枚举类型或包含类似与 <see cref="int.Parse(string)"/> 的方法。</typeparam>
         /// <param name="text">包含要转换数值的字符串。</param>
-        /// <returns>与 <paramref name="text"/> 表示等效的数值形式。</returns>
+        /// <returns>与 <paramref name="text"/> 等效的数值形式。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="FormatException">输入的字符串的格式不正确。</exception>
+        /// <exception cref="ArgumentException"><paramref name="text"/> 不表示有效的值。</exception>
+        /// <exception cref="FormatException"><paramref name="text"/> 的格式不正确。</exception>
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
+        /// <exception cref="OverflowException">
+        /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         public static T ParseAs<T>(this string text)
         {
-            return (typeof(T).BaseType == typeof(Enum)) ? (T)Enum.Parse(typeof(T), text) :
-                !(ParseMethod<T>.Delegate is null) ? ParseMethod<T>.Delegate.Invoke(text) :
-                throw new InvalidCastException();
+            return !(ParseMethod<T>.Delegate is null) ? ParseMethod<T>.Delegate.Invoke(text) :
+                typeof(T).IsEnum ? (T)Enum.Parse(typeof(T), text) : throw new InvalidCastException();
         }
 
         /// <summary>
@@ -73,6 +83,10 @@ namespace XstarS
         /// </summary>
         /// <returns>输入流中的下一个字符串值；
         /// 如果当前没有更多的可用字符串值，则为 <see langword="null"/>。</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// 下一个字符串值的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="OutOfMemoryException">
+        /// 没有足够的内存来为下一个字符串值分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static string ReadToken()
         {
@@ -100,8 +114,15 @@ namespace XstarS
         /// <typeparam name="T">数值形式的类型。</typeparam>
         /// <returns>输入流中的下一个字符串值的数值形式。</returns>
         /// <exception cref="ArgumentNullException">当前没有更多的可用字符串值。</exception>
+        /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// 下一个字符串值的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="OutOfMemoryException">
+        /// 没有足够的内存来为下一个字符串值分配缓冲区。</exception>
         /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
+        /// <exception cref="OverflowException">
+        /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static T ReadTokenAs<T>() => ConsoleEx.ParseAs<T>(ConsoleEx.ReadToken());
 
@@ -110,6 +131,10 @@ namespace XstarS
         /// </summary>
         /// <returns>输入流中的下一行包含的所有字符串值。</returns>
         /// <exception cref="ArgumentNullException">当前没有更多的可用行。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// 下一行中的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="OutOfMemoryException">
+        /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static string[] ReadLineTokens() =>
             Console.ReadLine().Split(ConsoleEx.WhiteSpaces, StringSplitOptions.RemoveEmptyEntries);
@@ -120,8 +145,15 @@ namespace XstarS
         /// <typeparam name="T">数值形式的类型。</typeparam>
         /// <returns>输入流中的下一行包含的所有字符串值的数值形式。</returns>
         /// <exception cref="ArgumentNullException">当前没有更多的可用行。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// 下一行中的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
+        /// <exception cref="OutOfMemoryException">
+        /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
+        /// <exception cref="OverflowException">
+        /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static T[] ReadLineTokensAs<T>() =>
             Array.ConvertAll(ConsoleEx.ReadLineTokens(), ConsoleEx.ParseAs<T>);
@@ -130,6 +162,9 @@ namespace XstarS
         /// 从标准输入流读取到末尾的所有字符。
         /// </summary>
         /// <returns>输入流到末尾的所有字符。</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="OutOfMemoryException">没有足够的内存来为到末尾的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static string ReadToEnd() => Console.In.ReadToEnd();
@@ -138,6 +173,10 @@ namespace XstarS
         /// 从标准输入流读取到末尾的所有字符串值。
         /// </summary>
         /// <returns>输入流到末尾的所有字符串值。</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="OutOfMemoryException">
+        /// 没有足够的内存来为到末尾的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static string[] ReadTokensToEnd() =>
             ConsoleEx.ReadToEnd().Split(ConsoleEx.WhiteSpaces, StringSplitOptions.RemoveEmptyEntries);
@@ -147,6 +186,11 @@ namespace XstarS
         /// </summary>
         /// <typeparam name="T">数值形式的类型。</typeparam>
         /// <returns>输入流读取到末尾的所有字符串值的数值形式。</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// 下一行中的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
+        /// <exception cref="OutOfMemoryException">
+        /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
@@ -159,6 +203,9 @@ namespace XstarS
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <param name="background">要使用的控制台背景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteInColor(string value, ConsoleColor foreground, ConsoleColor background)
         {
@@ -176,6 +223,9 @@ namespace XstarS
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteInColor(string value, ConsoleColor foreground)
         {
@@ -194,6 +244,9 @@ namespace XstarS
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <param name="background">要使用的控制台背景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteInColor(object value, ConsoleColor foreground, ConsoleColor background)
         {
@@ -211,6 +264,9 @@ namespace XstarS
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteInColor(object value, ConsoleColor foreground)
         {
@@ -229,6 +285,9 @@ namespace XstarS
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <param name="background">要使用的控制台背景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteLineInColor(string value, ConsoleColor foreground, ConsoleColor background)
         {
@@ -246,6 +305,9 @@ namespace XstarS
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteLineInColor(string value, ConsoleColor foreground)
         {
@@ -264,6 +326,9 @@ namespace XstarS
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <param name="background">要使用的控制台背景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteLineInColor(object value, ConsoleColor foreground, ConsoleColor background)
         {
@@ -281,6 +346,9 @@ namespace XstarS
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteLineInColor(object value, ConsoleColor foreground)
         {
@@ -416,6 +484,9 @@ namespace XstarS
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <param name="background">要使用的控制台背景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorInColor(string value, ConsoleColor foreground, ConsoleColor background)
         {
@@ -433,6 +504,9 @@ namespace XstarS
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorInColor(string value, ConsoleColor foreground)
         {
@@ -451,6 +525,9 @@ namespace XstarS
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <param name="background">要使用的控制台背景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorInColor(object value, ConsoleColor foreground, ConsoleColor background)
         {
@@ -468,6 +545,9 @@ namespace XstarS
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorInColor(object value, ConsoleColor foreground)
         {
@@ -486,6 +566,9 @@ namespace XstarS
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <param name="background">要使用的控制台背景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorLineInColor(string value, ConsoleColor foreground, ConsoleColor background)
         {
@@ -503,6 +586,9 @@ namespace XstarS
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorLineInColor(string value, ConsoleColor foreground)
         {
@@ -521,6 +607,9 @@ namespace XstarS
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
         /// <param name="background">要使用的控制台背景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorLineInColor(object value, ConsoleColor foreground, ConsoleColor background)
         {
@@ -538,6 +627,9 @@ namespace XstarS
         /// </summary>
         /// <param name="value">要写入的值。</param>
         /// <param name="foreground">要使用的控制台前景色。</param>
+        /// <exception cref="ArgumentException">
+        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
+        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static void WriteErrorLineInColor(object value, ConsoleColor foreground)
         {
