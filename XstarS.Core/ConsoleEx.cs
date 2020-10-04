@@ -45,7 +45,7 @@ namespace XstarS
         /// 表示所有空白字符的集合。
         /// </summary>
         private static readonly char[] WhiteSpaces = Enumerable.Range(
-            char.MinValue, char.MaxValue).Select(Convert.ToChar).Where(char.IsWhiteSpace).ToArray();
+            0, char.MaxValue + 1).Select(Convert.ToChar).Where(char.IsWhiteSpace).ToArray();
 
         /// <summary>
         /// 将当前字符串表示形式转换为其等效的数值形式。
