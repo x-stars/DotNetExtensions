@@ -12,6 +12,11 @@ namespace XstarS.Unions
     public struct QWordUnion : IEquatable<QWordUnion>, ISerializable
     {
         /// <summary>
+        /// 表示 <see cref="QWordUnion"/> 实例的大小。
+        /// </summary>
+        public const int Size = 8;
+
+        /// <summary>
         /// 表示已经初始化为零的 <see cref="QWordUnion"/>。
         /// </summary>
         public static readonly QWordUnion Zero;
@@ -43,7 +48,7 @@ namespace XstarS.Unions
         [FieldOffset(4)] public DWordUnion HighDWord;
 
         /// <summary>
-        /// 表示当前 <see cref="QWordUnion"/> 的固定字节缓冲区。
+        /// 表示当前 <see cref="QWordUnion"/> 的字节缓冲区。
         /// </summary>
         [CLSCompliant(false)]
         [FieldOffset(0)] public unsafe fixed byte Bytes[8];

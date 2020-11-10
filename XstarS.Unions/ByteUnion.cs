@@ -12,6 +12,11 @@ namespace XstarS.Unions
     public struct ByteUnion : IEquatable<ByteUnion>, ISerializable
     {
         /// <summary>
+        /// 表示 <see cref="ByteUnion"/> 实例的大小。
+        /// </summary>
+        public const int Size = 1;
+
+        /// <summary>
         /// 表示已经初始化为零的 <see cref="ByteUnion"/>。
         /// </summary>
         public static readonly ByteUnion Zero;
@@ -33,7 +38,7 @@ namespace XstarS.Unions
         [FieldOffset(0)] public bool Boolean;
 
         /// <summary>
-        /// 表示当前 <see cref="ByteUnion"/> 的固定字节缓冲区。
+        /// 表示当前 <see cref="ByteUnion"/> 的字节缓冲区。
         /// </summary>
         [CLSCompliant(false)]
         [FieldOffset(0)] public unsafe fixed byte Bytes[1];

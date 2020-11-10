@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-
 using nint = System.IntPtr;
 using nuint = System.UIntPtr;
 
@@ -14,6 +13,12 @@ namespace XstarS.Unions
     [StructLayout(LayoutKind.Explicit)]
     public struct HandleUnion : IEquatable<HandleUnion>, ISerializable
     {
+        /// <summary>
+        /// 获取 <see cref="HandleUnion"/> 实例的大小。
+        /// </summary>
+        /// <returns><see cref="HandleUnion"/> 实例的大小。</returns>
+        public static int Size => nint.Size;
+
         /// <summary>
         /// 表示已经初始化为零的 <see cref="HandleUnion"/>。
         /// </summary>
@@ -35,6 +40,12 @@ namespace XstarS.Unions
         /// </summary>
         [CLSCompliant(false)]
         [FieldOffset(0)] public unsafe void* Pointer;
+
+        /// <summary>
+        /// 表示当前 <see cref="HandleUnion"/> 的字节缓冲区。
+        /// </summary>
+        [CLSCompliant(false)]
+        [FieldOffset(0)] public unsafe fixed byte Bytes[4];
 
         /// <summary>
         /// 将 <see cref="HandleUnion"/> 结构的新实例初始化为指定的有符号指针或句柄。

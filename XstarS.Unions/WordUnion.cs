@@ -12,6 +12,11 @@ namespace XstarS.Unions
     public struct WordUnion : IEquatable<WordUnion>, ISerializable
     {
         /// <summary>
+        /// 表示 <see cref="WordUnion"/> 实例的大小。
+        /// </summary>
+        public const int Size = 2;
+
+        /// <summary>
         /// 表示已经初始化为零的 <see cref="WordUnion"/>。
         /// </summary>
         public static readonly WordUnion Zero;
@@ -43,7 +48,7 @@ namespace XstarS.Unions
         [FieldOffset(1)] public ByteUnion HighByte;
 
         /// <summary>
-        /// 表示当前 <see cref="WordUnion"/> 的固定字节缓冲区。
+        /// 表示当前 <see cref="WordUnion"/> 的字节缓冲区。
         /// </summary>
         [CLSCompliant(false)]
         [FieldOffset(0)] public unsafe fixed byte Bytes[2];
