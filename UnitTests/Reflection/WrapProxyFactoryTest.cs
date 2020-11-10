@@ -15,7 +15,7 @@ namespace XstarS.Reflection
                 ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
                 ).CreateInstance(new List<int>());
             for (int i = 0; i < 10; i++) { o.Add(i); }
-            Assert.AreEqual(o.Count, 10);
+            Assert.AreEqual(10, o.Count);
         }
 
         [TestMethod]
@@ -33,7 +33,7 @@ namespace XstarS.Reflection
             var o = WrapProxyFactory<IFakeClonable>.WithHandler(
                 ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
                 ).CreateInstance(new FakeClonable());
-            Assert.AreEqual(((IWrapProxy)o).GetInstance(), o.Clone());
+            Assert.AreEqual(o.Clone(), ((IWrapProxy)o).GetInstance());
             Assert.AreNotEqual(((IWrapProxy)o).GetInstance(), ((ICloneable)o).Clone());
         }
 

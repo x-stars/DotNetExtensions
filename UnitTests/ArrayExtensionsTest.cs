@@ -16,7 +16,7 @@ namespace XstarS
                                 i5 => new[] { i1, i2, i3, i4, i5 })))));
             for (int i = 0; i < 5; i++)
             {
-                Assert.AreEqual(array[0][1][2][3][4][i], i);
+                Assert.AreEqual(i, array[0][1][2][3][4][i]);
             }
         }
 
@@ -25,10 +25,10 @@ namespace XstarS
         {
             var array = new int[10, 10, 10, 10, 10];
             var reshaped = (int[,])array.Reshape(100, 1000);
-            Assert.AreEqual(reshaped.Length, 100000);
-            Assert.AreEqual(reshaped.Rank, 2);
-            Assert.AreEqual(reshaped.GetLength(0), 100);
-            Assert.AreEqual(reshaped.GetLength(1), 1000);
+            Assert.AreEqual(100000, reshaped.Length);
+            Assert.AreEqual(2, reshaped.Rank);
+            Assert.AreEqual(100, reshaped.GetLength(0));
+            Assert.AreEqual(1000, reshaped.GetLength(1));
         }
 
         [TestMethod]
@@ -36,9 +36,9 @@ namespace XstarS
         {
             var array = new[] { new[] { new[] { new[] { new[] { 100 } } } } };
             var reshaped = (int[,,])array.Reshape(1, 1, 1);
-            Assert.AreEqual(reshaped[0, 0, 0], array[0][0][0][0][0]);
-            Assert.AreEqual(reshaped.Length, 1);
-            Assert.AreEqual(reshaped.Rank, 3);
+            Assert.AreEqual(array[0][0][0][0][0], reshaped[0, 0, 0]);
+            Assert.AreEqual(1, reshaped.Length);
+            Assert.AreEqual(3, reshaped.Rank);
         }
 
         [TestMethod]
@@ -50,15 +50,15 @@ namespace XstarS
             {
                 for (int j = 0; j < 2; j++)
                 {
-                    Assert.AreEqual(reshaped[0][i][j][0][0], array[i * 2 + j]);
+                    Assert.AreEqual(array[i * 2 + j], reshaped[0][i][j][0][0]);
                 }
             }
-            Assert.AreEqual(reshaped.Length, 1);
-            Assert.AreEqual(reshaped[0].Length, 3);
-            Assert.AreEqual(reshaped[0][0].Length, 2);
-            Assert.AreEqual(reshaped[0][0][0].Length, 1);
-            Assert.AreEqual(reshaped[0][0][0][0].Length, 1);
-            Assert.AreEqual(reshaped.Rank, 1);
+            Assert.AreEqual(1, reshaped.Length);
+            Assert.AreEqual(3, reshaped[0].Length);
+            Assert.AreEqual(2, reshaped[0][0].Length);
+            Assert.AreEqual(1, reshaped[0][0][0].Length);
+            Assert.AreEqual(1, reshaped[0][0][0][0].Length);
+            Assert.AreEqual(1, reshaped.Rank);
         }
     }
 }

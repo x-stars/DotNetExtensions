@@ -15,9 +15,9 @@ namespace XstarS
             var o3 = (int[])o1.DeepClone();
             o2[0] = 2;
             o3[0] = 3;
-            Assert.AreEqual(o1[0], 1);
-            Assert.AreEqual(o2[0], 2);
-            Assert.AreEqual(o3[0], 3);
+            Assert.AreEqual(1, o1[0]);
+            Assert.AreEqual(2, o2[0]);
+            Assert.AreEqual(3, o3[0]);
         }
 
         [TestMethod]
@@ -29,9 +29,9 @@ namespace XstarS
             o2[0][0] = 2;
             o3[0][0] = 3;
             Assert.AreNotEqual(o1[0][0], 1);
-            Assert.AreEqual(o1[0][0], 2);
-            Assert.AreEqual(o2[0][0], 2);
-            Assert.AreEqual(o3[0][0], 3);
+            Assert.AreEqual(2, o1[0][0]);
+            Assert.AreEqual(2, o2[0][0]);
+            Assert.AreEqual(3, o3[0][0]);
         }
 
         [TestMethod]

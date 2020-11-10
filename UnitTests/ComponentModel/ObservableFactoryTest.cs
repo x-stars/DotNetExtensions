@@ -77,12 +77,12 @@ namespace XstarS.ComponentModel
                 [nameof(rectangle.Size)] = 0
             };
             rectangle.PropertyChanged += (sender, e) => changedCounts[e.PropertyName]++;
-            Assert.AreEqual(rectangle.Size, rectangle.Height * rectangle.Width);
+            Assert.AreEqual(rectangle.Height * rectangle.Width, rectangle.Size);
             rectangle.Height *= 10; rectangle.Width *= 10;
-            Assert.AreEqual(rectangle.Size, rectangle.Height * rectangle.Width);
-            Assert.AreEqual(changedCounts[nameof(rectangle.Height)], 1);
-            Assert.AreEqual(changedCounts[nameof(rectangle.Width)], 1);
-            Assert.AreEqual(changedCounts[nameof(rectangle.Size)], 2);
+            Assert.AreEqual(rectangle.Height * rectangle.Width, rectangle.Size);
+            Assert.AreEqual(1, changedCounts[nameof(rectangle.Height)]);
+            Assert.AreEqual(1, changedCounts[nameof(rectangle.Width)]);
+            Assert.AreEqual(2, changedCounts[nameof(rectangle.Size)]);
         }
 
         [TestMethod]
@@ -96,12 +96,12 @@ namespace XstarS.ComponentModel
                 [nameof(rectangle.Size)] = 0
             };
             rectangle.PropertyChanged += (sender, e) => changedCounts[e.PropertyName]++;
-            Assert.AreEqual(rectangle.Size, rectangle.Height * rectangle.Width);
+            Assert.AreEqual(rectangle.Height * rectangle.Width, rectangle.Size);
             rectangle.Height *= 10; rectangle.Width *= 10;
-            Assert.AreEqual(rectangle.Size, rectangle.Height * rectangle.Width);
-            Assert.AreEqual(changedCounts[nameof(rectangle.Height)], 0);
-            Assert.AreEqual(changedCounts[nameof(rectangle.Width)], 0);
-            Assert.AreEqual(changedCounts[nameof(rectangle.Size)], 0);
+            Assert.AreEqual(rectangle.Height * rectangle.Width, rectangle.Size);
+            Assert.AreEqual(0, changedCounts[nameof(rectangle.Height)]);
+            Assert.AreEqual(0, changedCounts[nameof(rectangle.Width)]);
+            Assert.AreEqual(0, changedCounts[nameof(rectangle.Size)]);
         }
     }
 }

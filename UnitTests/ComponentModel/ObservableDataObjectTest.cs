@@ -24,13 +24,13 @@ namespace XstarS.ComponentModel
                 [nameof(personName.FullName)] = 0
             };
             personName.PropertyChanged += (sender, e) => changedCounts[e.PropertyName]++;
-            Assert.AreEqual(personName.FullName, $"{personName.GivenName} {personName.FamilyName}");
+            Assert.AreEqual($"{personName.GivenName} {personName.FamilyName}", personName.FullName);
             personName.IsEasternStyle = true;
-            Assert.AreEqual(personName.FullName, $"{personName.FamilyName}{personName.GivenName}");
-            Assert.AreEqual(changedCounts[nameof(personName.FamilyName)], 0);
-            Assert.AreEqual(changedCounts[nameof(personName.GivenName)], 0);
-            Assert.AreEqual(changedCounts[nameof(personName.IsEasternStyle)], 1);
-            Assert.AreEqual(changedCounts[nameof(personName.FullName)], 1);
+            Assert.AreEqual($"{personName.FamilyName}{personName.GivenName}", personName.FullName);
+            Assert.AreEqual(0, changedCounts[nameof(personName.FamilyName)]);
+            Assert.AreEqual(0, changedCounts[nameof(personName.GivenName)]);
+            Assert.AreEqual(1, changedCounts[nameof(personName.IsEasternStyle)]);
+            Assert.AreEqual(1, changedCounts[nameof(personName.FullName)]);
         }
 
         [TestMethod]
@@ -46,13 +46,13 @@ namespace XstarS.ComponentModel
                 [nameof(box.HasErrors)] = 0
             };
             box.PropertyChanged += (sender, e) => changedCounts[e.PropertyName]++;
-            Assert.AreEqual(box.Size, box.Length * box.Width * box.Height);
+            Assert.AreEqual(box.Length * box.Width * box.Height, box.Size);
             box.Length *= 10; box.Width *= 10; box.Height *= 10;
-            Assert.AreEqual(box.Size, box.Length * box.Width * box.Height);
-            Assert.AreEqual(changedCounts[nameof(box.Length)], 1);
-            Assert.AreEqual(changedCounts[nameof(box.Width)], 1);
-            Assert.AreEqual(changedCounts[nameof(box.Height)], 1);
-            Assert.AreEqual(changedCounts[nameof(box.Size)], 3);
+            Assert.AreEqual(box.Length * box.Width * box.Height, box.Size);
+            Assert.AreEqual(1, changedCounts[nameof(box.Length)]);
+            Assert.AreEqual(1, changedCounts[nameof(box.Width)]);
+            Assert.AreEqual(1, changedCounts[nameof(box.Height)]);
+            Assert.AreEqual(3, changedCounts[nameof(box.Size)]);
             Assert.IsFalse(box.HasErrors);
             var errorsCounts = new Dictionary<string, int>()
             {
@@ -62,9 +62,9 @@ namespace XstarS.ComponentModel
             };
             box.ErrorsChanged += (sender, e) => errorsCounts[e.PropertyName]++;
             box.Length *= -1; box.Width *= -1; box.Height *= -1;
-            Assert.AreEqual(errorsCounts[nameof(box.Length)], 1);
-            Assert.AreEqual(errorsCounts[nameof(box.Width)], 1);
-            Assert.AreEqual(errorsCounts[nameof(box.Height)], 1);
+            Assert.AreEqual(1, errorsCounts[nameof(box.Length)]);
+            Assert.AreEqual(1, errorsCounts[nameof(box.Width)]);
+            Assert.AreEqual(1, errorsCounts[nameof(box.Height)]);
             Assert.IsTrue(box.HasErrors);
             Assert.IsNotNull(box.GetErrors(nameof(box.Length)));
             Assert.IsNotNull(box.GetErrors(nameof(box.Width)));
