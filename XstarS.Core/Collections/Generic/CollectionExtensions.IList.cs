@@ -1,11 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 
 namespace XstarS.Collections.Generic
 {
     partial class CollectionExtensions
     {
+        /// <summary>
+        /// 返回指定 <see cref="IList{T}"/> 的只读包装。
+        /// </summary>
+        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="list">要获取只读包装的 <see cref="IList{T}"/> 对象。</param>
+        /// <returns><see cref="IList{T}"/> 的 <see cref="ReadOnlyCollection{T}"/> 只读包装。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="list"/> 为 <see langword="null"/>。</exception>
+        public static ReadOnlyCollection<T> AsReadOnly<T>(this IList<T> list)
+        {
+            return new ReadOnlyCollection<T>(list);
+        }
+
         /// <summary>
         /// 创建 <see cref="IList{T}"/> 中指定元素范围的浅表复制。
         /// </summary>
