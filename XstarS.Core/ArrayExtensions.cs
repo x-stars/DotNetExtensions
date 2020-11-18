@@ -12,6 +12,28 @@ namespace XstarS
     public static class ArrayExtensions
     {
         /// <summary>
+        /// 返回一个新数组，此数组为当前数组追加指定元素后的结果。
+        /// </summary>
+        /// <typeparam name="T"><paramref name="array"/> 中元素的类型。</typeparam>
+        /// <param name="array">要进行追加的数组。</param>
+        /// <param name="item">要追加到当前数组的元素。</param>
+        /// <returns>一个新数组，此数组为当前数组追加指定元素后的结果。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+        public static T[] Append<T>(this T[] array, T item)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            var result = new T[array.Length + 1];
+            Array.Copy(array, result, array.Length);
+            result[array.Length] = item;
+            return result;
+        }
+
+        /// <summary>
         /// 确定当前数组与指定数组的元素是否对应相等。
         /// </summary>
         /// <typeparam name="T">数组元素的类型。</typeparam>
@@ -46,11 +68,91 @@ namespace XstarS
         }
 
         /// <summary>
+        /// 返回当前数组的所有元素的字符串表达形式。
+        /// </summary>
+        /// <param name="array">要获取字符串表达形式的数组。</param>
+        /// <param name="recurse">指示是否对内层数组递归。</param>
+        /// <returns><paramref name="array"/> 的所有元素的字符串表达形式。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+        public static string ArrayToString(this Array array,
+            bool recurse = false)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            if (array.Rank == 1)
+            {
+                var sequence = new List<string>();
+                foreach (var item in array)
+                {
+                    if (recurse && (item is Array innerArray))
+                    {
+                        sequence.Add(innerArray.ArrayToString(recurse));
+                    }
+                    else
+                    {
+                        sequence.Add(item?.ToString());
+                    }
+                }
+                return "{ " + string.Join(", ", sequence) + " }";
+            }
+            else
+            {
+                return array.ArrayToString(Array.Empty<int>());
+            }
+        }
+
+        /// <summary>
+        /// 返回当前多维数组的所有元素的字符串表达形式。
+        /// </summary>
+        /// <param name="array">要获取字符串表达形式的数组。</param>
+        /// <param name="indices">当前多维数组的当前索引。</param>
+        /// <param name="recurse">指示是否对内层数组递归。</param>
+        /// <returns><paramref name="array"/> 的所有元素的字符串表达形式。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+        private static string ArrayToString(this Array array,
+            int[] indices = null, bool recurse = false)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+            indices = indices ?? Array.Empty<int>();
+
+            if (indices.Length == array.Rank)
+            {
+                var item = array.GetValue(indices);
+                if (recurse && (item is Array innerArray))
+                {
+                    return innerArray.ArrayToString(recurse);
+                }
+                else
+                {
+                    return array.GetValue(indices)?.ToString();
+                }
+            }
+            else
+            {
+                var sequence = new List<string>();
+                var length = array.GetLength(indices.Length);
+                for (int i = 0; i < length; i++)
+                {
+                    sequence.Add(array.ArrayToString(indices.Append(i)));
+                }
+                return "{ " + string.Join(", ", sequence) + " }";
+            }
+        }
+
+        /// <summary>
         /// 返回一个新数组，此数组为当前数组和指定数组连接后的结果。
         /// </summary>
         /// <typeparam name="T"><paramref name="array"/> 中元素的类型。</typeparam>
         /// <param name="array">要进行连接的数组。</param>
-        /// <param name="other">要于当前数组连接的数组。</param>
+        /// <param name="other">要与当前数组连接的数组。</param>
         /// <returns>一个新数组，此数组为当前数组和指定数组连接后的结果。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="array"/>
         /// 或 <paramref name="other"/> 为 <see langword="null"/>。</exception>
