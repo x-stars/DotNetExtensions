@@ -101,7 +101,7 @@ namespace XstarS
             }
             else
             {
-                return array.ArrayToString(Array.Empty<int>());
+                return array.ArrayToString(Array.Empty<int>(), recurse);
             }
         }
 
@@ -141,7 +141,7 @@ namespace XstarS
                 var length = array.GetLength(indices.Length);
                 for (int i = 0; i < length; i++)
                 {
-                    sequence.Add(array.ArrayToString(indices.Append(i)));
+                    sequence.Add(array.ArrayToString(indices.Append(i), recurse));
                 }
                 return "{ " + string.Join(", ", sequence) + " }";
             }

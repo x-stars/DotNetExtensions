@@ -18,6 +18,8 @@ namespace XstarS.IO
         /// <exception cref="ArgumentNullException"><paramref name="directory"/>
         /// 或 <paramref name="searchPattern"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException"><paramref name="searchPattern"/> 包含无效路径字符。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static FileSystemInfo[] TryGetFileSystemInfos(this DirectoryInfo directory,
             string searchPattern = "*", SearchOption searchOption = SearchOption.TopDirectoryOnly)
         {
@@ -70,6 +72,8 @@ namespace XstarS.IO
         /// <exception cref="ArgumentNullException"><paramref name="directory"/>
         /// 或 <paramref name="searchPattern"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException"><paramref name="searchPattern"/> 包含无效路径字符。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static DirectoryInfo[] TryGetDirectories(this DirectoryInfo directory,
             string searchPattern = "*", SearchOption searchOption = SearchOption.TopDirectoryOnly)
         {
@@ -122,6 +126,8 @@ namespace XstarS.IO
         /// <exception cref="ArgumentNullException"><paramref name="directory"/>
         /// 或 <paramref name="searchPattern"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException"><paramref name="searchPattern"/> 包含无效路径字符。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static FileInfo[] TryGetFiles(this DirectoryInfo directory,
             string searchPattern = "*", SearchOption searchOption = SearchOption.TopDirectoryOnly)
         {

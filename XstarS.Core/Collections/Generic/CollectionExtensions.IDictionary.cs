@@ -161,6 +161,8 @@ namespace XstarS.Collections.Generic
         /// <returns>由 <paramref name="pairs"/> 中数据创建的 <see cref="Dictionary{TKey, TValue}"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="pairs"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException">
+        /// <see cref="Dictionary{TKey, TValue}"/> 中已存在具有相同键的元素。</exception>
         public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(
             this IEnumerable<KeyValuePair<TKey, TValue>> pairs,
             IEqualityComparer<TKey> comparer = null)
@@ -174,7 +176,7 @@ namespace XstarS.Collections.Generic
             var dictionary = new Dictionary<TKey, TValue>(comparer);
             foreach (var pair in pairs)
             {
-                dictionary[pair.Key] = pair.Value;
+                dictionary.Add(pair.Key, pair.Value);
             }
             return dictionary;
         }
