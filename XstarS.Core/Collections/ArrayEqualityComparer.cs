@@ -17,9 +17,9 @@ namespace XstarS.Collections
 
         /// <summary>
         /// 以比较元素时要使用的比较器初始化 <see cref="ArrayEqualityComparer"/> 类的新实例，
-        /// 并指定是否对内层数组进行递归比较。
+        /// 并指定是否对内层声明数组进行递归比较。
         /// </summary>
-        /// <param name="recurse">指定是否对内层 <see cref="IEnumerable"/> 进行递归比较。</param>
+        /// <param name="recurse">指定是否对内层声明数组进行递归比较。</param>
         /// <param name="comparer">比较数组中的元素时要使用的比较器。</param>
         public ArrayEqualityComparer(
             bool recurse = false, IEqualityComparer comparer = null)
@@ -34,9 +34,9 @@ namespace XstarS.Collections
         public static new ArrayEqualityComparer Default { get; } = new ArrayEqualityComparer();
 
         /// <summary>
-        /// 获取当前比较器是否对内层数组进行递归比较。
+        /// 获取当前比较器是否对内层声明数组进行递归比较。
         /// </summary>
-        /// <returns>若 <see cref="ArrayEqualityComparer"/> 对内层数组进行递归比较，
+        /// <returns>若 <see cref="ArrayEqualityComparer"/> 对内层声明数组进行递归比较，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public bool Recurse { get; }
 
