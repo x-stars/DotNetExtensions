@@ -84,10 +84,13 @@ namespace XstarS.ComponentModel
             this.ValidateProperty(propertyName);
         }
 
+
         /// <summary>
         /// 验证指定属性的错误。
         /// </summary>
         /// <param name="propertyName">要验证错误的属性的名称。</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         protected virtual void ValidateProperty(
             [CallerMemberName] string propertyName = null)
         {
