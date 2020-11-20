@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
@@ -147,6 +148,25 @@ namespace XstarS.Collections.Generic
                 }
             }
             return result;
+        }
+
+        /// <summary>
+        /// 返回包含指定 <see cref="IDictionary{TKey, TValue}"/> 中键值的线程安全集合。
+        /// </summary>
+        /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
+        /// <typeparam name="TValue"><see cref="IDictionary{TKey, TValue}"/> 中的值的类型。</typeparam>
+        /// <param name="dictionary">要转换为线程安全集合的 <see cref="IDictionary{TKey, TValue}"/> 对象。</param>
+        /// <param name="comparer">用于比较键的 <see cref="IEqualityComparer{T}"/> 实现。</param>
+        /// <returns>包含 <see cref="IDictionary{TKey, TValue}"/> 中键值的
+        /// <see cref="ConcurrentDictionary{TKey, TValue}"/> 线程安全集合。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
+        public static ConcurrentDictionary<TKey, TValue> ToConcurrent<TKey, TValue>(
+            this IDictionary<TKey, TValue> dictionary,
+            IEqualityComparer<TKey> comparer = null)
+        {
+            comparer = comparer ?? EqualityComparer<TKey>.Default;
+            return new ConcurrentDictionary<TKey, TValue>(dictionary, comparer);
         }
 
         /// <summary>
