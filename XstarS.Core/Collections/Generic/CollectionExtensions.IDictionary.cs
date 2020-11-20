@@ -48,6 +48,35 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
+        /// 根据指定的键获取 <see cref="IDictionary{TKey, TValue}"/> 中对应值。
+        /// 若指定的键不存在，则将指定的键值对添加到 <see cref="IDictionary{TKey, TValue}"/> 中。
+        /// </summary>
+        /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
+        /// <typeparam name="TValue"><see cref="IDictionary{TKey, TValue}"/> 中的值的类型。</typeparam>
+        /// <param name="dictionary">要获取值的 <see cref="IDictionary{TKey, TValue}"/> 对象。</param>
+        /// <param name="key">要从 <see cref="IDictionary{TKey, TValue}"/> 中获取对应值的键。</param>
+        /// <param name="valueFactory">当指定的键不存在时，用于创建要添加到
+        /// <see cref="IDictionary{TKey, TValue}"/> 中的值的函数。</param>
+        /// <returns>若 <paramref name="dictionary"/> 中存在键 <paramref name="key"/>，
+        /// 则为 <paramref name="key"/> 对应的值；否则为 <paramref name="valueFactory"/> 创建的值。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="dictionary"/>
+        /// 或 <paramref name="valueFactory"/> 为 <see langword="null"/>。</exception>
+        public static TValue GetOrAdd<TKey, TValue>(
+            this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> valueFactory)
+        {
+            if (dictionary is null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+            if (valueFactory is null)
+            {
+                throw new ArgumentNullException(nameof(valueFactory));
+            }
+
+            return dictionary.ContainsKey(key) ? dictionary[key] : (dictionary[key] = valueFactory(key));
+        }
+
+        /// <summary>
         /// 将 <see cref="IDictionary{TKey, TValue}"/> 的键和值反转并返回。
         /// </summary>
         /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
