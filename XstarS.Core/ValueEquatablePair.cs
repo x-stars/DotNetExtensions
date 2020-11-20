@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using XstarS.Collections.Specialized;
 
 namespace XstarS
@@ -48,6 +49,7 @@ namespace XstarS
         /// <returns>若当前实例的 <see cref="ValueEquatablePair.Value"/> 和
         /// <see cref="ValueEquatablePair.Other"/> 的值相等，
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public bool ValueEquals()
         {
             this.Compared = new HashSet<KeyValuePair<object, object>>(

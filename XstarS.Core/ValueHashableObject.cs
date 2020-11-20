@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using XstarS.Collections.Specialized;
 
 namespace XstarS
@@ -43,6 +44,7 @@ namespace XstarS
         /// 字符串 <see cref="string"/> 或指针类型 (<see cref="Type.IsPointer"/>)。
         /// </summary>
         /// <returns><see cref="ValueHashableObject.Value"/> 基于值的哈希代码。</returns>
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public int GetValueHashCode()
         {
             this.HashCode = 0;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using XstarS.Collections.Specialized;
 
 namespace XstarS
@@ -16,7 +17,7 @@ namespace XstarS
         /// <see cref="object.MemberwiseClone()"/> 方法的静态委托调用。
         /// </summary>
         private static readonly Converter<object, object> StaticMemberwiseClone =
-            typeof(object).GetMethod(nameof(MemberwiseClone),
+            typeof(object).GetMethod(nameof(CloneableObject.MemberwiseClone),
                 BindingFlags.Instance | BindingFlags.NonPublic).CreateDelegate(
                     typeof(Converter<object, object>)) as Converter<object, object>;
 
@@ -53,6 +54,7 @@ namespace XstarS
         /// 创建当前对象的深度副本。
         /// </summary>
         /// <returns><see cref="CloneableObject.Value"/> 的深度副本。</returns>
+        [MethodImpl(MethodImplOptions.Synchronized)]
         public object DeepClone()
         {
             this.Cloned = new Dictionary<object, object>(
