@@ -17,7 +17,6 @@
 系统基础相关，目前包含的命名空间：
 
 * `XstarS`
-* `XstarS.CSharp`
 * `XstarS.Collections`
 * `XstarS.Collections.Generic`
 * `XstarS.Collections.Specialized`
@@ -25,7 +24,7 @@
 * `XstarS.IO`
 * `XstarS.Reflection`
 
-> `XstarS.CSharp.Operators` 类型提供 C# 中部分常用操作符。
+> `XstarS.Operators` 类型提供部分常用运算符，建议静态引入后调用。
 
 相关文档：
 
