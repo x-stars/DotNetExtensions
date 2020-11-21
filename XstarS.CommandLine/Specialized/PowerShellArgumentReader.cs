@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS.CommandLine
+namespace XstarS.CommandLine.Specialized
 {
     /// <summary>
     /// PowerShell 风格的命令行参数解析器，参数名称忽略大小写。

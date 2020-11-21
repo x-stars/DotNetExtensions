@@ -12,19 +12,12 @@
 
 > C# 版本 >= 7.3
 
-## 程序集 XstarS.ArgumentReaders
-
-提供简易的命令行参数解析器，以及 CMD, PowerShell, Unix Shell 等多种风格的实现。
-
-相关文档：
-
-* [命令行参数解析器](Documentation/ArgumentReaders.md)
-
 ## 程序集 XstarS.Core
 
 系统基础相关，目前包含的命名空间：
 
 * `XstarS`
+* `XstarS.CSharp`
 * `XstarS.Collections`
 * `XstarS.Collections.Generic`
 * `XstarS.Collections.Specialized`
@@ -32,15 +25,28 @@
 * `XstarS.IO`
 * `XstarS.Reflection`
 
+> `XstarS.CSharp.Operators` 类型提供 C# 中部分常用操作符。
+
 相关文档：
 
 * [对象的通用值相等比较方法](Documentation/ValueEquals.md)
+* [析构元组和其他类型](https://docs.microsoft.com/zh-cn/dotnet/csharp/deconstruct)
 
-## 程序集 XstarS.Deconstructable
+## 程序集 XstarS.CommandLine
 
-提供可析构类型 `XstarS.IDeconstructable` 及相关的扩展方法。
+提供命令行程序相关类型和扩展方法，包括：
 
-可析构类型可使用值元组 `System.ValueTuple` 表达式将实例按成员析构为多个变量，详情可参看官方文档：[析构元组和其他类型](https://docs.microsoft.com/zh-cn/dotnet/csharp/deconstruct)。
+* `XstarS.ConsoleEx` 控制台方法扩展
+  * 逐个读取按空白符分隔的输入，并可进一步解析为值
+  * 以指定的颜色将值写入输出流或错误流
+* 简易的命令行参数解析器 `XstarS.CommandLine.ArgumentReader`，以及其他风格的实现
+  * 命令提示符 CMD `XstarS.CommandLine.Specialized.CmdArgumentReader`
+  * PowerShell `XstarS.CommandLine.Specialized.PowerShellArgumentReader`
+  * Unix Shell `XstarS.CommandLine.Specialized.UnixShellArgumentReader`
+
+相关文档：
+
+* [命令行参数解析器](Documentation/ArgumentReaders.md)
 
 ## 程序集 XstarS.DispatchProxy
 

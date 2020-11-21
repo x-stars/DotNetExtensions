@@ -32,7 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionIt
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{BA4F1AD2-DACC-4B0D-BBC8-771D83C32CED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.ArgumentReaders", "XstarS.ArgumentReaders\XstarS.ArgumentReaders.csproj", "{B5EF52C2-DE52-4ADD-ACD7-191A6BBC426E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.CommandLine", "XstarS.CommandLine\XstarS.CommandLine.csproj", "{B5EF52C2-DE52-4ADD-ACD7-191A6BBC426E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Core", "XstarS.Core\XstarS.Core.csproj", "{0CB35110-130B-4359-BA62-5585C12E44A7}"
 EndProject

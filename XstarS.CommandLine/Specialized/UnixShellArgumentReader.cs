@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace XstarS.CommandLine
+namespace XstarS.CommandLine.Specialized
 {
     /// <summary>
     /// Unix / Linux shell 风格的命令行参数解析器，参数名称区分大小写。

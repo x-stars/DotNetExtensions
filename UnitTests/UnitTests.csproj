@@ -42,7 +42,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\XstarS.ArgumentReaders\XstarS.ArgumentReaders.csproj" />
+    <ProjectReference Include="..\XstarS.CommandLine\XstarS.CommandLine.csproj" />
     <ProjectReference Include="..\XstarS.Core\XstarS.Core.csproj" />
     <ProjectReference Include="..\XstarS.DispatchProxy\XstarS.DispatchProxy.csproj" />
     <ProjectReference Include="..\XstarS.DynamicProxy\XstarS.DynamicProxy.csproj" />

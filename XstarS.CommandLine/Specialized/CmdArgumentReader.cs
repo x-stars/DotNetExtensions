@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace XstarS.CommandLine
+namespace XstarS.CommandLine.Specialized
 {
     /// <summary>
     /// 命令提示符 (CMD) 风格的命令行参数解析器，参数名称忽略大小写，有名参数名称与参数值用冒号 ":" 分隔。
