@@ -35,9 +35,11 @@
 
 提供命令行程序相关类型和扩展方法，包括：
 
-* `XstarS.ConsoleEx` 控制台方法扩展
-  * 逐个读取按空白符分隔的输入，并可进一步解析为值
-  * 以指定的颜色将值写入输出流或错误流
+* 控制台方法扩展 `XstarS.ConsoleEx`
+  * 逐个读取按空白符分隔的输入 `ReadToken`
+  * 逐个读取按空白符分隔的输入并转换为值 `ReadTokenAs`
+  * 以指定的颜色将值写入输出流 `WriteInColor`
+  * 以指定的颜色将值写入错误流 `WriteErrorInColor`
 * 简易的命令行参数解析器 `XstarS.CommandLine.ArgumentReader`，以及其他风格的实现
   * 命令提示符 CMD `XstarS.CommandLine.Specialized.CmdArgumentReader`
   * PowerShell `XstarS.CommandLine.Specialized.PowerShellArgumentReader`
@@ -92,11 +94,11 @@
 
 提供框架原生值类型的联合 `union`，包括：
 
-* 8 位数据类型联合 `XstarS.ByteUnion`: `Byte`, `SByte`, `Boolean`
-* 16 位数据类型联合 `XstarS.WordUnion`: `Int16`, `UInt16`, `Char`
-* 32 位数据类型联合 `XstarS.DWordUnion`: `Int32`, `UInt32`, `Single`
-* 64 位数据类型联合 `XstarS.QWordUnion`: `Int64`, `UInt64`, `Double`
-* 指针或句柄类型联合 `XstarS.HandleUnion`: `IntPtr`, `UIntPtr`, `Void*`
+* 8 位数据类型联合 `XstarS.Unions.ByteUnion`: `Byte`, `SByte`, `Boolean`
+* 16 位数据类型联合 `XstarS.Unions.WordUnion`: `Int16`, `UInt16`, `Char`
+* 32 位数据类型联合 `XstarS.Unions.DWordUnion`: `Int32`, `UInt32`, `Single`
+* 64 位数据类型联合 `XstarS.Unions.QWordUnion`: `Int64`, `UInt64`, `Double`
+* 指针或句柄类型联合 `XstarS.Unions.HandleUnion`: `IntPtr`, `UIntPtr`, `Void*`
 
 ## 程序集 XstarS.ValueValidate
 
