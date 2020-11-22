@@ -8,7 +8,7 @@ namespace XstarS.CommandLine.Specialized
     /// Unix / Linux shell 风格的命令行参数解析器，参数名称区分大小写。
     /// </summary>
     /// <remarks>
-    /// 支持连字符 "-" 后接多个开关参数的解析。
+    /// 支持连字符 "-" 后接多个选项参数的解析。
     /// 暂不支持连字符 "-" 开头的参数值的解析。
     /// 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
     /// 不支持一个参数名称后跟多个参数值的有名参数的解析。
@@ -27,11 +27,11 @@ namespace XstarS.CommandLine.Specialized
         /// 参数名称列表应同时包含长名称和短名称。
         /// </para></remarks>
         /// <param name="arguments">待解析的参数列表。</param>
-        /// <param name="parameterNames">所有有名参数名称列表。</param>
-        /// <param name="switchNames">所有开关参数名称列表。</param>
+        /// <param name="argumentNames">所有有名参数名称列表。</param>
+        /// <param name="optionNames">所有选项参数名称列表。</param>
         public UnixShellArgumentReader(string[] arguments,
-            string[] parameterNames = null, string[] switchNames = null)
-            : base(arguments, false, parameterNames, switchNames) { }
+            string[] argumentNames = null, string[] optionNames = null)
+            : base(arguments, false, argumentNames, optionNames) { }
 
         /// <summary>
         /// 解析指定名称的有名参数。
@@ -43,7 +43,7 @@ namespace XstarS.CommandLine.Specialized
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="name"/> 不带参数提示符 "-" 或长度过短。</exception>
-        public override string GetParameter(string name)
+        public override string GetArgument(string name)
         {
             if (name is null)
             {
@@ -77,7 +77,7 @@ namespace XstarS.CommandLine.Specialized
                     throw new ArgumentException(message, nameof(name));
                 }
 
-                if (base.GetParameter(alterName) is string value)
+                if (base.GetArgument(alterName) is string value)
                 {
                     return value;
                 }
@@ -94,7 +94,7 @@ namespace XstarS.CommandLine.Specialized
         /// 若不存在则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="position"/> 小于 0。</exception>
-        public override string GetParameter(int position)
+        public override string GetArgument(int position)
         {
             if (position < 0)
             {
@@ -103,7 +103,7 @@ namespace XstarS.CommandLine.Specialized
 
             for (int index = 0, positionNow = 0; index < this.Arguments.Count; index++)
             {
-                if (this.ParameterNames.Contains(this.Arguments[index], this.NameComparer))
+                if (this.ArgumentNames.Contains(this.Arguments[index], this.NameComparer))
                 {
                     index++;
                 }
@@ -124,16 +124,16 @@ namespace XstarS.CommandLine.Specialized
         }
 
         /// <summary>
-        /// 解析指定名称的开关参数。
+        /// 解析指定名称的选项参数。
         /// </summary>
-        /// <param name="name">要解析的开关参数的名称，以逗号 "," 分隔同义名称。</param>
-        /// <returns>若名称为 <paramref name="name"/> 的开关参数存在，
+        /// <param name="name">要解析的选项参数的名称，以逗号 "," 分隔同义名称。</param>
+        /// <returns>若名称为 <paramref name="name"/> 的选项参数存在，
         /// 则为 <see langword="true"/>； 否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="name"/> 不带参数提示符 "-" 或长度过短。</exception>
-        public override bool GetSwitch(string name)
+        public override bool GetOption(string name)
         {
             if (name is null)
             {
@@ -152,7 +152,7 @@ namespace XstarS.CommandLine.Specialized
                     }
                     else
                     {
-                        if (base.GetSwitch(alterName))
+                        if (base.GetOption(alterName))
                         {
                             return true;
                         }
@@ -197,7 +197,7 @@ namespace XstarS.CommandLine.Specialized
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="name"/> 不带参数提示符 "-" 或长度过短。</exception>
-        public virtual string[] GetParameters(string name)
+        public virtual string[] GetArguments(string name)
         {
             if (name is null)
             {

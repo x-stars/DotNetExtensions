@@ -7,7 +7,7 @@ namespace XstarS.CommandLine.Specialized
     /// </summary>
     /// <remarks>
     /// 不支持无名参数的解析，但支持省略参数名称的有名参数的解析。
-    /// 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
+    /// 不支持 Unix / Linux shell 中连字符 "-" 后接多个选项参数的解析。
     /// 不支持一个参数名称后跟多个参数值的有名参数的解析。
     /// 不支持多个同名的有名参数的解析。
     /// </remarks>
@@ -23,14 +23,14 @@ namespace XstarS.CommandLine.Specialized
         /// </para><para>
         /// 参数名称应带有作为提示符的连字符 "-"。
         /// 有名参数名称的顺序会影响省略参数名称的有名参数的解析，因此必选参数应在可选参数之前。
-        /// 开关参数名称的顺序则不会产生影响，可任意指定顺序。
+        /// 选项参数名称的顺序则不会产生影响，可任意指定顺序。
         /// </para></remarks>
         /// <param name="arguments">待解析的参数列表。</param>
-        /// <param name="parameterNames">所有有名参数名称列表，必选参数应在可选参数之前。</param>
-        /// <param name="switchNames">所有开关参数名称列表。</param>
+        /// <param name="argumentNames">所有有名参数名称列表，必选参数应在可选参数之前。</param>
+        /// <param name="optionNames">所有选项参数名称列表。</param>
         public PowerShellArgumentReader(string[] arguments,
-            string[] parameterNames = null, string[] switchNames = null)
-            : base(arguments, true, parameterNames, switchNames) { }
+            string[] argumentNames = null, string[] optionNames = null)
+            : base(arguments, true, argumentNames, optionNames) { }
 
         /// <summary>
         /// 解析指定名称的有名参数。
@@ -41,39 +41,39 @@ namespace XstarS.CommandLine.Specialized
         /// 若仍不存在则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
-        public override string GetParameter(string name)
+        public override string GetArgument(string name)
         {
             if (name is null)
             {
                 throw new ArgumentNullException(nameof(name));
             }
 
-            if (base.GetParameter(name) is string value)
+            if (base.GetArgument(name) is string value)
             {
                 return value;
             }
             else
             {
                 int positionNow = 0;
-                foreach (string nameNow in this.ParameterNames)
+                foreach (string nameNow in this.ArgumentNames)
                 {
                     if (this.NameComparer.Equals(nameNow, name))
                     {
-                        if (base.GetParameter(nameNow) is string valueByName)
+                        if (base.GetArgument(nameNow) is string valueByName)
                         {
                             return valueByName;
                         }
-                        else if (base.GetParameter(positionNow) is string valueByPosition)
+                        else if (base.GetArgument(positionNow) is string valueByPosition)
                         {
                             return valueByPosition;
                         }
                     }
                     else
                     {
-                        if (base.GetParameter(nameNow) is string valueByName)
+                        if (base.GetArgument(nameNow) is string valueByName)
                         {
                         }
-                        else if (base.GetParameter(positionNow) is string valueByPosition)
+                        else if (base.GetArgument(positionNow) is string valueByPosition)
                         {
                             positionNow++;
                         }
@@ -91,7 +91,7 @@ namespace XstarS.CommandLine.Specialized
         /// <param name="position">要解析的无名参数在所有无名参数中的位置。</param>
         /// <returns>总是引发 <see cref="NotSupportedException"/> 异常。</returns>
         /// <exception cref="NotSupportedException">不支持此方法。</exception>
-        public override string GetParameter(int position)
+        public override string GetArgument(int position)
         {
             throw new NotSupportedException();
         }

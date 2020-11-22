@@ -9,7 +9,7 @@ namespace XstarS.CommandLine
     /// 为命令行参数解析器提供基类和默认实现。
     /// </summary>
     /// <remarks>
-    /// 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
+    /// 不支持 Unix / Linux shell 中连字符 "-" 后接多个选项参数的解析。
     /// 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
     /// 不支持一个参数名称后跟多个参数值的有名参数的解析。
     /// 不支持多个同名的有名参数的解析。
@@ -25,14 +25,14 @@ namespace XstarS.CommandLine
         /// </remarks>
         /// <param name="arguments">待解析的参数列表。</param>
         /// <param name="ignoreCase">参数名称是否忽略大小写。</param>
-        /// <param name="parameterNames">所有有名参数名称列表。</param>
-        /// <param name="switchNames">所有开关参数名称列表。</param>
+        /// <param name="argumentNames">所有有名参数名称列表。</param>
+        /// <param name="optionNames">所有选项参数名称列表。</param>
         public ArgumentReader(string[] arguments, bool ignoreCase,
-            string[] parameterNames = null, string[] switchNames = null)
+            string[] argumentNames = null, string[] optionNames = null)
         {
             this.Arguments = Array.AsReadOnly(arguments ?? Array.Empty<string>());
-            this.SwitchNames = Array.AsReadOnly(switchNames ?? Array.Empty<string>());
-            this.ParameterNames = Array.AsReadOnly(parameterNames ?? Array.Empty<string>());
+            this.OptionNames = Array.AsReadOnly(optionNames ?? Array.Empty<string>());
+            this.ArgumentNames = Array.AsReadOnly(argumentNames ?? Array.Empty<string>());
             this.NameComparer = ignoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
         }
 
@@ -46,18 +46,18 @@ namespace XstarS.CommandLine
         /// 获取有名参数名称列表。
         /// </summary>
         /// <returns>有名参数名称列表。</returns>
-        public IReadOnlyList<string> ParameterNames { get; }
+        public IReadOnlyList<string> ArgumentNames { get; }
 
         /// <summary>
-        /// 获取开关参数名称列表。
+        /// 获取选项参数名称列表。
         /// </summary>
-        /// <returns>开关参数名称列表。</returns>
-        public IReadOnlyList<string> SwitchNames { get; }
+        /// <returns>选项参数名称列表。</returns>
+        public IReadOnlyList<string> OptionNames { get; }
 
         /// <summary>
         /// 获取比较参数名称时采用的字符串比较器。
         /// </summary>
-        /// <returns>开关参数名称列表。</returns>
+        /// <returns>选项参数名称列表。</returns>
         protected IEqualityComparer<string> NameComparer { get; }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace XstarS.CommandLine
         /// 若不存在则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
-        public virtual string GetParameter(string name)
+        public virtual string GetArgument(string name)
         {
             if (name is null)
             {
@@ -94,7 +94,7 @@ namespace XstarS.CommandLine
         /// 若不存在则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="position"/> 小于 0。</exception>
-        public virtual string GetParameter(int position)
+        public virtual string GetArgument(int position)
         {
             if (position < 0)
             {
@@ -103,10 +103,10 @@ namespace XstarS.CommandLine
 
             for (int index = 0, positionNow = 0; index < this.Arguments.Count; index++)
             {
-                if (this.SwitchNames.Contains(this.Arguments[index], this.NameComparer))
+                if (this.OptionNames.Contains(this.Arguments[index], this.NameComparer))
                 {
                 }
-                else if (this.ParameterNames.Contains(this.Arguments[index], this.NameComparer))
+                else if (this.ArgumentNames.Contains(this.Arguments[index], this.NameComparer))
                 {
                     index++;
                 }
@@ -124,14 +124,14 @@ namespace XstarS.CommandLine
         }
 
         /// <summary>
-        /// 解析指定名称的开关参数。
+        /// 解析指定名称的选项参数。
         /// </summary>
-        /// <param name="name">要解析的开关参数的名称。</param>
-        /// <returns>若名称为 <paramref name="name"/> 的开关参数存在，
+        /// <param name="name">要解析的选项参数的名称。</param>
+        /// <returns>若名称为 <paramref name="name"/> 的选项参数存在，
         /// 则为 <see langword="true"/>； 否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
-        public virtual bool GetSwitch(string name)
+        public virtual bool GetOption(string name)
         {
             if (name is null)
             {

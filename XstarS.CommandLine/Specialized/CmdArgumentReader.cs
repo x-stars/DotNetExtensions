@@ -9,7 +9,7 @@ namespace XstarS.CommandLine.Specialized
     /// </summary>
     /// <remarks>
     /// 支持多个同名的有名参数的解析。
-    /// 不支持 Unix / Linux shell 中连字符 "-" 后接多个开关参数的解析。
+    /// 不支持 Unix / Linux shell 中连字符 "-" 后接多个选项参数的解析。
     /// 不支持 PowerShell 中允许省略参数名称的有名参数的解析。
     /// 不支持一个参数名称后跟多个参数值的有名参数的解析。
     /// </remarks>
@@ -23,11 +23,11 @@ namespace XstarS.CommandLine.Specialized
         /// 输入的参数名称列表用于解析无名参数；若无需解析无名参数，可留空。
         /// </remarks>
         /// <param name="arguments">待解析的参数列表。</param>
-        /// <param name="parameterNames">所有有名参数名称列表。</param>
-        /// <param name="switchNames">所有开关参数名称列表。</param>
+        /// <param name="argumentNames">所有有名参数名称列表。</param>
+        /// <param name="optionNames">所有选项参数名称列表。</param>
         public CmdArgumentReader(string[] arguments,
-            string[] parameterNames = null, string[] switchNames = null)
-            : base(arguments, true, parameterNames, switchNames) { }
+            string[] argumentNames = null, string[] optionNames = null)
+            : base(arguments, true, argumentNames, optionNames) { }
 
         /// <summary>
         /// 解析指定名称的有名参数。
@@ -37,7 +37,7 @@ namespace XstarS.CommandLine.Specialized
         /// 若不存在则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
-        public override string GetParameter(string name)
+        public override string GetArgument(string name)
         {
             if (name is null)
             {
@@ -64,7 +64,7 @@ namespace XstarS.CommandLine.Specialized
         /// 若不存在则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="position"/> 小于 0。</exception>
-        public override string GetParameter(int position)
+        public override string GetArgument(int position)
         {
             if (position < 0)
             {
@@ -74,10 +74,10 @@ namespace XstarS.CommandLine.Specialized
             int positionNow = 0;
             foreach (string argument in this.Arguments)
             {
-                if (this.SwitchNames.Contains(argument, this.NameComparer))
+                if (this.OptionNames.Contains(argument, this.NameComparer))
                 {
                 }
-                else if (argument.Contains(":") && this.ParameterNames.Contains(
+                else if (argument.Contains(":") && this.ArgumentNames.Contains(
                     argument.Remove(argument.IndexOf(":")), this.NameComparer))
                 {
                 }
@@ -102,7 +102,7 @@ namespace XstarS.CommandLine.Specialized
         /// 若不存在则为空数组。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
-        public virtual string[] GetParameters(string name)
+        public virtual string[] GetArguments(string name)
         {
             if (name is null)
             {
