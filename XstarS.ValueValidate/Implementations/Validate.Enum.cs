@@ -16,7 +16,7 @@ namespace XstarS
         /// <paramref name="valueInfo"/> 的值不为有效的枚举值。</exception>
         public static IValueInfo<T> IsValidEnum<T>(
             this IValueInfo<T> valueInfo, string message = null)
-            where T : Enum
+            where T : struct, Enum
         {
             if (typeof(T).GetCustomAttributes(false).Any(attr => attr is FlagsAttribute))
             {

@@ -152,7 +152,7 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException"><paramref name="valueInfo"/>
         /// 的值存在不满足<paramref name="predicate"/> 条件的元素。</exception>
-        public static IValueInfo<IEnumerable<T>> AllAreTrue<T>(
+        public static IValueInfo<IEnumerable<T>> AllMatch<T>(
             this IValueInfo<IEnumerable<T>> valueInfo, Predicate<T> predicate, string message = null)
         {
             if (!valueInfo.Value.All(item => predicate(item)))
@@ -173,7 +173,7 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException"><paramref name="valueInfo"/>
         /// 的值不存在满足 <paramref name="predicate"/> 条件的元素。</exception>
-        public static IValueInfo<IEnumerable<T>> AnyIsTrue<T>(
+        public static IValueInfo<IEnumerable<T>> AnyMatches<T>(
             this IValueInfo<IEnumerable<T>> valueInfo, Predicate<T> predicate, string message = null)
         {
             if (!valueInfo.Value.Any(item => predicate(item)))

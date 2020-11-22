@@ -120,7 +120,7 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="condition"/> 返回 <see langword="false"/>。</exception>
-        public static IValueInfo<T> IsTrue<T>(
+        public static IValueInfo<T> MatchesCondition<T>(
             this IValueInfo<T> valueInfo, bool condition, string message = null)
         {
             if (condition)
@@ -141,7 +141,7 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="predicate"/> 返回 <see langword="false"/>。</exception>
-        public static IValueInfo<T> IsTrue<T>(
+        public static IValueInfo<T> MatchesCondition<T>(
             this IValueInfo<T> valueInfo, Predicate<T> predicate, string message = null)
         {
             if (predicate(valueInfo.Value))
@@ -205,7 +205,7 @@ namespace XstarS
         /// <exception cref="KeyNotFoundException">
         /// <paramref name="valueInfo"/> 的值不在 <paramref name="keyCollection"/> 中。</exception>
         public static IValueInfo<T> IsInKeys<T>(
-            this IValueInfo<T> valueInfo, IEnumerable<T> keyCollection, string message = null)
+            this IValueInfo<T> valueInfo, ICollection<T> keyCollection, string message = null)
         {
             if (!keyCollection.Contains(valueInfo.Value))
             {
