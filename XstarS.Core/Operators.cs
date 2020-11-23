@@ -37,7 +37,7 @@ namespace XstarS
             params (TKey Key, TValue Value)[] pairs)
         {
             if (pairs is null) { throw new ArgumentNullException(nameof(pairs)); }
-            var result = new Dictionary<TKey, TValue>();
+            var result = new Dictionary<TKey, TValue>(pairs.Length);
             foreach (var (key, value) in pairs) { result.Add(key, value); }
             return result;
         }
