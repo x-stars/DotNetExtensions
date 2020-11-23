@@ -26,7 +26,8 @@ namespace XstarS.CommandLine.Specialized
         /// <param name="argumentNames">所有有名参数名称列表。</param>
         /// <param name="optionNames">所有选项参数名称列表。</param>
         public CmdArgumentReader(string[] arguments,
-            string[] argumentNames = null, string[] optionNames = null)
+            IEnumerable<string> argumentNames = null,
+            IEnumerable<string> optionNames = null)
             : base(arguments, true, argumentNames, optionNames) { }
 
         /// <summary>

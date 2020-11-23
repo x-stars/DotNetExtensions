@@ -28,36 +28,40 @@ namespace XstarS.CommandLine
         /// <param name="argumentNames">所有有名参数名称列表。</param>
         /// <param name="optionNames">所有选项参数名称列表。</param>
         public ArgumentReader(string[] arguments, bool ignoreCase,
-            string[] argumentNames = null, string[] optionNames = null)
+            IEnumerable<string> argumentNames = null,
+            IEnumerable<string> optionNames = null)
         {
-            this.Arguments = Array.AsReadOnly(arguments ?? Array.Empty<string>());
-            this.OptionNames = Array.AsReadOnly(optionNames ?? Array.Empty<string>());
-            this.ArgumentNames = Array.AsReadOnly(argumentNames ?? Array.Empty<string>());
-            this.NameComparer = ignoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+            this.Arguments = arguments ?? Array.Empty<string>();
+            this.OptionNames = optionNames ?? Array.Empty<string>();
+            this.ArgumentNames = argumentNames ?? Array.Empty<string>();
+            this.NameComparer = ignoreCase ?
+                StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
         }
 
         /// <summary>
         /// 获取待解析的参数列表。
         /// </summary>
         /// <returns>待解析的参数列表。</returns>
-        public IReadOnlyList<string> Arguments { get; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
+        public string[] Arguments { get; }
 
         /// <summary>
         /// 获取有名参数名称列表。
         /// </summary>
         /// <returns>有名参数名称列表。</returns>
-        public IReadOnlyList<string> ArgumentNames { get; }
+        public IEnumerable<string> ArgumentNames { get; }
 
         /// <summary>
         /// 获取选项参数名称列表。
         /// </summary>
         /// <returns>选项参数名称列表。</returns>
-        public IReadOnlyList<string> OptionNames { get; }
+        public IEnumerable<string> OptionNames { get; }
 
         /// <summary>
         /// 获取比较参数名称时采用的字符串比较器。
         /// </summary>
-        /// <returns>选项参数名称列表。</returns>
+        /// <returns>比较参数名称时采用的字符串比较器。</returns>
         protected IEqualityComparer<string> NameComparer { get; }
 
         /// <summary>
@@ -75,7 +79,7 @@ namespace XstarS.CommandLine
                 throw new ArgumentNullException(nameof(name));
             }
 
-            for (int i = 0; i < this.Arguments.Count - 1; i++)
+            for (int i = 0; i < this.Arguments.Length - 1; i++)
             {
                 if (this.NameComparer.Equals(this.Arguments[i], name))
                 {
@@ -101,7 +105,7 @@ namespace XstarS.CommandLine
                 throw new ArgumentOutOfRangeException(nameof(position));
             }
 
-            for (int index = 0, positionNow = 0; index < this.Arguments.Count; index++)
+            for (int index = 0, positionNow = 0; index < this.Arguments.Length; index++)
             {
                 if (this.OptionNames.Contains(this.Arguments[index], this.NameComparer))
                 {

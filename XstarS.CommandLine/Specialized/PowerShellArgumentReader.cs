@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace XstarS.CommandLine.Specialized
 {
@@ -29,7 +30,8 @@ namespace XstarS.CommandLine.Specialized
         /// <param name="argumentNames">所有有名参数名称列表，必选参数应在可选参数之前。</param>
         /// <param name="optionNames">所有选项参数名称列表。</param>
         public PowerShellArgumentReader(string[] arguments,
-            string[] argumentNames = null, string[] optionNames = null)
+            IEnumerable<string> argumentNames = null,
+            IEnumerable<string> optionNames = null)
             : base(arguments, true, argumentNames, optionNames) { }
 
         /// <summary>

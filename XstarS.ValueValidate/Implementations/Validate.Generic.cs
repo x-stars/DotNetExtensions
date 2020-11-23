@@ -205,7 +205,7 @@ namespace XstarS
         /// <exception cref="KeyNotFoundException">
         /// <paramref name="valueInfo"/> 的值不在 <paramref name="keyCollection"/> 中。</exception>
         public static IValueInfo<T> IsInKeys<T>(
-            this IValueInfo<T> valueInfo, ICollection<T> keyCollection, string message = null)
+            this IValueInfo<T> valueInfo, IEnumerable<T> keyCollection, string message = null)
         {
             if (!keyCollection.Contains(valueInfo.Value))
             {

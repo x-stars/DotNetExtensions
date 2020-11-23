@@ -30,7 +30,8 @@ namespace XstarS.CommandLine.Specialized
         /// <param name="argumentNames">所有有名参数名称列表。</param>
         /// <param name="optionNames">所有选项参数名称列表。</param>
         public UnixShellArgumentReader(string[] arguments,
-            string[] argumentNames = null, string[] optionNames = null)
+            IEnumerable<string> argumentNames = null,
+            IEnumerable<string> optionNames = null)
             : base(arguments, false, argumentNames, optionNames) { }
 
         /// <summary>
@@ -101,7 +102,7 @@ namespace XstarS.CommandLine.Specialized
                 throw new ArgumentOutOfRangeException(nameof(position));
             }
 
-            for (int index = 0, positionNow = 0; index < this.Arguments.Count; index++)
+            for (int index = 0, positionNow = 0; index < this.Arguments.Length; index++)
             {
                 if (this.ArgumentNames.Contains(this.Arguments[index], this.NameComparer))
                 {
@@ -232,7 +233,7 @@ namespace XstarS.CommandLine.Specialized
                     throw new ArgumentException(message, nameof(name));
                 }
 
-                for (int i = 0; i < this.Arguments.Count - 1; i++)
+                for (int i = 0; i < this.Arguments.Length - 1; i++)
                 {
                     if (this.NameComparer.Equals(this.Arguments[i], name))
                     {
