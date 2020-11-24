@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using XstarS.Collections;
 using XstarS.Collections.Generic;
+using XstarS.Collections.Specialized;
 
 namespace XstarS
 {
@@ -83,6 +84,26 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(array));
             }
 
+            var comparer = ReferenceEqualityComparer<Array>.Default;
+            return array.ArrayToString(false, new HashSet<Array>(comparer));
+        }
+
+        /// <summary>
+        /// 返回当前数组的所有元素的字符串表达形式。
+        /// </summary>
+        /// <param name="array">要获取字符串表达形式的数组。</param>
+        /// <param name="recurse">指示是否对内层数组递归。</param>
+        /// <param name="pathed">当前路径已经访问的数组。</param>
+        /// <returns><paramref name="array"/> 的所有元素的字符串表达形式。</returns>
+        private static string ArrayToString(this Array array,
+            bool recurse, HashSet<Array> pathed)
+        {
+            if (!pathed.Add(array))
+            {
+                return "{ ... }";
+            }
+
+            var result = default(string);
             if (array.Rank == 1)
             {
                 var sequence = new List<string>();
@@ -90,45 +111,41 @@ namespace XstarS
                 {
                     if (recurse && (item is Array innerArray))
                     {
-                        sequence.Add(innerArray.ArrayToString(recurse));
+                        sequence.Add(innerArray.ArrayToString(recurse, pathed));
                     }
                     else
                     {
                         sequence.Add(item?.ToString());
                     }
                 }
-                return "{ " + string.Join(", ", sequence) + " }";
+                result = "{ " + string.Join(", ", sequence) + " }";
             }
             else
             {
-                return array.ArrayToString(Array.Empty<int>(), recurse);
+                result = array.ArrayToString(recurse, Array.Empty<int>(), pathed);
             }
+
+            pathed.Remove(array);
+            return result;
         }
 
         /// <summary>
         /// 返回当前多维数组的所有元素的字符串表达形式。
         /// </summary>
         /// <param name="array">要获取字符串表达形式的数组。</param>
-        /// <param name="indices">当前多维数组的当前索引。</param>
         /// <param name="recurse">指示是否对内层数组递归。</param>
+        /// <param name="indices">当前多维数组的当前索引。</param>
+        /// <param name="pathed">当前路径已经访问的数组。</param>
         /// <returns><paramref name="array"/> 的所有元素的字符串表达形式。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
         private static string ArrayToString(this Array array,
-            int[] indices = null, bool recurse = false)
+            bool recurse, int[] indices, HashSet<Array> pathed)
         {
-            if (array is null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
-            indices = indices ?? Array.Empty<int>();
-
             if (indices.Length == array.Rank)
             {
                 var item = array.GetValue(indices);
                 if (recurse && (item is Array innerArray))
                 {
-                    return innerArray.ArrayToString(recurse);
+                    return innerArray.ArrayToString(recurse, pathed);
                 }
                 else
                 {
@@ -141,7 +158,7 @@ namespace XstarS
                 var length = array.GetLength(indices.Length);
                 for (int i = 0; i < length; i++)
                 {
-                    sequence.Add(array.ArrayToString(indices.Append(i), recurse));
+                    sequence.Add(array.ArrayToString(recurse, indices.Append(i), pathed));
                 }
                 return "{ " + string.Join(", ", sequence) + " }";
             }
@@ -279,11 +296,8 @@ namespace XstarS
         public static T[,] InitializeArray<T>(
             this (int, int) lengths, Func<int, int, T> indicesMap)
         {
-            if (lengths.Item1 < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(lengths));
-            }
-            if (lengths.Item2 < 0)
+            var (length1, length2) = lengths;
+            if ((length1 < 0) || (length2 < 0))
             {
                 throw new ArgumentOutOfRangeException(nameof(lengths));
             }
@@ -292,10 +306,10 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(indicesMap));
             }
 
-            var result = new T[lengths.Item1, lengths.Item2];
-            for (int i = 0; i < lengths.Item1; i++)
+            var result = new T[length1, length2];
+            for (int i = 0; i < length1; i++)
             {
-                for (int j = 0; j < lengths.Item2; j++)
+                for (int j = 0; j < length2; j++)
                 {
                     result[i, j] = indicesMap(i, j);
                 }
@@ -319,15 +333,8 @@ namespace XstarS
         public static T[,,] InitializeArray<T>(
             this (int, int, int) lengths, Func<int, int, int, T> indicesMap)
         {
-            if (lengths.Item1 < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(lengths));
-            }
-            if (lengths.Item2 < 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(lengths));
-            }
-            if (lengths.Item3 < 0)
+            var (length1, length2, length3) = lengths;
+            if ((length1 < 0) || (length2 < 0) || (length3 < 0))
             {
                 throw new ArgumentOutOfRangeException(nameof(lengths));
             }
@@ -336,12 +343,12 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(indicesMap));
             }
 
-            var result = new T[lengths.Item1, lengths.Item2, lengths.Item3];
-            for (int i = 0; i < lengths.Item1; i++)
+            var result = new T[length1, length2, length3];
+            for (int i = 0; i < length1; i++)
             {
-                for (int j = 0; j < lengths.Item2; j++)
+                for (int j = 0; j < length2; j++)
                 {
-                    for (int k = 0; k < lengths.Item3; k++)
+                    for (int k = 0; k < length3; k++)
                     {
                         result[i, j, k] = indicesMap(i, j, k);
                     }
@@ -451,7 +458,7 @@ namespace XstarS
             }
             else
             {
-                foreach (object item in array)
+                foreach (var item in array)
                 {
                     yield return item;
                 }
@@ -541,7 +548,7 @@ namespace XstarS
         /// 所表示的数组元素数量与 <paramref name="array"/> 中的元素数量不一致。</exception>
         /// <exception cref="NotSupportedException">
         /// <paramref name="array"/> 的最内层元素为指针。</exception>
-        public static Array ReshapeAsJagged(this Array array, params int[] lengths)
+        public static Array ReshapeJagged(this Array array, params int[] lengths)
         {
             if (array is null)
             {

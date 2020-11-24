@@ -42,10 +42,10 @@ namespace XstarS
         }
 
         [TestMethod]
-        public void ReshapeAsJagged_Rank1Array_GetsRank5JaggedArray()
+        public void ReshapeJagged_Rank1Array_GetsRank5JaggedArray()
         {
             var array = new[] { 10000, 1000, 100, 10, 1, 0 };
-            var reshaped = (int[][][][][])array.ReshapeAsJagged(1, 3, 2, 1, 1);
+            var reshaped = (int[][][][][])array.ReshapeJagged(1, 3, 2, 1, 1);
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 2; j++)

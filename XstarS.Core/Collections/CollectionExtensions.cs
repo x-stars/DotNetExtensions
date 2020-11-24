@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using XstarS.Collections.Specialized;
 
 namespace XstarS.Collections
 {
@@ -39,18 +40,39 @@ namespace XstarS.Collections
                 throw new ArgumentNullException(nameof(enumerable));
             }
 
+            var comparer = ReferenceEqualityComparer<IEnumerable>.Default;
+            return enumerable.CollectionToString(recurse, new HashSet<IEnumerable>(comparer));
+        }
+
+        /// <summary>
+        /// 返回当前 <see cref="IEnumerable"/> 对象的所有元素的字符串表达形式。
+        /// </summary>
+        /// <param name="enumerable">要获取字符串表达形式的 <see cref="IEnumerable"/> 对象。</param>
+        /// <param name="recurse">指示是否对内层 <see cref="IEnumerable"/> 递归。</param>
+        /// <param name="pathed">当前路径已经访问的 <see cref="IEnumerable"/> 对象。</param>
+        /// <returns><paramref name="enumerable"/> 的所有元素的字符串表达形式。</returns>
+        private static string CollectionToString(this IEnumerable enumerable,
+            bool recurse, HashSet<IEnumerable> pathed)
+        {
+            if (!pathed.Add(enumerable))
+            {
+                return "{ ... }";
+            }
+
             var sequence = new List<string>();
             foreach (var item in enumerable)
             {
                 if (recurse && (item is IEnumerable innerEnum))
                 {
-                    sequence.Add(innerEnum.CollectionToString(recurse));
+                    sequence.Add(innerEnum.CollectionToString(recurse, pathed));
                 }
                 else
                 {
                     sequence.Add(item?.ToString());
                 }
             }
+
+            pathed.Remove(enumerable);
             return "{ " + string.Join(", ", sequence) + " }";
         }
 
