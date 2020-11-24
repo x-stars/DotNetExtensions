@@ -40,10 +40,10 @@ namespace XstarS
 
         /// <summary>
         /// 确定当前对象与指定对象的值是否相等。
-        /// 将递归比较至对象的字段（数组的元素）为 .NET 基元类型 (<see cref="Type.IsPrimitive"/>)、
-        /// 字符串 <see cref="string"/> 或指针类型 (<see cref="Type.IsPointer"/>)。
         /// </summary>
-        /// <remarks>基于反射调用，可能存在性能问题。</remarks>
+        /// <remarks>基于反射调用，可能存在性能问题。
+        /// 将递归比较至对象的字段（数组的元素）为 .NET 基元类型 (<see cref="Type.IsPrimitive"/>)、
+        /// 字符串 <see cref="string"/> 或指针类型 (<see cref="Type.IsPointer"/>)。</remarks>
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要进行值相等比较的对象。</param>
         /// <param name="other">要与当前对象进行比较的对象。</param>
@@ -63,10 +63,10 @@ namespace XstarS
 
         /// <summary>
         /// 获取当前对象基于值的哈希代码。
-        /// 将递归计算至对象的字段（数组的元素）为 .NET 基元类型 (<see cref="Type.IsPrimitive"/>)、
-        /// 字符串 <see cref="string"/> 或指针类型 (<see cref="Type.IsPointer"/>)。
         /// </summary>
-        /// <remarks>基于反射调用，可能存在性能问题。</remarks>
+        /// <remarks>基于反射调用，可能存在性能问题。
+        /// 将递归计算至对象的字段（数组的元素）为 .NET 基元类型 (<see cref="Type.IsPrimitive"/>)、
+        /// 字符串 <see cref="string"/> 或指针类型 (<see cref="Type.IsPointer"/>)。</remarks>
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要获取基于值的哈希代码的对象。</param>
         /// <returns>由 <paramref name="value"/> 基于值的哈希代码。</returns>
