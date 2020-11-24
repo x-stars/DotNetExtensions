@@ -24,6 +24,33 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
+        /// 对当前 <see cref="IDictionary{TKey, TValue}"/> 对象中的每对键值执行指定操作。
+        /// </summary>
+        /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
+        /// <typeparam name="TValue"><see cref="IDictionary{TKey, TValue}"/> 中的值的类型。</typeparam>
+        /// <param name="dictionary">要对键值执行操作的 <see cref="IDictionary{TKey, TValue}"/> 对象。</param>
+        /// <param name="action">要对 <see cref="IDictionary{TKey, TValue}"/> 中每对键值执行的操作。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="dictionary"/>
+        /// 或 <paramref name="action"/> 为 <see langword="null"/>。</exception>
+        public static void ForEach<TKey, TValue>(
+            this IDictionary<TKey, TValue> dictionary, Action<TKey, TValue> action)
+        {
+            if (dictionary is null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            foreach (var pair in dictionary)
+            {
+                action(pair.Key, pair.Value);
+            }
+        }
+
+        /// <summary>
         /// 根据指定的键获取 <see cref="IDictionary{TKey, TValue}"/> 中对应值。
         /// 若指定的键不存在，则将指定的键值对添加到 <see cref="IDictionary{TKey, TValue}"/> 中。
         /// </summary>

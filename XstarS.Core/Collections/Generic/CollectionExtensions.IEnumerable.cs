@@ -109,6 +109,33 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
+        /// 对当前 <see cref="IEnumerable{T}"/> 对象中的每个带索引的元素执行指定操作。
+        /// </summary>
+        /// <typeparam name="T"><see cref="IEnumerable{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="enumerable">要对元素执行操作的 <see cref="IEnumerable{T}"/> 对象。</param>
+        /// <param name="action">要对 <see cref="IEnumerable{T}"/> 中每个带索引的元素执行的操作。</param>
+        /// <exception cref="ArgumentNullException"><paramref name="enumerable"/>
+        /// 或 <paramref name="action"/> 为 <see langword="null"/>。</exception>
+        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<int, T> action)
+        {
+            if (enumerable is null)
+            {
+                throw new ArgumentNullException(nameof(enumerable));
+            }
+            if (action is null)
+            {
+                throw new ArgumentNullException(nameof(action));
+            }
+
+            var index = 0;
+            foreach (var item in enumerable)
+            {
+                action(index, item);
+                index++;
+            }
+        }
+
+        /// <summary>
         /// 获取当前 <see cref="IEnumerable{T}"/> 遍历元素得到的哈希代码。
         /// </summary>
         /// <param name="enumerable">要为其获取哈希代码的 <see cref="IEnumerable{T}"/> 对象。</param>
