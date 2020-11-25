@@ -72,7 +72,7 @@ namespace XstarS
         /// 返回当前数组的所有元素的字符串表达形式。
         /// </summary>
         /// <param name="array">要获取字符串表达形式的数组。</param>
-        /// <param name="recurse">指示是否对内层数组递归。</param>
+        /// <param name="recurse">指示是否对内层声明数组递归。</param>
         /// <returns><paramref name="array"/> 的所有元素的字符串表达形式。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
@@ -92,7 +92,7 @@ namespace XstarS
         /// 返回当前数组的所有元素的字符串表达形式。
         /// </summary>
         /// <param name="array">要获取字符串表达形式的数组。</param>
-        /// <param name="recurse">指示是否对内层数组递归。</param>
+        /// <param name="recurse">指示是否对内层声明数组递归。</param>
         /// <param name="pathed">当前路径已经访问的数组。</param>
         /// <returns><paramref name="array"/> 的所有元素的字符串表达形式。</returns>
         private static string ArrayToString(this Array array,
@@ -104,19 +104,15 @@ namespace XstarS
             }
 
             var result = default(string);
+            recurse &= array.GetType().GetElementType().IsArray;
             if (array.Rank == 1)
             {
                 var sequence = new List<string>();
                 foreach (var item in array)
                 {
-                    if (recurse && (item is Array innerArray))
-                    {
-                        sequence.Add(innerArray.ArrayToString(recurse, pathed));
-                    }
-                    else
-                    {
-                        sequence.Add(item?.ToString());
-                    }
+                    sequence.Add(recurse ?
+                        (item as Array)?.ArrayToString(recurse, pathed) :
+                        item?.ToString());
                 }
                 result = "{ " + string.Join(", ", sequence) + " }";
             }
@@ -133,7 +129,7 @@ namespace XstarS
         /// 返回当前多维数组的所有元素的字符串表达形式。
         /// </summary>
         /// <param name="array">要获取字符串表达形式的数组。</param>
-        /// <param name="recurse">指示是否对内层数组递归。</param>
+        /// <param name="recurse">指示是否对内层声明数组递归。</param>
         /// <param name="indices">当前多维数组的当前索引。</param>
         /// <param name="pathed">当前路径已经访问的数组。</param>
         /// <returns><paramref name="array"/> 的所有元素的字符串表达形式。</returns>
@@ -143,14 +139,9 @@ namespace XstarS
             if (indices.Length == array.Rank)
             {
                 var item = array.GetValue(indices);
-                if (recurse && (item is Array innerArray))
-                {
-                    return innerArray.ArrayToString(recurse, pathed);
-                }
-                else
-                {
-                    return array.GetValue(indices)?.ToString();
-                }
+                return recurse ?
+                    (item as Array)?.ArrayToString(recurse, pathed) :
+                    item?.ToString();
             }
             else
             {
@@ -158,7 +149,8 @@ namespace XstarS
                 var length = array.GetLength(indices.Length);
                 for (int i = 0; i < length; i++)
                 {
-                    sequence.Add(array.ArrayToString(recurse, indices.Append(i), pathed));
+                    indices = indices.Append(i);
+                    sequence.Add(array.ArrayToString(recurse, indices, pathed));
                 }
                 return "{ " + string.Join(", ", sequence) + " }";
             }
