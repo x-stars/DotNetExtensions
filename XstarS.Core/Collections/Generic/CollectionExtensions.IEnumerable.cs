@@ -20,6 +20,34 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
+        /// 顺序连接当前 <see cref="IEnumerable{T}"/> 中包含的序列。
+        /// </summary>
+        /// <typeparam name="T"><paramref name="enumerables"/> 包含的
+        /// <see cref="IEnumerable{T}"/> 中元素的类型。</typeparam>
+        /// <param name="enumerables">要连接包含的序列的 <see cref="IEnumerable{T}"/> 对象。</param>
+        /// <returns><paramref name="enumerables"/> 中包含的序列顺序连接后的序列。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="enumerables"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<T> Concat<T>(this IEnumerable<IEnumerable<T>> enumerables)
+        {
+            if (enumerables is null)
+            {
+                throw new ArgumentNullException(nameof(enumerables));
+            }
+
+            foreach (var enumerable in enumerables)
+            {
+                if (!(enumerable is null))
+                {
+                    foreach (var item in enumerable)
+                    {
+                        yield return item;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// 获取当前 <see cref="IEnumerable{T}"/> 对象中指定对象的数量。
         /// </summary>
         /// <typeparam name="T"><see cref="IEnumerable{T}"/> 中的元素的类型。</typeparam>
