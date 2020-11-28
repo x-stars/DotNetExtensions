@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
+using System.Security;
 
 namespace XstarS
 {
     /// <summary>
-    /// 提供类型无关的通用扩展方法。
+    /// 提供对象的扩展方法。
     /// </summary>
     public static class ObjectExtensions
     {
@@ -13,8 +15,8 @@ namespace XstarS
         /// </summary>
         /// <param name="value">要创建浅表副本的对象。</param>
         /// <returns><paramref name="value"/> 的浅表副本。</returns>
-        public static object ShallowClone(this object value) =>
-            new CloneableObject(value).ShallowClone();
+        public static object ObjectClone(this object value) =>
+            ObjectCloneHelper.ObjectClone(value);
 
         /// <summary>
         /// 创建当前对象的深度副本。
@@ -22,8 +24,21 @@ namespace XstarS
         /// <remarks>基于反射调用，可能存在性能问题。</remarks>
         /// <param name="value">要创建深度副本的对象。</param>
         /// <returns><paramref name="value"/> 的深度副本。</returns>
-        public static object DeepClone(this object value) =>
-            new CloneableObject(value).DeepClone();
+        /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
+        public static object RecurseClone(this object value) =>
+            ObjectCloneHelper.RecurseClone(value);
+
+        /// <summary>
+        /// 创建当前对象的序列化副本。
+        /// </summary>
+        /// <remarks>基于对象序列化，可能存在性能问题。</remarks>
+        /// <param name="value">要创建序列化副本的对象。</param>
+        /// <returns><paramref name="value"/> 的序列化副本。</returns>
+        /// <exception cref="SerializationException">
+        /// <paramref name="value"/> 中的某个对象未标记为可序列化。</exception>
+        /// <exception cref="SecurityException">调用方没有所要求的权限。</exception>
+        public static object SerializeClone(this object value) =>
+            ObjectCloneHelper.SerializeClone(value);
 
         /// <summary>
         /// 确定当前对象与指定对象的引用是否相等。

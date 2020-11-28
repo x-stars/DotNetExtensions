@@ -8,11 +8,11 @@ namespace XstarS
     public class ObjectExtensionsTest
     {
         [TestMethod]
-        public void DeepClone_Int32Array_WorksProperly()
+        public void RecurseClone_Int32Array_WorksProperly()
         {
             var o1 = new int[] { 1 };
             var o2 = (int[])o1.Clone();
-            var o3 = (int[])o1.DeepClone();
+            var o3 = o1.RecurseClone();
             o2[0] = 2;
             o3[0] = 3;
             Assert.AreEqual(1, o1[0]);
@@ -21,11 +21,11 @@ namespace XstarS
         }
 
         [TestMethod]
-        public void DeepClone_NestedInt32Array_WorksProperly()
+        public void RecurseClone_NestedInt32Array_WorksProperly()
         {
             var o1 = new int[][] { new int[] { 1 } };
             var o2 = (int[][])o1.Clone();
-            var o3 = (int[][])o1.DeepClone();
+            var o3 = o1.RecurseClone();
             o2[0][0] = 2;
             o3[0][0] = 3;
             Assert.AreNotEqual(o1[0][0], 1);
@@ -35,23 +35,23 @@ namespace XstarS
         }
 
         [TestMethod]
-        public void DeepClone_Type_WorksProperly()
+        public void RecurseClone_Type_WorksProperly()
         {
             var o1 = typeof(object);
             var o2 = typeof(object);
-            var o3 = o1.DeepClone();
+            var o3 = o1.RecurseClone();
             Assert.IsTrue(object.ReferenceEquals(o1, o2));
             Assert.IsFalse(object.ReferenceEquals(o1, o3));
         }
 
         [TestMethod]
-        public void DeepClone_LinkedList_WorkProperly()
+        public void RecurseClone_LinkedList_WorkProperly()
         {
             var l = new LinkedList<object>();
             var n0 = l.AddLast("0");
             var n1 = l.AddLast("1");
             var n2 = l.AddLast("2");
-            var lc = l.DeepClone();
+            var lc = l.RecurseClone();
             var n0c = lc.First;
             var n1c = n0c.Next;
             var n2c = n1c.Next;

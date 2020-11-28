@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Runtime.Serialization;
+using System.Security;
 
 namespace XstarS
 {
     /// <summary>
-    /// 提供类型无关的通用泛型扩展方法。
+    /// 提供对象的泛型扩展方法。
     /// </summary>
     public static class GenericExtensions
     {
@@ -14,8 +16,8 @@ namespace XstarS
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要创建浅表副本的对象。</param>
         /// <returns><paramref name="value"/> 的浅表副本。</returns>
-        public static T ShallowClone<T>(this T value) =>
-            (T)new CloneableObject(value).ShallowClone();
+        public static T ObjectClone<T>(this T value) =>
+            (T)ObjectCloneHelper.ObjectClone(value);
 
         /// <summary>
         /// 创建当前对象的深度副本。
@@ -24,8 +26,21 @@ namespace XstarS
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要创建深度副本的对象。</param>
         /// <returns><paramref name="value"/> 的深度副本。</returns>
-        public static T DeepClone<T>(this T value) =>
-            (T)new CloneableObject(value).DeepClone();
+        public static T RecurseClone<T>(this T value) =>
+            (T)ObjectCloneHelper.RecurseClone(value);
+
+        /// <summary>
+        /// 创建当前对象的序列化副本。
+        /// </summary>
+        /// <remarks>基于对象序列化，可能存在性能问题。</remarks>
+        /// <typeparam name="T">对象的类型。</typeparam>
+        /// <param name="value">要创建序列化副本的对象。</param>
+        /// <returns><paramref name="value"/> 的序列化副本。</returns>
+        /// <exception cref="SerializationException">
+        /// <paramref name="value"/> 中的某个对象未标记为可序列化。</exception>
+        /// <exception cref="SecurityException">调用方没有所要求的权限。</exception>
+        public static T SerializeClone<T>(this T value) =>
+            (T)ObjectCloneHelper.SerializeClone(value);
 
         /// <summary>
         /// 确定当前对象与指定对象的引用是否相等。
