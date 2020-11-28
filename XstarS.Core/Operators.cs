@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
 
 namespace XstarS
 {
@@ -22,17 +23,25 @@ namespace XstarS
             (T[])(items ?? throw new ArgumentNullException(nameof(items))).Clone();
 
         /// <summary>
-        /// 创建一个包含指定键值的 <see cref="Dictionary{TKey, TValue}"/>。
+        /// 创建一个包含指定值的 <see cref="StrongBox{T}"/>。
+        /// </summary>
+        /// <typeparam name="T"><see cref="StrongBox{T}"/> 中值的类型。</typeparam>
+        /// <param name="value">用于创建 <see cref="StrongBox{T}"/> 的值。</param>
+        /// <returns>一个值为 <paramref name="value"/> 的 <see cref="StrongBox{T}"/>。</returns>
+        public static StrongBox<T> BoxOf<T>(T value) => new StrongBox<T>(value);
+
+        /// <summary>
+        /// 创建一个包含指定键值对的 <see cref="Dictionary{TKey, TValue}"/>。
         /// </summary>
         /// <typeparam name="TKey"><see cref="Dictionary{TKey, TValue}"/> 中键的类型。</typeparam>
         /// <typeparam name="TValue"><see cref="Dictionary{TKey, TValue}"/> 中值的类型。</typeparam>
-        /// <param name="pairs">用于创建 <see cref="Dictionary{TKey, TValue}"/> 的键值。</param>
+        /// <param name="pairs">用于创建 <see cref="Dictionary{TKey, TValue}"/> 的键值对。</param>
         /// <returns>一个包含 <paramref name="pairs"/>
         /// 中键值的 <see cref="Dictionary{TKey, TValue}"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="pairs"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
-        /// <paramref name="pairs"/> 中存在具有相同键的键值。</exception>
+        /// <paramref name="pairs"/> 中存在具有相同键的键值对。</exception>
         public static Dictionary<TKey, TValue> DictOf<TKey, TValue>(
             params (TKey Key, TValue Value)[] pairs)
         {
@@ -54,7 +63,7 @@ namespace XstarS
             new List<T>(items ?? throw new ArgumentNullException(nameof(items)));
 
         /// <summary>
-        /// 创建一个键值为指定值的 <see cref="KeyValuePair{TKey, TValue}"/>。
+        /// 创建一个包含键值的 <see cref="KeyValuePair{TKey, TValue}"/>。
         /// </summary>
         /// <typeparam name="TKey"><see cref="KeyValuePair{TKey, TValue}"/> 中键的类型。</typeparam>
         /// <typeparam name="TValue"><see cref="KeyValuePair{TKey, TValue}"/> 中值的类型。</typeparam>
@@ -66,17 +75,17 @@ namespace XstarS
             new KeyValuePair<TKey, TValue>(key, value);
 
         /// <summary>
-        /// 创建一个包含指定键值的 <see cref="ReadOnlyDictionary{TKey, TValue}"/>。
+        /// 创建一个包含指定键值对的 <see cref="ReadOnlyDictionary{TKey, TValue}"/>。
         /// </summary>
         /// <typeparam name="TKey"><see cref="ReadOnlyDictionary{TKey, TValue}"/> 中键的类型。</typeparam>
         /// <typeparam name="TValue"><see cref="ReadOnlyDictionary{TKey, TValue}"/> 中值的类型。</typeparam>
-        /// <param name="pairs">用于创建 <see cref="ReadOnlyDictionary{TKey, TValue}"/> 的键值。</param>
-        /// <returns>一个包含 <paramref name="pairs"/> 中键值的
+        /// <param name="pairs">用于创建 <see cref="ReadOnlyDictionary{TKey, TValue}"/> 的键值对。</param>
+        /// <returns>一个包含 <paramref name="pairs"/> 中键值对的
         /// <see cref="ReadOnlyDictionary{TKey, TValue}"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="pairs"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
-        /// <paramref name="pairs"/> 中存在具有相同键的键值。</exception>
+        /// <paramref name="pairs"/> 中存在具有相同键的键值对。</exception>
         public static ReadOnlyDictionary<TKey, TValue> RoDictOf<TKey, TValue>(
             params (TKey Key, TValue Value)[] pairs) =>
             new ReadOnlyDictionary<TKey, TValue>(DictOf(pairs));
