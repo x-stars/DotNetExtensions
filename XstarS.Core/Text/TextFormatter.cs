@@ -9,6 +9,12 @@ namespace XstarS.Text
     public abstract class TextFormatter<T> : ITextFormatter, ITextFormatter<T>
     {
         /// <summary>
+        /// 获取默认的 <see cref="TextFormatter{T}"/> 实例。
+        /// </summary>
+        /// <returns>默认的 <see cref="TextFormatter{T}"/> 实例。</returns>
+        public static TextFormatter<T> Default { get; } = new ObjectTextFormatter<T>();
+
+        /// <summary>
         /// 将指定对象格式化为字符串。
         /// </summary>
         /// <param name="value">要格式化的对象。</param>
