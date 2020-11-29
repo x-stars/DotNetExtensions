@@ -26,7 +26,7 @@ namespace XstarS.Reflection
         /// <typeparam name="T">引用传递 <see langword="ref"/> 的类型。</typeparam>
         /// <param name="value">按引用转递的值。</param>
         /// <returns>引用传递 <see langword="ref"/> 转换得到的 <see cref="IntPtr"/>。</returns>
-        private delegate IntPtr Converter<T>(ref T value);
+        private delegate IntPtr ByRefBoxer<T>(ref T value);
 
         /// <summary>
         /// 提供 <see cref="IntPtrByRef.RealType"/> 中各方法的委托。
@@ -38,10 +38,10 @@ namespace XstarS.Reflection
             /// 表示 <see cref="IntPtrByRef.RealType"/> 中
             /// <see cref="IntPtrByRef.ToIntPtr{T}(ref T)"/> 方法的委托。
             /// </summary>
-            internal static readonly Converter<T> ToIntPtr =
-                (Converter<T>)IntPtrByRef.RealType.GetMethod(
+            internal static readonly ByRefBoxer<T> ToIntPtr =
+                (ByRefBoxer<T>)IntPtrByRef.RealType.GetMethod(
                     nameof(IntPtrByRef.ToIntPtr)).MakeGenericMethod(
-                        typeof(T)).CreateDelegate(typeof(Converter<T>));
+                        typeof(T)).CreateDelegate(typeof(ByRefBoxer<T>));
 
             /// <summary>
             /// 表示 <see cref="IntPtrByRef.RealType"/> 中

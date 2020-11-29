@@ -47,7 +47,7 @@ namespace XstarS.Reflection.Emit
                 case 2: il.Emit(OpCodes.Ldarg_2); break;
                 case 3: il.Emit(OpCodes.Ldarg_3); break;
                 default:
-                    il.Emit((position <= byte.MaxValue) ?
+                    il.Emit(position.IsShortOperand() ?
                         OpCodes.Ldarg_S : OpCodes.Ldarg, position);
                     break;
             }
@@ -80,7 +80,7 @@ namespace XstarS.Reflection.Emit
                 case 7: il.Emit(OpCodes.Ldc_I4_7); break;
                 case 8: il.Emit(OpCodes.Ldc_I4_8); break;
                 default:
-                    il.Emit((value <= byte.MaxValue) ?
+                    il.Emit(value.IsShortOperand() ?
                         OpCodes.Ldc_I4_S : OpCodes.Ldc_I4, value);
                     break;
             }
@@ -153,5 +153,14 @@ namespace XstarS.Reflection.Emit
                 il.Emit(OpCodes.Castclass, type);
             }
         }
+
+        /// <summary>
+        /// 确定当前操作数是否可以为短操作数。
+        /// </summary>
+        /// <param name="operand">当前操作数。</param>
+        /// <returns>若 <paramref name="operand"/> 在 <see cref="byte"/> 的表示范围内，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        private static bool IsShortOperand(this int operand) =>
+            (operand >= 0) && (operand <= byte.MaxValue);
     }
 }
