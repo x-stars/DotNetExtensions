@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using XstarS.Collections;
-using XstarS.Collections.Generic;
 using XstarS.Collections.Specialized;
 
 namespace XstarS
@@ -32,40 +29,6 @@ namespace XstarS
             Array.Copy(array, result, array.Length);
             result[array.Length] = item;
             return result;
-        }
-
-        /// <summary>
-        /// 确定当前数组与指定数组的元素是否对应相等。
-        /// </summary>
-        /// <typeparam name="T">数组元素的类型。</typeparam>
-        /// <param name="array">要进行相等比较的数组。</param>
-        /// <param name="other">要与当前数组进行相等比较的数组。</param>
-        /// <param name="comparer">用于比较数组元素的比较器。</param>
-        /// <returns>若 <paramref name="array"/> 与
-        /// <paramref name="other"/> 的每个元素都对应相等，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool ArrayEquals<T>(this T[] array, T[] other,
-            IEqualityComparer<T> comparer = null)
-        {
-            return new ArrayEqualityComparer<T>(comparer).Equals(array, other);
-        }
-
-        /// <summary>
-        /// 确定当前数组与指定数组的元素是否对应相等。
-        /// </summary>
-        /// <param name="array">要进行相等比较的数组。</param>
-        /// <param name="other">要与当前数组进行相等比较的数组。</param>
-        /// <param name="recurse">指示是否对内层数组递归。</param>
-        /// <param name="comparer">用于比较数组元素的比较器。</param>
-        /// <returns>若 <paramref name="array"/> 与
-        /// <paramref name="other"/> 的维度和各维度大小都相等，且每个元素都对应相等，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="NotSupportedException">
-        /// <paramref name="array"/> 的最内层元素为指针。</exception>
-        public static bool ArrayEquals(this Array array, Array other,
-            bool recurse = false, IEqualityComparer comparer = null)
-        {
-            return new ArrayEqualityComparer(recurse, comparer).Equals(array, other);
         }
 
         /// <summary>
@@ -213,31 +176,6 @@ namespace XstarS
                 index += array.Length;
             }
             return result;
-        }
-
-        /// <summary>
-        /// 获取当前数组遍历元素得到的哈希代码。
-        /// </summary>
-        /// <param name="array">要为其获取哈希代码的数组。</param>
-        /// <param name="comparer">用于获取数组元素的哈希代码的比较器。</param>
-        /// <returns>遍历 <paramref name="array"/> 的元素得到的哈希代码。</returns>
-        public static int GetArrayHashCode<T>(this T[] array,
-            IEqualityComparer<T> comparer = null)
-        {
-            return new ArrayEqualityComparer<T>(comparer).GetHashCode(array);
-        }
-
-        /// <summary>
-        /// 获取当前数组遍历元素得到的哈希代码。
-        /// </summary>
-        /// <param name="array">要为其获取哈希代码的数组。</param>
-        /// <param name="recurse">指示是否对内层数组递归。</param>
-        /// <param name="comparer">用于获取数组元素的哈希代码的比较器。</param>
-        /// <returns>遍历 <paramref name="array"/> 的元素得到的哈希代码。</returns>
-        public static int GetArrayHashCode(this Array array,
-            bool recurse = false, IEqualityComparer comparer = null)
-        {
-            return new ArrayEqualityComparer(recurse, comparer).GetHashCode(array);
         }
 
         /// <summary>

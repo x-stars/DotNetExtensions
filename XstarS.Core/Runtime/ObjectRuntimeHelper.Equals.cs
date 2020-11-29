@@ -24,6 +24,18 @@ namespace XstarS.Runtime
         }
 
         /// <summary>
+        /// 确定指定的两个以 <see cref="Pointer"/> 包装的指针是否相等。
+        /// </summary>
+        /// <param name="value">要进行相等比较的第一个包装的指针。</param>
+        /// <param name="other">要进行相等比较的第二个包装的指针。</param>
+        /// <returns>若 <paramref name="value"/> 和 <paramref name="other"/> 包装的指针相等，
+        /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
+        internal static unsafe bool BoxedPointerEquals(object value, object other)
+        {
+            return Pointer.Unbox(value) == Pointer.Unbox(other);
+        }
+
+        /// <summary>
         /// 确定指定的两个对象的值是否相等。
         /// </summary>
         /// <param name="value">要进行值相等比较的第一个对象。</param>
@@ -165,18 +177,6 @@ namespace XstarS.Runtime
                 }
             }
             return true;
-        }
-
-        /// <summary>
-        /// 确定指定的两个以 <see cref="Pointer"/> 包装的指针是否相等。
-        /// </summary>
-        /// <param name="value">要进行相等比较的第一个包装的指针。</param>
-        /// <param name="other">要进行相等比较的第二个包装的指针。</param>
-        /// <returns>若 <paramref name="value"/> 和 <paramref name="other"/> 包装的指针相等，
-        /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        private static unsafe bool BoxedPointerEquals(object value, object other)
-        {
-            return Pointer.Unbox(value) == Pointer.Unbox(other);
         }
     }
 }

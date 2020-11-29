@@ -22,6 +22,16 @@ namespace XstarS.Runtime
         }
 
         /// <summary>
+        /// 获取指定以 <see cref="Pointer"/> 包装的指针的哈希代码。
+        /// </summary>
+        /// <param name="value">要获取哈希代码的包装的指针。</param>
+        /// <returns><paramref name="value"/> 中包装的指针的哈希代码。</returns>
+        internal static unsafe int GetBoxedPointerHashCode(object value)
+        {
+            return ((IntPtr)Pointer.Unbox(value)).GetHashCode();
+        }
+
+        /// <summary>
         /// 组合当前哈希代码和新的哈希代码。
         /// </summary>
         /// <param name="hashCode">当前哈希代码。</param>
@@ -141,16 +151,6 @@ namespace XstarS.Runtime
             }
 
             return hashCode;
-        }
-
-        /// <summary>
-        /// 获取指定以 <see cref="Pointer"/> 包装的指针的哈希代码。
-        /// </summary>
-        /// <param name="value">要获取哈希代码的包装的指针。</param>
-        /// <returns><paramref name="value"/> 中包装的指针的哈希代码。</returns>
-        private static unsafe int GetBoxedPointerHashCode(object value)
-        {
-            return ((IntPtr)Pointer.Unbox(value)).GetHashCode();
         }
     }
 }
