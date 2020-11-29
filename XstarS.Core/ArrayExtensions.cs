@@ -47,7 +47,7 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(array));
             }
 
-            var comparer = ReferenceEqualityComparer<Array>.Default;
+            var comparer = ReferenceEqualityComparer.Default;
             return array.ArrayToString(false, new HashSet<Array>(comparer));
         }
 

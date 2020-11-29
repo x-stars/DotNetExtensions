@@ -44,15 +44,17 @@ namespace XstarS.Collections
         /// <returns><paramref name="enumerable"/> 的所有元素的字符串表达形式。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="enumerable"/> 为 <see langword="null"/>。</exception>
-        public static string CollectionToString(this IEnumerable enumerable, bool recurse = false)
+        public static string CollectionToString(this IEnumerable enumerable,
+            bool recurse = false)
         {
             if (enumerable is null)
             {
                 throw new ArgumentNullException(nameof(enumerable));
             }
 
-            var comparer = ReferenceEqualityComparer<IEnumerable>.Default;
-            return enumerable.CollectionToString(recurse, new HashSet<IEnumerable>(comparer));
+            var comparer = ReferenceEqualityComparer.Default;
+            var pathed = new HashSet<IEnumerable>(comparer);
+            return enumerable.CollectionToString(recurse, pathed);
         }
 
         /// <summary>

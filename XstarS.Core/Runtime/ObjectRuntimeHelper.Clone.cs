@@ -44,9 +44,9 @@ namespace XstarS.Runtime
         public static object ObjectRecurseClone(object value)
         {
             if (value is null) { return null; }
-            var comparer = ReferenceEqualityComparer<object>.Default;
+            var comparer = ReferenceEqualityComparer.Default;
             var cloned = new Dictionary<object, object>(comparer);
-            return (value is null) ? null : ObjectRuntimeHelper.ObjectRecurseClone(value, cloned);
+            return ObjectRuntimeHelper.ObjectRecurseClone(value, cloned);
         }
 
         /// <summary>

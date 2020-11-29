@@ -16,7 +16,7 @@ namespace XstarS.Runtime
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
         public static int GetValueHashCode(object value)
         {
-            var comparer = ReferenceEqualityComparer<object>.Default;
+            var comparer = ReferenceEqualityComparer.Default;
             var computed = new HashSet<object>(comparer);
             return ObjectRuntimeHelper.GetValueHashCode(value, computed);
         }
