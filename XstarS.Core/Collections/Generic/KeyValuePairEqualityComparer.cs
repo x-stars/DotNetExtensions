@@ -13,12 +13,12 @@ namespace XstarS.Collections.Generic
         : CollectionEqualityComparer<KeyValuePair<TKey, TValue>>
     {
         /// <summary>
-        /// 用于比较 <see cref="KeyValuePair{TKey, TValue}"/> 的键的比较器。
+        /// 表示用于比较 <see cref="KeyValuePair{TKey, TValue}"/> 的键的比较器。
         /// </summary>
         private readonly IEqualityComparer<TKey> KeyComparer;
 
         /// <summary>
-        /// 用于比较 <see cref="KeyValuePair{TKey, TValue}"/> 的值的比较器。
+        /// 表示用于比较 <see cref="KeyValuePair{TKey, TValue}"/> 的值的比较器。
         /// </summary>
         private readonly IEqualityComparer<TValue> ValueComparer;
 

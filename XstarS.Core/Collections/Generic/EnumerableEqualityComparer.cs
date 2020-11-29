@@ -13,7 +13,7 @@ namespace XstarS.Collections.Generic
         : CollectionEqualityComparer<TCollection>
     {
         /// <summary>
-        /// 用于比较集合中元素的 <see cref="IEqualityComparer"/>。
+        /// 表示用于比较集合中元素的 <see cref="IEqualityComparer"/>。
         /// </summary>
         private readonly IEqualityComparer ItemComparer;
 

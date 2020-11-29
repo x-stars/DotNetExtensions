@@ -13,7 +13,7 @@ namespace XstarS
     internal sealed class ArrayEqualityComparer<TArray> : CollectionEqualityComparer<TArray>
     {
         /// <summary>
-        /// 用于比较数组中元素的 <see cref="IEqualityComparer"/>。
+        /// 表示用于比较数组中元素的 <see cref="IEqualityComparer"/>。
         /// </summary>
         private readonly IEqualityComparer ItemsComparer;
 

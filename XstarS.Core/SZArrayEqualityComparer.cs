@@ -12,7 +12,7 @@ namespace XstarS
     internal sealed class SZArrayEqualityComparer<TItem> : CollectionEqualityComparer<TItem[]>
     {
         /// <summary>
-        /// 用于比较数组中元素的 <see cref="IEqualityComparer{T}"/>。
+        /// 表示用于比较数组中元素的 <see cref="IEqualityComparer{T}"/>。
         /// </summary>
         private readonly IEqualityComparer<TItem> ItemComparer;
 
