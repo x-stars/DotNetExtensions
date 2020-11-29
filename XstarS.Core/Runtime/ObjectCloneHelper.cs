@@ -7,7 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Security;
 using XstarS.Collections.Specialized;
 
-namespace XstarS
+namespace XstarS.Runtime
 {
     /// <summary>
     /// 提供创建对象副本的方法。
@@ -44,12 +44,12 @@ namespace XstarS
         /// <param name="value">要获取深度副本的对象。</param>
         /// <returns><paramref name="value"/> 的深度副本。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        public static object RecurseClone(object value)
+        public static object ObjectRecurseClone(object value)
         {
             if (value is null) { return null; }
             var comparer = ReferenceEqualityComparer<object>.Default;
             var cloned = new Dictionary<object, object>(comparer);
-            return (value is null) ? null : ObjectCloneHelper.RecurseClone(value, cloned);
+            return (value is null) ? null : ObjectCloneHelper.ObjectRecurseClone(value, cloned);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace XstarS
         /// <exception cref="SerializationException">
         /// <paramref name="value"/> 中的某个对象未标记为可序列化。</exception>
         /// <exception cref="SecurityException">调用方没有所要求的权限。</exception>
-        public static object SerializeClone(object value)
+        public static object SerializationClone(object value)
         {
             if (value is null) { return null; }
             using (var stream = new MemoryStream())
@@ -78,7 +78,7 @@ namespace XstarS
         /// <param name="value">要获取深度副本的对象。</param>
         /// <returns><paramref name="value"/> 的深度副本。</returns>
         /// <param name="cloned">已经创建副本的对象及其对应的副本。</param>
-        private static object RecurseClone(object value, Dictionary<object, object> cloned)
+        private static object ObjectRecurseClone(object value, Dictionary<object, object> cloned)
         {
             if (value is null) { return null; }
 
@@ -114,7 +114,7 @@ namespace XstarS
                     for (int index = 0; index < value.Length; index++)
                     {
                         var item = value.GetValue(index);
-                        var clone = ObjectCloneHelper.RecurseClone(item, cloned);
+                        var clone = ObjectCloneHelper.ObjectRecurseClone(item, cloned);
                         value.SetValue(clone, index);
                     }
                 }
@@ -124,7 +124,7 @@ namespace XstarS
                     {
                         var indices = value.OffsetToIndices(offset);
                         var item = value.GetValue(indices);
-                        var clone = ObjectCloneHelper.RecurseClone(item, cloned);
+                        var clone = ObjectCloneHelper.ObjectRecurseClone(item, cloned);
                         value.SetValue(clone, indices);
                     }
                 }
@@ -148,7 +148,7 @@ namespace XstarS
                     if (!field.FieldType.IsPointer)
                     {
                         var member = field.GetValue(value);
-                        var clone = ObjectCloneHelper.RecurseClone(member, cloned);
+                        var clone = ObjectCloneHelper.ObjectRecurseClone(member, cloned);
                         field.SetValue(value, clone);
                     }
                 }

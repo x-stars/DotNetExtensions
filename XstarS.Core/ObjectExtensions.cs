@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Security;
+using XstarS.Runtime;
 
 namespace XstarS
 {
@@ -25,8 +26,8 @@ namespace XstarS
         /// <param name="value">要创建深度副本的对象。</param>
         /// <returns><paramref name="value"/> 的深度副本。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        public static object RecurseClone(this object value) =>
-            ObjectCloneHelper.RecurseClone(value);
+        public static object ObjectRecurseClone(this object value) =>
+            ObjectCloneHelper.ObjectRecurseClone(value);
 
         /// <summary>
         /// 创建当前对象的序列化副本。
@@ -37,8 +38,8 @@ namespace XstarS
         /// <exception cref="SerializationException">
         /// <paramref name="value"/> 中的某个对象未标记为可序列化。</exception>
         /// <exception cref="SecurityException">调用方没有所要求的权限。</exception>
-        public static object SerializeClone(this object value) =>
-            ObjectCloneHelper.SerializeClone(value);
+        public static object SerializationClone(this object value) =>
+            ObjectCloneHelper.SerializationClone(value);
 
         /// <summary>
         /// 确定当前对象与指定对象的引用是否相等。
