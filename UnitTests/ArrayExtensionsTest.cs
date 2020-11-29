@@ -14,9 +14,9 @@ namespace XstarS
                         i3 => 10.InitializeArray(
                             i4 => 10.InitializeArray(
                                 i5 => new[] { i1, i2, i3, i4, i5 })))));
-            for (int i = 0; i < 5; i++)
+            for (int index = 0; index < 5; index++)
             {
-                Assert.AreEqual(i, array[0][1][2][3][4][i]);
+                Assert.AreEqual(index, array[0][1][2][3][4][index]);
             }
         }
 
@@ -46,11 +46,11 @@ namespace XstarS
         {
             var array = new[] { 10000, 1000, 100, 10, 1, 0 };
             var reshaped = (int[][][][][])array.ReshapeJagged(1, 3, 2, 1, 1);
-            for (int i = 0; i < 3; i++)
+            for (int index1 = 0; index1 < 3; index1++)
             {
-                for (int j = 0; j < 2; j++)
+                for (int index2 = 0; index2 < 2; index2++)
                 {
-                    Assert.AreEqual(array[i * 2 + j], reshaped[0][i][j][0][0]);
+                    Assert.AreEqual(array[index1 * 2 + index2], reshaped[0][index1][index2][0][0]);
                 }
             }
             Assert.AreEqual(1, reshaped.Length);

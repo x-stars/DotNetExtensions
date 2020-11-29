@@ -6,32 +6,33 @@ namespace XstarS.Collections.Generic
     /// <summary>
     /// 提供集合基于元素的相等比较的方法。
     /// </summary>
+    /// <typeparam name="TCollection">集合的类型。</typeparam>
     [Serializable]
     public abstract class CollectionEqualityComparer<TCollection> : EqualityComparer<TCollection>
     {
         /// <summary>
-        /// 表示 <see cref="CollectionEqualityComparer{T}.Default"/> 的延迟初始化对象。 
+        /// 表示 <see cref="CollectionEqualityComparer{TCollection}.Default"/> 的延迟初始化对象。 
         /// </summary>
         private static readonly Lazy<EqualityComparer<TCollection>> LazyDefault =
             new Lazy<EqualityComparer<TCollection>>(
                 CollectionEqualityComparer<TCollection>.CreateDefault);
 
         /// <summary>
-        /// 初始化 <see cref="CollectionEqualityComparer{T}"/> 类的新实例。
+        /// 初始化 <see cref="CollectionEqualityComparer{TCollection}"/> 类的新实例。
         /// </summary>
         protected CollectionEqualityComparer() { }
 
         /// <summary>
-        /// 获取用于集合比较的默认的 <see cref="EqualityComparer{T}"/> 实例。
+        /// 获取用于集合比较的默认的 <see cref="EqualityComparer{TCollection}"/> 实例。
         /// </summary>
-        /// <returns>用于集合比较的默认的 <see cref="EqualityComparer{T}"/> 实例。</returns>
+        /// <returns>用于集合比较的默认的 <see cref="EqualityComparer{TCollection}"/> 实例。</returns>
         public static new EqualityComparer<TCollection> Default =>
             CollectionEqualityComparer<TCollection>.LazyDefault.Value;
 
         /// <summary>
-        /// 创建用于集合比较的默认的 <see cref="EqualityComparer{T}"/> 实例。
+        /// 创建用于集合比较的默认的 <see cref="EqualityComparer{TCollection}"/> 实例。
         /// </summary>
-        /// <returns>用于集合比较的默认的 <see cref="EqualityComparer{T}"/> 实例。</returns>
+        /// <returns>用于集合比较的默认的 <see cref="EqualityComparer{TCollection}"/> 实例。</returns>
         private static EqualityComparer<TCollection> CreateDefault()
         {
             var type = typeof(TCollection);

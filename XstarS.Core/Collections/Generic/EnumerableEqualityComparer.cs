@@ -18,7 +18,7 @@ namespace XstarS.Collections.Generic
         private readonly IEqualityComparer ItemComparer;
 
         /// <summary>
-        /// 初始化 <see cref="EnumEqualityComparer{T}"/> 类的新实例。
+        /// 初始化 <see cref="EnumEqualityComparer{TCollection}"/> 类的新实例。
         /// </summary>
         public EnumerableEqualityComparer()
         {

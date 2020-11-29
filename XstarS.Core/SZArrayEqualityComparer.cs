@@ -43,9 +43,9 @@ namespace XstarS
             if (x.Length != y.Length) { return false; }
 
             var length = x.Length;
-            for (int i = 0; i < length; i++)
+            for (int index = 0; index < length; index++)
             {
-                if (!comparer.Equals(x[i], y[i]))
+                if (!comparer.Equals(x[index], y[index]))
                 {
                     return false;
                 }
@@ -66,9 +66,9 @@ namespace XstarS
 
             var length = obj.Length;
             var hashCode = obj.GetType().GetHashCode();
-            for (int i = 0; i < length; i++)
+            for (int index = 0; index < length; index++)
             {
-                var nextHashCode = comparer.GetHashCode(obj[i]);
+                var nextHashCode = comparer.GetHashCode(obj[index]);
                 hashCode = this.CombineHashCode(hashCode, nextHashCode);
             }
             return hashCode;

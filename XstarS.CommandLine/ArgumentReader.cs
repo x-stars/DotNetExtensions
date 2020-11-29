@@ -79,11 +79,11 @@ namespace XstarS.CommandLine
                 throw new ArgumentNullException(nameof(name));
             }
 
-            for (int i = 0; i < this.Arguments.Length - 1; i++)
+            for (int index = 0; index < this.Arguments.Length - 1; index++)
             {
-                if (this.NameComparer.Equals(this.Arguments[i], name))
+                if (this.NameComparer.Equals(this.Arguments[index], name))
                 {
-                    return this.Arguments[i + 1];
+                    return this.Arguments[index + 1];
                 }
             }
 

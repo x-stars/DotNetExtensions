@@ -30,7 +30,7 @@ namespace XstarS.Diagnostics
             }
 
             var sw = new Stopwatch();
-            for (int i = 0; i < repeat; i++)
+            for (int count = 0; count < repeat; count++)
             {
                 sw.Start();
                 process();
@@ -62,7 +62,7 @@ namespace XstarS.Diagnostics
             }
 
             var sw = new Stopwatch();
-            for (int i = 0; i < repeat; i++)
+            for (int count = 0; count < repeat; count++)
             {
                 sw.Start();
                 process();

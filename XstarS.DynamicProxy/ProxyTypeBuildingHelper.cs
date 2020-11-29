@@ -100,9 +100,9 @@ namespace XstarS.Reflection.Emit
                 {
                     var typeGenericDefinition = constraintType.GetGenericTypeDefinition();
                     var typeGenericArguments = constraintType.GetGenericArguments();
-                    for (int i = 0; i < typeGenericArguments.Length; i++)
+                    for (int index = 0; index < typeGenericArguments.Length; index++)
                     {
-                        typeGenericArguments[i] = makeConstraint(typeGenericArguments[i]);
+                        typeGenericArguments[index] = makeConstraint(typeGenericArguments[index]);
                     }
                     return typeGenericDefinition.MakeGenericType(typeGenericArguments);
                 }
@@ -112,10 +112,10 @@ namespace XstarS.Reflection.Emit
                 }
             }
 
-            for (int i = 0; i < genericParams.Length; i++)
+            for (int index = 0; index < genericParams.Length; index++)
             {
-                var genericParam = genericParams[i];
-                var baseGenericParam = baseGenericParams[i];
+                var genericParam = genericParams[index];
+                var baseGenericParam = baseGenericParams[index];
 
                 var baseGenericConstraints = baseGenericParam.GetGenericParameterConstraints();
 
@@ -187,10 +187,10 @@ namespace XstarS.Reflection.Emit
 
             var returnParam = method.DefineParameter(0,
                 baseReturnParam.Attributes, baseReturnParam.Name);
-            for (int i = 0; i < baseParameters.Length; i++)
+            for (int index = 0; index < baseParameters.Length; index++)
             {
-                var baseParameter = baseParameters[i];
-                var parameter = method.DefineParameter(i + 1,
+                var baseParameter = baseParameters[index];
+                var parameter = method.DefineParameter(index + 1,
                     baseParameter.Attributes, baseParameter.Name);
             }
 
@@ -233,9 +233,9 @@ namespace XstarS.Reflection.Emit
             if (!baseMethod.IsAbstract)
             {
                 il.Emit(OpCodes.Ldarg_0);
-                for (int i = 0; i < baseMethod.GetParameters().Length; i++)
+                for (int index = 0; index < baseMethod.GetParameters().Length; index++)
                 {
-                    il.EmitLdarg(i + 1);
+                    il.EmitLdarg(index + 1);
                 }
                 il.Emit(OpCodes.Call,
                     (baseMethod.GetGenericArguments().Length == 0) ? baseMethod :
@@ -313,15 +313,15 @@ namespace XstarS.Reflection.Emit
                 var il = delegateMethod.GetILGenerator();
                 il.Emit(OpCodes.Ldarg_0);
                 il.EmitUnbox(type);
-                for (int i = 0; i < baseParameters.Length; i++)
+                for (int pIndex = 0; pIndex < baseParameters.Length; pIndex++)
                 {
-                    var baseParameter = baseParameters[i];
-                    int index = Array.IndexOf(
+                    var baseParameter = baseParameters[pIndex];
+                    int gIndex = Array.IndexOf(
                         baseGenericParams, baseParameter.ParameterType);
-                    var parameterType = (index == -1) ?
-                        baseParameter.ParameterType : genericParams[index];
+                    var parameterType = (gIndex == -1) ?
+                        baseParameter.ParameterType : genericParams[gIndex];
                     il.Emit(OpCodes.Ldarg_1);
-                    il.EmitLdcI4(i);
+                    il.EmitLdcI4(pIndex);
                     il.Emit(OpCodes.Ldelem_Ref);
                     il.EmitUnbox(parameterType);
                 }
@@ -330,10 +330,10 @@ namespace XstarS.Reflection.Emit
                     baseInvokeMethod.MakeGenericMethod(nestedType.GetGenericArguments()));
                 if (baseMethod.ReturnType != typeof(void))
                 {
-                    int index = Array.IndexOf(
+                    int gIndex = Array.IndexOf(
                         baseGenericParams, baseReturnParam.ParameterType);
-                    var returnType = (index == -1) ?
-                        baseReturnParam.ParameterType : genericParams[index];
+                    var returnType = (gIndex == -1) ?
+                        baseReturnParam.ParameterType : genericParams[gIndex];
                     il.EmitBox(returnType);
                 }
                 else
@@ -453,12 +453,12 @@ namespace XstarS.Reflection.Emit
             var baseParameters = baseMethod.GetParameters();
             il.EmitLdcI4(baseParameters.Length);
             il.Emit(OpCodes.Newarr, typeof(object));
-            for (int i = 0; i < baseParameters.Length; i++)
+            for (int index = 0; index < baseParameters.Length; index++)
             {
-                var baseParameter = baseParameters[i];
+                var baseParameter = baseParameters[index];
                 il.Emit(OpCodes.Dup);
-                il.EmitLdcI4(i);
-                il.EmitLdarg(i + 1);
+                il.EmitLdcI4(index);
+                il.EmitLdarg(index + 1);
                 il.EmitBox(baseParameter.ParameterType);
                 il.Emit(OpCodes.Stelem_Ref);
             }

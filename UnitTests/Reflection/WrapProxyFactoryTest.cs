@@ -14,7 +14,7 @@ namespace XstarS.Reflection
             var o = WrapProxyFactory<IList<int>>.WithHandler(
                 ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
                 ).CreateInstance(new List<int>());
-            for (int i = 0; i < 10; i++) { o.Add(i); }
+            for (int index = 0; index < 10; index++) { o.Add(index); }
             Assert.AreEqual(10, o.Count);
         }
 

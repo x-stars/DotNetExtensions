@@ -233,11 +233,11 @@ namespace XstarS.CommandLine.Specialized
                     throw new ArgumentException(message, nameof(name));
                 }
 
-                for (int i = 0; i < this.Arguments.Length - 1; i++)
+                for (int index = 0; index < this.Arguments.Length - 1; index++)
                 {
-                    if (this.NameComparer.Equals(this.Arguments[i], name))
+                    if (this.NameComparer.Equals(this.Arguments[index], name))
                     {
-                        values.Add(this.Arguments[i + 1]);
+                        values.Add(this.Arguments[index + 1]);
                     }
                 }
             }

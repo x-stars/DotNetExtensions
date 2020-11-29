@@ -62,9 +62,9 @@ namespace XstarS.Reflection
                 var xTypeGTypes = xType.GetGenericArguments();
                 var yTypeGTypes = yType.GetGenericArguments();
                 if (xTypeGTypes.Length != yTypeGTypes.Length) { return false; }
-                for (int i = 0; i < xTypeGTypes.Length; i++)
+                for (int index = 0; index < xTypeGTypes.Length; index++)
                 {
-                    if (!mTypeEquals(xTypeGTypes[i], yTypeGTypes[i])) { return false; }
+                    if (!mTypeEquals(xTypeGTypes[index], yTypeGTypes[index])) { return false; }
                 }
 
                 return true;
@@ -77,9 +77,9 @@ namespace XstarS.Reflection
             var xPTypes = Array.ConvertAll(x.GetParameters(), param => param.ParameterType);
             var yPTypes = Array.ConvertAll(y.GetParameters(), param => param.ParameterType);
             if (xPTypes.Length != yPTypes.Length) { return false; }
-            for (int i = 0; i < xPTypes.Length; i++)
+            for (int index = 0; index < xPTypes.Length; index++)
             {
-                if (!mTypeEquals(xPTypes[i], yPTypes[i])) { return false; }
+                if (!mTypeEquals(xPTypes[index], yPTypes[index])) { return false; }
             }
 
             return true;

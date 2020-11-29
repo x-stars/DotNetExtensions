@@ -79,10 +79,10 @@ namespace XstarS.Reflection.Emit
                 Array.ConvertAll(baseConstructor.GetParameters(), param => param.ParameterType));
 
             var baseParameters = baseConstructor.GetParameters();
-            for (int i = 0; i < baseParameters.Length; i++)
+            for (int index = 0; index < baseParameters.Length; index++)
             {
-                var baseParameter = baseParameters[i];
-                var parameter = constructor.DefineParameter(i + 1,
+                var baseParameter = baseParameters[index];
+                var parameter = constructor.DefineParameter(index + 1,
                     baseParameter.Attributes, baseParameter.Name);
             }
 
@@ -118,9 +118,9 @@ namespace XstarS.Reflection.Emit
 
             var il = constructor.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            for (int i = 0; i < baseConstructor.GetParameters().Length; i++)
+            for (int index = 0; index < baseConstructor.GetParameters().Length; index++)
             {
-                il.EmitLdarg(i + 1);
+                il.EmitLdarg(index + 1);
             }
             il.Emit(OpCodes.Call, baseConstructor);
             il.Emit(OpCodes.Ret);
@@ -187,10 +187,10 @@ namespace XstarS.Reflection.Emit
 
             var returnParam = method.DefineParameter(0,
                 baseReturnParam.Attributes, baseReturnParam.Name);
-            for (int i = 0; i < baseParameters.Length; i++)
+            for (int index = 0; index < baseParameters.Length; index++)
             {
-                var baseParameter = baseParameters[i];
-                var parameter = method.DefineParameter(i + 1,
+                var baseParameter = baseParameters[index];
+                var parameter = method.DefineParameter(index + 1,
                     baseParameter.Attributes, baseParameter.Name);
             }
 

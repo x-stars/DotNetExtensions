@@ -126,9 +126,9 @@ namespace XstarS.Reflection.Emit
 
                 var il = method.GetILGenerator();
                 il.Emit(OpCodes.Ldarg_0);
-                for (int i = 0; i < baseMethod.GetParameters().Length; i++)
+                for (int index = 0; index < baseMethod.GetParameters().Length; index++)
                 {
-                    il.EmitLdarg(i + 1);
+                    il.EmitLdarg(index + 1);
                 }
                 il.Emit(OpCodes.Call, baseProperty.GetMethod);
                 il.Emit(OpCodes.Ret);
@@ -144,9 +144,9 @@ namespace XstarS.Reflection.Emit
 
                 var il = method.GetILGenerator();
                 il.Emit(OpCodes.Ldarg_0);
-                for (int i = 0; i < baseMethod.GetParameters().Length; i++)
+                for (int index = 0; index < baseMethod.GetParameters().Length; index++)
                 {
-                    il.EmitLdarg(i + 1);
+                    il.EmitLdarg(index + 1);
                 }
                 il.Emit(OpCodes.Call, baseProperty.SetMethod);
                 var propertyNotifyName = (baseProperty.GetIndexParameters().Length == 0) ?

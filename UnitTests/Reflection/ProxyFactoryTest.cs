@@ -14,7 +14,7 @@ namespace XstarS.Reflection
             var o = ProxyFactory<Collection<int>>.WithHandler(
                 ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
                 ).CreateInstance();
-            for (int i = 0; i < 10; i++) { o.Add(i); }
+            for (int index = 0; index < 10; index++) { o.Add(index); }
             Assert.AreEqual(10, o.Count);
         }
 
@@ -44,9 +44,9 @@ namespace XstarS.Reflection
                 ProxyFactoryTestHandlers.WriteMethodAndReturnDefaultHandler
                 ).CreateInstance();
             Assert.AreEqual(0, o.Count);
-            for (int i = 0; i < 10; i++)
+            for (int index = 0; index < 10; index++)
             {
-                Assert.AreEqual(null, o[i]);
+                Assert.AreEqual(null, o[index]);
             }
         }
 
@@ -65,9 +65,9 @@ namespace XstarS.Reflection
             var o = ProxyFactory<Int32Increaser>.WithHandler(
                 ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
                 ).CreateInstance();
-            var i = 0;
-            o.Increase(ref i);
-            Assert.AreEqual(1, i);
+            var value = 0;
+            o.Increase(ref value);
+            Assert.AreEqual(1, value);
         }
 
         [TestMethod]
@@ -77,8 +77,8 @@ namespace XstarS.Reflection
                 ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
                 ).CreateInstance();
             Assert.AreEqual(0, o.Value);
-            ref var i = ref o.RefValue;
-            i = 1;
+            ref var value = ref o.RefValue;
+            value = 1;
             Assert.AreEqual(1, o.Value);
         }
     }

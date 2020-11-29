@@ -86,18 +86,18 @@ namespace XstarS
             var items = array.RecurseEnumerate().GetEnumerator();
 
             bool isMultiDim = lengths.Length > 1;
-            for (int i = 0; i < result.Length; i++)
+            for (int offset = 0; offset < result.Length; offset++)
             {
                 if (items.MoveNext())
                 {
                     if (isMultiDim)
                     {
-                        var a = result.OffsetToIndices(i);
-                        result.SetValue(items.Current, a);
+                        var indices = result.OffsetToIndices(offset);
+                        result.SetValue(items.Current, indices);
                     }
                     else
                     {
-                        result.SetValue(items.Current, i);
+                        result.SetValue(items.Current, offset);
                     }
                 }
                 else
@@ -179,22 +179,22 @@ namespace XstarS
                 while (restLengths.Length > 0)
                 {
                     result = Array.CreateInstance(itemType.MakeArrayType(), ProductOf(restLengths));
-                    for (int i = 0; i < result.Length; i++)
+                    for (int index = 0; index < result.Length; index++)
                     {
                         var innerArray = Array.CreateInstance(
                             itemType, lastLengths[lastLengths.Length - 1]);
-                        for (int j = 0; j < innerArray.Length; j++)
+                        for (int innerIndex = 0; innerIndex < innerArray.Length; innerIndex++)
                         {
                             if (items.MoveNext())
                             {
-                                innerArray.SetValue(items.Current, j);
+                                innerArray.SetValue(items.Current, innerIndex);
                             }
                             else
                             {
                                 throw new ArgumentOutOfRangeException(nameof(lengths));
                             }
                         }
-                        result.SetValue(innerArray, i);
+                        result.SetValue(innerArray, index);
                     }
                     if (items.MoveNext())
                     {

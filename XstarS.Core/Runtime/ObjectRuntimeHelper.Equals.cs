@@ -97,9 +97,9 @@ namespace XstarS.Runtime
         {
             if (value.Rank != other.Rank) { return false; }
             if (value.Length != other.Length) { return false; }
-            for (int i = 0; i < value.Rank; i++)
+            for (int rank = 0; rank < value.Rank; rank++)
             {
-                if (value.GetLength(i) != other.GetLength(i))
+                if (value.GetLength(rank) != other.GetLength(rank))
                 {
                     return false;
                 }

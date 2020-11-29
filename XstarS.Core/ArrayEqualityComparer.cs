@@ -46,29 +46,29 @@ namespace XstarS
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public override bool Equals(TArray x, TArray y)
         {
-            var arrayX = (Array)(object)x;
-            var arrayY = (Array)(object)y;
+            var xArray = (Array)(object)x;
+            var yArray = (Array)(object)y;
 
-            if (arrayX.Rank != arrayY.Rank) { return false; }
-            if (arrayX.Length != arrayY.Length) { return false; }
-            for (int i = 0; i < arrayX.Rank; i++)
+            if (xArray.Rank != yArray.Rank) { return false; }
+            if (xArray.Length != yArray.Length) { return false; }
+            for (int index = 0; index < xArray.Rank; index++)
             {
-                if (arrayX.GetLength(i) != arrayY.GetLength(i))
+                if (xArray.GetLength(index) != yArray.GetLength(index))
                 {
                     return false;
                 }
             }
 
-            var typeArray = arrayX.GetType();
+            var typeArray = xArray.GetType();
             if (typeArray.GetElementType().IsPointer)
             {
                 var methodGet = typeArray.GetMethod("Get");
-                for (int index = 0; index < arrayX.Length; index++)
+                for (int index = 0; index < xArray.Length; index++)
                 {
-                    var valueItem = methodGet.Invoke(arrayX, Array.ConvertAll(
-                        arrayX.OffsetToIndices(index), ObjectRuntimeHelper.BoxIndex));
-                    var otherItem = methodGet.Invoke(arrayY, Array.ConvertAll(
-                        arrayY.OffsetToIndices(index), ObjectRuntimeHelper.BoxIndex));
+                    var valueItem = methodGet.Invoke(xArray, Array.ConvertAll(
+                        xArray.OffsetToIndices(index), ObjectRuntimeHelper.BoxIndex));
+                    var otherItem = methodGet.Invoke(yArray, Array.ConvertAll(
+                        yArray.OffsetToIndices(index), ObjectRuntimeHelper.BoxIndex));
                     if (!ObjectRuntimeHelper.BoxedPointerEquals(valueItem, otherItem))
                     {
                         return false;
@@ -77,10 +77,10 @@ namespace XstarS
             }
             else
             {
-                for (int index = 0; index < arrayX.Length; index++)
+                for (int index = 0; index < xArray.Length; index++)
                 {
-                    var valueItem = arrayX.GetValue(arrayX.OffsetToIndices(index));
-                    var otherItem = arrayY.GetValue(arrayY.OffsetToIndices(index));
+                    var valueItem = xArray.GetValue(xArray.OffsetToIndices(index));
+                    var otherItem = yArray.GetValue(yArray.OffsetToIndices(index));
                     if (!this.ItemsComparer.Equals(valueItem, otherItem))
                     {
                         return false;

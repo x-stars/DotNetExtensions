@@ -43,9 +43,9 @@ namespace XstarS.Collections.Generic
             }
 
             var range = new List<T>(count);
-            for (int i = 0; i < count; i++)
+            for (int offset = 0; offset < count; offset++)
             {
-                range.Add(list[index + i]);
+                range.Add(list[index + offset]);
             }
             return range;
         }
@@ -68,11 +68,11 @@ namespace XstarS.Collections.Generic
             }
 
             var indices = new List<int>();
-            for (int i = 0; i < list.Count; i++)
+            for (int index = 0; index < list.Count; index++)
             {
-                if (EqualityComparer<T>.Default.Equals(list[i], item))
+                if (EqualityComparer<T>.Default.Equals(list[index], item))
                 {
-                    indices.Add(i);
+                    indices.Add(index);
                 }
             }
             return indices.ToArray();
@@ -127,12 +127,12 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(match));
             }
 
-            for (int i = 0; i < list.Count; i++)
+            for (int index = 0; index < list.Count; index++)
             {
-                if (match(list[i]))
+                if (match(list[index]))
                 {
-                    list.RemoveAt(i);
-                    i--;
+                    list.RemoveAt(index);
+                    index--;
                 }
             }
         }
@@ -157,7 +157,7 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(list));
             }
 
-            for (int i = 0; i < count; i++)
+            for (int offset = 0; offset < count; offset++)
             {
                 list.RemoveAt(index);
             }
@@ -178,12 +178,12 @@ namespace XstarS.Collections.Generic
             }
 
             var randGen = new Random();
-            for (int i = 0; i < list.Count; i++)
+            for (int index = 0; index < list.Count; index++)
             {
-                int r = randGen.Next(list.Count);
-                var temp = list[i];
-                list[i] = list[r];
-                list[r] = temp;
+                int rIndex = randGen.Next(list.Count);
+                var temp = list[index];
+                list[index] = list[rIndex];
+                list[rIndex] = temp;
             }
         }
 

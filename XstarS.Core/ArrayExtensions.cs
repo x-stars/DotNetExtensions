@@ -110,9 +110,9 @@ namespace XstarS
             {
                 var sequence = new List<string>();
                 var length = array.GetLength(indices.Length);
-                for (int i = 0; i < length; i++)
+                for (int index = 0; index < length; index++)
                 {
-                    indices = indices.Append(i);
+                    indices = indices.Append(index);
                     sequence.Add(array.ArrayToString(recurse, indices, pathed));
                 }
                 return "{ " + string.Join(", ", sequence) + " }";
@@ -161,19 +161,19 @@ namespace XstarS
             }
 
             int length = 0;
-            for (int i = 0; i < arrays.Length; i++)
+            for (int index = 0; index < arrays.Length; index++)
             {
-                var array = arrays[i] ?? Array.Empty<T>();
+                var array = arrays[index] ?? Array.Empty<T>();
                 length += array.Length;
             }
 
             var result = new T[length];
-            int index = 0;
-            for (int i = 0; i < arrays.Length; i++)
+            int offset = 0;
+            for (int index = 0; index < arrays.Length; index++)
             {
-                var array = arrays[i] ?? Array.Empty<T>();
-                Array.Copy(array, 0, result, index, array.Length);
-                index += array.Length;
+                var array = arrays[index] ?? Array.Empty<T>();
+                Array.Copy(array, 0, result, offset, array.Length);
+                offset += array.Length;
             }
             return result;
         }
@@ -203,9 +203,9 @@ namespace XstarS
             }
 
             var result = new T[length];
-            for (int i = 0; i < length; i++)
+            for (int index = 0; index < length; index++)
             {
-                result[i] = indexMap(i);
+                result[index] = indexMap(index);
             }
             return result;
         }
@@ -237,11 +237,11 @@ namespace XstarS
             }
 
             var result = new T[length1, length2];
-            for (int i = 0; i < length1; i++)
+            for (int index1 = 0; index1 < length1; index1++)
             {
-                for (int j = 0; j < length2; j++)
+                for (int index2 = 0; index2 < length2; index2++)
                 {
-                    result[i, j] = indicesMap(i, j);
+                    result[index1, index2] = indicesMap(index1, index2);
                 }
             }
             return result;
@@ -274,13 +274,13 @@ namespace XstarS
             }
 
             var result = new T[length1, length2, length3];
-            for (int i = 0; i < length1; i++)
+            for (int index1 = 0; index1 < length1; index1++)
             {
-                for (int j = 0; j < length2; j++)
+                for (int index2 = 0; index2 < length2; index2++)
                 {
-                    for (int k = 0; k < length3; k++)
+                    for (int index3 = 0; index3 < length3; index3++)
                     {
-                        result[i, j, k] = indicesMap(i, j, k);
+                        result[index1, index2, index3] = indicesMap(index1, index2, index3);
                     }
                 }
             }
@@ -314,10 +314,10 @@ namespace XstarS
             }
 
             var result = Array.CreateInstance(typeof(T), lengths);
-            for (int i = 0; i < result.Length; i++)
+            for (int offset = 0; offset < result.Length; offset++)
             {
-                var a = result.OffsetToIndices(i);
-                result.SetValue(indicesMap(a), a);
+                var indices = result.OffsetToIndices(offset);
+                result.SetValue(indicesMap(indices), indices);
             }
             return result;
         }
@@ -346,10 +346,10 @@ namespace XstarS
 
             var scale = array.Length;
             var result = new int[array.Rank];
-            for (int i = 0; i < array.Rank; i++)
+            for (int dim = 0; dim < array.Rank; dim++)
             {
-                scale /= array.GetLength(i);
-                result[i] = offset / scale;
+                scale /= array.GetLength(dim);
+                result[dim] = offset / scale;
                 offset %= scale;
             }
             return result;

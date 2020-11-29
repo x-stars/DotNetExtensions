@@ -225,9 +225,9 @@ namespace XstarS.Reflection
             var baseMethods = this.BaseMethods;
 
             var methods = new Dictionary<MethodInfo, MethodInfo>();
-            for (int i = 0; i < baseMethods.Length; i++)
+            for (int index = 0; index < baseMethods.Length; index++)
             {
-                var baseMethod = baseMethods[i];
+                var baseMethod = baseMethods[index];
                 var method = type.DefineBaseInvokeMethodLike(baseMethod, baseType);
                 methods[baseMethod] = method;
             }
