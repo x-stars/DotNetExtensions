@@ -9,16 +9,13 @@ using XstarS.Collections.Specialized;
 
 namespace XstarS.Runtime
 {
-    /// <summary>
-    /// 提供创建对象副本的方法。
-    /// </summary>
-    internal static class ObjectCloneHelper
+    partial class ObjectRuntimeHelper
     {
         /// <summary>
         /// 表示 <see cref="object.MemberwiseClone()"/> 方法的静态调用委托。
         /// </summary>
-        private static readonly Converter<object, object> MemberwiseCloneDelegate =
-            typeof(object).GetMethod(nameof(ObjectCloneHelper.MemberwiseClone),
+        private static readonly Converter<object, object> StaticMemberwiseClone =
+            typeof(object).GetMethod(nameof(ObjectRuntimeHelper.MemberwiseClone),
                 BindingFlags.Instance | BindingFlags.NonPublic).CreateDelegate(
                     typeof(Converter<object, object>)) as Converter<object, object>;
 
@@ -34,7 +31,7 @@ namespace XstarS.Runtime
         /// <returns><paramref name="value"/> 的浅表副本。</returns>
         public static object ObjectClone(object value)
         {
-            return (value is null) ? null : ObjectCloneHelper.MemberwiseCloneDelegate.Invoke(value);
+            return (value is null) ? null : ObjectRuntimeHelper.StaticMemberwiseClone.Invoke(value);
         }
 
         /// <summary>
@@ -49,7 +46,7 @@ namespace XstarS.Runtime
             if (value is null) { return null; }
             var comparer = ReferenceEqualityComparer<object>.Default;
             var cloned = new Dictionary<object, object>(comparer);
-            return (value is null) ? null : ObjectCloneHelper.ObjectRecurseClone(value, cloned);
+            return (value is null) ? null : ObjectRuntimeHelper.ObjectRecurseClone(value, cloned);
         }
 
         /// <summary>
@@ -66,9 +63,9 @@ namespace XstarS.Runtime
             if (value is null) { return null; }
             using (var stream = new MemoryStream())
             {
-                ObjectCloneHelper.BinarySerializer.Serialize(stream, value);
+                ObjectRuntimeHelper.BinarySerializer.Serialize(stream, value);
                 stream.Position = 0L;
-                return ObjectCloneHelper.BinarySerializer.Deserialize(stream);
+                return ObjectRuntimeHelper.BinarySerializer.Deserialize(stream);
             }
         }
 
@@ -84,17 +81,17 @@ namespace XstarS.Runtime
 
             if (cloned.ContainsKey(value)) { return cloned[value]; }
 
-            var clone = ObjectCloneHelper.ObjectClone(value);
+            var clone = ObjectRuntimeHelper.ObjectClone(value);
             cloned[value] = clone;
 
             var type = clone.GetType();
             if (type.IsArray)
             {
-                ObjectCloneHelper.ArrayElementsRecurseClone((Array)clone, cloned);
+                ObjectRuntimeHelper.ArrayElementsRecurseClone((Array)clone, cloned);
             }
             else if (!type.IsPrimitive)
             {
-                ObjectCloneHelper.ObjectMembersRecurseClone(clone, cloned);
+                ObjectRuntimeHelper.ObjectMembersRecurseClone(clone, cloned);
             }
 
             return clone;
@@ -114,7 +111,7 @@ namespace XstarS.Runtime
                     for (int index = 0; index < value.Length; index++)
                     {
                         var item = value.GetValue(index);
-                        var clone = ObjectCloneHelper.ObjectRecurseClone(item, cloned);
+                        var clone = ObjectRuntimeHelper.ObjectRecurseClone(item, cloned);
                         value.SetValue(clone, index);
                     }
                 }
@@ -124,7 +121,7 @@ namespace XstarS.Runtime
                     {
                         var indices = value.OffsetToIndices(offset);
                         var item = value.GetValue(indices);
-                        var clone = ObjectCloneHelper.ObjectRecurseClone(item, cloned);
+                        var clone = ObjectRuntimeHelper.ObjectRecurseClone(item, cloned);
                         value.SetValue(clone, indices);
                     }
                 }
@@ -148,7 +145,7 @@ namespace XstarS.Runtime
                     if (!field.FieldType.IsPointer)
                     {
                         var member = field.GetValue(value);
-                        var clone = ObjectCloneHelper.ObjectRecurseClone(member, cloned);
+                        var clone = ObjectRuntimeHelper.ObjectRecurseClone(member, cloned);
                         field.SetValue(value, clone);
                     }
                 }
