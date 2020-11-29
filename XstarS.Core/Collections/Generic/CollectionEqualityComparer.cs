@@ -10,7 +10,7 @@ namespace XstarS.Collections.Generic
     public abstract class CollectionEqualityComparer<TCollection> : EqualityComparer<TCollection>
     {
         /// <summary>
-        /// 表示 <see cref="CollectionEqualityComparer{T}.Default"/> 的延迟初始化值。 
+        /// 表示 <see cref="CollectionEqualityComparer{T}.Default"/> 的延迟初始化对象。 
         /// </summary>
         private static readonly Lazy<EqualityComparer<TCollection>> LazyDefault =
             new Lazy<EqualityComparer<TCollection>>(

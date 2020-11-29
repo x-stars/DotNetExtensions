@@ -14,23 +14,23 @@ namespace XstarS.Reflection
     public sealed class WrapProxyTypeProvider
     {
         /// <summary>
-        /// 表示 <see cref="WrapProxyTypeProvider.OfType(Type)"/> 的延迟初始化值。
+        /// 表示 <see cref="WrapProxyTypeProvider.OfType(Type)"/> 的延迟初始化对象。
         /// </summary>
         private static readonly ConcurrentDictionary<Type, Lazy<WrapProxyTypeProvider>> LazyOfTypes =
             new ConcurrentDictionary<Type, Lazy<WrapProxyTypeProvider>>();
 
         /// <summary>
-        /// 表示 <see cref="WrapProxyTypeProvider.ProxyType"/> 的延迟初始化值。
+        /// 表示 <see cref="WrapProxyTypeProvider.ProxyType"/> 的延迟初始化对象。
         /// </summary>
         private readonly Lazy<Type> LazyProxyType;
 
         /// <summary>
-        /// 表示 <see cref="WrapProxyTypeProvider.HandlerField"/> 的延迟初始化值。
+        /// 表示 <see cref="WrapProxyTypeProvider.HandlerField"/> 的延迟初始化对象。
         /// </summary>
         private readonly Lazy<FieldInfo> LazyHandlerField;
 
         /// <summary>
-        /// 表示 <see cref="WrapProxyTypeProvider.InstanceField"/> 的延迟初始化值。
+        /// 表示 <see cref="WrapProxyTypeProvider.InstanceField"/> 的延迟初始化对象。
         /// </summary>
         private readonly Lazy<FieldInfo> LazyInstanceField;
 

@@ -9,7 +9,7 @@ namespace XstarS.Reflection
     public sealed class WrapProxyFactory<T> where T : class
     {
         /// <summary>
-        /// 表示 <see cref="WrapProxyFactory{T}.Default"/> 的延迟初始化值。
+        /// 表示 <see cref="WrapProxyFactory{T}.Default"/> 的延迟初始化对象。
         /// </summary>
         private static readonly Lazy<WrapProxyFactory<T>> LazyDefault =
             new Lazy<WrapProxyFactory<T>>(() => new WrapProxyFactory<T>());

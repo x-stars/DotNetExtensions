@@ -11,7 +11,7 @@ namespace XstarS.ComponentModel
     public sealed class ObservableFactory<T> where T : class
     {
         /// <summary>
-        /// 表示 <see cref="ObservableFactory{T}.Default"/> 的延迟初始化值。
+        /// 表示 <see cref="ObservableFactory{T}.Default"/> 的延迟初始化对象。
         /// </summary>
         private static readonly Lazy<ObservableFactory<T>> LazyDefault =
             new Lazy<ObservableFactory<T>>(() => new ObservableFactory<T>());

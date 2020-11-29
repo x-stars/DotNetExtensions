@@ -9,7 +9,7 @@ namespace XstarS.Reflection
     public sealed class ProxyFactory<T> where T : class
     {
         /// <summary>
-        /// 表示 <see cref="ProxyFactory{T}.Default"/> 的延迟初始化值。
+        /// 表示 <see cref="ProxyFactory{T}.Default"/> 的延迟初始化对象。
         /// </summary>
         private static readonly Lazy<ProxyFactory<T>> LazyDefault =
             new Lazy<ProxyFactory<T>>(() => new ProxyFactory<T>());

@@ -10,7 +10,7 @@ namespace XstarS.Reflection
     public static class IntPtrByRef
     {
         /// <summary>
-        /// <see cref="IntPtrByRef.RealType"/> 的延迟初始化值。
+        /// <see cref="IntPtrByRef.RealType"/> 的延迟初始化对象。
         /// </summary>
         private static readonly Lazy<Type> LazyRealType =
             new Lazy<Type>(IntPtrByRef.CreateRealType);

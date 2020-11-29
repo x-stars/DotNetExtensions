@@ -16,13 +16,13 @@ namespace XstarS.ComponentModel
     public sealed class ObservableTypeProvider
     {
         /// <summary>
-        /// 表示 <see cref="ObservableTypeProvider.OfType(Type)"/> 的延迟初始化值。
+        /// 表示 <see cref="ObservableTypeProvider.OfType(Type)"/> 的延迟初始化对象。
         /// </summary>
         private static readonly ConcurrentDictionary<Type, Lazy<ObservableTypeProvider>> LazyOfTypes =
             new ConcurrentDictionary<Type, Lazy<ObservableTypeProvider>>();
 
         /// <summary>
-        /// 表示 <see cref="ObservableTypeProvider.ObservableType"/> 的延迟初始化值。
+        /// 表示 <see cref="ObservableTypeProvider.ObservableType"/> 的延迟初始化对象。
         /// </summary>
         private readonly Lazy<Type> LazyObservableType;
 
