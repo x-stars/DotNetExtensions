@@ -90,7 +90,7 @@ namespace XstarS.Runtime
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
         private static int GetArrayValueHashCode(Array value, HashSet<object> computed)
         {
-            var hashCode = 0;
+            var hashCode = value.GetType().GetHashCode();
 
             var typeArray = value.GetType();
             if (typeArray.GetElementType().IsPointer)
@@ -128,7 +128,7 @@ namespace XstarS.Runtime
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
         private static int GetObjectValueHashCode(object value, HashSet<object> computed)
         {
-            var hashCode = 0;
+            var hashCode = value.GetType().GetHashCode();
 
             for (var type = value.GetType(); !(type is null); type = type.BaseType)
             {
