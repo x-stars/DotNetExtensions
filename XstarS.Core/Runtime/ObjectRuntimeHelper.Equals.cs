@@ -100,9 +100,9 @@ namespace XstarS.Runtime
                 for (int index = 0; index < value.Length; index++)
                 {
                     var valueItem = methodGet.Invoke(value, Array.ConvertAll(
-                        value.OffsetToIndices(index), number => (object)number));
+                        value.OffsetToIndices(index), ObjectRuntimeHelper.BoxIndex));
                     var otherItem = methodGet.Invoke(other, Array.ConvertAll(
-                        other.OffsetToIndices(index), number => (object)number));
+                        other.OffsetToIndices(index), ObjectRuntimeHelper.BoxIndex));
                     if (!ObjectRuntimeHelper.BoxedPointerEquals(valueItem, otherItem))
                     {
                         return false;

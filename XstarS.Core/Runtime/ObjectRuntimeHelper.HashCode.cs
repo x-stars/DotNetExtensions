@@ -89,7 +89,7 @@ namespace XstarS.Runtime
                 for (int index = 0; index < value.Length; index++)
                 {
                     var item = methodGet.Invoke(value, Array.ConvertAll(
-                        value.OffsetToIndices(index), number => (object)number));
+                        value.OffsetToIndices(index), ObjectRuntimeHelper.BoxIndex));
                     hashCode = ObjectRuntimeHelper.CombineHashCode(
                         hashCode, ObjectRuntimeHelper.GetBoxedPointerHashCode(item));
                 }
