@@ -65,10 +65,8 @@ namespace XstarS
                 var methodGet = typeArray.GetMethod("Get");
                 for (int index = 0; index < xArray.Length; index++)
                 {
-                    var valueItem = methodGet.Invoke(xArray, Array.ConvertAll(
-                        xArray.OffsetToIndices(index), ObjectRuntimeHelper.BoxIndex));
-                    var otherItem = methodGet.Invoke(yArray, Array.ConvertAll(
-                        yArray.OffsetToIndices(index), ObjectRuntimeHelper.BoxIndex));
+                    var valueItem = methodGet.Invoke(xArray, xArray.OffsetToIndices(index).Box());
+                    var otherItem = methodGet.Invoke(yArray, yArray.OffsetToIndices(index).Box());
                     if (!ObjectRuntimeHelper.BoxedPointerEquals(valueItem, otherItem))
                     {
                         return false;
@@ -107,8 +105,7 @@ namespace XstarS
                 var methodGet = typeArray.GetMethod("Get");
                 for (int index = 0; index < array.Length; index++)
                 {
-                    var item = methodGet.Invoke(array, Array.ConvertAll(
-                        array.OffsetToIndices(index), ObjectRuntimeHelper.BoxIndex));
+                    var item = methodGet.Invoke(array, array.OffsetToIndices(index).Box());
                     hashCode = this.CombineHashCode(
                         hashCode, ObjectRuntimeHelper.GetBoxedPointerHashCode(item));
                 }

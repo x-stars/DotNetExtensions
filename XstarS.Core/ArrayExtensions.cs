@@ -120,6 +120,54 @@ namespace XstarS
         }
 
         /// <summary>
+        /// 返回将当前值类型数组中的每个值装箱后得到的新数组。
+        /// </summary>
+        /// <typeparam name="T">要装箱的值的类型。</typeparam>
+        /// <param name="array">要将每个值装箱的数组。</param>
+        /// <returns>将 <paramref name="array"/> 中的每个值装箱后得到的新数组。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+        public static object[] Box<T>(this T[] array) where T : struct
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            var length = array.Length;
+            var result = new object[length];
+            for (int index = 0; index < length; index++)
+            {
+                result[index] = array[index];
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 返回将当前可空值类型数组中的每个值装箱后得到的新数组。
+        /// </summary>
+        /// <typeparam name="T">要装箱的值的类型。</typeparam>
+        /// <param name="array">要将每个值装箱的数组。</param>
+        /// <returns>将 <paramref name="array"/> 中的每个值装箱后得到的新数组。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+        public static object[] Box<T>(this T?[] array) where T : struct
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            var length = array.Length;
+            var result = new object[length];
+            for (int index = 0; index < length; index++)
+            {
+                result[index] = array[index];
+            }
+            return result;
+        }
+
+        /// <summary>
         /// 返回一个新数组，此数组为当前数组和指定数组连接后的结果。
         /// </summary>
         /// <typeparam name="T"><paramref name="array"/> 中元素的类型。</typeparam>

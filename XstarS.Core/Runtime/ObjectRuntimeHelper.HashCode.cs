@@ -98,8 +98,7 @@ namespace XstarS.Runtime
                 var methodGet = typeArray.GetMethod("Get");
                 for (int index = 0; index < value.Length; index++)
                 {
-                    var item = methodGet.Invoke(value, Array.ConvertAll(
-                        value.OffsetToIndices(index), ObjectRuntimeHelper.BoxIndex));
+                    var item = methodGet.Invoke(value, value.OffsetToIndices(index).Box());
                     hashCode = ObjectRuntimeHelper.CombineHashCode(
                         hashCode, ObjectRuntimeHelper.GetBoxedPointerHashCode(item));
                 }

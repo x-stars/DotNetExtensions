@@ -111,10 +111,8 @@ namespace XstarS.Runtime
                 var methodGet = typeArray.GetMethod("Get");
                 for (int index = 0; index < value.Length; index++)
                 {
-                    var valueItem = methodGet.Invoke(value, Array.ConvertAll(
-                        value.OffsetToIndices(index), ObjectRuntimeHelper.BoxIndex));
-                    var otherItem = methodGet.Invoke(other, Array.ConvertAll(
-                        other.OffsetToIndices(index), ObjectRuntimeHelper.BoxIndex));
+                    var valueItem = methodGet.Invoke(value, value.OffsetToIndices(index).Box());
+                    var otherItem = methodGet.Invoke(other, other.OffsetToIndices(index).Box());
                     if (!ObjectRuntimeHelper.BoxedPointerEquals(valueItem, otherItem))
                     {
                         return false;
