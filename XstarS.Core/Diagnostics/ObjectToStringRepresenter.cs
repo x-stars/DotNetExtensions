@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace XstarS.Diagnostics
 {
@@ -17,9 +18,10 @@ namespace XstarS.Diagnostics
         /// <summary>
         /// 将指定对象表示为其 <see cref="object.ToString()"/> 方法返回的字符串。
         /// </summary>
-        /// <param name="value">要表示的对象。</param>
+        /// <param name="value">要表示为字符串的对象。</param>
+        /// <param name="pathed">已经在路径中访问过的对象。</param>
         /// <returns>调用 <paramref name="value"/> 的
         /// <see cref="object.ToString()"/> 方法返回的字符串。</returns>
-        public override string Format(T value) => value?.ToString();
+        protected override string RepresentCore(T value, ISet<object> pathed) => value?.ToString();
     }
 }
