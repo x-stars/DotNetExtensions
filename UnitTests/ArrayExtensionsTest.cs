@@ -9,11 +9,12 @@ namespace XstarS
         public void InitializeArray_FiveLayers_ValueEqualsIndices()
         {
             var array = 10.InitializeArray(
-                i1 => 10.InitializeArray(
-                    i2 => 10.InitializeArray(
-                        i3 => 10.InitializeArray(
-                            i4 => 10.InitializeArray(
-                                i5 => new[] { i1, i2, i3, i4, i5 })))));
+                index1 => 10.InitializeArray(
+                    index2 => 10.InitializeArray(
+                        index3 => 10.InitializeArray(
+                            index4 => 10.InitializeArray(
+                                index5 => new[] {
+                                    index1, index2, index3, index4, index5 })))));
             for (int index = 0; index < 5; index++)
             {
                 Assert.AreEqual(index, array[0][1][2][3][4][index]);

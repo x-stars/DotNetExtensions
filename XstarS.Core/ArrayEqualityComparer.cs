@@ -51,9 +51,9 @@ namespace XstarS
 
             if (xArray.Rank != yArray.Rank) { return false; }
             if (xArray.Length != yArray.Length) { return false; }
-            for (int index = 0; index < xArray.Rank; index++)
+            for (int rank = 0; rank < xArray.Rank; rank++)
             {
-                if (xArray.GetLength(index) != yArray.GetLength(index))
+                if (xArray.GetLength(rank) != yArray.GetLength(rank))
                 {
                     return false;
                 }
