@@ -10,7 +10,7 @@ namespace XstarS.Collections.Generic
     /// <typeparam name="TCollection">实现了 <see cref="IEnumerable{T}"/> 的集合类型。</typeparam>
     [Serializable]
     internal sealed class EnumerableEqualityComparer<TCollection>
-        : CollectionEqualityComparer<TCollection>
+        : StructureEqualityComparer<TCollection>
     {
         /// <summary>
         /// 表示用于比较集合中元素的 <see cref="IEqualityComparer"/>。
@@ -49,7 +49,7 @@ namespace XstarS.Collections.Generic
         private static IEqualityComparer GetItemComparer()
         {
             var itemType = EnumerableEqualityComparer<TCollection>.GetItemType();
-            var comparerType = typeof(CollectionEqualityComparer<>).MakeGenericType(itemType);
+            var comparerType = typeof(StructureEqualityComparer<>).MakeGenericType(itemType);
             var defaultProperty = comparerType.GetProperty("Default");
             return (IEqualityComparer)defaultProperty.GetValue(null);
         }

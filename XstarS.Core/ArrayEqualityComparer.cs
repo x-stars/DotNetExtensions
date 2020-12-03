@@ -10,7 +10,7 @@ namespace XstarS
     /// </summary>
     /// <typeparam name="TArray">数组的类型。</typeparam>
     [Serializable]
-    internal sealed class ArrayEqualityComparer<TArray> : CollectionEqualityComparer<TArray>
+    internal sealed class ArrayEqualityComparer<TArray> : StructureEqualityComparer<TArray>
     {
         /// <summary>
         /// 表示用于比较数组中元素的 <see cref="IEqualityComparer"/>。
@@ -32,7 +32,7 @@ namespace XstarS
         private static IEqualityComparer GetItemComparer()
         {
             var itemType = typeof(TArray).GetElementType();
-            var comparerType = typeof(CollectionEqualityComparer<>).MakeGenericType(itemType);
+            var comparerType = typeof(StructureEqualityComparer<>).MakeGenericType(itemType);
             var defaultProperty = comparerType.GetProperty("Default");
             return (IEqualityComparer)defaultProperty.GetValue(null);
         }
