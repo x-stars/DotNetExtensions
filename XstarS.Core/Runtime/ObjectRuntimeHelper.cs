@@ -3,7 +3,7 @@
     /// <summary>
     /// 提供对象运行时相关的帮助方法。
     /// </summary>
-    internal static partial class ObjectRuntimeHelper
+    public static partial class ObjectRuntimeHelper
     {
     }
 }
