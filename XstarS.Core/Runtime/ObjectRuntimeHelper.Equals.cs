@@ -5,6 +5,8 @@ using XstarS.Collections.Specialized;
 
 namespace XstarS.Runtime
 {
+    using ObjectPair = KeyValuePair<object, object>;
+
     partial class ObjectRuntimeHelper
     {
         /// <summary>
@@ -19,7 +21,7 @@ namespace XstarS.Runtime
         public static bool ValueEquals(object value, object other)
         {
             var comparer = PairReferenceEqualityComparer.Default;
-            var compared = new HashSet<KeyValuePair<object, object>>(comparer);
+            var compared = new HashSet<ObjectPair>(comparer);
             return ObjectRuntimeHelper.ValueEquals(value, other, compared);
         }
 
@@ -44,8 +46,8 @@ namespace XstarS.Runtime
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        private static bool ValueEquals(object value, object other,
-            HashSet<KeyValuePair<object, object>> compared)
+        private static bool ValueEquals(
+            object value, object other, HashSet<ObjectPair> compared)
         {
             var pair = new KeyValuePair<object, object>(value, other);
             if (!compared.Add(pair)) { return true; }
@@ -92,8 +94,8 @@ namespace XstarS.Runtime
         /// <returns>若 <paramref name="value"/> 和 <paramref name="other"/>
         /// 均为数组 <see cref="Array"/>，且类型和尺寸相同，每个元素的值相等，
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        private static bool ArrayValueEquals(Array value, Array other,
-            HashSet<KeyValuePair<object, object>> compared)
+        private static bool ArrayValueEquals(
+            Array value, Array other, HashSet<ObjectPair> compared)
         {
             if (value.Rank != other.Rank) { return false; }
             if (value.Length != other.Length) { return false; }
@@ -147,8 +149,8 @@ namespace XstarS.Runtime
         /// 的类型相同，且每个实例字段的值相等，
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        private static bool ObjectValueEquals(object value, object other,
-            HashSet<KeyValuePair<object, object>> compared)
+        private static bool ObjectValueEquals(
+            object value, object other, HashSet<ObjectPair> compared)
         {
             for (var type = value.GetType(); !(type is null); type = type.BaseType)
             {

@@ -38,7 +38,8 @@ namespace XstarS.Collections.Generic
         /// <param name="y">要比较的第二个 <see cref="KeyValuePair{TKey, TValue}"/> 对象。</param>
         /// <returns>如果 <paramref name="x"/> 和 <paramref name="y"/> 的键值均相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public override bool Equals(KeyValuePair<TKey, TValue> x, KeyValuePair<TKey, TValue> y)
+        public override bool Equals(
+            KeyValuePair<TKey, TValue> x, KeyValuePair<TKey, TValue> y)
         {
             return this.KeyComparer.Equals(x.Key, y.Key) &&
                 this.ValueComparer.Equals(x.Value, y.Value);

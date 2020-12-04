@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 namespace XstarS.Collections
 {
+    using ObjectPair = KeyValuePair<object, object>;
+
     /// <summary>
     /// 提供用于无环地比较对象是否相等的方法。
     /// </summary>
@@ -16,7 +18,7 @@ namespace XstarS.Collections
         /// <param name="compared">已经比较过的对象。</param>
         /// <returns>若 <paramref name="x"/> 和 <paramref name="y"/> 相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        bool Equals(object x, object y, ISet<KeyValuePair<object, object>> compared);
+        bool Equals(object x, object y, ISet<ObjectPair> compared);
 
         /// <summary>
         /// 无环地获取指定对象的哈希代码。

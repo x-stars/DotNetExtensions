@@ -4,6 +4,8 @@ using XstarS.Collections.Specialized;
 
 namespace XstarS.Collections.Generic
 {
+    using ObjectPair = KeyValuePair<object, object>;
+
     /// <summary>
     /// 为对象的无环相等比较器 <see cref="IAcyclicEqualityComparer{T}"/> 提供抽象基类。
     /// </summary>
@@ -34,7 +36,7 @@ namespace XstarS.Collections.Generic
         public sealed override bool Equals(T x, T y)
         {
             var comparer = PairReferenceEqualityComparer.Default;
-            var compared = new HashSet<KeyValuePair<object, object>>(comparer);
+            var compared = new HashSet<ObjectPair>(comparer);
             return this.Equals(x, y, compared);
         }
 
@@ -58,9 +60,9 @@ namespace XstarS.Collections.Generic
         /// <param name="compared">已经比较过的对象。</param>
         /// <returns>若 <paramref name="x"/> 和 <paramref name="y"/> 相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        protected bool Equals(T x, T y, ISet<KeyValuePair<object, object>> compared)
+        protected bool Equals(T x, T y, ISet<ObjectPair> compared)
         {
-            var pair = new KeyValuePair<object, object>(x, y);
+            var pair = new ObjectPair(x, y);
             if (!compared.Add(pair)) { return true; }
 
             if (object.ReferenceEquals(x, y)) { return true; }
@@ -92,7 +94,7 @@ namespace XstarS.Collections.Generic
         /// <param name="compared">已经比较过的对象。</param>
         /// <returns>若 <paramref name="x"/> 和 <paramref name="y"/> 相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        protected abstract bool EqualsCore(T x, T y, ISet<KeyValuePair<object, object>> compared);
+        protected abstract bool EqualsCore(T x, T y, ISet<ObjectPair> compared);
 
         /// <summary>
         /// 在派生类中重写，用于获取指定对象的哈希代码。
@@ -110,8 +112,7 @@ namespace XstarS.Collections.Generic
         /// <param name="compared">已经比较过的对象。</param>
         /// <returns>若 <paramref name="x"/> 和 <paramref name="y"/> 相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        bool IAcyclicEqualityComparer<T>.Equals(
-            T x, T y, ISet<KeyValuePair<object, object>> compared)
+        bool IAcyclicEqualityComparer<T>.Equals(T x, T y, ISet<ObjectPair> compared)
         {
             return this.Equals(x, y, compared);
         }
@@ -137,8 +138,7 @@ namespace XstarS.Collections.Generic
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="InvalidCastException">无法强制转换 <paramref name="x"/>
         /// 或 <paramref name="y"/> 到 <typeparamref name="T"/> 类型。</exception>
-        bool IAcyclicEqualityComparer.Equals(
-            object x, object y, ISet<KeyValuePair<object, object>> compared)
+        bool IAcyclicEqualityComparer.Equals(object x, object y, ISet<ObjectPair> compared)
         {
             return this.Equals((T)x, (T)y, compared);
         }
