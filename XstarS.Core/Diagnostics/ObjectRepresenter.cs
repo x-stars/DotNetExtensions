@@ -13,9 +13,9 @@ namespace XstarS.Diagnostics
         : IAcyclicObjectRepresenter, IAcyclicObjectRepresenter<T>
     {
         /// <summary>
-        /// 表示已经在路径上访问过的对象的字符串表示。
+        /// 表示已经在路径中表示过的对象的字符串表示。
         /// </summary>
-        private const string PathedRepresent = "{ ... }";
+        private const string RepresentedString = "{ ... }";
 
         /// <summary>
         /// 获取默认的 <see cref="ObjectRepresenter{T}"/> 实例。
@@ -39,17 +39,17 @@ namespace XstarS.Diagnostics
         /// 将指定对象无环地表示为字符串。
         /// </summary>
         /// <param name="value">要表示为字符串的对象。</param>
-        /// <param name="pathed">已经在路径中访问过的对象。</param>
+        /// <param name="represented">已经在路径中表示过的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        protected string Represent(T value, ISet<object> pathed)
+        protected string Represent(T value, ISet<object> represented)
         {
-            if (!pathed.Add(value))
+            if (!represented.Add(value))
             {
-                return ObjectRepresenter<T>.PathedRepresent;
+                return ObjectRepresenter<T>.RepresentedString;
             }
 
-            var represent = this.RepresentCore(value, pathed);
-            pathed.Remove(value);
+            var represent = this.RepresentCore(value, represented);
+            represented.Remove(value);
             return represent;
         }
 
@@ -57,9 +57,20 @@ namespace XstarS.Diagnostics
         /// 在派生类中重写，将指定对象表示为字符串。
         /// </summary>
         /// <param name="value">要表示为字符串的对象。</param>
-        /// <param name="pathed">已经在路径中访问过的对象。</param>
+        /// <param name="represented">已经在路径中表示过的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        protected abstract string RepresentCore(T value, ISet<object> pathed);
+        protected abstract string RepresentCore(T value, ISet<object> represented);
+
+        /// <summary>
+        /// 将指定对象无环地表示为字符串。
+        /// </summary>
+        /// <param name="value">要表示为字符串的对象。</param>
+        /// <param name="represented">已经在路径中表示过的对象。</param>
+        /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
+        string IAcyclicObjectRepresenter<T>.Represent(T value, ISet<object> represented)
+        {
+            return this.Represent(value, represented);
+        }
 
         /// <summary>
         /// 将指定对象表示为字符串。
@@ -68,27 +79,23 @@ namespace XstarS.Diagnostics
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
         /// <exception cref="InvalidCastException">
         /// 无法强制转换 <paramref name="value"/> 到 <typeparamref name="T"/> 类型。</exception>
-        string IObjectRepresenter.Represent(object value) => this.Represent((T)value);
+        string IObjectRepresenter.Represent(object value)
+        {
+            return this.Represent((T)value);
+        }
 
         /// <summary>
         /// 将访指定对象无环地表示为字符串。
         /// </summary>
         /// <param name="value">要表示为字符串的对象。</param>
-        /// <param name="pathed">已经在路径中访问过的对象。</param>
+        /// <param name="represented">已经在路径中表示过的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
         /// <exception cref="InvalidCastException">
         /// 无法强制转换 <paramref name="value"/> 到 <typeparamref name="T"/> 类型。</exception>
-        string IAcyclicObjectRepresenter.Represent(object value, ISet<object> pathed) =>
-            this.Represent((T)value, pathed);
-
-        /// <summary>
-        /// 将指定对象无环地表示为字符串。
-        /// </summary>
-        /// <param name="value">要表示为字符串的对象。</param>
-        /// <param name="pathed">已经在路径中访问过的对象。</param>
-        /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        string IAcyclicObjectRepresenter<T>.Represent(T value, ISet<object> pathed) =>
-            this.Represent(value, pathed);
+        string IAcyclicObjectRepresenter.Represent(object value, ISet<object> represented)
+        {
+            return this.Represent((T)value, represented);
+        }
     }
 
     /// <summary>
@@ -108,9 +115,10 @@ namespace XstarS.Diagnostics
         /// <param name="type">要表示的类型 <see cref="Type"/> 对象。</param>
         /// <returns>类型参数为 <paramref name="type"/> 的
         /// <see cref="ObjectRepresenter{T}"/> 的默认实例。</returns>
-        internal static IAcyclicObjectRepresenter OfType(Type type)
+        public static IAcyclicObjectRepresenter OfType(Type type)
         {
-            return ObjectRepresenter.Defaults.GetOrAdd(type, ObjectRepresenter.GetDefault);
+            return (type is null) ? ObjectRepresenter<object>.Default :
+                ObjectRepresenter.Defaults.GetOrAdd(type, ObjectRepresenter.GetDefault);
         }
 
         /// <summary>
