@@ -10,7 +10,7 @@ namespace XstarS.Collections.Generic
     /// <typeparam name="TValue"><see cref="KeyValuePair{TKey, TValue}"/> 的值的类型。</typeparam>
     [Serializable]
     internal sealed class KeyValuePairEqualityComparer<TKey, TValue>
-        : StructureEqualityComparer<KeyValuePair<TKey, TValue>>
+        : StructuralEqualityComparer<KeyValuePair<TKey, TValue>>
     {
         /// <summary>
         /// 表示用于比较 <see cref="KeyValuePair{TKey, TValue}"/> 的键的比较器。
@@ -27,8 +27,8 @@ namespace XstarS.Collections.Generic
         /// </summary>
         public KeyValuePairEqualityComparer()
         {
-            this.KeyComparer = StructureEqualityComparer<TKey>.Default;
-            this.ValueComparer = StructureEqualityComparer<TValue>.Default;
+            this.KeyComparer = StructuralEqualityComparer<TKey>.Default;
+            this.ValueComparer = StructuralEqualityComparer<TValue>.Default;
         }
 
         /// <summary>

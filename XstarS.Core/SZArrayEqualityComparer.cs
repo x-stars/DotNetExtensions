@@ -9,7 +9,7 @@ namespace XstarS
     /// </summary>
     /// <typeparam name="TItem">数组中元素的类型。</typeparam>
     [Serializable]
-    internal sealed class SZArrayEqualityComparer<TItem> : StructureEqualityComparer<TItem[]>
+    internal sealed class SZArrayEqualityComparer<TItem> : StructuralEqualityComparer<TItem[]>
     {
         /// <summary>
         /// 表示用于比较数组中元素的 <see cref="IEqualityComparer{T}"/>。
@@ -21,7 +21,7 @@ namespace XstarS
         /// </summary>
         public SZArrayEqualityComparer()
         {
-            this.ItemComparer = StructureEqualityComparer<TItem>.Default;
+            this.ItemComparer = StructuralEqualityComparer<TItem>.Default;
         }
 
         /// <summary>

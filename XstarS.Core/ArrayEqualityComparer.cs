@@ -8,9 +8,9 @@ namespace XstarS
     /// <summary>
     /// 提供数组基于元素的相等比较的方法。
     /// </summary>
-    /// <typeparam name="TArray">数组的类型。</typeparam>
+    /// <typeparam name="T">数组的类型。</typeparam>
     [Serializable]
-    internal sealed class ArrayEqualityComparer<TArray> : StructureEqualityComparer<TArray>
+    internal sealed class ArrayEqualityComparer<T> : StructuralEqualityComparer<T>
     {
         /// <summary>
         /// 表示用于比较数组中元素的 <see cref="IEqualityComparer"/>。
@@ -18,23 +18,12 @@ namespace XstarS
         private readonly IEqualityComparer ItemsComparer;
 
         /// <summary>
-        /// 初始化 <see cref="ArrayEqualityComparer{TArray}"/> 类的新实例。
+        /// 初始化 <see cref="ArrayEqualityComparer{T}"/> 类的新实例。
         /// </summary>
         public ArrayEqualityComparer()
         {
-            this.ItemsComparer = ArrayEqualityComparer<TArray>.GetItemComparer();
-        }
-
-        /// <summary>
-        /// 获取当前数组中元素的比较器。
-        /// </summary>
-        /// <returns><typeparamref name="TArray"/> 中元素的比较器。</returns>
-        private static IEqualityComparer GetItemComparer()
-        {
-            var itemType = typeof(TArray).GetElementType();
-            var comparerType = typeof(StructureEqualityComparer<>).MakeGenericType(itemType);
-            var defaultProperty = comparerType.GetProperty("Default");
-            return (IEqualityComparer)defaultProperty.GetValue(null);
+            this.ItemsComparer =
+                StructuralEqualityComparer.GetDefault(typeof(T).GetElementType());
         }
 
         /// <summary>
@@ -44,7 +33,7 @@ namespace XstarS
         /// <param name="y">要比较的第二个数组。</param>
         /// <returns>如果 <paramref name="x"/> 和 <paramref name="y"/> 的类型相同且所包含的元素相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public override bool Equals(TArray x, TArray y)
+        public override bool Equals(T x, T y)
         {
             var xArray = (Array)(object)x;
             var yArray = (Array)(object)y;
@@ -93,7 +82,7 @@ namespace XstarS
         /// </summary>
         /// <param name="obj">要为其获取哈希代码的数组。</param>
         /// <returns>遍历 <paramref name="obj"/> 中元素得到的哈希代码。</returns>
-        public override int GetHashCode(TArray obj)
+        public override int GetHashCode(T obj)
         {
             var array = (Array)(object)obj;
 
