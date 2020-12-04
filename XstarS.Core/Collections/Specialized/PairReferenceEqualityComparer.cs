@@ -19,7 +19,8 @@ namespace XstarS.Collections.Specialized
         /// 返回一个默认的 <see cref="PairReferenceEqualityComparer"/> 实例。
         /// </summary>
         /// <returns>默认的 <see cref="PairReferenceEqualityComparer"/> 实例。</returns>
-        public static new PairReferenceEqualityComparer Default { get; } = new PairReferenceEqualityComparer();
+        public static new PairReferenceEqualityComparer Default { get; } =
+            new PairReferenceEqualityComparer();
 
         /// <summary>
         /// 确定两个 <see cref="KeyValuePair{TKey, TValue}"/> 包含的对象的引用是否相等。
