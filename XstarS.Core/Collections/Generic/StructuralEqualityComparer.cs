@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace XstarS.Collections.Generic
@@ -110,12 +111,30 @@ namespace XstarS.Collections.Generic
     internal static class StructuralEqualityComparer
     {
         /// <summary>
-        /// 获取 <see cref="StructuralEqualityComparer{T}"/> 的默认实例。
+        /// 表示指定类型的 <see cref="StructuralEqualityComparer{T}"/> 的默认实例。
         /// </summary>
-        /// <param name="type">结构对对象的类型 <see cref="Type"/> 对象。</param>
+        private static readonly ConcurrentDictionary<Type, IEqualityComparer> Defualts =
+            new ConcurrentDictionary<Type, IEqualityComparer>();
+
+        /// <summary>
+        /// 获取指定类型的 <see cref="StructuralEqualityComparer{T}"/> 的默认实例。
+        /// </summary>
+        /// <param name="type">结构化对象的类型 <see cref="Type"/> 对象。</param>
         /// <returns>类型参数为 <paramref name="type"/> 的
         /// <see cref="StructuralEqualityComparer{T}"/> 的默认实例。</returns>
-        internal static IEqualityComparer GetDefault(Type type)
+        internal static IEqualityComparer OfType(Type type)
+        {
+            return StructuralEqualityComparer.Defualts.GetOrAdd(
+                type, StructuralEqualityComparer.GetDefault);
+        }
+
+        /// <summary>
+        /// 获取指定类型的 <see cref="StructuralEqualityComparer{T}"/> 的默认实例。
+        /// </summary>
+        /// <param name="type">结构化对象的类型 <see cref="Type"/> 对象。</param>
+        /// <returns>类型参数为 <paramref name="type"/> 的
+        /// <see cref="StructuralEqualityComparer{T}"/> 的默认实例。</returns>
+        private static IEqualityComparer GetDefault(Type type)
         {
             var typeComparer = typeof(StructuralEqualityComparer<>).MakeGenericType(type);
             var nameDefualt = nameof(StructuralEqualityComparer<object>.Default);

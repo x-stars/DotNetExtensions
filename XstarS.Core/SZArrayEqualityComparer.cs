@@ -7,12 +7,12 @@ namespace XstarS
     /// <summary>
     /// 提供数组基于元素的相等比较的方法。
     /// </summary>
-    /// <typeparam name="TItem">数组中元素的类型。</typeparam>
+    /// <typeparam name="TItem">数组中的元素的类型。</typeparam>
     [Serializable]
     internal sealed class SZArrayEqualityComparer<TItem> : StructuralEqualityComparer<TItem[]>
     {
         /// <summary>
-        /// 表示用于比较数组中元素的 <see cref="IEqualityComparer{T}"/>。
+        /// 表示用于比较数组中的元素的 <see cref="IEqualityComparer{T}"/>。
         /// </summary>
         private readonly IEqualityComparer<TItem> ItemComparer;
 

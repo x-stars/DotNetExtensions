@@ -23,7 +23,7 @@ namespace XstarS
         public ArrayEqualityComparer()
         {
             this.ItemsComparer =
-                StructuralEqualityComparer.GetDefault(typeof(T).GetElementType());
+                StructuralEqualityComparer.OfType(typeof(T).GetElementType());
         }
 
         /// <summary>

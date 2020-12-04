@@ -3,12 +3,12 @@
 namespace XstarS.Diagnostics
 {
     /// <summary>
-    /// 提供将访问路径中的对象表示为字符串的方法。
+    /// 提供将对象无环地表示为字符串的方法。
     /// </summary>
-    public interface IPathObjectRepresenter
+    public interface IAcyclicObjectRepresenter : IObjectRepresenter
     {
         /// <summary>
-        /// 将访问路径中的指定对象表示为字符串。
+        /// 将指定对象表示无环地为字符串。
         /// </summary>
         /// <param name="value">要表示为字符串的对象。</param>
         /// <param name="pathed">已经在路径中访问过的对象。</param>
@@ -17,13 +17,13 @@ namespace XstarS.Diagnostics
     }
 
     /// <summary>
-    /// 提供将访问路径中的指定类型的对象表示为字符串的方法。
+    /// 提供将指定类型的对象无环地表示为字符串的方法。
     /// </summary>
     /// <typeparam name="T">要表示为字符串的对象的类型。</typeparam>
-    public interface IPathObjectRepresenter<in T>
+    public interface IAcyclicObjectRepresenter<in T> : IObjectRepresenter<T>
     {
         /// <summary>
-        /// 将访问路径中的指定对象表示为字符串。
+        /// 将指定对象无环地表示为字符串。
         /// </summary>
         /// <param name="value">要表示为字符串的对象。</param>
         /// <param name="pathed">已经在路径中访问过的对象。</param>

@@ -21,7 +21,7 @@ namespace XstarS.Collections.Generic
         /// </summary>
         public EnumerableEqualityComparer()
         {
-            this.ItemComparer = StructuralEqualityComparer.GetDefault(
+            this.ItemComparer = StructuralEqualityComparer.OfType(
                 EnumerableEqualityComparer<T>.GetItemType());
         }
 
