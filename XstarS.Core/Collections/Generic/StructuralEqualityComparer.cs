@@ -15,8 +15,8 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 表示 <see cref="StructuralEqualityComparer{T}.Default"/> 的延迟初始化对象。 
         /// </summary>
-        private static readonly Lazy<EqualityComparer<T>> LazyDefault =
-            new Lazy<EqualityComparer<T>>(StructuralEqualityComparer<T>.CreateDefault);
+        private static readonly Lazy<StructuralEqualityComparer<T>> LazyDefault =
+            new Lazy<StructuralEqualityComparer<T>>(StructuralEqualityComparer<T>.CreateDefault);
 
         /// <summary>
         /// 初始化 <see cref="StructuralEqualityComparer{T}"/> 类的新实例。
@@ -27,14 +27,14 @@ namespace XstarS.Collections.Generic
         /// 获取用于结构化对象比较的默认的 <see cref="EqualityComparer{T}"/> 实例。
         /// </summary>
         /// <returns>用于结构化对象比较的默认的 <see cref="EqualityComparer{T}"/> 实例。</returns>
-        public static new EqualityComparer<T> Default =>
+        public static new StructuralEqualityComparer<T> Default =>
             StructuralEqualityComparer<T>.LazyDefault.Value;
 
         /// <summary>
         /// 创建用于结构化对象比较的默认的 <see cref="EqualityComparer{T}"/> 实例。
         /// </summary>
         /// <returns>用于结构化对象比较的默认的 <see cref="EqualityComparer{T}"/> 实例。</returns>
-        private static EqualityComparer<T> CreateDefault()
+        private static StructuralEqualityComparer<T> CreateDefault()
         {
             var type = typeof(T);
             if (type.IsArray)
@@ -42,7 +42,7 @@ namespace XstarS.Collections.Generic
                 var itemType = type.GetElementType();
                 if ((itemType.MakeArrayType() == type) && !itemType.IsPointer)
                 {
-                    return (EqualityComparer<T>)Activator.CreateInstance(
+                    return (StructuralEqualityComparer<T>)Activator.CreateInstance(
                         typeof(SZArrayEqualityComparer<>).MakeGenericType(itemType));
                 }
                 else
@@ -59,17 +59,17 @@ namespace XstarS.Collections.Generic
                 else if (type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
                 {
                     var keyValueTypes = type.GetGenericArguments();
-                    return (EqualityComparer<T>)Activator.CreateInstance(
+                    return (StructuralEqualityComparer<T>)Activator.CreateInstance(
                         typeof(KeyValuePairEqualityComparer<,>).MakeGenericType(keyValueTypes));
                 }
                 else
                 {
-                    return EqualityComparer<T>.Default;
+                    return new PlainObjectEqualityComparer<T>();
                 }
             }
             else
             {
-                return EqualityComparer<T>.Default;
+                return new PlainObjectEqualityComparer<T>();
             }
         }
 
@@ -122,10 +122,11 @@ namespace XstarS.Collections.Generic
         /// <param name="type">结构化对象的类型 <see cref="Type"/> 对象。</param>
         /// <returns>类型参数为 <paramref name="type"/> 的
         /// <see cref="StructuralEqualityComparer{T}"/> 的默认实例。</returns>
-        internal static IEqualityComparer OfType(Type type)
+        public static IEqualityComparer OfType(Type type)
         {
-            return StructuralEqualityComparer.Defualts.GetOrAdd(
-                type, StructuralEqualityComparer.GetDefault);
+            return (type is null) ? StructuralEqualityComparer<object>.Default :
+                StructuralEqualityComparer.Defualts.GetOrAdd(
+                    type, StructuralEqualityComparer.GetDefault);
         }
 
         /// <summary>
