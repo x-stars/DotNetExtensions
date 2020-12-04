@@ -23,6 +23,7 @@
 * `XstarS.Diagnostics`
 * `XstarS.IO`
 * `XstarS.Reflection`
+* `XstarS.Runtime`
 
 > `XstarS.Operators` 类型提供部分常用运算符，建议静态引入后调用。
 
