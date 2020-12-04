@@ -8,8 +8,8 @@ namespace XstarS.Diagnostics
     /// 提供字符串表示对象 <see cref="IObjectRepresenter{T}"/> 的抽象基类。
     /// </summary>
     [Serializable]
-    public abstract class ObjectRepresenter<T> :
-        IObjectRepresenter, IObjectRepresenter<T>, IPathObjectRepresenter, IPathObjectRepresenter<T>
+    public abstract class ObjectRepresenter<T>
+        : IObjectRepresenter, IObjectRepresenter<T>, IPathObjectRepresenter, IPathObjectRepresenter<T>
     {
         /// <summary>
         /// 表示已经在路径上访问过的对象的字符串表示。

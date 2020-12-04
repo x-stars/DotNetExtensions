@@ -61,7 +61,7 @@ namespace XstarS.Collections.Generic
         /// 获取或设置指定索引处的元素。
         /// </summary>
         /// <param name="index">要获取或设置的元素的从零开始的索引。</param>
-        /// <returns>当前 <see cref="IList"/>指定索引处的元素。</returns>
+        /// <returns>当前 <see cref="IList"/> 指定索引处的元素。</returns>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="index"/> 不是 <see cref="IList"/> 中的有效索引。</exception>
         /// <exception cref="InvalidCastException">
@@ -91,10 +91,7 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <param name="item">要添加到 <see cref="IndexedLinkedList{T}"/> 末尾的对象。
         /// 对于引用类型，该值可以为 <see langword="null"/>。</param>
-        public void Add(T item)
-        {
-            this.AddLast(item);
-        }
+        public void Add(T item) => this.AddLast(item);
 
         /// <summary>
         /// 搜索指定的对象，并返回整个 <see cref="IndexedLinkedList{T}"/> 中第一个匹配项的从零开始的索引。
@@ -185,7 +182,7 @@ namespace XstarS.Collections.Generic
             if (index < this.Count / 2)
             {
                 var node = this.First;
-                for (int cIndex = 0; cIndex < index; cIndex++)
+                for (int current = 0; current < index; current++)
                 {
                     node = node.Next;
                 }
@@ -194,7 +191,7 @@ namespace XstarS.Collections.Generic
             else
             {
                 var node = this.Last;
-                for (int cIndex = this.Count - 1; cIndex > index; cIndex--)
+                for (int current = this.Count - 1; current > index; current--)
                 {
                     node = node.Previous;
                 }
@@ -238,7 +235,7 @@ namespace XstarS.Collections.Generic
         /// <param name="value">要在 <see cref="IList"/> 中定位的对象。</param>
         /// <returns> 如果在 <see cref="IList"/> 中找到了 <paramref name="value"/>，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        bool IList.Contains(object value) => (value is T item) ? this.Contains(item) : false;
+        bool IList.Contains(object value) => (value is T item) && this.Contains(item);
 
         /// <summary>
         /// 确定 <see cref="IList"/> 中特定项的索引。

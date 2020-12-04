@@ -35,12 +35,12 @@ namespace XstarS.Runtime
         /// 组合当前哈希代码和新的哈希代码。
         /// </summary>
         /// <param name="hashCode">当前哈希代码。</param>
-        /// <param name="newHashCode">新的哈希代码。</param>
+        /// <param name="nextHashCode">新的哈希代码。</param>
         /// <returns><paramref name="hashCode"/> 与
-        /// <paramref name="newHashCode"/> 组合得到的哈希代码。</returns>
-        private static int CombineHashCode(int hashCode, int newHashCode)
+        /// <paramref name="nextHashCode"/> 组合得到的哈希代码。</returns>
+        private static int CombineHashCode(int hashCode, int nextHashCode)
         {
-            return hashCode * -1521134295 + newHashCode;
+            return hashCode * -1521134295 + nextHashCode;
         }
 
         /// <summary>

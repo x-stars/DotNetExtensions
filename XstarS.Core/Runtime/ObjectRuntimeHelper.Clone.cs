@@ -31,7 +31,8 @@ namespace XstarS.Runtime
         /// <returns><paramref name="value"/> 的浅表副本。</returns>
         public static object ObjectClone(object value)
         {
-            return (value is null) ? null : ObjectRuntimeHelper.StaticMemberwiseClone.Invoke(value);
+            return (value is null) ? null :
+                ObjectRuntimeHelper.StaticMemberwiseClone.Invoke(value);
         }
 
         /// <summary>
@@ -63,9 +64,10 @@ namespace XstarS.Runtime
             if (value is null) { return null; }
             using (var stream = new MemoryStream())
             {
-                ObjectRuntimeHelper.BinarySerializer.Serialize(stream, value);
+                var serializer = ObjectRuntimeHelper.BinarySerializer;
+                serializer.Serialize(stream, value);
                 stream.Position = 0L;
-                return ObjectRuntimeHelper.BinarySerializer.Deserialize(stream);
+                return serializer.Deserialize(stream);
             }
         }
 
