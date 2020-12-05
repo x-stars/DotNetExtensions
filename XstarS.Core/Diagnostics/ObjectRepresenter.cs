@@ -21,10 +21,16 @@ namespace XstarS.Diagnostics
         private const string RepresentedString = "{ ... }";
 
         /// <summary>
+        /// 表示 <see cref="ObjectRepresenter{T}.Default"/> 的延迟初始化值。
+        /// </summary>
+        private static readonly Lazy<ObjectRepresenter<T>> LazyDafault =
+            new Lazy<ObjectRepresenter<T>>(ObjectRepresenter<T>.CreateDefault);
+
+        /// <summary>
         /// 获取默认的 <see cref="ObjectRepresenter{T}"/> 实例。
         /// </summary>
         /// <returns>默认的 <see cref="ObjectRepresenter{T}"/> 实例。</returns>
-        public static ObjectRepresenter<T> Default { get; } = ObjectRepresenter<T>.CreateDefault();
+        public static ObjectRepresenter<T> Default => ObjectRepresenter<T>.LazyDafault.Value;
 
         /// <summary>
         /// 创建默认的 <see cref="ObjectRepresenter{T}"/> 实例。
