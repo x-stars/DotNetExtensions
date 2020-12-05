@@ -4,70 +4,56 @@ using XstarS.Collections.Generic;
 
 namespace XstarS
 {
+    using ObjectPair = KeyValuePair<object, object>;
+
     /// <summary>
     /// 提供数组基于元素的相等比较的方法。
     /// </summary>
     /// <typeparam name="TItem">数组中的元素的类型。</typeparam>
     [Serializable]
-    internal sealed class SZArrayEqualityComparer<TItem> : StructuralEqualityComparer<TItem[]>
+    internal sealed class SZArrayEqualityComparer<TItem> : StructureEqualityComparer<TItem[]>
     {
-        /// <summary>
-        /// 表示用于比较数组中的元素的 <see cref="IEqualityComparer{T}"/>。
-        /// </summary>
-        private readonly IEqualityComparer<TItem> ItemComparer;
-
         /// <summary>
         /// 初始化 <see cref="SZArrayEqualityComparer{TItem}"/> 类的新实例。
         /// </summary>
-        public SZArrayEqualityComparer()
-        {
-            this.ItemComparer = StructuralEqualityComparer<TItem>.Default;
-        }
+        public SZArrayEqualityComparer() { }
 
         /// <summary>
-        /// 确定两个指定数组中所包含的元素是否对应相等。
+        /// 确定两个指定数组中的元素是否相等。
         /// </summary>
         /// <param name="x">要比较的第一个数组。</param>
         /// <param name="y">要比较的第二个数组。</param>
-        /// <returns>如果 <paramref name="x"/> 和 <paramref name="y"/> 的类型相同且所包含的元素相等，
+        /// <param name="compared">已经比较过的对象。</param>
+        /// <returns>如果 <paramref name="x"/> 和 <paramref name="y"/> 的元素相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public override bool Equals(TItem[] x, TItem[] y)
+        protected override bool EqualsCore(TItem[] x, TItem[] y, ISet<ObjectPair> compared)
         {
-            if (object.ReferenceEquals(x, y)) { return true; }
-            if ((x is null) ^ (y is null)) { return false; }
-
-            var comparer = this.ItemComparer;
-
-            if (x.GetType() != y.GetType()) { return false; }
-
             if (x.Length != y.Length) { return false; }
 
             var length = x.Length;
             for (int index = 0; index < length; index++)
             {
-                if (!comparer.Equals(x[index], y[index]))
-                {
-                    return false;
-                }
+                if (x[index]?.GetType() != y[index]?.GetType()) { return false; }
+
+                var comparer = StructureEqualityComparer.OfType(x[index]?.GetType());
+                if (!comparer.Equals(x[index], y[index], compared)) { return false; }
             }
             return true;
         }
 
         /// <summary>
-        /// 获取指定的数组遍历元素得到的哈希代码。
+        /// 获取指定的数组中的元素的哈希代码。
         /// </summary>
-        /// <param name="obj">要为其获取哈希代码的数组。</param>
-        /// <returns>遍历 <paramref name="obj"/> 中元素得到的哈希代码。</returns>
-        public override int GetHashCode(TItem[] obj)
+        /// <param name="obj">要获取哈希代码的数组。</param>
+        /// <param name="computed">已经计算过哈希代码的对象。</param>
+        /// <returns><paramref name="obj"/> 中的元素的哈希代码。</returns>
+        protected override int GetHashCodeCore(TItem[] obj, ISet<object> computed)
         {
-            if (obj is null) { return 0; }
-
-            var comparer = this.ItemComparer;
-
             var length = obj.Length;
             var hashCode = obj.GetType().GetHashCode();
             for (int index = 0; index < length; index++)
             {
+                var comparer = StructureEqualityComparer.OfType(obj[index]?.GetType());
                 var nextHashCode = comparer.GetHashCode(obj[index]);
                 hashCode = this.CombineHashCode(hashCode, nextHashCode);
             }

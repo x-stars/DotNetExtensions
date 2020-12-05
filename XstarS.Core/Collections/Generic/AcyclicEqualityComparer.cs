@@ -67,6 +67,7 @@ namespace XstarS.Collections.Generic
 
             if (object.ReferenceEquals(x, y)) { return true; }
             if (((object)x is null) ^ ((object)y is null)) { return false; }
+            if (x.GetType() != y.GetType()) { return false; }
 
             return this.EqualsCore(x, y, compared);
         }
