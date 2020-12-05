@@ -14,7 +14,7 @@
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的每个元素都对应相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public static bool StructureEquals<T>(this T value, T other) =>
-            StructureEqualityComparer<T>.Default.Equals(value, other);
+            StructureEqualityComparer.Equals(value, other);
 
         /// <summary>
         /// 获取当前结构化对象遍历元素得到的哈希代码。
@@ -23,6 +23,6 @@
         /// <typeparam name="T">结构化对象的类型。</typeparam>
         /// <returns>遍历 <paramref name="value"/> 的元素得到的哈希代码。</returns>
         public static int GetStructureHashCode<T>(this T value) =>
-            StructureEqualityComparer<T>.Default.GetHashCode(value);
+            StructureEqualityComparer.GetHashCode(value);
     }
 }

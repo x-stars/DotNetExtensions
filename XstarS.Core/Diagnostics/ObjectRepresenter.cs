@@ -2,11 +2,9 @@
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Reflection;
 using XstarS.Collections;
 using XstarS.Collections.Generic;
 using XstarS.Collections.Specialized;
-using XstarS.Reflection;
 
 namespace XstarS.Diagnostics
 {
@@ -152,9 +150,9 @@ namespace XstarS.Diagnostics
     }
 
     /// <summary>
-    /// 提供获取 <see cref="ObjectRepresenter{T}"/> 类的默认实例的方法。
+    /// 提供将对象表示为字符串的方法。
     /// </summary>
-    internal static class ObjectRepresenter
+    public static class ObjectRepresenter
     {
         /// <summary>
         /// 表示指定类型的 <see cref="ObjectRepresenter{T}"/> 的默认实例。
@@ -163,12 +161,22 @@ namespace XstarS.Diagnostics
             new ConcurrentDictionary<Type, IAcyclicObjectRepresenter>();
 
         /// <summary>
+        /// 将指定对象表示为字符串。
+        /// </summary>
+        /// <param name="value">要表示为字符串的对象。</param>
+        /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
+        public static string Represent(object value)
+        {
+            return ObjectRepresenter.OfType(value?.GetType()).Represent(value);
+        }
+
+        /// <summary>
         /// 获取指定类型的 <see cref="ObjectRepresenter{T}"/> 的默认实例。
         /// </summary>
         /// <param name="type">要表示的类型 <see cref="Type"/> 对象。</param>
         /// <returns>类型参数为 <paramref name="type"/> 的
         /// <see cref="ObjectRepresenter{T}"/> 的默认实例。</returns>
-        public static IAcyclicObjectRepresenter OfType(Type type)
+        internal static IAcyclicObjectRepresenter OfType(Type type)
         {
             return (type is null) ? ObjectRepresenter<object>.Default :
                 ObjectRepresenter.Defaults.GetOrAdd(type, ObjectRepresenter.GetDefault);

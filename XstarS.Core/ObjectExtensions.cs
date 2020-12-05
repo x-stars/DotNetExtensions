@@ -104,6 +104,6 @@ namespace XstarS
         /// <param name="value">要表示为字符串的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
         public static string RepresentToString<T>(this T value) =>
-            ObjectRepresenter.OfType(value?.GetType()).Represent(value);
+            ObjectRepresenter.Represent(value);
     }
 }
