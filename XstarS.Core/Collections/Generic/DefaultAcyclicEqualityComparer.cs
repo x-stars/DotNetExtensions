@@ -11,17 +11,9 @@ namespace XstarS.Collections.Generic
     internal sealed class DefaultAcyclicEqualityComparer<T> : AcyclicEqualityComparer<T>
     {
         /// <summary>
-        /// 表示用于比较对象的 <see cref="IEqualityComparer{T}"/>。
-        /// </summary>
-        private readonly IEqualityComparer<T> InternalComparer;
-
-        /// <summary>
         /// 初始化 <see cref="DefaultAcyclicEqualityComparer{T}"/> 类的新实例。
         /// </summary>
-        public DefaultAcyclicEqualityComparer()
-        {
-            this.InternalComparer = EqualityComparer<T>.Default;
-        }
+        public DefaultAcyclicEqualityComparer() { }
 
         /// <summary>
         /// 确定指定的对象是否相等。
@@ -33,7 +25,7 @@ namespace XstarS.Collections.Generic
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         protected override bool EqualsCore(T x, T y, ISet<KeyValuePair<object, object>> compared)
         {
-            return this.InternalComparer.Equals(x, y);
+            return EqualityComparer<T>.Default.Equals(x, y);
         }
 
         /// <summary>
@@ -44,7 +36,7 @@ namespace XstarS.Collections.Generic
         /// <returns><paramref name="obj"/> 的哈希代码。</returns>
         protected override int GetHashCodeCore(T obj, ISet<object> computed)
         {
-            return this.InternalComparer.GetHashCode(obj);
+            return EqualityComparer<T>.Default.GetHashCode(obj);
         }
     }
 }

@@ -49,7 +49,7 @@ namespace XstarS.Runtime
         private static bool ValueEquals(
             object value, object other, HashSet<ObjectPair> compared)
         {
-            var pair = new KeyValuePair<object, object>(value, other);
+            var pair = new ObjectPair(value, other);
             if (!compared.Add(pair)) { return true; }
 
             if (object.ReferenceEquals(value, other)) { return true; }

@@ -13,7 +13,7 @@ namespace XstarS.Collections.Generic
     public abstract class StructureEqualityComparer<T> : AcyclicEqualityComparer<T>
     {
         /// <summary>
-        /// 表示 <see cref="StructureEqualityComparer{T}.Default"/> 的延迟初始化对象。 
+        /// 表示 <see cref="StructureEqualityComparer{T}.Default"/> 的延迟初始化值。 
         /// </summary>
         private static readonly Lazy<StructureEqualityComparer<T>> LazyDefault =
             new Lazy<StructureEqualityComparer<T>>(StructureEqualityComparer<T>.CreateDefault);
@@ -24,16 +24,16 @@ namespace XstarS.Collections.Generic
         protected StructureEqualityComparer() { }
 
         /// <summary>
-        /// 获取用于结构化对象比较的默认的 <see cref="EqualityComparer{T}"/> 实例。
+        /// 获取用于结构化对象比较的 <see cref="EqualityComparer{T}"/> 类的默认实例。
         /// </summary>
-        /// <returns>用于结构化对象比较的默认的 <see cref="EqualityComparer{T}"/> 实例。</returns>
+        /// <returns>用于结构化对象比较的 <see cref="EqualityComparer{T}"/> 类的默认实例。</returns>
         public static new StructureEqualityComparer<T> Default =>
             StructureEqualityComparer<T>.LazyDefault.Value;
 
         /// <summary>
-        /// 创建用于结构化对象比较的默认的 <see cref="EqualityComparer{T}"/> 实例。
+        /// 创建用于结构化对象比较的 <see cref="EqualityComparer{T}"/> 类的默认实例。
         /// </summary>
-        /// <returns>用于结构化对象比较的默认的 <see cref="EqualityComparer{T}"/> 实例。</returns>
+        /// <returns>用于结构化对象比较的 <see cref="EqualityComparer{T}"/> 类的默认实例。</returns>
         private static StructureEqualityComparer<T> CreateDefault()
         {
             var type = typeof(T);
@@ -96,9 +96,9 @@ namespace XstarS.Collections.Generic
     public static class StructureEqualityComparer
     {
         /// <summary>
-        /// 表示指定类型的 <see cref="StructureEqualityComparer{T}"/> 的默认实例。
+        /// 表示指定类型的 <see cref="StructureEqualityComparer{T}"/> 类的默认实例。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, IAcyclicEqualityComparer> Defualts =
+        private static readonly ConcurrentDictionary<Type, IAcyclicEqualityComparer> Defaults =
             new ConcurrentDictionary<Type, IAcyclicEqualityComparer>();
 
         /// <summary>
@@ -128,24 +128,24 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
-        /// 获取指定类型的 <see cref="StructureEqualityComparer{T}"/> 的默认实例。
+        /// 获取指定类型的 <see cref="StructureEqualityComparer{T}"/> 类的默认实例。
         /// </summary>
         /// <param name="type">结构化对象的类型 <see cref="Type"/> 对象。</param>
         /// <returns>类型参数为 <paramref name="type"/> 的
-        /// <see cref="StructureEqualityComparer{T}"/> 的默认实例。</returns>
+        /// <see cref="StructureEqualityComparer{T}"/> 类的默认实例。</returns>
         internal static IAcyclicEqualityComparer OfType(Type type)
         {
             return (type is null) ? StructureEqualityComparer<object>.Default :
-                StructureEqualityComparer.Defualts.GetOrAdd(
+                StructureEqualityComparer.Defaults.GetOrAdd(
                     type, StructureEqualityComparer.GetDefault);
         }
 
         /// <summary>
-        /// 获取指定类型的 <see cref="StructureEqualityComparer{T}"/> 的默认实例。
+        /// 获取指定类型的 <see cref="StructureEqualityComparer{T}"/> 类的默认实例。
         /// </summary>
         /// <param name="type">结构化对象的类型 <see cref="Type"/> 对象。</param>
         /// <returns>类型参数为 <paramref name="type"/> 的
-        /// <see cref="StructureEqualityComparer{T}"/> 的默认实例。</returns>
+        /// <see cref="StructureEqualityComparer{T}"/> 类的默认实例。</returns>
         private static IAcyclicEqualityComparer GetDefault(Type type)
         {
             var typeComparer = typeof(StructureEqualityComparer<>).MakeGenericType(type);
