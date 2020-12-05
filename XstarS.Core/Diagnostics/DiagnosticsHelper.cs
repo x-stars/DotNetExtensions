@@ -18,7 +18,7 @@ namespace XstarS.Diagnostics
         /// <paramref name="process"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="repeat"/> 小于 1。</exception>
-        public static TimeSpan ExecutingTime(Action process, int repeat = 1)
+        public static TimeSpan ExecutionTime(Action process, int repeat = 1)
         {
             if (process is null)
             {
@@ -50,7 +50,7 @@ namespace XstarS.Diagnostics
         /// <paramref name="process"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="repeat"/> 小于 1。</exception>
-        public static TimeSpan ExecutingTime<T>(Func<T> process, int repeat = 1)
+        public static TimeSpan ExecutionTime<T>(Func<T> process, int repeat = 1)
         {
             if (process is null)
             {
