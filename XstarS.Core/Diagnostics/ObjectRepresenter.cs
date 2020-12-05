@@ -69,10 +69,6 @@ namespace XstarS.Diagnostics
                     return new ObjectToStringRepresenter<T>();
                 }
             }
-            else if (type == typeof(Pointer))
-            {
-                return (ObjectRepresenter<T>)(object)new PointerBoxRepresenter();
-            }
             else
             {
                 return new ObjectToStringRepresenter<T>();

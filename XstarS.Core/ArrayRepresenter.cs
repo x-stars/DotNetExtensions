@@ -54,8 +54,7 @@ namespace XstarS
                 if (ArrayRepresenter<T>.ItemIsPointer)
                 {
                     var item = ArrayRepresenter<T>.PointerGetMethod.Invoke(array, indices.Box());
-                    var representer = ObjectRepresenter.OfType(typeof(Pointer));
-                    return representer.Represent(item, represented);
+                    unsafe { return ((IntPtr)Pointer.Unbox(item)).ToString(); }
                 }
                 else
                 {
