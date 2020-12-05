@@ -22,6 +22,6 @@ namespace XstarS.Diagnostics
         /// <param name="pathed">已经在路径中访问过的对象。</param>
         /// <returns>调用 <paramref name="value"/> 的
         /// <see cref="object.ToString()"/> 方法返回的字符串。</returns>
-        protected override string RepresentCore(T value, ISet<object> pathed) => value?.ToString();
+        protected override string RepresentCore(T value, ISet<object> pathed) => value.ToString();
     }
 }

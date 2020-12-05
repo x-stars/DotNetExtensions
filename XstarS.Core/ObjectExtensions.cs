@@ -2,6 +2,7 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Security;
+using XstarS.Diagnostics;
 using XstarS.Runtime;
 
 namespace XstarS
@@ -96,5 +97,13 @@ namespace XstarS
         /// <returns>由 <paramref name="value"/> 基于值的哈希代码。</returns>
         public static int GetValueHashCode<T>(this T value) =>
             ObjectRuntimeHelper.GetValueHashCode(value);
+
+        /// <summary>
+        /// 将当前对象表示为字符串。
+        /// </summary>
+        /// <param name="value">要表示为字符串的对象。</param>
+        /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
+        public static string RepresentToString<T>(this T value) =>
+            ObjectRepresenter.OfType(value?.GetType()).Represent(value);
     }
 }

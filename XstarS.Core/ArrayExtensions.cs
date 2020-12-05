@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using XstarS.Collections.Specialized;
 
 namespace XstarS
 {
@@ -29,94 +27,6 @@ namespace XstarS
             Array.Copy(array, result, array.Length);
             result[array.Length] = item;
             return result;
-        }
-
-        /// <summary>
-        /// 返回当前数组的所有元素的字符串表达形式。
-        /// </summary>
-        /// <param name="array">要获取字符串表达形式的数组。</param>
-        /// <param name="recurse">指示是否对内层声明数组递归。</param>
-        /// <returns><paramref name="array"/> 的所有元素的字符串表达形式。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
-        public static string ArrayToString(this Array array,
-            bool recurse = false)
-        {
-            if (array is null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
-
-            var comparer = ReferenceEqualityComparer.Default;
-            return array.ArrayToString(false, new HashSet<Array>(comparer));
-        }
-
-        /// <summary>
-        /// 返回当前数组的所有元素的字符串表达形式。
-        /// </summary>
-        /// <param name="array">要获取字符串表达形式的数组。</param>
-        /// <param name="recurse">指示是否对内层声明数组递归。</param>
-        /// <param name="pathed">当前路径已经访问的数组。</param>
-        /// <returns><paramref name="array"/> 的所有元素的字符串表达形式。</returns>
-        private static string ArrayToString(this Array array,
-            bool recurse, HashSet<Array> pathed)
-        {
-            if (!pathed.Add(array))
-            {
-                return "{ ... }";
-            }
-
-            var result = default(string);
-            recurse &= array.GetType().GetElementType().IsArray;
-            if (array.Rank == 1)
-            {
-                var sequence = new List<string>();
-                foreach (var item in array)
-                {
-                    sequence.Add(recurse ?
-                        (item as Array)?.ArrayToString(recurse, pathed) :
-                        item?.ToString());
-                }
-                result = "{ " + string.Join(", ", sequence) + " }";
-            }
-            else
-            {
-                result = array.ArrayToString(recurse, Array.Empty<int>(), pathed);
-            }
-
-            pathed.Remove(array);
-            return result;
-        }
-
-        /// <summary>
-        /// 返回当前多维数组的所有元素的字符串表达形式。
-        /// </summary>
-        /// <param name="array">要获取字符串表达形式的数组。</param>
-        /// <param name="recurse">指示是否对内层声明数组递归。</param>
-        /// <param name="indices">当前多维数组的当前索引。</param>
-        /// <param name="pathed">当前路径已经访问的数组。</param>
-        /// <returns><paramref name="array"/> 的所有元素的字符串表达形式。</returns>
-        private static string ArrayToString(this Array array,
-            bool recurse, int[] indices, HashSet<Array> pathed)
-        {
-            if (indices.Length == array.Rank)
-            {
-                var item = array.GetValue(indices);
-                return recurse ?
-                    (item as Array)?.ArrayToString(recurse, pathed) :
-                    item?.ToString();
-            }
-            else
-            {
-                var sequence = new List<string>();
-                var length = array.GetLength(indices.Length);
-                for (int index = 0; index < length; index++)
-                {
-                    indices = indices.Append(index);
-                    sequence.Add(array.ArrayToString(recurse, indices, pathed));
-                }
-                return "{ " + string.Join(", ", sequence) + " }";
-            }
         }
 
         /// <summary>

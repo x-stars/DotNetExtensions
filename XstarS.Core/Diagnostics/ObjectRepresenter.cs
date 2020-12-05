@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Reflection;
+using XstarS.Collections;
+using XstarS.Collections.Generic;
 using XstarS.Collections.Specialized;
+using XstarS.Reflection;
 
 namespace XstarS.Diagnostics
 {
@@ -21,7 +26,58 @@ namespace XstarS.Diagnostics
         /// 获取默认的 <see cref="ObjectRepresenter{T}"/> 实例。
         /// </summary>
         /// <returns>默认的 <see cref="ObjectRepresenter{T}"/> 实例。</returns>
-        public static ObjectRepresenter<T> Default { get; } = new ObjectToStringRepresenter<T>();
+        public static ObjectRepresenter<T> Default { get; } = ObjectRepresenter<T>.CreateDefault();
+
+        /// <summary>
+        /// 创建默认的 <see cref="ObjectRepresenter{T}"/> 实例。
+        /// </summary>
+        /// <returns>默认的 <see cref="ObjectRepresenter{T}"/> 实例。</returns>
+        private static ObjectRepresenter<T> CreateDefault()
+        {
+            var type = typeof(T);
+            if (type.IsArray)
+            {
+                var itemType = type.GetElementType();
+                if ((itemType.MakeArrayType() == type) && !itemType.IsPointer)
+                {
+                    return (ObjectRepresenter<T>)Activator.CreateInstance(
+                        typeof(SZArrayRepresenter<>).MakeGenericType(itemType));
+                }
+                else
+                {
+                    return new ArrayRepresenter<T>();
+                }
+            }
+            else if (Array.IndexOf(type.GetInterfaces(), typeof(IEnumerable)) != -1)
+            {
+                return new EnumerableRepresenter<T>();
+            }
+            else if (type == typeof(DictionaryEntry))
+            {
+                return (ObjectRepresenter<T>)(object)new DictionaryEntryRepresenter();
+            }
+            else if (type.IsGenericType)
+            {
+                if (type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
+                {
+                    var itemTypes = type.GetGenericArguments();
+                    return (ObjectRepresenter<T>)Activator.CreateInstance(
+                        typeof(KeyValuePairRepresenter<,>).MakeGenericType(itemTypes));
+                }
+                else
+                {
+                    return new ObjectToStringRepresenter<T>();
+                }
+            }
+            else if (type == typeof(Pointer))
+            {
+                return (ObjectRepresenter<T>)(object)new PointerBoxRepresenter();
+            }
+            else
+            {
+                return new ObjectToStringRepresenter<T>();
+            }
+        }
 
         /// <summary>
         /// 将指定对象表示为字符串。
@@ -43,6 +99,7 @@ namespace XstarS.Diagnostics
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
         protected string Represent(T value, ISet<object> represented)
         {
+            if ((object)value is null) { return null; }
             if (!represented.Add(value))
             {
                 return ObjectRepresenter<T>.RepresentedString;
