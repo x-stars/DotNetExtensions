@@ -318,7 +318,7 @@ namespace XstarS
 
                 for (int index2 = 0; index2 < length2; index2++)
                 {
-                    result[index1, index2] = array2[index1];
+                    result[index1, index2] = array2[index2];
                 }
             }
             return result;
@@ -382,7 +382,7 @@ namespace XstarS
 
                     for (int index3 = 0; index3 < length3; index3++)
                     {
-                        result[index1, index2, index3] = array3[index2];
+                        result[index1, index2, index3] = array3[index3];
                     }
                 }
             }
