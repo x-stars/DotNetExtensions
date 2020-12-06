@@ -108,7 +108,7 @@ namespace XstarS.Collections.Generic
         /// <param name="y">要比较的第二个结构化对象。</param>
         /// <returns>如果 <paramref name="x"/> 和 <paramref name="y"/> 中的元素相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static new bool Equals(object x, object y)
+        public static new bool Equals(this object x, object y)
         {
             if (x?.GetType() != y?.GetType()) { return false; }
 
@@ -121,7 +121,7 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <param name="obj">要获取哈希代码的结构化对象。</param>
         /// <returns><paramref name="obj"/> 中的元素的哈希代码。</returns>
-        public static int GetHashCode(object obj)
+        public static int GetHashCode(this object obj)
         {
             var comparer = StructureEqualityComparer.OfType(obj?.GetType());
             return comparer.GetHashCode(obj);

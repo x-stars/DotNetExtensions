@@ -73,6 +73,10 @@
 * [属性更改通知接口实现框架](Documentation/ObservableObject.md)
 * [属性更改通知实现方式比较](Documentation/ObservableObjectCompare.md)
 
+## 程序集 XstarS.ObjectStructure
+
+提供结构化对象（数组、集合等）的结构化相等比较和结构化输出的方法。
+
 ## 程序集 XstarS.ObservableProxy
 
 提供以反射发出 `System.Reflection.Emit` 构造的属性更改通知类型 `System.ComponentModel.INotifyPropertyChanged`。
