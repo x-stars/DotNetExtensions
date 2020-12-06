@@ -10,25 +10,25 @@ namespace XstarS
         /// </summary>
         /// <param name="array">要枚举元素数组。</param>
         /// <returns>数组元素的公开枚举数 <see cref="IEnumerable"/> 对象。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>，
+        /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
         /// <exception cref="NotSupportedException">
         /// <paramref name="array"/> 的最内层元素为指针。</exception>
         public static IEnumerable RecurseEnumerate(this Array array)
         {
             if (array is null)
             {
-                yield break;
+                throw new ArgumentNullException(nameof(array));
             }
 
             if (array.GetType().GetElementType().IsArray)
             {
                 foreach (var item in array)
                 {
-                    if (item is Array innerArray)
+                    foreach (var innerItem in ((Array)item).RecurseEnumerate())
                     {
-                        foreach (var innerItem in innerArray.RecurseEnumerate())
-                        {
-                            yield return innerItem;
-                        }
+                        yield return innerItem;
                     }
                 }
             }
@@ -48,8 +48,9 @@ namespace XstarS
         /// <param name="lengths">新数组的每个维度的大小。</param>
         /// <returns>一个大小等于 <paramref name="lengths"/> 的数组，
         /// 其每个元素都由 <paramref name="array"/> 的最内层元素按顺序复制得到。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="array"/> 或
-        /// <paramref name="lengths"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 或 <paramref name="lengths"/> 为 <see langword="null"/>，
+        /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="lengths"/> 中没有任何元素。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="lengths"/>
@@ -116,8 +117,9 @@ namespace XstarS
         /// <param name="lengths">新数组的每个维度的大小。</param>
         /// <returns>一个大小等于 <paramref name="lengths"/> 的交错数组，
         /// 其每个元素都由 <paramref name="array"/> 的最内层元素按顺序复制得到。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="array"/> 或
-        /// <paramref name="lengths"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 或 <paramref name="lengths"/> 为 <see langword="null"/>，
+        /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="lengths"/> 中没有任何元素。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="lengths"/>
