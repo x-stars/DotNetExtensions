@@ -2,14 +2,13 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Security;
-using XstarS.Runtime;
 
-namespace XstarS
+namespace XstarS.Runtime
 {
     /// <summary>
-    /// 提供对象的扩展方法。
+    /// 提供对象运行时相关的扩展方法。
     /// </summary>
-    public static class ObjectExtensions
+    public static class ObjectRuntimeExtensions
     {
         /// <summary>
         /// 创建当前对象的浅表副本。
@@ -42,14 +41,6 @@ namespace XstarS
         /// <exception cref="SecurityException">调用方没有所要求的权限。</exception>
         public static T SerializationClone<T>(this T value) =>
             (T)ObjectRuntimeHelper.SerializationClone(value);
-
-        /// <summary>
-        /// 创建当前可克隆对象的副本。
-        /// </summary>
-        /// <typeparam name="T">对象的类型。</typeparam>
-        /// <param name="value">要创建副本的对象。</param>
-        /// <returns><paramref name="value"/> 的副本。</returns>
-        public static T TypedClone<T>(this T value) where T : ICloneable => (T)value?.Clone();
 
         /// <summary>
         /// 确定当前对象与指定对象的引用是否相等。

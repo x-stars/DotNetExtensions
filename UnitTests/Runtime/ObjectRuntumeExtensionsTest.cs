@@ -2,10 +2,10 @@
 using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XstarS
+namespace XstarS.Runtime
 {
     [TestClass]
-    public class ObjectExtensionsTest
+    public class ObjectRuntumeExtensionsTest
     {
         [TestMethod]
         public void ObjectRecurseClone_Int32Array_WorksProperly()

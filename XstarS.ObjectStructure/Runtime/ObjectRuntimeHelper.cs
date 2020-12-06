@@ -6,7 +6,7 @@ namespace XstarS.Runtime
     /// <summary>
     /// 提供对象运行时相关的帮助方法。
     /// </summary>
-    internal static partial class ObjectRuntimeHelper
+    internal static class ObjectRuntimeHelper
     {
         /// <summary>
         /// 确定指定的两个以 <see cref="Pointer"/> 包装的指针是否相等。
