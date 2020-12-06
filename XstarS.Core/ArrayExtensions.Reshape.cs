@@ -30,10 +30,6 @@ namespace XstarS
                             yield return innerItem;
                         }
                     }
-                    else
-                    {
-                        yield return item;
-                    }
                 }
             }
             else
@@ -209,6 +205,186 @@ namespace XstarS
                 }
                 return result;
             }
+        }
+
+        /// <summary>
+        /// 将指定的二维数组转换为大小相等、元素相同的二维交错数组。
+        /// </summary>
+        /// <typeparam name="T">多维数组中的元素的类型。</typeparam>
+        /// <param name="array">要转换为二维交错数组的二维数组。</param>
+        /// <returns>与 <paramref name="array"/> 大小相等、元素相同的二维交错数组。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+        public static T[][] ToJaggedArray<T>(this T[,] array)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            var length1 = array.GetLength(0);
+            var length2 = array.GetLength(1);
+
+            var result = new T[length1][];
+            for (int index1 = 0; index1 < length1; index1++)
+            {
+                var result2 = new T[length2];
+                for (int index2 = 0; index2 < length2; index2++)
+                {
+                    result2[index2] = array[index1, index2];
+                }
+                result[index1] = result2;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 将指定的三维数组转换为大小相等、元素相同的三维交错数组。
+        /// </summary>
+        /// <typeparam name="T">三维数组中的元素的类型。</typeparam>
+        /// <param name="array">要转换为三维交错数组的三维数组。</param>
+        /// <returns>与 <paramref name="array"/> 大小相等、元素相同的三维交错数组。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+        public static T[][][] ToJaggedArray<T>(this T[,,] array)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            var length1 = array.GetLength(0);
+            var length2 = array.GetLength(1);
+            var length3 = array.GetLength(2);
+
+            var result = new T[length1][][];
+            for (int index1 = 0; index1 < length1; index1++)
+            {
+                var result2 = new T[length2][];
+                for (int index2 = 0; index2 < length2; index2++)
+                {
+                    var result3 = new T[length3];
+                    for (int index3 = 0; index3 < length3; index3++)
+                    {
+                        result3[index3] = array[index1, index2, index3];
+                    }
+                    result2[index2] = result3;
+                }
+                result[index1] = result2;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 将指定的二维交错数组转换为大小相等、元素相同的二维数组。
+        /// </summary>
+        /// <typeparam name="T">二维交错数组中的元素的类型。</typeparam>
+        /// <param name="array">要转换为二维数组的二维交错数组。</param>
+        /// <returns>与 <paramref name="array"/> 大小相等、元素相同的二维数组。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>，
+        /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="array"/> 的内层数组的长度不相等。</exception>
+        public static T[,] ToRank2Array<T>(this T[][] array)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            if (array.Length == 0)
+            {
+                return new T[0, 0];
+            }
+            if (array[0] is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            var length1 = array.Length;
+            var length2 = array[0].Length;
+
+            var result = new T[length1, length2];
+            for (int index1 = 0; index1 < length1; index1++)
+            {
+                var array2 = array[index1];
+                if (array2.Length != length2)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(array));
+                }
+
+                for (int index2 = 0; index2 < length2; index2++)
+                {
+                    result[index1, index2] = array2[index1];
+                }
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 将指定的三维交错数组转换为大小相等、元素相同的三维数组。
+        /// </summary>
+        /// <typeparam name="T">交错数组中的元素的类型。</typeparam>
+        /// <param name="array">要转换为三维数组的三维交错数组。</param>
+        /// <returns>与 <paramref name="array"/> 大小相等、元素相同的三维数组。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>，
+        /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="array"/> 的内层数组的长度不相等。</exception>
+        public static T[,,] ToRank3Array<T>(this T[][][] array)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            if (array.Length == 0)
+            {
+                return new T[0, 0, 0];
+            }
+            if (array[0] is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+            if (array[0].Length == 0)
+            {
+                return new T[0, 0, 0];
+            }
+            if (array[0][0] is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            var length1 = array.Length;
+            var length2 = array[0].Length;
+            var length3 = array[0][0].Length;
+
+            var result = new T[length1, length2, length3];
+            for (int index1 = 0; index1 < length1; index1++)
+            {
+                var array2 = array[index1];
+                if (array2.Length != length2)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(array));
+                }
+
+                for (int index2 = 0; index2 < length2; index2++)
+                {
+                    var array3 = array2[index2];
+                    if (array3.Length != length3)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(array));
+                    }
+
+                    for (int index3 = 0; index3 < length3; index3++)
+                    {
+                        result[index1, index2, index3] = array3[index2];
+                    }
+                }
+            }
+            return result;
         }
     }
 }
