@@ -12,7 +12,7 @@ namespace XstarS
     /// </summary>
     /// <typeparam name="T">数组的类型。</typeparam>
     [Serializable]
-    internal sealed class ArrayEqualityComparer<T> : StructureEqualityComparer<T>
+    internal sealed class ArrayEqualityComparer<T> : StructuralEqualityComparer<T>
     {
         /// <summary>
         /// 初始化 <see cref="ArrayEqualityComparer{T}"/> 类的新实例。
@@ -62,7 +62,7 @@ namespace XstarS
 
                     if (xItem?.GetType() != yItem?.GetType()) { return false; }
 
-                    var comparer = StructureEqualityComparer.OfType(xItem?.GetType());
+                    var comparer = StructuralEqualityComparer.OfType(xItem?.GetType());
                     if (!comparer.Equals(xItem, yItem, compared)) { return false; }
                 }
             }
@@ -97,7 +97,7 @@ namespace XstarS
                 for (int index = 0; index < array.Length; index++)
                 {
                     var item = array.GetValue(array.OffsetToIndices(index));
-                    var comparer = StructureEqualityComparer.OfType(item?.GetType());
+                    var comparer = StructuralEqualityComparer.OfType(item?.GetType());
                     hashCode = this.CombineHashCode(
                         hashCode, comparer.GetHashCode(item, computed));
                 }

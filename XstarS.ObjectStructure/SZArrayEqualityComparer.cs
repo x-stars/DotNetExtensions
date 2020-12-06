@@ -11,7 +11,7 @@ namespace XstarS
     /// </summary>
     /// <typeparam name="TItem">数组中的元素的类型。</typeparam>
     [Serializable]
-    internal sealed class SZArrayEqualityComparer<TItem> : StructureEqualityComparer<TItem[]>
+    internal sealed class SZArrayEqualityComparer<TItem> : StructuralEqualityComparer<TItem[]>
     {
         /// <summary>
         /// 初始化 <see cref="SZArrayEqualityComparer{TItem}"/> 类的新实例。
@@ -35,7 +35,7 @@ namespace XstarS
             {
                 if (x[index]?.GetType() != y[index]?.GetType()) { return false; }
 
-                var comparer = StructureEqualityComparer.OfType(x[index]?.GetType());
+                var comparer = StructuralEqualityComparer.OfType(x[index]?.GetType());
                 if (!comparer.Equals(x[index], y[index], compared)) { return false; }
             }
             return true;
@@ -53,7 +53,7 @@ namespace XstarS
             var hashCode = obj.GetType().GetHashCode();
             for (int index = 0; index < length; index++)
             {
-                var comparer = StructureEqualityComparer.OfType(obj[index]?.GetType());
+                var comparer = StructuralEqualityComparer.OfType(obj[index]?.GetType());
                 var nextHashCode = comparer.GetHashCode(obj[index]);
                 hashCode = this.CombineHashCode(hashCode, nextHashCode);
             }

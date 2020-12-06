@@ -11,7 +11,7 @@ namespace XstarS.Collections
     /// 提供 <see cref="DictionaryBase"/> 中的键值的相对比较方法。
     /// </summary>
     [Serializable]
-    internal sealed class DictionaryEntryEqualityComaprer : StructureEqualityComparer<DictionaryEntry>
+    internal sealed class DictionaryEntryEqualityComaprer : StructuralEqualityComparer<DictionaryEntry>
     {
         /// <summary>
         /// 初始化 <see cref="DictionaryEntryEqualityComaprer"/> 类的新实例。
@@ -32,8 +32,8 @@ namespace XstarS.Collections
             if (x.Key?.GetType() != y.Key?.GetType()) { return false; }
             if (x.Value?.GetType() != y.Value?.GetType()) { return false; }
 
-            var keyComparer = StructureEqualityComparer.OfType(x.Key?.GetType());
-            var valueComparer = StructureEqualityComparer.OfType(x.Value?.GetType());
+            var keyComparer = StructuralEqualityComparer.OfType(x.Key?.GetType());
+            var valueComparer = StructuralEqualityComparer.OfType(x.Value?.GetType());
             return keyComparer.Equals(x.Key, y.Key, compared) &&
                 valueComparer.Equals(x.Value, y.Value, compared);
         }
@@ -46,8 +46,8 @@ namespace XstarS.Collections
         /// <returns><paramref name="obj"/> 中的键值的哈希代码。</returns>
         protected override int GetHashCodeCore(DictionaryEntry obj, ISet<object> computed)
         {
-            var keyComparer = StructureEqualityComparer.OfType(obj.Key?.GetType());
-            var valueComparer = StructureEqualityComparer.OfType(obj.Value?.GetType());
+            var keyComparer = StructuralEqualityComparer.OfType(obj.Key?.GetType());
+            var valueComparer = StructuralEqualityComparer.OfType(obj.Value?.GetType());
             return this.CombineHashCode(
                 keyComparer.GetHashCode(obj, computed),
                 valueComparer.GetHashCode(obj, computed));

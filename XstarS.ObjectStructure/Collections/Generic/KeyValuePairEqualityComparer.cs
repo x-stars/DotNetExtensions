@@ -12,7 +12,7 @@ namespace XstarS.Collections.Generic
     /// <typeparam name="TValue"><see cref="KeyValuePair{TKey, TValue}"/> 的值的类型。</typeparam>
     [Serializable]
     internal sealed class KeyValuePairEqualityComparer<TKey, TValue>
-        : StructureEqualityComparer<KeyValuePair<TKey, TValue>>
+        : StructuralEqualityComparer<KeyValuePair<TKey, TValue>>
     {
         /// <summary>
         /// 初始化 <see cref="KeyValuePairEqualityComparer{TKey, TValue}"/> 类的新实例。
@@ -33,8 +33,8 @@ namespace XstarS.Collections.Generic
             if (x.Key?.GetType() != y.Key?.GetType()) { return false; }
             if (x.Value?.GetType() != y.Value?.GetType()) { return false; }
 
-            var keyComparer = StructureEqualityComparer.OfType(x.Key?.GetType());
-            var valueComparer = StructureEqualityComparer.OfType(x.Value?.GetType());
+            var keyComparer = StructuralEqualityComparer.OfType(x.Key?.GetType());
+            var valueComparer = StructuralEqualityComparer.OfType(x.Value?.GetType());
             return keyComparer.Equals(x.Key, y.Key, compared) &&
                 valueComparer.Equals(x.Value, y.Value, compared);
         }
@@ -48,8 +48,8 @@ namespace XstarS.Collections.Generic
         protected override int GetHashCodeCore(
             KeyValuePair<TKey, TValue> obj, ISet<object> computed)
         {
-            var keyComparer = StructureEqualityComparer.OfType(obj.Key?.GetType());
-            var valueComparer = StructureEqualityComparer.OfType(obj.Value?.GetType());
+            var keyComparer = StructuralEqualityComparer.OfType(obj.Key?.GetType());
+            var valueComparer = StructuralEqualityComparer.OfType(obj.Value?.GetType());
             return this.CombineHashCode(
                 keyComparer.GetHashCode(obj, computed),
                 valueComparer.GetHashCode(obj, computed));

@@ -172,7 +172,7 @@ namespace XstarS.Diagnostics
         /// </summary>
         /// <param name="value">要表示为字符串的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        public static string Represent(this object value)
+        public static string Represent(object value)
         {
             return ObjectRepresenter.OfType(value?.GetType()).Represent(value);
         }

@@ -12,7 +12,7 @@ namespace XstarS.Collections
     /// </summary>
     /// <typeparam name="T">实现了 <see cref="IEnumerable"/> 接口的集合类型。</typeparam>
     [Serializable]
-    internal sealed class EnumerableEqualityComparer<T> : StructureEqualityComparer<T>
+    internal sealed class EnumerableEqualityComparer<T> : StructuralEqualityComparer<T>
     {
         /// <summary>
         /// 初始化 <see cref="EnumerableEqualityComparer{T}"/> 类的新实例。
@@ -51,7 +51,7 @@ namespace XstarS.Collections
 
                     if (xItem?.GetType() != yItem?.GetType()) { return false; }
 
-                    var comparer = StructureEqualityComparer.OfType(xItem?.GetType());
+                    var comparer = StructuralEqualityComparer.OfType(xItem?.GetType());
                     if (!comparer.Equals(xItem, yItem, compared)) { return false; }
                 }
                 return xHasNext == yHasNext;
@@ -75,7 +75,7 @@ namespace XstarS.Collections
             var hashCode = enumerable.GetType().GetHashCode();
             foreach (var item in enumerable)
             {
-                var comparer = StructureEqualityComparer.OfType(item?.GetType());
+                var comparer = StructuralEqualityComparer.OfType(item?.GetType());
                 var nextHashCode = comparer.GetHashCode(item, computed);
                 hashCode = this.CombineHashCode(hashCode, nextHashCode);
             }
