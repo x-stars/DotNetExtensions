@@ -304,10 +304,10 @@ namespace XstarS
 
             var scale = array.Length;
             var result = new int[array.Rank];
-            for (int dim = 0; dim < array.Rank; dim++)
+            for (int rank = 0; rank < array.Rank; rank++)
             {
-                scale /= array.GetLength(dim);
-                result[dim] = offset / scale;
+                scale /= array.GetLength(rank);
+                result[rank] = offset / scale;
                 offset %= scale;
             }
             return result;
