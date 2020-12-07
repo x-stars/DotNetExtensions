@@ -36,7 +36,7 @@ namespace XstarS
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="count"/> 小于 0。</exception>
         public static string Repeat(this string text, int count) =>
-            new string('*', count).Replace("*", text);
+            new string(new char[count]).Replace("\0", text);
 
         /// <summary>
         /// 返回一个新字符串，此字符串中所有匹配指定正则表达式模式的子字符串都被替换为指定值。
@@ -50,15 +50,8 @@ namespace XstarS
         /// 存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="pattern"/> 的正则表达式分析错误。</exception>
-        public static string ReplaceMatches(this string text, string pattern, string value)
-        {
-            var matches = new Regex(pattern).Matches(text);
-            foreach (Match match in matches)
-            {
-                text = text.Replace(match.Value, value);
-            }
-            return text;
-        }
+        public static string ReplaceMatches(this string text, string pattern, string value) =>
+            new Regex(pattern).Replace(text, value);
 
         /// <summary>
         /// 返回一个新字符串，此字符串的顺序与当前字符串的顺序相反。
