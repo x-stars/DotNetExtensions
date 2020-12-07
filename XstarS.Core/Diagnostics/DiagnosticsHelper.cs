@@ -29,14 +29,24 @@ namespace XstarS.Diagnostics
                 throw new ArgumentOutOfRangeException(nameof(repeat));
             }
 
-            var sw = new Stopwatch();
+            var allWatch = new Stopwatch();
+            allWatch.Start();
             for (int count = 0; count < repeat; count++)
             {
-                sw.Start();
-                process();
-                sw.Stop();
+                process.Invoke();
             }
-            return sw.Elapsed;
+            allWatch.Stop();
+            var allTime = allWatch.Elapsed;
+
+            var loopWatch = new Stopwatch();
+            loopWatch.Start();
+            for (int count = 0; count < repeat; count++)
+            {
+            }
+            loopWatch.Stop();
+            var loopTime = loopWatch.Elapsed;
+
+            return allTime - loopTime;
         }
 
         /// <summary>
@@ -61,14 +71,24 @@ namespace XstarS.Diagnostics
                 throw new ArgumentOutOfRangeException(nameof(repeat));
             }
 
-            var sw = new Stopwatch();
+            var allWatch = new Stopwatch();
+            allWatch.Start();
             for (int count = 0; count < repeat; count++)
             {
-                sw.Start();
-                process();
-                sw.Stop();
+                process.Invoke();
             }
-            return sw.Elapsed;
+            allWatch.Stop();
+            var allTime = allWatch.Elapsed;
+
+            var loopWatch = new Stopwatch();
+            loopWatch.Start();
+            for (int count = 0; count < repeat; count++)
+            {
+            }
+            loopWatch.Stop();
+            var loopTime = loopWatch.Elapsed;
+
+            return allTime - loopTime;
         }
     }
 }
