@@ -73,7 +73,7 @@ namespace XstarS.Reflection
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
             return type.InvokeMember(name, BindingFlags.InvokeMethod |
-                MemberInvokeExtensions.StaticBindingFlags, null, type, arguments);
+                MemberInvokeExtensions.StaticBindingFlags, null, null, arguments);
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace XstarS.Reflection
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
             return type.InvokeMember(name, BindingFlags.GetField |
-                MemberInvokeExtensions.StaticBindingFlags, null, type, null);
+                MemberInvokeExtensions.StaticBindingFlags, null, null, null);
         }
 
         /// <summary>
@@ -138,7 +138,7 @@ namespace XstarS.Reflection
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
             type.InvokeMember(name, BindingFlags.SetProperty |
-                MemberInvokeExtensions.StaticBindingFlags, null, type, new[] { value });
+                MemberInvokeExtensions.StaticBindingFlags, null, null, new[] { value });
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace XstarS.Reflection
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
             return type.InvokeMember(name, BindingFlags.GetProperty |
-                MemberInvokeExtensions.StaticBindingFlags, null, type, indices);
+                MemberInvokeExtensions.StaticBindingFlags, null, null, indices);
         }
 
         /// <summary>
@@ -218,7 +218,7 @@ namespace XstarS.Reflection
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
             type.InvokeMember(name, BindingFlags.SetProperty |
-                MemberInvokeExtensions.StaticBindingFlags, null, type, indices.Append(value));
+                MemberInvokeExtensions.StaticBindingFlags, null, null, indices.Append(value));
         }
     }
 }
