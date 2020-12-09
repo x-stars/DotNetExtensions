@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using XstarS.Collections.Specialized;
 
 namespace XstarS.Runtime
@@ -49,23 +50,21 @@ namespace XstarS.Runtime
         private static bool ValueEquals(
             object value, object other, HashSet<ObjectPair> compared)
         {
-            var pair = new ObjectPair(value, other);
-            if (!compared.Add(pair)) { return true; }
-
-            if (object.ReferenceEquals(value, other)) { return true; }
+            if (RuntimeHelpers.Equals(value, other)) { return true; }
             if ((value is null) ^ (other is null)) { return false; }
-
             if (value.GetType() != other.GetType()) { return false; }
 
             var type = value.GetType();
+            var pair = new ObjectPair(value, other);
+            if (!type.IsValueType && !compared.Add(pair)) { return true; }
+
             if (type.IsPrimitive)
             {
                 return ObjectRuntimeHelper.PrimitiveEquals(value, other);
             }
             else if (type.IsArray)
             {
-                return ObjectRuntimeHelper.ArrayValueEquals(
-                    (Array)value, (Array)other, compared);
+                return ObjectRuntimeHelper.ArrayValueEquals((Array)value, (Array)other, compared);
             }
             else
             {

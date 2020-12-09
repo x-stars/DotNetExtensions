@@ -80,13 +80,12 @@ namespace XstarS.Runtime
         private static object ObjectRecurseClone(object value, Dictionary<object, object> cloned)
         {
             if (value is null) { return null; }
-
             if (cloned.ContainsKey(value)) { return cloned[value]; }
 
+            var type = value.GetType();
             var clone = ObjectRuntimeHelper.ObjectClone(value);
-            cloned[value] = clone;
+            if (!type.IsValueType) { cloned[value] = clone; }
 
-            var type = clone.GetType();
             if (type.IsArray)
             {
                 ObjectRuntimeHelper.ArrayElementsRecurseClone((Array)clone, cloned);

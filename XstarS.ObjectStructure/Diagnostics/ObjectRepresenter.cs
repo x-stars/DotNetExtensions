@@ -101,7 +101,9 @@ namespace XstarS.Diagnostics
         protected string Represent(T value, ISet<object> represented)
         {
             if ((object)value is null) { return null; }
-            if (!represented.Add(value))
+
+            var type = value.GetType();
+            if (!type.IsValueType && !represented.Add(value))
             {
                 return ObjectRepresenter<T>.RepresentedString;
             }

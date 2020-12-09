@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using XstarS.Collections.Specialized;
 
 namespace XstarS.Collections.Generic
@@ -62,12 +63,13 @@ namespace XstarS.Collections.Generic
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         protected bool Equals(T x, T y, ISet<ObjectPair> compared)
         {
-            var pair = new ObjectPair(x, y);
-            if (!compared.Add(pair)) { return true; }
-
-            if (object.ReferenceEquals(x, y)) { return true; }
+            if (RuntimeHelpers.Equals(x, y)) { return true; }
             if (((object)x is null) ^ ((object)y is null)) { return false; }
             if (x.GetType() != y.GetType()) { return false; }
+
+            var type = x.GetType();
+            var pair = new ObjectPair(x, y);
+            if (!type.IsValueType && !compared.Add(pair)) { return true; }
 
             return this.EqualsCore(x, y, compared);
         }
@@ -82,7 +84,8 @@ namespace XstarS.Collections.Generic
         {
             if ((object)obj is null) { return 0; }
 
-            if (!computed.Add(obj)) { return 0; }
+            var type = obj.GetType();
+            if (!type.IsValueType && !computed.Add(obj)) { return 0; }
 
             return this.GetHashCodeCore(obj, computed);
         }

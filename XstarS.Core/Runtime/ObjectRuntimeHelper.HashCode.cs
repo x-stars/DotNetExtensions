@@ -54,9 +54,9 @@ namespace XstarS.Runtime
         {
             if (value is null) { return 0; }
 
-            if (!computed.Add(value)) { return 0; }
-
             var type = value.GetType();
+            if (!type.IsValueType && !computed.Add(value)) { return 0; }
+
             if (type.IsPrimitive)
             {
                 return ObjectRuntimeHelper.GetPrimitiveHashCode(value);
