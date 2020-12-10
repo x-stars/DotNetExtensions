@@ -61,6 +61,10 @@ namespace XstarS.Runtime
             {
                 return ObjectRuntimeHelper.GetPrimitiveHashCode(value);
             }
+            if (type == typeof(string))
+            {
+                return ObjectRuntimeHelper.GetPrimitiveHashCode(value);
+            }
             else if (type.IsArray)
             {
                 return ObjectRuntimeHelper.GetArrayValueHashCode((Array)value, computed);

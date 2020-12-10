@@ -62,6 +62,10 @@ namespace XstarS.Runtime
             {
                 return ObjectRuntimeHelper.PrimitiveEquals(value, other);
             }
+            if (type == typeof(string))
+            {
+                return ObjectRuntimeHelper.PrimitiveEquals(value, other);
+            }
             else if (type.IsArray)
             {
                 return ObjectRuntimeHelper.ArrayValueEquals((Array)value, (Array)other, compared);
