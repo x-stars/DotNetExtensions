@@ -82,10 +82,10 @@ namespace XstarS.Runtime
             if (value is null) { return null; }
             if (cloned.ContainsKey(value)) { return cloned[value]; }
 
-            var type = value.GetType();
             var clone = ObjectRuntimeHelper.ObjectClone(value);
-            if (!type.IsValueType) { cloned[value] = clone; }
+            cloned[value] = clone;
 
+            var type = clone.GetType();
             if (type.IsArray)
             {
                 ObjectRuntimeHelper.ArrayElementsRecurseClone((Array)clone, cloned);

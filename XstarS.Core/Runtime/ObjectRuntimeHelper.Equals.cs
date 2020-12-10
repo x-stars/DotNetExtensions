@@ -54,10 +54,10 @@ namespace XstarS.Runtime
             if ((value is null) ^ (other is null)) { return false; }
             if (value.GetType() != other.GetType()) { return false; }
 
-            var type = value.GetType();
             var pair = new ObjectPair(value, other);
-            if (!type.IsValueType && !compared.Add(pair)) { return true; }
+            if (!compared.Add(pair)) { return true; }
 
+            var type = value.GetType();
             if (type.IsPrimitive)
             {
                 return ObjectRuntimeHelper.PrimitiveEquals(value, other);

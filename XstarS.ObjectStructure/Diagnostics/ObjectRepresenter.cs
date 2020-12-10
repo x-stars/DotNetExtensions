@@ -102,8 +102,7 @@ namespace XstarS.Diagnostics
         {
             if ((object)value is null) { return null; }
 
-            var type = value.GetType();
-            if (!type.IsValueType && !represented.Add(value))
+            if (!represented.Add(value))
             {
                 return ObjectRepresenter<T>.RepresentedString;
             }
