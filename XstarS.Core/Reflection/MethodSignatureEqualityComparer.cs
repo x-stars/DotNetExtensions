@@ -44,7 +44,7 @@ namespace XstarS.Reflection
             var yGTypes = y.IsGenericMethod ? y.GetGenericArguments() : Array.Empty<Type>();
             if (xGTypes.Length != yGTypes.Length) { return false; }
 
-            bool mTypeEquals(Type xType, Type yType)
+            bool TypeEquals(Type xType, Type yType)
             {
                 if (xType.IsGenericParameter ^ yType.IsGenericParameter) { return false; }
                 if (xType.IsGenericParameter && yType.IsGenericParameter)
@@ -64,7 +64,7 @@ namespace XstarS.Reflection
                 if (xTypeGTypes.Length != yTypeGTypes.Length) { return false; }
                 for (int index = 0; index < xTypeGTypes.Length; index++)
                 {
-                    if (!mTypeEquals(xTypeGTypes[index], yTypeGTypes[index])) { return false; }
+                    if (!TypeEquals(xTypeGTypes[index], yTypeGTypes[index])) { return false; }
                 }
 
                 return true;
@@ -72,14 +72,14 @@ namespace XstarS.Reflection
 
             var xRType = x.ReturnParameter.ParameterType;
             var yRType = y.ReturnParameter.ParameterType;
-            if (!mTypeEquals(xRType, yRType)) { return false; }
+            if (!TypeEquals(xRType, yRType)) { return false; }
 
             var xPTypes = Array.ConvertAll(x.GetParameters(), param => param.ParameterType);
             var yPTypes = Array.ConvertAll(y.GetParameters(), param => param.ParameterType);
             if (xPTypes.Length != yPTypes.Length) { return false; }
             for (int index = 0; index < xPTypes.Length; index++)
             {
-                if (!mTypeEquals(xPTypes[index], yPTypes[index])) { return false; }
+                if (!TypeEquals(xPTypes[index], yPTypes[index])) { return false; }
             }
 
             return true;
@@ -96,49 +96,65 @@ namespace XstarS.Reflection
 
             var hashCode = 0;
 
-            hashCode = hashCode * -1521134295 + obj.Name.GetHashCode();
-            hashCode = hashCode * -1521134295 + obj.CallingConvention.GetHashCode();
+            hashCode = this.CombineHasCode(hashCode, obj.Name.GetHashCode());
+            hashCode = this.CombineHasCode(hashCode, obj.CallingConvention.GetHashCode());
 
             if (obj.IsGenericMethod) { obj = obj.GetGenericMethodDefinition(); }
             var gTypes = obj.IsGenericMethod ? obj.GetGenericArguments() : Array.Empty<Type>();
             for (int gIndex = 0; gIndex < gTypes.Length; gIndex++)
             {
-                hashCode = hashCode * -1521134295 + gIndex;
+                hashCode = this.CombineHasCode(hashCode, gIndex);
             }
 
-            void mAppendTypeHashCode(Type type)
+            int GetTypeHashCode(Type type)
             {
+                var tHashCode = 0;
+
                 if (type.IsGenericParameter)
                 {
-                    hashCode = hashCode * -1521134295 + type.GenericParameterPosition;
+                    tHashCode = this.CombineHasCode(tHashCode, type.GenericParameterPosition);
                 }
                 else if (!type.IsGenericType)
                 {
-                    hashCode = hashCode * -1521134295 + type.GetHashCode();
+                    tHashCode = this.CombineHasCode(tHashCode, type.GetHashCode());
                 }
                 else
                 {
                     var typeDType = type.GetGenericTypeDefinition();
-                    hashCode = hashCode * -1521134295 + typeDType.GetHashCode();
+                    tHashCode = this.CombineHasCode(tHashCode, typeDType.GetHashCode());
 
                     var typeGTypes = type.GetGenericArguments();
                     foreach (var typeGType in typeGTypes)
                     {
-                        mAppendTypeHashCode(typeGType);
+                        tHashCode = this.CombineHasCode(tHashCode, GetTypeHashCode(typeGType));
                     }
                 }
+
+                return tHashCode;
             }
 
             var rType = obj.ReturnParameter.ParameterType;
-            mAppendTypeHashCode(rType);
+            hashCode = this.CombineHasCode(hashCode, GetTypeHashCode(rType));
 
             var pTypes = Array.ConvertAll(obj.GetParameters(), param => param.ParameterType);
             foreach (var pType in pTypes)
             {
-                mAppendTypeHashCode(pType);
+                hashCode = this.CombineHasCode(hashCode, GetTypeHashCode(pType));
             }
 
             return hashCode;
+        }
+
+        /// <summary>
+        /// 组合当前哈希代码和新的哈希代码。
+        /// </summary>
+        /// <param name="hashCode">当前哈希代码。</param>
+        /// <param name="nextHashCode">新的哈希代码。</param>
+        /// <returns><paramref name="hashCode"/> 与
+        /// <paramref name="nextHashCode"/> 组合得到的哈希代码。</returns>
+        private int CombineHasCode(int hashCode, int nextHashCode)
+        {
+            return hashCode * -1521134295 + nextHashCode;
         }
     }
 }
