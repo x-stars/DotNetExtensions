@@ -4,6 +4,7 @@
     <UseWPF>true</UseWPF>
     <RootNamespace>XstarS.Windows</RootNamespace>
     <TargetFrameworks>net461;net472;netcoreapp3.1</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>

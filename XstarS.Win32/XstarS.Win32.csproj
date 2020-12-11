@@ -3,6 +3,7 @@
   <PropertyGroup>
     <RootNamespace>XstarS.Win32</RootNamespace>
     <TargetFrameworks>net461;net472</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
