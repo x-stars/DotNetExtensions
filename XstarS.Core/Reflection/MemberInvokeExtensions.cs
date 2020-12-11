@@ -137,7 +137,7 @@ namespace XstarS.Reflection
         public static void SetStaticField(this Type type, string name, object value)
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
-            type.InvokeMember(name, BindingFlags.SetProperty |
+            type.InvokeMember(name, BindingFlags.SetField |
                 MemberInvokeExtensions.StaticBindingFlags, null, null, new[] { value });
         }
 
