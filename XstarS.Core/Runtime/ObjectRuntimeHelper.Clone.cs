@@ -105,7 +105,7 @@ namespace XstarS.Runtime
         {
             if (!value.GetType().GetElementType().IsPointer)
             {
-                if (value.Rank == 1)
+                if (value.IsSZArray())
                 {
                     for (int index = 0; index < value.Length; index++)
                     {
@@ -116,9 +116,9 @@ namespace XstarS.Runtime
                 }
                 else
                 {
-                    for (int offset = 0; offset < value.Length; offset++)
+                    for (int index = 0; index < value.Length; index++)
                     {
-                        var indices = value.OffsetToIndices(offset);
+                        var indices = value.OffsetToIndices(index);
                         var item = value.GetValue(indices);
                         var clone = ObjectRuntimeHelper.ObjectRecurseClone(item, cloned);
                         value.SetValue(clone, indices);

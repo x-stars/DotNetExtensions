@@ -42,29 +42,15 @@ namespace XstarS
                 }
             }
 
-            var typeArray = xArray.GetType();
-            if (typeArray.GetElementType().IsPointer)
+            for (int index = 0; index < xArray.Length; index++)
             {
-                var methodGet = typeArray.GetMethod("Get");
-                for (int index = 0; index < xArray.Length; index++)
-                {
-                    var xItem = methodGet.Invoke(xArray, xArray.OffsetToIndices(index).Box());
-                    var yItem = methodGet.Invoke(yArray, yArray.OffsetToIndices(index).Box());
-                    if (!ObjectRuntimeHelper.BoxedPointerEquals(xItem, yItem)) { return false; }
-                }
-            }
-            else
-            {
-                for (int index = 0; index < xArray.Length; index++)
-                {
-                    var xItem = xArray.GetValue(xArray.OffsetToIndices(index));
-                    var yItem = yArray.GetValue(yArray.OffsetToIndices(index));
+                var xItem = xArray.GetValue(xArray.OffsetToIndices(index));
+                var yItem = yArray.GetValue(yArray.OffsetToIndices(index));
 
-                    if (xItem?.GetType() != yItem?.GetType()) { return false; }
+                if (xItem?.GetType() != yItem?.GetType()) { return false; }
 
-                    var comparer = StructuralEqualityComparer.OfType(xItem?.GetType());
-                    if (!comparer.Equals(xItem, yItem, compared)) { return false; }
-                }
+                var comparer = StructuralEqualityComparer.OfType(xItem?.GetType());
+                if (!comparer.Equals(xItem, yItem, compared)) { return false; }
             }
             return true;
         }
@@ -79,30 +65,14 @@ namespace XstarS
         {
             var array = (Array)(object)obj;
 
-            var hashCode = 0;
-
-            var typeArray = array.GetType();
-            if (typeArray.GetElementType().IsPointer)
+            var hashCode = array.GetType().GetHashCode();
+            for (int index = 0; index < array.Length; index++)
             {
-                var methodGet = typeArray.GetMethod("Get");
-                for (int index = 0; index < array.Length; index++)
-                {
-                    var item = methodGet.Invoke(array, array.OffsetToIndices(index).Box());
-                    hashCode = this.CombineHashCode(
-                        hashCode, ObjectRuntimeHelper.GetBoxedPointerHashCode(item));
-                }
+                var item = array.GetValue(array.OffsetToIndices(index));
+                var comparer = StructuralEqualityComparer.OfType(item?.GetType());
+                hashCode = this.CombineHashCode(
+                    hashCode, comparer.GetHashCode(item, computed));
             }
-            else
-            {
-                for (int index = 0; index < array.Length; index++)
-                {
-                    var item = array.GetValue(array.OffsetToIndices(index));
-                    var comparer = StructuralEqualityComparer.OfType(item?.GetType());
-                    hashCode = this.CombineHashCode(
-                        hashCode, comparer.GetHashCode(item, computed));
-                }
-            }
-
             return hashCode;
         }
     }

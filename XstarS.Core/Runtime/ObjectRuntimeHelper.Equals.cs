@@ -126,13 +126,13 @@ namespace XstarS.Runtime
             }
             else
             {
-                bool isMultiDim = value.Rank > 1;
+                bool isSZArray = value.IsSZArray();
                 for (int index = 0; index < value.Length; index++)
                 {
-                    var valueItem = isMultiDim ?
-                        value.GetValue(value.OffsetToIndices(index)) : value.GetValue(index);
-                    var otherItem = isMultiDim ?
-                        other.GetValue(other.OffsetToIndices(index)) : other.GetValue(index);
+                    var valueItem = isSZArray ?
+                        value.GetValue(index) : value.GetValue(value.OffsetToIndices(index));
+                    var otherItem = isSZArray ?
+                        other.GetValue(index) : other.GetValue(other.OffsetToIndices(index));
                     if (!ObjectRuntimeHelper.ValueEquals(valueItem, otherItem, compared))
                     {
                         return false;

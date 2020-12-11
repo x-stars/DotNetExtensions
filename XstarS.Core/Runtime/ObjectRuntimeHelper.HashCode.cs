@@ -109,11 +109,11 @@ namespace XstarS.Runtime
             }
             else
             {
-                bool isMultiDim = value.Rank > 1;
+                bool isSZArray = value.IsSZArray();
                 for (int index = 0; index < value.Length; index++)
                 {
-                    var item = isMultiDim ?
-                        value.GetValue(value.OffsetToIndices(index)) : value.GetValue(index);
+                    var item = isSZArray ?
+                        value.GetValue(index) : value.GetValue(value.OffsetToIndices(index));
                     hashCode = ObjectRuntimeHelper.CombineHashCode(
                         hashCode, ObjectRuntimeHelper.GetValueHashCode(item, computed));
                 }

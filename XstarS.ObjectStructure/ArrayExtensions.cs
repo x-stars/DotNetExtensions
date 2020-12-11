@@ -54,6 +54,24 @@ namespace XstarS
         }
 
         /// <summary>
+        /// 确定当前数组是否为一个下限为零的一维数组。
+        /// </summary>
+        /// <param name="array"></param>
+        /// <returns>若 <paramref name="array"/> 为下限为零的一维数组，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        public static bool IsSZArray(this Array array)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            var type = array.GetType();
+            var itemType = type.GetElementType();
+            return itemType.MakeArrayType() == type;
+        }
+
+        /// <summary>
         /// 将当前数组的指定偏移量转换为对应的多维索引。
         /// </summary>
         /// <param name="array">要获取索引的数组。</param>
@@ -77,10 +95,11 @@ namespace XstarS
 
             var scale = array.Length;
             var result = new int[array.Rank];
-            for (int dim = 0; dim < array.Rank; dim++)
+            for (int rank = 0; rank < array.Rank; rank++)
             {
-                scale /= array.GetLength(dim);
-                result[dim] = offset / scale;
+                scale /= array.GetLength(rank);
+                var start = array.GetLowerBound(rank);
+                result[rank] = offset / scale + start;
                 offset %= scale;
             }
             return result;

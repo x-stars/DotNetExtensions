@@ -40,7 +40,11 @@ namespace XstarS.Collections.Generic
             if (type.IsArray)
             {
                 var itemType = type.GetElementType();
-                if ((itemType.MakeArrayType() == type) && !itemType.IsPointer)
+                if (itemType.IsPointer)
+                {
+                    return new PointerArrayEqualityComparer<T>();
+                }
+                else if (itemType.MakeArrayType() == type)
                 {
                     return (StructuralEqualityComparer<T>)Activator.CreateInstance(
                         typeof(SZArrayEqualityComparer<>).MakeGenericType(itemType));

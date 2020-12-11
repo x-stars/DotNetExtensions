@@ -43,7 +43,11 @@ namespace XstarS.Diagnostics
             if (type.IsArray)
             {
                 var itemType = type.GetElementType();
-                if ((itemType.MakeArrayType() == type) && !itemType.IsPointer)
+                if (itemType.IsPointer)
+                {
+                    return new PointerArrayRepresenter<T>();
+                }
+                if (itemType.MakeArrayType() == type)
                 {
                     return (ObjectRepresenter<T>)Activator.CreateInstance(
                         typeof(SZArrayRepresenter<>).MakeGenericType(itemType));
