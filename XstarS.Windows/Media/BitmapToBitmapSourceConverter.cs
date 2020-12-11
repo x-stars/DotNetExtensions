@@ -32,17 +32,15 @@ namespace XstarS.Windows.Media
         {
             if (value is Bitmap bitmap)
             {
-                using (var memory = new MemoryStream())
-                {
-                    bitmap.Save(memory, ImageFormat.Bmp);
-                    memory.Position = 0;
-                    var bitmapImage = new BitmapImage();
-                    bitmapImage.BeginInit();
-                    bitmapImage.StreamSource = memory;
-                    bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                    bitmapImage.EndInit();
-                    return bitmapImage;
-                }
+                using var memory = new MemoryStream();
+                bitmap.Save(memory, ImageFormat.Bmp);
+                memory.Position = 0;
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                return bitmapImage;
             }
             else
             {
@@ -63,13 +61,11 @@ namespace XstarS.Windows.Media
         {
             if (value is BitmapSource bitmapSource)
             {
-                using (var memory = new MemoryStream())
-                {
-                    var encoder = new BmpBitmapEncoder();
-                    encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
-                    encoder.Save(memory);
-                    return new Bitmap(memory);
-                }
+                using var memory = new MemoryStream();
+                var encoder = new BmpBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+                encoder.Save(memory);
+                return new Bitmap(memory);
             }
             else
             {

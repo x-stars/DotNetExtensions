@@ -25,13 +25,11 @@ namespace XstarS.Win32
             {
                 get
                 {
-                    using (var regKeyIE = Registry.LocalMachine.OpenSubKey(
-                        @"SOFTWARE\Microsoft\Internet Explorer"))
-                    {
-                        var versionSz = (regKeyIE.GetValue("svcVersion") ??
-                            regKeyIE.GetValue("Version")) as string;
-                        return (versionSz is null) ? null : new Version(versionSz);
-                    }
+                    using var regKeyIE = Registry.LocalMachine.OpenSubKey(
+                        @"SOFTWARE\Microsoft\Internet Explorer");
+                    var versionSz = (regKeyIE.GetValue("svcVersion") ??
+                        regKeyIE.GetValue("Version")) as string;
+                    return (versionSz is null) ? null : new Version(versionSz);
                 }
             }
 
@@ -63,13 +61,11 @@ namespace XstarS.Win32
             {
                 get
                 {
-                    using (var regKeyBrowser = Registry.CurrentUser.OpenSubKey(
+                    using var regKeyBrowser = Registry.CurrentUser.OpenSubKey(
                         @"SOFTWARE\Microsoft\Internet Explorer\" +
-                        @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", false))
-                    {
-                        var appName = AppDomain.CurrentDomain.FriendlyName;
-                        return regKeyBrowser.GetValue(appName) as int?;
-                    }
+                        @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", false);
+                    var appName = AppDomain.CurrentDomain.FriendlyName;
+                    return regKeyBrowser.GetValue(appName) as int?;
                 }
 
                 set
@@ -80,19 +76,17 @@ namespace XstarS.Win32
                         throw new ArgumentOutOfRangeException(nameof(value));
                     }
 
-                    using (var regKeyBrowser = Registry.CurrentUser.OpenSubKey(
+                    using var regKeyBrowser = Registry.CurrentUser.OpenSubKey(
                         @"SOFTWARE\Microsoft\Internet Explorer\" +
-                        @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", true))
+                        @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", true);
+                    var appName = AppDomain.CurrentDomain.FriendlyName;
+                    if (value is null)
                     {
-                        var appName = AppDomain.CurrentDomain.FriendlyName;
-                        if (value is null)
-                        {
-                            regKeyBrowser.DeleteValue(appName);
-                        }
-                        else
-                        {
-                            regKeyBrowser.SetValue(appName, value, RegistryValueKind.DWord);
-                        }
+                        regKeyBrowser.DeleteValue(appName);
+                    }
+                    else
+                    {
+                        regKeyBrowser.SetValue(appName, value, RegistryValueKind.DWord);
                     }
                 }
             }
@@ -127,13 +121,11 @@ namespace XstarS.Win32
             {
                 get
                 {
-                    using (var regKeyBrowser = Registry.LocalMachine.OpenSubKey(
+                    using var regKeyBrowser = Registry.LocalMachine.OpenSubKey(
                         @"SOFTWARE\Microsoft\Internet Explorer\" +
-                        @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", false))
-                    {
-                        var appName = AppDomain.CurrentDomain.FriendlyName;
-                        return regKeyBrowser.GetValue(appName) as int?;
-                    }
+                        @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", false);
+                    var appName = AppDomain.CurrentDomain.FriendlyName;
+                    return regKeyBrowser.GetValue(appName) as int?;
                 }
 
                 set
@@ -144,19 +136,17 @@ namespace XstarS.Win32
                         throw new ArgumentOutOfRangeException(nameof(value));
                     }
 
-                    using (var regKeyBrowser = Registry.LocalMachine.OpenSubKey(
+                    using var regKeyBrowser = Registry.LocalMachine.OpenSubKey(
                         @"SOFTWARE\Microsoft\Internet Explorer\" +
-                        @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", true))
+                        @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", true);
+                    var appName = AppDomain.CurrentDomain.FriendlyName;
+                    if (value is null)
                     {
-                        var appName = AppDomain.CurrentDomain.FriendlyName;
-                        if (value is null)
-                        {
-                            regKeyBrowser.DeleteValue(appName);
-                        }
-                        else
-                        {
-                            regKeyBrowser.SetValue(appName, value, RegistryValueKind.DWord);
-                        }
+                        regKeyBrowser.DeleteValue(appName);
+                    }
+                    else
+                    {
+                        regKeyBrowser.SetValue(appName, value, RegistryValueKind.DWord);
                     }
                 }
             }

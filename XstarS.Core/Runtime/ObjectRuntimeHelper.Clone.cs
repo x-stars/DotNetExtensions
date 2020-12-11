@@ -62,13 +62,11 @@ namespace XstarS.Runtime
         public static object SerializationClone(object value)
         {
             if (value is null) { return null; }
-            using (var stream = new MemoryStream())
-            {
-                var serializer = ObjectRuntimeHelper.BinarySerializer;
-                serializer.Serialize(stream, value);
-                stream.Position = 0L;
-                return serializer.Deserialize(stream);
-            }
+            using var stream = new MemoryStream();
+            var serializer = ObjectRuntimeHelper.BinarySerializer;
+            serializer.Serialize(stream, value);
+            stream.Position = 0L;
+            return serializer.Deserialize(stream);
         }
 
         /// <summary>
