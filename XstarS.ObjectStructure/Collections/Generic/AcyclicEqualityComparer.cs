@@ -64,7 +64,7 @@ namespace XstarS.Collections.Generic
         protected bool Equals(T x, T y, ISet<ObjectPair> compared)
         {
             if (RuntimeHelpers.Equals(x, y)) { return true; }
-            if (((object)x is null) ^ ((object)y is null)) { return false; }
+            if ((x is null) ^ (y is null)) { return false; }
             if (x.GetType() != y.GetType()) { return false; }
 
             var pair = new ObjectPair(x, y);
@@ -81,7 +81,7 @@ namespace XstarS.Collections.Generic
         /// <returns><paramref name="obj"/> 的哈希代码。</returns>
         protected int GetHashCode(T obj, ISet<object> computed)
         {
-            if ((object)obj is null) { return 0; }
+            if (obj is null) { return 0; }
 
             if (!computed.Add(obj)) { return 0; }
 

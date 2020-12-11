@@ -104,7 +104,7 @@ namespace XstarS.Diagnostics
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
         protected string Represent(T value, ISet<object> represented)
         {
-            if ((object)value is null) { return null; }
+            if (value is null) { return null; }
 
             if (!represented.Add(value))
             {
