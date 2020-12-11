@@ -10,7 +10,7 @@
 | Framework | 4.6.1, 4.7.2 |
 | Standard  | 2.0, 2.1     |
 
-> C# 版本 >= 7.3
+> C# 版本 >= 8.0
 
 ## 程序集 XstarS.Core
 
