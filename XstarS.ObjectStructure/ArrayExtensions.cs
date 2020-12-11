@@ -59,6 +59,8 @@ namespace XstarS
         /// <param name="array"></param>
         /// <returns>若 <paramref name="array"/> 为下限为零的一维数组，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
         public static bool IsSZArray(this Array array)
         {
             if (array is null)
