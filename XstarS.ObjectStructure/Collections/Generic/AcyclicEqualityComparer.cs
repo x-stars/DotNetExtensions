@@ -21,13 +21,6 @@ namespace XstarS.Collections.Generic
         protected AcyclicEqualityComparer() { }
 
         /// <summary>
-        /// 获取 <see cref="AcyclicEqualityComparer{T}"/> 类的默认实例。
-        /// </summary>
-        /// <returns><see cref="AcyclicEqualityComparer{T}"/> 类的默认实例。</returns>
-        public static new AcyclicEqualityComparer<T> Default { get; } =
-            new DefaultAcyclicEqualityComparer<T>();
-
-        /// <summary>
         /// 确定指定的对象是否相等。
         /// </summary>
         /// <param name="x">要比较的第一个对象。</param>

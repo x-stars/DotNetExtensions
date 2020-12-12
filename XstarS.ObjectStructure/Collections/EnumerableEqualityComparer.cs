@@ -12,7 +12,7 @@ namespace XstarS.Collections
     /// </summary>
     /// <typeparam name="T">实现了 <see cref="IEnumerable"/> 接口的集合类型。</typeparam>
     [Serializable]
-    internal sealed class EnumerableEqualityComparer<T> : StructuralEqualityComparer<T>
+    internal sealed class EnumerableEqualityComparer<T> : StructuralEqualityComparerBase<T>
     {
         /// <summary>
         /// 初始化 <see cref="EnumerableEqualityComparer{T}"/> 类的新实例。

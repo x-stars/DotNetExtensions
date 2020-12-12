@@ -6,11 +6,11 @@ namespace XstarS.Collections.Generic
     using ObjectPair = KeyValuePair<object, object>;
 
     /// <summary>
-    /// 提供非结构化对象的默认的相等比较的方法。
+    /// 提供非结构化对象的相等比较的方法。
     /// </summary>
     /// <typeparam name="T">非结构化对象的类型。</typeparam>
     [Serializable]
-    internal sealed class PlainObjectEqualityComparer<T> : StructuralEqualityComparer<T>
+    internal sealed class PlainObjectEqualityComparer<T> : StructuralEqualityComparerBase<T>
     {
         /// <summary>
         /// 初始化 <see cref="PlainObjectEqualityComparer{T}"/> 类的新实例。
