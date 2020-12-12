@@ -9,7 +9,7 @@ namespace XstarS.Collections
     /// 提供将 <see cref="DictionaryEntry"/> 中的键值表示为字符串的方法。
     /// </summary>
     [Serializable]
-    internal sealed class DictionaryEntryRepresenter : ObjectRepresenter<DictionaryEntry>
+    internal sealed class DictionaryEntryRepresenter : ObjectRepresenterBase<DictionaryEntry>
     {
         /// <summary>
         /// 初始化 <see cref="DictionaryEntry"/> 类的新实例。

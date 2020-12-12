@@ -11,7 +11,7 @@ namespace XstarS.Collections.Generic
     /// <typeparam name="TValue"><see cref="KeyValuePair{TKey, TValue}"/> 中的值的类型。</typeparam>
     [Serializable]
     internal sealed class KeyValuePairRepresenter<TKey, TValue>
-        : ObjectRepresenter<KeyValuePair<TKey, TValue>>
+        : ObjectRepresenterBase<KeyValuePair<TKey, TValue>>
     {
         /// <summary>
         /// 初始化 <see cref="KeyValuePairRepresenter{TKey, TValue}"/> 类的新实例。

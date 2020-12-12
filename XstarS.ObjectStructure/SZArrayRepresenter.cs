@@ -9,7 +9,7 @@ namespace XstarS
     /// </summary>
     /// <typeparam name="TItem">数组中的元素的类型。</typeparam>
     [Serializable]
-    internal sealed class SZArrayRepresenter<TItem> : ObjectRepresenter<TItem[]>
+    internal sealed class SZArrayRepresenter<TItem> : ObjectRepresenterBase<TItem[]>
     {
         /// <summary>
         /// 初始化 <see cref="SZArrayRepresenter{TItem}"/> 类的新实例。

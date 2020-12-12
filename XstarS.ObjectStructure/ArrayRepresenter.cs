@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Reflection;
 using XstarS.Diagnostics;
 
 namespace XstarS
@@ -10,19 +9,8 @@ namespace XstarS
     /// </summary>
     /// <typeparam name="T">数组的类型。</typeparam>
     [Serializable]
-    internal sealed class ArrayRepresenter<T> : ObjectRepresenter<T>
+    internal sealed class ArrayRepresenter<T> : ObjectRepresenterBase<T>
     {
-        /// <summary>
-        /// 表示当前数组类型的元素类型是否为指针类型。
-        /// </summary>
-        private static readonly bool ItemIsPointer = typeof(T).GetElementType().IsPointer;
-
-        /// <summary>
-        /// 表示获取指针数组指定索引处的元素的方法的 <see cref="MemberInfo"/> 对象。
-        /// </summary>
-        private static readonly MethodInfo PointerGetMethod =
-            ArrayRepresenter<T>.ItemIsPointer ? typeof(T).GetMethod("Get") : null;
-
         /// <summary>
         /// 初始化 <see cref="ArrayRepresenter{T}"/> 类的新实例。
         /// </summary>

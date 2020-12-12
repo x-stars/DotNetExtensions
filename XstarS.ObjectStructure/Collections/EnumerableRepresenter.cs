@@ -10,7 +10,7 @@ namespace XstarS.Collections
     /// </summary>
     /// <typeparam name="T">实现了 <see cref="IEnumerable"/> 接口的集合类型。</typeparam>
     [Serializable]
-    internal sealed class EnumerableRepresenter<T> : ObjectRepresenter<T>
+    internal sealed class EnumerableRepresenter<T> : ObjectRepresenterBase<T>
     {
         /// <summary>
         /// 初始化 <see cref="EnumerableRepresenter{T}"/> 类的新实例。
