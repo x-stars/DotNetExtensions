@@ -5,62 +5,62 @@ using System.Reflection.Emit;
 namespace XstarS.Reflection
 {
     /// <summary>
-    /// 提供以 <see cref="IntPtr"/> 表示的引用传递 <see langword="ref"/> 的方法。
+    /// 提供以 <see cref="IntPtr"/> 表示引用传递 <see langword="ref"/> 的方法。
     /// </summary>
     public static class IntPtrByRef
     {
-        /// <summary>
-        /// <see cref="IntPtrByRef.RealType"/> 的延迟初始化对象。
-        /// </summary>
-        private static readonly Lazy<Type> LazyRealType =
-            new Lazy<Type>(IntPtrByRef.CreateRealType);
-
-        /// <summary>
-        /// 获取提供 <see cref="IntPtrByRef"/> 方法实现的类型的 <see cref="Type"/> 对象。
-        /// </summary>
-        private static Type RealType => IntPtrByRef.LazyRealType.Value;
-
         /// <summary>
         /// 封装将引用传递 <see langword="ref"/> 转换为等效的 <see cref="IntPtr"/> 的方法。
         /// </summary>
         /// <typeparam name="T">引用传递 <see langword="ref"/> 的类型。</typeparam>
         /// <param name="value">按引用转递的值。</param>
         /// <returns>引用传递 <see langword="ref"/> 转换得到的 <see cref="IntPtr"/>。</returns>
-        private delegate IntPtr ByRefBoxer<T>(ref T value);
+        private delegate IntPtr Converter<T>(ref T value);
 
         /// <summary>
-        /// 提供 <see cref="IntPtrByRef.RealType"/> 中各方法的委托。
+        /// 提供 <see cref="IntPtrByRef.Implementation"/> 中各方法的委托。
         /// </summary>
         /// <typeparam name="T">引用传递 <see langword="ref"/> 的类型。</typeparam>
         private static class Delegates<T>
         {
             /// <summary>
-            /// 表示 <see cref="IntPtrByRef.RealType"/> 中
+            /// 表示 <see cref="IntPtrByRef.Implementation"/> 中
             /// <see cref="IntPtrByRef.ToIntPtr{T}(ref T)"/> 方法的委托。
             /// </summary>
-            internal static readonly ByRefBoxer<T> ToIntPtr =
-                (ByRefBoxer<T>)IntPtrByRef.RealType.GetMethod(
+            internal static readonly Converter<T> ToIntPtr =
+                (Converter<T>)IntPtrByRef.Implementation.GetMethod(
                     nameof(IntPtrByRef.ToIntPtr)).MakeGenericMethod(
-                        typeof(T)).CreateDelegate(typeof(ByRefBoxer<T>));
+                        typeof(T)).CreateDelegate(typeof(Converter<T>));
 
             /// <summary>
-            /// 表示 <see cref="IntPtrByRef.RealType"/> 中
+            /// 表示 <see cref="IntPtrByRef.Implementation"/> 中
             /// <see cref="IntPtrByRef.GetValue{T}(IntPtr)"/> 方法的委托。
             /// </summary>
             internal static readonly Func<IntPtr, T> GetValue =
-                (Func<IntPtr, T>)IntPtrByRef.RealType.GetMethod(
+                (Func<IntPtr, T>)IntPtrByRef.Implementation.GetMethod(
                     nameof(IntPtrByRef.GetValue)).MakeGenericMethod(
                         typeof(T)).CreateDelegate(typeof(Func<IntPtr, T>));
 
             /// <summary>
-            /// 表示 <see cref="IntPtrByRef.RealType"/> 中
+            /// 表示 <see cref="IntPtrByRef.Implementation"/> 中
             /// <see cref="IntPtrByRef.SetValue{T}(IntPtr, T)"/> 方法的委托。
             /// </summary>
             internal static readonly Action<IntPtr, T> SetValue =
-                (Action<IntPtr, T>)IntPtrByRef.RealType.GetMethod(
+                (Action<IntPtr, T>)IntPtrByRef.Implementation.GetMethod(
                     nameof(IntPtrByRef.SetValue)).MakeGenericMethod(
                         typeof(T)).CreateDelegate(typeof(Action<IntPtr, T>));
         }
+
+        /// <summary>
+        /// <see cref="IntPtrByRef.Implementation"/> 的延迟初始化对象。
+        /// </summary>
+        private static readonly Lazy<Type> LazyImplementation =
+            new Lazy<Type>(IntPtrByRef.CreateRealType);
+
+        /// <summary>
+        /// 获取提供 <see cref="IntPtrByRef"/> 方法实现的类型的 <see cref="Type"/> 对象。
+        /// </summary>
+        private static Type Implementation => IntPtrByRef.LazyImplementation.Value;
 
         /// <summary>
         /// 将指定的引用传递 <see langword="ref"/> 转换为等效的 <see cref="IntPtr"/>。
