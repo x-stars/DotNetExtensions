@@ -89,9 +89,9 @@ namespace XstarS.Reflection.Emit
             var il = method.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldfld, instanceField);
-            for (int i = 0; i < baseMethod.GetParameters().Length; i++)
+            for (int index = 0; index < baseMethod.GetParameters().Length; index++)
             {
-                il.EmitLdarg(i + 1);
+                il.EmitLdarg(index + 1);
             }
             il.Emit(OpCodes.Callvirt,
                 (baseMethod.GetGenericArguments().Length == 0) ? baseMethod :
@@ -134,9 +134,9 @@ namespace XstarS.Reflection.Emit
             var il = method.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldfld, instanceField);
-            for (int i = 0; i < baseMethod.GetParameters().Length; i++)
+            for (int index = 0; index < baseMethod.GetParameters().Length; index++)
             {
-                il.EmitLdarg(i + 1);
+                il.EmitLdarg(index + 1);
             }
             il.Emit(OpCodes.Callvirt,
                 (baseMethod.GetGenericArguments().Length == 0) ? baseMethod :
