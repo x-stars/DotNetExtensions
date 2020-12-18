@@ -8,6 +8,7 @@ namespace XstarS.Collections.Generic
     /// <summary>
     /// 表示能够通过索引访问的双重链接列表。
     /// </summary>
+    /// <typeparam name="T">指定链接列表的元素类型。</typeparam>
     [Serializable]
     public class IndexedLinkedList<T> : LinkedList<T>, IList, IList<T>, IReadOnlyList<T>
     {
