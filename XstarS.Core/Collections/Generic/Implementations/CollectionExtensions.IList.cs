@@ -68,9 +68,10 @@ namespace XstarS.Collections.Generic
             }
 
             var indices = new List<int>();
+            var comparer = EqualityComparer<T>.Default;
             for (int index = 0; index < list.Count; index++)
             {
-                if (EqualityComparer<T>.Default.Equals(list[index], item))
+                if (comparer.Equals(list[index], item))
                 {
                     indices.Add(index);
                 }
@@ -129,7 +130,7 @@ namespace XstarS.Collections.Generic
 
             for (int index = 0; index < list.Count; index++)
             {
-                if (match(list[index]))
+                if (match.Invoke(list[index]))
                 {
                     list.RemoveAt(index);
                     index--;
@@ -177,10 +178,10 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(list));
             }
 
-            var randGen = new Random();
+            var random = new Random();
             for (int index = 0; index < list.Count; index++)
             {
-                int rIndex = randGen.Next(list.Count);
+                int rIndex = random.Next(list.Count);
                 var temp = list[index];
                 list[index] = list[rIndex];
                 list[rIndex] = temp;

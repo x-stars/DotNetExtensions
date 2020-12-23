@@ -89,7 +89,7 @@ namespace XstarS.Collections.Generic
             int count = 0;
             foreach (var item in enumerable)
             {
-                if (match(item))
+                if (match.Invoke(item))
                 {
                     count++;
                 }
@@ -118,7 +118,7 @@ namespace XstarS.Collections.Generic
 
             foreach (var item in enumerable)
             {
-                action(item);
+                action.Invoke(item);
             }
         }
 
@@ -144,7 +144,7 @@ namespace XstarS.Collections.Generic
             var index = 0;
             foreach (var item in enumerable)
             {
-                action(index, item);
+                action.Invoke(index, item);
                 index++;
             }
         }

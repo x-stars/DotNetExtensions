@@ -46,7 +46,7 @@ namespace XstarS.Collections.Generic
 
             foreach (var pair in dictionary)
             {
-                action(pair.Key, pair.Value);
+                action.Invoke(pair.Key, pair.Value);
             }
         }
 

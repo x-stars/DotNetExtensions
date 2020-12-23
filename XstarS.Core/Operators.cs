@@ -88,7 +88,7 @@ namespace XstarS
         /// <paramref name="pairs"/> 中存在具有相同键的键值对。</exception>
         public static ReadOnlyDictionary<TKey, TValue> RoDictOf<TKey, TValue>(
             params (TKey Key, TValue Value)[] pairs) =>
-            new ReadOnlyDictionary<TKey, TValue>(DictOf(pairs));
+            new ReadOnlyDictionary<TKey, TValue>(Operators.DictOf(pairs));
 
         /// <summary>
         /// 创建一个包含指定元素的 <see cref="ReadOnlyCollection{T}"/>。
@@ -100,7 +100,7 @@ namespace XstarS
         /// <exception cref="ArgumentNullException">
         /// <paramref name="items"/> 为 <see langword="null"/>。</exception>
         public static ReadOnlyCollection<T> RoListOf<T>(params T[] items) =>
-            new ReadOnlyCollection<T>(ListOf(items));
+            new ReadOnlyCollection<T>(Operators.ListOf(items));
 
         /// <summary>
         /// 创建一个包含指定元素的 <see cref="HashSet{T}"/>。
