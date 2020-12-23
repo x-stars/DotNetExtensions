@@ -8,7 +8,7 @@ namespace XstarS.Collections.Generic
     /// </summary>
     /// <typeparam name="T">要比较的对象的类型。</typeparam>
     [Serializable]
-    public class ReversedComparer<T> : Comparer<T>
+    public sealed class ReversedComparer<T> : Comparer<T>
     {
         /// <summary>
         /// 要进行反转的比较器 <see cref="IComparer{T}"/>。
