@@ -19,9 +19,9 @@ namespace XstarS.Reflection
         /// <summary>
         /// 确定类型是否是类引用传递结构类型的方法的委托。
         /// </summary>
-        private static readonly Func<Type, bool> IsByRefLikeDelegate =
+        private static readonly Predicate<Type> IsByRefLikeDelegate =
             (typeof(Type).GetProperty("IsByRefLike")?.GetMethod?.CreateDelegate(
-                typeof(Func<Type, bool>)) as Func<Type, bool>) ?? (type => false);
+                typeof(Predicate<Type>)) as Predicate<Type>) ?? (type => false);
 
         /// <summary>
         /// 确定当前 <see cref="Type"/> 是否是与可变参数列表方法相关的类型。
