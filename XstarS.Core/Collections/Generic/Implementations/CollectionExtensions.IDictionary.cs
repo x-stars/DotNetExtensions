@@ -109,12 +109,14 @@ namespace XstarS.Collections.Generic
         /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
         /// <typeparam name="TValue"><see cref="IDictionary{TKey, TValue}"/> 中的值的类型。</typeparam>
         /// <param name="dictionary">要反转键值的 <see cref="IDictionary{TKey, TValue}"/> 对象。</param>
+        /// <param name="keyComparer">用于比较键的 <see cref="IEqualityComparer{T}"/> 实现。</param>
         /// <param name="valueComparer">用于比较值的 <see cref="IEqualityComparer{T}"/> 实现。</param>
         /// <returns>将 <paramref name="dictionary"/> 的键和值反转后的结果。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
         public static IDictionary<TValue, ICollection<TKey>> Inverse<TKey, TValue>(
             this IDictionary<TKey, TValue> dictionary,
+            IEqualityComparer<TKey> keyComparer = null,
             IEqualityComparer<TValue> valueComparer = null)
         {
             if (dictionary is null)
@@ -122,6 +124,7 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(dictionary));
             }
 
+            keyComparer = keyComparer ?? EqualityComparer<TKey>.Default;
             valueComparer = valueComparer ?? EqualityComparer<TValue>.Default;
 
             var result = new Dictionary<TValue, ICollection<TKey>>(valueComparer);
@@ -129,7 +132,7 @@ namespace XstarS.Collections.Generic
             {
                 if (!result.ContainsKey(item.Value))
                 {
-                    result.Add(item.Value, new List<TKey>());
+                    result.Add(item.Value, new HashSet<TKey>(keyComparer));
                 }
                 result[item.Value].Add(item.Key);
             }

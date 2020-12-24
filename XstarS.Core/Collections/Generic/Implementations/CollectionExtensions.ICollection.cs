@@ -85,6 +85,33 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
+        /// 从 <see cref="ICollection{T}"/> 中移除所有满足指定条件的元素。
+        /// </summary>
+        /// <typeparam name="T"><see cref="ICollection{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="collection">要移除元素的 <see cref="ICollection{T}"/> 对象。</param>
+        /// <param name="match">要从 <see cref="ICollection{T}"/> 中移除的元素应满足的条件。</param>
+        /// <returns>从 <see cref="ICollection{T}"/> 中移除的元素数。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="collection"/>
+        /// 或 <paramref name="match"/> 为 <see langword="null"/>。</exception>
+        public static int RemoveAll<T>(this ICollection<T> collection, Predicate<T> match)
+        {
+            if (collection is null)
+            {
+                throw new ArgumentNullException(nameof(collection));
+            }
+            if (match is null)
+            {
+                throw new ArgumentNullException(nameof(match));
+            }
+
+            var removed = new List<T>(collection);
+            var count = removed.RemoveAll(match);
+            collection.Clear();
+            collection.AddRange(removed);
+            return count;
+        }
+
+        /// <summary>
         /// 从 <see cref="ICollection{T}"/> 中依次移除指定集合中的元素。
         /// </summary>
         /// <typeparam name="T"><see cref="ICollection{T}"/> 中的元素的类型。</typeparam>

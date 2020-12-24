@@ -130,7 +130,7 @@ namespace XstarS.Collections.Generic
         /// <param name="action">要对 <see cref="IEnumerable{T}"/> 中每个带索引的元素执行的操作。</param>
         /// <exception cref="ArgumentNullException"><paramref name="enumerable"/>
         /// 或 <paramref name="action"/> 为 <see langword="null"/>。</exception>
-        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<int, T> action)
+        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T, int> action)
         {
             if (enumerable is null)
             {
@@ -144,7 +144,7 @@ namespace XstarS.Collections.Generic
             var index = 0;
             foreach (var item in enumerable)
             {
-                action.Invoke(index, item);
+                action.Invoke(item, index);
                 index++;
             }
         }

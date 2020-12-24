@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace XstarS.Collections.Generic
 {
@@ -110,35 +109,6 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
-        /// 从 <see cref="IList{T}"/> 中移除所有满足指定条件的元素。
-        /// </summary>
-        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
-        /// <param name="list">要移除元素的 <see cref="IList{T}"/> 对象。</param>
-        /// <param name="match">要从 <see cref="IList{T}"/> 中移除的元素应满足的条件。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="list"/>
-        /// 或 <paramref name="match"/> 为 <see langword="null"/>。</exception>
-        public static void RemoveAll<T>(this IList<T> list, Predicate<T> match)
-        {
-            if (list is null)
-            {
-                throw new ArgumentNullException(nameof(list));
-            }
-            if (match is null)
-            {
-                throw new ArgumentNullException(nameof(match));
-            }
-
-            for (int index = 0; index < list.Count; index++)
-            {
-                if (match.Invoke(list[index]))
-                {
-                    list.RemoveAt(index);
-                    index--;
-                }
-            }
-        }
-
-        /// <summary>
         /// 从 <see cref="IList{T}"/> 中移除一定范围的元素。
         /// </summary>
         /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
@@ -199,7 +169,7 @@ namespace XstarS.Collections.Generic
         /// <exception cref="ArgumentNullException">
         /// 存在为 <see langword="null"/> 的参数。</exception>
         public static void Sort<T, TKey>(this IList<T> list,
-            Func<T, TKey> keySelector, IComparer<TKey> comparer = null)
+            Converter<T, TKey> keySelector, IComparer<TKey> comparer = null)
         {
             if (list is null)
             {
@@ -209,16 +179,15 @@ namespace XstarS.Collections.Generic
             {
                 throw new ArgumentNullException(nameof(keySelector));
             }
-            if (comparer is null)
-            {
-                throw new ArgumentNullException(nameof(comparer));
-            }
 
             comparer = comparer ?? Comparer<TKey>.Default;
 
-            var listCopy = new List<T>(list);
+            var items = new T[list.Count];
+            list.CopyTo(items, 0);
+            var keys = Array.ConvertAll(items, keySelector);
+            Array.Sort(keys, items, comparer);
             list.Clear();
-            list.AddRange(listCopy.OrderBy(keySelector, comparer));
+            list.AddRange(items);
         }
 
         /// <summary>
@@ -231,7 +200,18 @@ namespace XstarS.Collections.Generic
         /// 存在为 <see langword="null"/> 的参数。</exception>
         public static void Sort<T>(this IList<T> list, IComparer<T> comparer = null)
         {
-            list.Sort(item => item, comparer);
+            if (list is null)
+            {
+                throw new ArgumentNullException(nameof(list));
+            }
+
+            comparer = comparer ?? Comparer<T>.Default;
+
+            var items = new T[list.Count];
+            list.CopyTo(items, 0);
+            Array.Sort(items, comparer);
+            list.Clear();
+            list.AddRange(items);
         }
     }
 }
