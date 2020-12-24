@@ -135,6 +135,27 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
+        /// 将 <see cref="IList{T}"/> 中的元素的顺序反转。
+        /// </summary>
+        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="list">要反转元素的顺序的 <see cref="IList{T}"/> 对象。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="list"/> 为 <see langword="null"/>。</exception>
+        public static void Reverse<T>(this IList<T> list)
+        {
+            if (list is null)
+            {
+                throw new ArgumentNullException(nameof(list));
+            }
+
+            var items = new T[list.Count];
+            list.CopyTo(items, 0);
+            Array.Reverse(items);
+            list.Clear();
+            list.AddRange(items);
+        }
+
+        /// <summary>
         /// 将 <see cref="IList{T}"/> 中的元素随机重新排列。
         /// </summary>
         /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
