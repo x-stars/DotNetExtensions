@@ -42,7 +42,8 @@ namespace XstarS
         /// <param name="text">要进行拆分的字符串。</param>
         /// <param name="isSeparator">判断字符是否为分隔字符的 <see cref="Predicate{T}"/> 委托。</param>
         /// <param name="options">指定是否要忽略分隔得到的空子字符串。</param>
-        /// <returns><paramref name="text"/> 根据满足 <paramref name="isSeparator"/> 条件的字符分隔得到的子字符串，
+        /// <returns><paramref name="text"/> 根据满足
+        /// <paramref name="isSeparator"/> 条件的字符分隔得到的子字符串，
         /// 并根据 <paramref name="options"/> 的指示去除空字符串。</returns>
         /// <exception cref="ArgumentNullException">
         /// 存在为 <see langword="null"/> 的参数。</exception>
@@ -59,9 +60,9 @@ namespace XstarS
             }
 
             var token = new mstring();
-            foreach (var c in text)
+            foreach (var @char in text)
             {
-                if (isSeparator(c))
+                if (isSeparator(@char))
                 {
                     if ((token.Length > 0) ||
                         (options == StringSplitOptions.None))
@@ -72,7 +73,7 @@ namespace XstarS
                 }
                 else
                 {
-                    token.Append(c);
+                    token.Append(@char);
                 }
             }
             if ((token.Length > 0) ||
