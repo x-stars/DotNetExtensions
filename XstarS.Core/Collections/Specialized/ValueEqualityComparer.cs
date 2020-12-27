@@ -5,7 +5,7 @@ using XstarS.Runtime;
 namespace XstarS.Collections.Specialized
 {
     /// <summary>
-    /// 用于比较对象的值是否相等的比较器。
+    /// 提供用于比较对象的值是否相等的方法。
     /// </summary>
     /// <remarks>基于反射调用，可能存在性能问题。</remarks>
     /// <typeparam name="T">要比较的对象的类型。</typeparam>
@@ -18,9 +18,9 @@ namespace XstarS.Collections.Specialized
         public ValueEqualityComparer() { }
 
         /// <summary>
-        /// 获取默认的 <see cref="ValueEqualityComparer{T}"/> 实例。
+        /// 获取 <see cref="ValueEqualityComparer{T}"/> 类的默认实例。
         /// </summary>
-        /// <returns>默认的 <see cref="ValueEqualityComparer{T}"/> 实例。</returns>
+        /// <returns><see cref="ValueEqualityComparer{T}"/> 类的默认实例。</returns>
         public static new ValueEqualityComparer<T> Default { get; } = new ValueEqualityComparer<T>();
 
         /// <summary>

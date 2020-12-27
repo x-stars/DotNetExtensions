@@ -182,7 +182,7 @@ namespace XstarS.Collections
         [Serializable]
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
-        public sealed class KeyCollection: ICollection, ICollection<TKey>, IReadOnlyCollection<TKey>
+        public sealed class KeyCollection : ICollection, ICollection<TKey>, IReadOnlyCollection<TKey>
         {
             /// <summary>
             /// 表示当前实例包装的字典。

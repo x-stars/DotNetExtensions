@@ -5,7 +5,7 @@ using System.Reflection;
 namespace XstarS.Reflection
 {
     /// <summary>
-    /// 用于比较方法的签名是否相等的比较器。
+    /// 提供用于比较方法的签名是否相等的方法。
     /// </summary>
     [Serializable]
     public sealed class MethodSignatureEqualityComparer : EqualityComparer<MethodInfo>
@@ -16,9 +16,9 @@ namespace XstarS.Reflection
         public MethodSignatureEqualityComparer() { }
 
         /// <summary>
-        /// 获取默认的 <see cref="MethodSignatureEqualityComparer"/> 类的实例。
+        /// 获取 <see cref="MethodSignatureEqualityComparer"/> 类的默认实例。
         /// </summary>
-        /// <returns>默认的 <see cref="MethodSignatureEqualityComparer"/> 类的实例。</returns>
+        /// <returns><see cref="MethodSignatureEqualityComparer"/> 类的默认实例。</returns>
         public static new MethodSignatureEqualityComparer Default { get; } =
             new MethodSignatureEqualityComparer();
 

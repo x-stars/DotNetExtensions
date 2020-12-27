@@ -17,10 +17,11 @@ namespace XstarS.Collections.Generic
         public StructuralEqualityComparer() { }
 
         /// <summary>
-        /// 获取用于结构化对象比较的 <see cref="EqualityComparer{T}"/> 类的默认实例。
+        /// 获取 <see cref="StructuralEqualityComparer{T}"/> 类的默认实例。
         /// </summary>
-        /// <returns>用于结构化对象比较的 <see cref="EqualityComparer{T}"/> 类的默认实例。</returns>
-        public static new StructuralEqualityComparer<T> Default { get; } = new StructuralEqualityComparer<T>();
+        /// <returns><see cref="StructuralEqualityComparer{T}"/> 类的默认实例。</returns>
+        public static new StructuralEqualityComparer<T> Default { get; } =
+            new StructuralEqualityComparer<T>();
 
         /// <summary>
         /// 确定两个指定的结构化对象中的元素是否相等。

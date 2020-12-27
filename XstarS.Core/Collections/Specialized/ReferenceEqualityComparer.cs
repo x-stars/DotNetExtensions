@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 namespace XstarS.Collections.Specialized
 {
     /// <summary>
-    /// 用于比较对象引用是否相等的比较器。
+    /// 提供用于比较对象的引用是否相等的方法。
     /// </summary>
     [Serializable]
     public sealed class ReferenceEqualityComparer : EqualityComparer<object>
@@ -16,9 +16,9 @@ namespace XstarS.Collections.Specialized
         public ReferenceEqualityComparer() { }
 
         /// <summary>
-        /// 获取默认的 <see cref="ReferenceEqualityComparer"/> 实例。
+        /// 获取 <see cref="ReferenceEqualityComparer"/> 类的默认实例。
         /// </summary>
-        /// <returns>默认的 <see cref="ReferenceEqualityComparer"/> 实例。</returns>
+        /// <returns><see cref="ReferenceEqualityComparer"/> 类的默认实例。</returns>
         public static new ReferenceEqualityComparer Default { get; } = new ReferenceEqualityComparer();
 
         /// <summary>

@@ -15,7 +15,8 @@ namespace XstarS.Collections.Generic
         /// 表示 <see cref="StructuralEqualityComparerBase{T}.Default"/> 的延迟初始化值。 
         /// </summary>
         private static readonly Lazy<StructuralEqualityComparerBase<T>> LazyDefault =
-            new Lazy<StructuralEqualityComparerBase<T>>(StructuralEqualityComparerBase<T>.CreateDefault);
+            new Lazy<StructuralEqualityComparerBase<T>>(
+                StructuralEqualityComparerBase<T>.CreateDefault);
 
         /// <summary>
         /// 初始化 <see cref="StructuralEqualityComparerBase{T}"/> 类的新实例。
@@ -60,7 +61,8 @@ namespace XstarS.Collections.Generic
             }
             else if (type == typeof(DictionaryEntry))
             {
-                return (StructuralEqualityComparerBase<T>)(object)new DictionaryEntryEqualityComaprer();
+                return (StructuralEqualityComparerBase<T>)
+                    (object)new DictionaryEntryEqualityComaprer();
             }
             else if (type.IsGenericType)
             {

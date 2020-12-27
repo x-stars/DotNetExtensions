@@ -7,7 +7,7 @@ namespace XstarS.Collections.Specialized
     using ObjectPair = KeyValuePair<object, object>;
 
     /// <summary>
-    /// 用于比较两个 <see cref="ObjectPair"/> 包含的对象的引用是否相等的比较器。
+    /// 提供用于比较 <see cref="ObjectPair"/> 包含的对象的引用是否相等的方法。
     /// </summary>
     [Serializable]
     public sealed class PairReferenceEqualityComparer : EqualityComparer<ObjectPair>
@@ -18,9 +18,9 @@ namespace XstarS.Collections.Specialized
         public PairReferenceEqualityComparer() { }
 
         /// <summary>
-        /// 返回一个默认的 <see cref="PairReferenceEqualityComparer"/> 实例。
+        /// 获取 <see cref="PairReferenceEqualityComparer"/> 类的默认实例。
         /// </summary>
-        /// <returns>默认的 <see cref="PairReferenceEqualityComparer"/> 实例。</returns>
+        /// <returns><see cref="PairReferenceEqualityComparer"/> 类的默认实例。</returns>
         public static new PairReferenceEqualityComparer Default { get; } =
             new PairReferenceEqualityComparer();
 
