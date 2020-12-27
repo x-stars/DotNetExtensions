@@ -10,7 +10,8 @@ namespace XstarS.Collections
     /// </summary>
     /// <typeparam name="T">实现了 <see cref="IEnumerable"/> 接口的集合类型。</typeparam>
     [Serializable]
-    internal sealed class EnumerableRepresenter<T> : ObjectRepresenterBase<T>
+    internal sealed class EnumerableRepresenter<T> : StructuralObjectRepresenterBase<T>
+        where T : IEnumerable
     {
         /// <summary>
         /// 初始化 <see cref="EnumerableRepresenter{T}"/> 类的新实例。
@@ -25,11 +26,10 @@ namespace XstarS.Collections
         /// <returns>表示 <paramref name="value"/> 中的元素的字符串。</returns>
         protected override string RepresentCore(T value, ISet<object> represented)
         {
-            var collection = (IEnumerable)(object)value;
             var represents = new List<string>();
-            foreach (var item in collection)
+            foreach (var item in value)
             {
-                var representer = ObjectRepresenter.OfType(item?.GetType());
+                var representer = StructuralObjectRepresenter.OfType(item?.GetType());
                 represents.Add(representer.Represent(item, represented));
             }
             return "{ " + string.Join(", ", represents) + " }";

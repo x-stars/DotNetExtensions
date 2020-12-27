@@ -9,7 +9,7 @@ namespace XstarS
     /// </summary>
     /// <typeparam name="TItem">数组中的元素的类型。</typeparam>
     [Serializable]
-    internal sealed class SZArrayRepresenter<TItem> : ObjectRepresenterBase<TItem[]>
+    internal sealed class SZArrayRepresenter<TItem> : StructuralObjectRepresenterBase<TItem[]>
     {
         /// <summary>
         /// 初始化 <see cref="SZArrayRepresenter{TItem}"/> 类的新实例。
@@ -27,7 +27,7 @@ namespace XstarS
             var represents = new List<string>();
             foreach (var item in value)
             {
-                var representer = ObjectRepresenter.OfType(item?.GetType());
+                var representer = StructuralObjectRepresenter.OfType(item?.GetType());
                 represents.Add(representer.Represent(item, represented));
             }
             return $"{{ {string.Join(", ", represents)} }}";
