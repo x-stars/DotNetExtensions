@@ -13,6 +13,7 @@ namespace XstarS.Collections
     /// <typeparam name="T">实现了 <see cref="IEnumerable"/> 接口的集合类型。</typeparam>
     [Serializable]
     internal sealed class EnumerableEqualityComparer<T> : StructuralEqualityComparerBase<T>
+        where T : IEnumerable
     {
         /// <summary>
         /// 初始化 <see cref="EnumerableEqualityComparer{T}"/> 类的新实例。
@@ -29,17 +30,14 @@ namespace XstarS.Collections
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         protected override bool EqualsCore(T x, T y, ISet<ObjectPair> compared)
         {
-            var xEnumerable = (IEnumerable)x;
-            var yEnumerable = (IEnumerable)y;
-
-            if ((xEnumerable is ICollection<T> xCollection) &&
-                (yEnumerable is ICollection<T> yCollection))
+            if ((x is ICollection<T> xCollection) &&
+                (y is ICollection<T> yCollection))
             {
                 if (xCollection.Count != yCollection.Count) { return false; }
             }
 
-            var xEnumerator = xEnumerable.GetEnumerator();
-            var yEnumerator = yEnumerable.GetEnumerator();
+            var xEnumerator = x.GetEnumerator();
+            var yEnumerator = y.GetEnumerator();
             try
             {
                 bool xHasNext, yHasNext;
@@ -71,9 +69,8 @@ namespace XstarS.Collections
         /// <returns><paramref name="obj"/> 中的元素的哈希代码。</returns>
         protected override int GetHashCodeCore(T obj, ISet<object> computed)
         {
-            var enumerable = (IEnumerable)obj;
-            var hashCode = enumerable.GetType().GetHashCode();
-            foreach (var item in enumerable)
+            var hashCode = obj.GetType().GetHashCode();
+            foreach (var item in obj)
             {
                 var comparer = StructuralEqualityComparer.OfType(item?.GetType());
                 var nextHashCode = comparer.GetHashCode(item, computed);

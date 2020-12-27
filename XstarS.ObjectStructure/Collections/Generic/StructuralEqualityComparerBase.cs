@@ -53,9 +53,10 @@ namespace XstarS.Collections.Generic
                     return new ArrayEqualityComparer<T>();
                 }
             }
-            else if (Array.IndexOf(type.GetInterfaces(), typeof(IEnumerable)) != -1)
+            else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
-                return new EnumerableEqualityComparer<T>();
+                return (StructuralEqualityComparerBase<T>)Activator.CreateInstance(
+                    typeof(EnumerableEqualityComparer<>).MakeGenericType(type));
             }
             else if (type == typeof(DictionaryEntry))
             {
