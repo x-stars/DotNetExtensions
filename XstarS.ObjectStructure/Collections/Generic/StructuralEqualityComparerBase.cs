@@ -72,12 +72,12 @@ namespace XstarS.Collections.Generic
                 }
                 else
                 {
-                    return new PlainObjectEqualityComparer<T>();
+                    return new PlainEqualityComparer<T>();
                 }
             }
             else
             {
-                return new PlainObjectEqualityComparer<T>();
+                return new PlainEqualityComparer<T>();
             }
         }
 

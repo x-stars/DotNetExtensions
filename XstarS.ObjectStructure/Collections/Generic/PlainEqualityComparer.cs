@@ -10,12 +10,12 @@ namespace XstarS.Collections.Generic
     /// </summary>
     /// <typeparam name="T">非结构化对象的类型。</typeparam>
     [Serializable]
-    internal sealed class PlainObjectEqualityComparer<T> : StructuralEqualityComparerBase<T>
+    internal sealed class PlainEqualityComparer<T> : StructuralEqualityComparerBase<T>
     {
         /// <summary>
-        /// 初始化 <see cref="PlainObjectEqualityComparer{T}"/> 类的新实例。
+        /// 初始化 <see cref="PlainEqualityComparer{T}"/> 类的新实例。
         /// </summary>
-        public PlainObjectEqualityComparer() { }
+        public PlainEqualityComparer() { }
 
         /// <summary>
         /// 确定指定的对象是否相等。
