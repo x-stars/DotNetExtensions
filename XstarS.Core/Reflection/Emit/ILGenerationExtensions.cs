@@ -6,7 +6,7 @@ namespace XstarS.Reflection.Emit
     /// <summary>
     /// 提供 IL 指令生成相关的扩展方法。
     /// </summary>
-    internal static class ILGenerationExtensions
+    public static class ILGenerationExtensions
     {
         /// <summary>
         /// 确定当前 <see cref="Type"/> 的实例是否不能由 IL 指令转换为 <see cref="object"/>。

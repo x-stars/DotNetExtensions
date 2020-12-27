@@ -10,7 +10,7 @@ namespace XstarS.Reflection.Emit
     /// <summary>
     /// 提供运行时类型生成相关的扩展方法。
     /// </summary>
-    internal static class TypeBuildingExtensions
+    public static class TypeBuildingExtensions
     {
         /// <summary>
         /// 确定当前 <see cref="MethodBase"/> 是否为程序集外部可继承的实例方法。

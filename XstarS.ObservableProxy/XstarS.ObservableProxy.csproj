@@ -48,9 +48,12 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard' And
-                        '$(TargetFramework.CompareTo(`netstandard2.1`))'&lt;'0'">
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard' And&#xD;&#xA;                        '$(TargetFramework.CompareTo(`netstandard2.1`))'&lt;'0'">
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XstarS.Core\XstarS.Core.csproj" />
   </ItemGroup>
 
 </Project>
