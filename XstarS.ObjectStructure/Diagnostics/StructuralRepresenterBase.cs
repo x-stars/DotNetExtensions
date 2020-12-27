@@ -7,7 +7,7 @@ using XstarS.Collections.Generic;
 namespace XstarS.Diagnostics
 {
     /// <summary>
-    /// 提供字符串表示对象 <see cref="IRepresenter{T}"/> 的抽象基类。
+    /// 提供结构化对象的字符串表示对象的抽象基类。
     /// </summary>
     /// <typeparam name="T">要表示为字符串的对象的类型。</typeparam>
     [Serializable]

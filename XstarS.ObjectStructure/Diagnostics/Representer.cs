@@ -10,6 +10,12 @@ namespace XstarS.Diagnostics
     public abstract class Representer<T> : IRepresenter, IRepresenter<T>
     {
         /// <summary>
+        /// 表示 <see cref="Representer{T}.Default"/> 的延迟初始化值。
+        /// </summary>
+        private static readonly Lazy<Representer<T>> LazyDefault =
+            new Lazy<Representer<T>>(Representer<T>.CreateDefault);
+
+        /// <summary>
         /// 初始化 <see cref="Representer{T}"/> 类的新实例。
         /// </summary>
         protected Representer() { }
@@ -18,7 +24,7 @@ namespace XstarS.Diagnostics
         /// 获取默认的 <see cref="Representer{T}"/> 类的实例。
         /// </summary>
         /// <returns>默认的 <see cref="Representer{T}"/> 类的实例。</returns>
-        public static Representer<T> Default { get; } = Representer<T>.CreateDefault();
+        public static Representer<T> Default => Representer<T>.LazyDefault.Value;
 
         /// <summary>
         /// 创建 <see cref="Representer{T}"/> 类的默认实例。
