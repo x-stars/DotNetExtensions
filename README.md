@@ -23,6 +23,7 @@
 * `XstarS.Diagnostics`
 * `XstarS.IO`
 * `XstarS.Reflection`
+* `XstarS.Reflection.Emit`
 * `XstarS.Runtime`
 * `XstarS.Text.RegularExpressions`
 
