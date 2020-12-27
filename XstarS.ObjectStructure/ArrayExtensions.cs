@@ -5,7 +5,7 @@ namespace XstarS
     /// <summary>
     /// 提供数组的扩展方法。
     /// </summary>
-    internal static partial class ArrayExtensions
+    internal static class ArrayExtensions
     {
         /// <summary>
         /// 返回一个新数组，此数组为当前数组追加指定元素后的结果。
@@ -95,13 +95,13 @@ namespace XstarS
                 throw new ArgumentOutOfRangeException(nameof(offset));
             }
 
-            var scale = array.Length;
             var result = new int[array.Rank];
+            var scale = array.Length;
             for (int rank = 0; rank < array.Rank; rank++)
             {
-                scale /= array.GetLength(rank);
                 var start = array.GetLowerBound(rank);
-                result[rank] = offset / scale + start;
+                scale /= array.GetLength(rank);
+                result[rank] = start + offset / scale;
                 offset %= scale;
             }
             return result;
