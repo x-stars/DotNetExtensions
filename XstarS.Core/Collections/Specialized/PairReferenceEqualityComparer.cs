@@ -10,7 +10,7 @@ namespace XstarS.Collections.Specialized
     /// 用于比较两个 <see cref="ObjectPair"/> 包含的对象的引用是否相等的比较器。
     /// </summary>
     [Serializable]
-    internal sealed class PairReferenceEqualityComparer : EqualityComparer<ObjectPair>
+    public sealed class PairReferenceEqualityComparer : EqualityComparer<ObjectPair>
     {
         /// <summary>
         /// 初始化 <see cref="PairReferenceEqualityComparer"/> 类的新实例。

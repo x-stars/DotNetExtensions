@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using XstarS.Collections.Generic;
-using XstarS.Runtime;
+using XstarS.Reflection;
 
 namespace XstarS
 {
@@ -43,7 +43,7 @@ namespace XstarS
             {
                 var xItem = methodGet.Invoke(xArray, xArray.OffsetToIndices(index).Box());
                 var yItem = methodGet.Invoke(yArray, yArray.OffsetToIndices(index).Box());
-                if (!ObjectRuntimeHelper.BoxedPointerEquals(xItem, yItem)) { return false; }
+                if (!PointerHelper.Equals(xItem, yItem)) { return false; }
             }
             return true;
         }
@@ -63,8 +63,7 @@ namespace XstarS
             for (int index = 0; index < array.Length; index++)
             {
                 var item = methodGet.Invoke(array, array.OffsetToIndices(index).Box());
-                hashCode = this.CombineHashCode(
-                    hashCode, ObjectRuntimeHelper.GetBoxedPointerHashCode(item));
+                hashCode = this.CombineHashCode(hashCode, PointerHelper.GetHashCode(item));
             }
             return hashCode;
         }

@@ -49,9 +49,12 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.01234567890`))'=='net' And
-                        '$(TargetFramework.CompareTo(`net47`))'&lt;'0'">
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.01234567890`))'=='net' And&#xD;&#xA;                        '$(TargetFramework.CompareTo(`net47`))'&lt;'0'">
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XstarS.Core\XstarS.Core.csproj" />
   </ItemGroup>
 
 </Project>

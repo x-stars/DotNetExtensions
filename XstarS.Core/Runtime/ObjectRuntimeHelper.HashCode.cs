@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using XstarS.Collections.Specialized;
+using XstarS.Reflection;
 
 namespace XstarS.Runtime
 {
@@ -19,16 +20,6 @@ namespace XstarS.Runtime
             var comparer = ReferenceEqualityComparer.Default;
             var computed = new HashSet<object>(comparer);
             return ObjectRuntimeHelper.GetValueHashCode(value, computed);
-        }
-
-        /// <summary>
-        /// 获取指定以 <see cref="Pointer"/> 包装的指针的哈希代码。
-        /// </summary>
-        /// <param name="value">要获取哈希代码的包装的指针。</param>
-        /// <returns><paramref name="value"/> 中包装的指针的哈希代码。</returns>
-        internal static unsafe int GetBoxedPointerHashCode(object value)
-        {
-            return ((IntPtr)Pointer.Unbox(value)).GetHashCode();
         }
 
         /// <summary>
@@ -104,7 +95,7 @@ namespace XstarS.Runtime
                 {
                     var item = methodGet.Invoke(value, value.OffsetToIndices(index).Box());
                     hashCode = ObjectRuntimeHelper.CombineHashCode(
-                        hashCode, ObjectRuntimeHelper.GetBoxedPointerHashCode(item));
+                        hashCode, PointerHelper.GetHashCode(item));
                 }
             }
             else
@@ -143,7 +134,7 @@ namespace XstarS.Runtime
                     if (field.FieldType.IsPointer)
                     {
                         hashCode = ObjectRuntimeHelper.CombineHashCode(
-                            hashCode, ObjectRuntimeHelper.GetBoxedPointerHashCode(member));
+                            hashCode, PointerHelper.GetHashCode(member));
                     }
                     else
                     {

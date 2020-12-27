@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using XstarS.Collections.Specialized;
+using XstarS.Reflection;
 
 namespace XstarS.Runtime
 {
@@ -24,18 +25,6 @@ namespace XstarS.Runtime
             var comparer = PairReferenceEqualityComparer.Default;
             var compared = new HashSet<ObjectPair>(comparer);
             return ObjectRuntimeHelper.ValueEquals(value, other, compared);
-        }
-
-        /// <summary>
-        /// 确定指定的两个以 <see cref="Pointer"/> 包装的指针是否相等。
-        /// </summary>
-        /// <param name="value">要进行相等比较的第一个包装的指针。</param>
-        /// <param name="other">要进行相等比较的第二个包装的指针。</param>
-        /// <returns>若 <paramref name="value"/> 和 <paramref name="other"/> 包装的指针相等，
-        /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        internal static unsafe bool BoxedPointerEquals(object value, object other)
-        {
-            return Pointer.Unbox(value) == Pointer.Unbox(other);
         }
 
         /// <summary>
@@ -118,7 +107,7 @@ namespace XstarS.Runtime
                 {
                     var valueItem = methodGet.Invoke(value, value.OffsetToIndices(index).Box());
                     var otherItem = methodGet.Invoke(other, other.OffsetToIndices(index).Box());
-                    if (!ObjectRuntimeHelper.BoxedPointerEquals(valueItem, otherItem))
+                    if (!PointerHelper.Equals(valueItem, otherItem))
                     {
                         return false;
                     }
@@ -165,7 +154,7 @@ namespace XstarS.Runtime
                     var otherMember = field.GetValue(other);
                     if (field.FieldType.IsPointer)
                     {
-                        if (!ObjectRuntimeHelper.BoxedPointerEquals(valueMember, otherMember))
+                        if (!PointerHelper.Equals(valueMember, otherMember))
                         {
                             return false;
                         }
