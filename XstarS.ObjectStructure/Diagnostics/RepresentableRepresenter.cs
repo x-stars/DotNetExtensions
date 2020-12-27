@@ -6,9 +6,9 @@ namespace XstarS.Diagnostics
     /// 提供将 <see cref="IRepresentable"/> 对象表示为其
     /// <see cref="IRepresentable.Represent()"/> 方法返回的字符串的方法。
     /// </summary>
-    /// <typeparam name="T">要表示为为字符串的对象的类型。</typeparam>
+    /// <typeparam name="T"><see cref="IRepresentable"/> 对象的类型。</typeparam>
     [Serializable]
-    internal sealed class RepresentableRepresenter<T> : ObjectRepresenter<T>
+    internal sealed class RepresentableRepresenter<T> : Representer<T>
         where T : IRepresentable
     {
         /// <summary>

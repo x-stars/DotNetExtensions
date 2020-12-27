@@ -11,7 +11,7 @@ namespace XstarS.Collections.Generic
     /// <typeparam name="TValue"><see cref="KeyValuePair{TKey, TValue}"/> 中的值的类型。</typeparam>
     [Serializable]
     internal sealed class KeyValuePairRepresenter<TKey, TValue>
-        : StructuralObjectRepresenterBase<KeyValuePair<TKey, TValue>>
+        : StructuralRepresenterBase<KeyValuePair<TKey, TValue>>
     {
         /// <summary>
         /// 初始化 <see cref="KeyValuePairRepresenter{TKey, TValue}"/> 类的新实例。
@@ -27,8 +27,8 @@ namespace XstarS.Collections.Generic
         protected override string RepresentCore(
             KeyValuePair<TKey, TValue> value, ISet<object> represented)
         {
-            var keyRepresenter = StructuralObjectRepresenter.OfType(value.Key?.GetType());
-            var valueRepresenter = StructuralObjectRepresenter.OfType(value.Value?.GetType());
+            var keyRepresenter = StructuralRepresenter.OfType(value.Key?.GetType());
+            var valueRepresenter = StructuralRepresenter.OfType(value.Value?.GetType());
             var keyRepresent = keyRepresenter.Represent(value.Key, represented);
             var valueRepresent = valueRepresenter.Represent(value.Value, represented);
             return $"[{keyRepresent}, {valueRepresent}]";

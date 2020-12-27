@@ -9,7 +9,7 @@ namespace XstarS.Collections
     /// 提供将 <see cref="DictionaryEntry"/> 中的键值表示为字符串的方法。
     /// </summary>
     [Serializable]
-    internal sealed class DictionaryEntryRepresenter : StructuralObjectRepresenterBase<DictionaryEntry>
+    internal sealed class DictionaryEntryRepresenter : StructuralRepresenterBase<DictionaryEntry>
     {
         /// <summary>
         /// 初始化 <see cref="DictionaryEntry"/> 类的新实例。
@@ -24,8 +24,8 @@ namespace XstarS.Collections
         /// <returns>表示 <paramref name="value"/> 中的键值的字符串。</returns>
         protected override string RepresentCore(DictionaryEntry value, ISet<object> represented)
         {
-            var keyRepresenter = StructuralObjectRepresenter.OfType(value.Key?.GetType());
-            var valueRepresenter = StructuralObjectRepresenter.OfType(value.Value?.GetType());
+            var keyRepresenter = StructuralRepresenter.OfType(value.Key?.GetType());
+            var valueRepresenter = StructuralRepresenter.OfType(value.Value?.GetType());
             var keyRepresent = keyRepresenter.Represent(value.Key, represented);
             var valueRepresent = valueRepresenter.Represent(value.Value, represented);
             return $"[{keyRepresent}, {valueRepresent}]";

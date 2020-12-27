@@ -5,12 +5,12 @@ using XstarS.Collections.Specialized;
 namespace XstarS.Diagnostics
 {
     /// <summary>
-    /// 提供无环字符串表示对象 <see cref="IAcyclicObjectRepresenter{T}"/> 的抽象基类。
+    /// 提供无环字符串表示对象 <see cref="IAcyclicRepresenter{T}"/> 的抽象基类。
     /// </summary>
     /// <typeparam name="T">要无环地表示为字符串的对象的类型。</typeparam>
     [Serializable]
-    public abstract class AcyclicObjectRepresenter<T>
-        : ObjectRepresenter<T>, IAcyclicObjectRepresenter, IAcyclicObjectRepresenter<T>
+    public abstract class AcyclicRepresenter<T>
+        : Representer<T>, IAcyclicRepresenter, IAcyclicRepresenter<T>
     {
         /// <summary>
         /// 表示已经在路径中表示过的对象的字符串表示。
@@ -18,9 +18,9 @@ namespace XstarS.Diagnostics
         private const string RepresentedString = "{ ... }";
 
         /// <summary>
-        /// 初始化 <see cref="AcyclicObjectRepresenter{T}"/> 类的新实例。
+        /// 初始化 <see cref="AcyclicRepresenter{T}"/> 类的新实例。
         /// </summary>
-        protected AcyclicObjectRepresenter() { }
+        protected AcyclicRepresenter() { }
 
         /// <summary>
         /// 将指定对象表示为字符串。
@@ -46,7 +46,7 @@ namespace XstarS.Diagnostics
 
             if (!represented.Add(value))
             {
-                return AcyclicObjectRepresenter<T>.RepresentedString;
+                return AcyclicRepresenter<T>.RepresentedString;
             }
 
             var represent = this.RepresentCore(value, represented);
@@ -68,7 +68,7 @@ namespace XstarS.Diagnostics
         /// <param name="value">要表示为字符串的对象。</param>
         /// <param name="represented">已经在路径中表示过的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        string IAcyclicObjectRepresenter<T>.Represent(T value, ISet<object> represented)
+        string IAcyclicRepresenter<T>.Represent(T value, ISet<object> represented)
         {
             return this.Represent(value, represented);
         }
@@ -81,7 +81,7 @@ namespace XstarS.Diagnostics
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
         /// <exception cref="InvalidCastException">
         /// 无法强制转换 <paramref name="value"/> 到 <typeparamref name="T"/> 类型。</exception>
-        string IAcyclicObjectRepresenter.Represent(object value, ISet<object> represented)
+        string IAcyclicRepresenter.Represent(object value, ISet<object> represented)
         {
             return this.Represent((T)value, represented);
         }

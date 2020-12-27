@@ -10,7 +10,7 @@ namespace XstarS.Collections
     /// </summary>
     /// <typeparam name="T">实现了 <see cref="IEnumerable"/> 接口的集合类型。</typeparam>
     [Serializable]
-    internal sealed class EnumerableRepresenter<T> : StructuralObjectRepresenterBase<T>
+    internal sealed class EnumerableRepresenter<T> : StructuralRepresenterBase<T>
         where T : IEnumerable
     {
         /// <summary>
@@ -29,7 +29,7 @@ namespace XstarS.Collections
             var represents = new List<string>();
             foreach (var item in value)
             {
-                var representer = StructuralObjectRepresenter.OfType(item?.GetType());
+                var representer = StructuralRepresenter.OfType(item?.GetType());
                 represents.Add(representer.Represent(item, represented));
             }
             return "{ " + string.Join(", ", represents) + " }";

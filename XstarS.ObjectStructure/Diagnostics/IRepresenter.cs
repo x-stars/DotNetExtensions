@@ -3,7 +3,7 @@
     /// <summary>
     /// 提供将对象表示为字符串的方法。
     /// </summary>
-    public interface IObjectRepresenter
+    public interface IRepresenter
     {
         /// <summary>
         /// 将指定对象表示为字符串。
@@ -17,7 +17,7 @@
     /// 提供将指定类型的对象表示为字符串的方法。
     /// </summary>
     /// <typeparam name="T">要表示为字符串的对象的类型。</typeparam>
-    public interface IObjectRepresenter<in T>
+    public interface IRepresenter<in T>
     {
         /// <summary>
         /// 将指定对象表示为字符串。

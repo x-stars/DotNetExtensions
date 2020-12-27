@@ -9,7 +9,7 @@ namespace XstarS
     /// </summary>
     /// <typeparam name="T">数组的类型。</typeparam>
     [Serializable]
-    internal sealed class ArrayRepresenter<T> : StructuralObjectRepresenterBase<T>
+    internal sealed class ArrayRepresenter<T> : StructuralRepresenterBase<T>
     {
         /// <summary>
         /// 初始化 <see cref="ArrayRepresenter{T}"/> 类的新实例。
@@ -40,7 +40,7 @@ namespace XstarS
             if (indices.Length == array.Rank)
             {
                 var item = array.GetValue(indices);
-                var representer = StructuralObjectRepresenter.OfType(item?.GetType());
+                var representer = StructuralRepresenter.OfType(item?.GetType());
                 return representer.Represent(item, represented);
             }
             else
