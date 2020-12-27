@@ -6,6 +6,7 @@ namespace XstarS.Reflection
     /// <summary>
     /// 提供以 <see cref="Pointer"/> 包装的指针的帮助方法。
     /// </summary>
+    [CLSCompliant(false)]
     public static unsafe class PointerHelper
     {
         /// <summary>
