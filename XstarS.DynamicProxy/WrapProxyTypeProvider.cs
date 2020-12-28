@@ -25,14 +25,14 @@ namespace XstarS.Reflection
         private readonly Lazy<Type> LazyProxyType;
 
         /// <summary>
-        /// 表示 <see cref="WrapProxyTypeProvider.HandlerField"/> 的延迟初始化对象。
-        /// </summary>
-        private readonly Lazy<FieldInfo> LazyHandlerField;
-
-        /// <summary>
         /// 表示 <see cref="WrapProxyTypeProvider.InstanceField"/> 的延迟初始化对象。
         /// </summary>
         private readonly Lazy<FieldInfo> LazyInstanceField;
+
+        /// <summary>
+        /// 表示 <see cref="WrapProxyTypeProvider.HandlerField"/> 的延迟初始化对象。
+        /// </summary>
+        private readonly Lazy<FieldInfo> LazyHandlerField;
 
         /// <summary>
         /// 表示原型类型中所有应按代理模式重写的方法。
@@ -154,22 +154,22 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 搜寻代理类型中的代理委托字段。
-        /// </summary>
-        /// <returns>代理类型中的代理委托字段。</returns>
-        private FieldInfo FindHandlerField()
-        {
-            return this.ProxyType.GetField(nameof(MethodInvokeHandler),
-                BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
-        }
-
-        /// <summary>
         /// 搜寻代理类型中的代理对象字段。
         /// </summary>
         /// <returns>代理类型中的 <see cref="MethodInvokeHandler"/> 字段。</returns>
         private FieldInfo FindInstanceField()
         {
             return this.ProxyType.GetField("Instance",
+                BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
+        }
+
+        /// <summary>
+        /// 搜寻代理类型中的代理委托字段。
+        /// </summary>
+        /// <returns>代理类型中的代理委托字段。</returns>
+        private FieldInfo FindHandlerField()
+        {
+            return this.ProxyType.GetField("Handler",
                 BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
         }
 
@@ -316,11 +316,10 @@ namespace XstarS.Reflection
         {
             var baseMethods = this.BaseMethods;
             var type = this.ProxyTypeBuilder;
-            var instanceField = this.ProxyInstanceField;
             var baseMethodInfoFields = this.BaseMethodInfoFields;
             var baseMethodDelegateFields = this.BaseMethodDelegateFields;
 
-            var handlerField = type.DefineField(nameof(MethodInvokeHandler),
+            var handlerField = type.DefineField("Handler",
                 typeof(MethodInvokeHandler), FieldAttributes.Assembly);
 
             foreach (var baseMethod in baseMethods)

@@ -141,7 +141,7 @@ namespace XstarS.Reflection
         /// <returns>代理类型中的代理委托字段。</returns>
         private FieldInfo FindHandlerField()
         {
-            return this.ProxyType.GetField(nameof(MethodInvokeHandler),
+            return this.ProxyType.GetField("Handler",
                 BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic);
         }
 
@@ -270,7 +270,7 @@ namespace XstarS.Reflection
             var baseMethodInfoFields = this.BaseMethodInfoFields;
             var baseMethodDelegateFields = this.BaseMethodDelegateFields;
 
-            var handlerField = type.DefineField(nameof(MethodInvokeHandler),
+            var handlerField = type.DefineField("Handler",
                 typeof(MethodInvokeHandler), FieldAttributes.Assembly);
 
             foreach (var baseMethod in baseMethods)
