@@ -42,10 +42,8 @@ namespace XstarS
 
             var result = FormatterServices.GetUninitializedObject(typeof(TDelegate));
             var fields = DelegateExtensions.DelegateFields;
-            foreach (var field in fields)
-            {
-                field.SetValue(result, field.GetValue(@delegate));
-            }
+            var data = FormatterServices.GetObjectData(@delegate, fields);
+            FormatterServices.PopulateObjectMembers(result, fields, data);
             return (TDelegate)result;
         }
 
