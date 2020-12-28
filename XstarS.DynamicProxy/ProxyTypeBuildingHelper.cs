@@ -450,18 +450,6 @@ namespace XstarS.Reflection.Emit
             {
                 il.Emit(OpCodes.Ldsfld, baseMethodInfoField);
             }
-            var baseParameters = baseMethod.GetParameters();
-            il.EmitLdcI4(baseParameters.Length);
-            il.Emit(OpCodes.Newarr, typeof(object));
-            for (int index = 0; index < baseParameters.Length; index++)
-            {
-                var baseParameter = baseParameters[index];
-                il.Emit(OpCodes.Dup);
-                il.EmitLdcI4(index);
-                il.EmitLdarg(index + 1);
-                il.EmitBox(baseParameter.ParameterType);
-                il.Emit(OpCodes.Stelem_Ref);
-            }
             if (baseHasGenericConstraints)
             {
                 il.Emit(OpCodes.Ldtoken, baseMethodDelegateField);
@@ -475,6 +463,18 @@ namespace XstarS.Reflection.Emit
             else
             {
                 il.Emit(OpCodes.Ldsfld, baseMethodDelegateField);
+            }
+            var baseParameters = baseMethod.GetParameters();
+            il.EmitLdcI4(baseParameters.Length);
+            il.Emit(OpCodes.Newarr, typeof(object));
+            for (int index = 0; index < baseParameters.Length; index++)
+            {
+                var baseParameter = baseParameters[index];
+                il.Emit(OpCodes.Dup);
+                il.EmitLdcI4(index);
+                il.EmitLdarg(index + 1);
+                il.EmitBox(baseParameter.ParameterType);
+                il.Emit(OpCodes.Stelem_Ref);
             }
             il.Emit(OpCodes.Callvirt,
                 typeof(MethodInvokeHandler).GetMethod(nameof(MethodInvokeHandler.Invoke)));

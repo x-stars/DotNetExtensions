@@ -7,7 +7,7 @@ namespace XstarS.Reflection.TestTypes
     public static class ProxyFactoryTestHandlers
     {
         public static readonly MethodInvokeHandler WriteMethodAndInvokeBaseHandler =
-            (instance, method, arguments, @delegate) =>
+            (instance, method, @delegate, arguments) =>
             {
                 Console.WriteLine($"{instance.GetType()} " +
                     $"#{RuntimeHelpers.GetHashCode(instance)} :: {method}");
@@ -15,7 +15,7 @@ namespace XstarS.Reflection.TestTypes
             };
 
         public static readonly MethodInvokeHandler WriteMethodAndReturnDefaultHandler =
-            (instance, method, arguments, @delegate) =>
+            (instance, method, @delegate, arguments) =>
             {
                 Console.WriteLine($"{instance.GetType()} " +
                     $"#{RuntimeHelpers.GetHashCode(instance)} :: {method}");

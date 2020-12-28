@@ -18,7 +18,7 @@ namespace XstarS.Reflection
         /// 表示 <see cref="WrapProxyFactory{T}.Handler"/> 的默认值。
         /// </summary>
         private static readonly MethodInvokeHandler DefaultHandler =
-            (instance, method, arguments, @delegate) => @delegate.Invoke(instance, arguments);
+            (instance, method, @delegate, arguments) => @delegate.Invoke(instance, arguments);
 
         /// <summary>
         /// 表示提供代理类型的 <see cref="WrapProxyTypeProvider"/> 对象。
