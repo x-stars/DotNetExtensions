@@ -21,9 +21,9 @@ namespace XstarS.Reflection
             TInterface instance, MethodInfo method, object[] arguments);
 
         /// <summary>
-        /// 表示默认的 <see cref="Handler"/> 代理委托，调用方法并返回。
+        /// 表示默认的 <see cref="InvocationHandler"/> 代理委托，调用方法并返回。
         /// </summary>
-        public static readonly InvocationHandler DefaultHandler =
+        private static readonly InvocationHandler DefaultHandler =
             (instance, method, arguments) => method.Invoke(instance, arguments);
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace XstarS.Reflection
         protected TInterface Instance;
 
         /// <summary>
-        /// 当前 <see cref="DispatchProxy{TInterface}"/> 的代理委托。
+        /// 表示当前 <see cref="DispatchProxy{TInterface}"/> 的代理委托。
         /// </summary>
         protected InvocationHandler Handler;
 
@@ -51,6 +51,18 @@ namespace XstarS.Reflection
         protected override object Invoke(MethodInfo method, object[] arguments)
         {
             return this.Handler.Invoke(this.Instance, method, arguments);
+        }
+
+        /// <summary>
+        /// 使用指定的代理对象和默认的代理委托创建 <see cref="DispatchProxy{TInterface}"/> 类的实例。
+        /// </summary>
+        /// <param name="instance">要代理的 <typeparamref name="TInterface"/> 类型的对象。</param>
+        /// <returns>以指定的参数初始化的 <see cref="DispatchProxy{TInterface}"/> 类的实例。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="instance"/> 为 <see langword="null"/>。</exception>
+        public static TInterface Create(TInterface instance)
+        {
+            return DispatchProxy<TInterface>.Create(instance, DefaultHandler);
         }
 
         /// <summary>
