@@ -7,7 +7,7 @@ namespace XstarS.Diagnostics
     /// </summary>
     /// <typeparam name="T">要表示为为字符串的对象的类型。</typeparam>
     [Serializable]
-    internal sealed class ToStringRepresenter<T> : Representer<T>
+    internal sealed class ToStringRepresenter<T> : SimpleRepresenter<T>
     {
         /// <summary>
         /// 初始化 <see cref="ToStringRepresenter{T}"/> 类的新实例。

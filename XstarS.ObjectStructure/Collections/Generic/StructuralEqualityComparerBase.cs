@@ -9,7 +9,7 @@ namespace XstarS.Collections.Generic
     /// </summary>
     /// <typeparam name="T">结构化对象的类型。</typeparam>
     [Serializable]
-    internal abstract class StructuralEqualityComparerBase<T> : AcyclicEqualityComparer<T>
+    internal abstract class StructuralEqualityComparerBase<T> : SimpleAcyclicEqualityComparer<T>
     {
         /// <summary>
         /// 表示 <see cref="StructuralEqualityComparerBase{T}.Default"/> 的延迟初始化值。 

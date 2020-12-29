@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Reflection;
+using XstarS.Collections.Generic;
 
 namespace XstarS.Reflection
 {
@@ -8,7 +8,7 @@ namespace XstarS.Reflection
     /// 提供用于比较方法的签名是否相等的方法。
     /// </summary>
     [Serializable]
-    public sealed class MethodSignatureEqualityComparer : EqualityComparer<MethodInfo>
+    public sealed class MethodSignatureEqualityComparer : SimpleEqualityComparer<MethodInfo>
     {
         /// <summary>
         /// 初始化 <see cref="MethodSignatureEqualityComparer"/> 类的新实例。

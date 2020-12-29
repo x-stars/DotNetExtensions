@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using XstarS.Collections.Generic;
 using XstarS.Runtime;
 
 namespace XstarS.Collections.Specialized
@@ -10,7 +10,7 @@ namespace XstarS.Collections.Specialized
     /// <remarks>基于反射调用，可能存在性能问题。</remarks>
     /// <typeparam name="T">要比较的对象的类型。</typeparam>
     [Serializable]
-    public sealed class ValueEqualityComparer<T> : EqualityComparer<T>
+    public sealed class ValueEqualityComparer<T> : SimpleEqualityComparer<T>
     {
         /// <summary>
         /// 初始化 <see cref="ValueEqualityComparer{T}"/> 类的新实例。

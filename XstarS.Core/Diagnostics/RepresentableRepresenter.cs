@@ -8,7 +8,7 @@ namespace XstarS.Diagnostics
     /// </summary>
     /// <typeparam name="T"><see cref="IRepresentable"/> 对象的类型。</typeparam>
     [Serializable]
-    internal sealed class RepresentableRepresenter<T> : Representer<T>
+    internal sealed class RepresentableRepresenter<T> : SimpleRepresenter<T>
         where T : IRepresentable
     {
         /// <summary>
