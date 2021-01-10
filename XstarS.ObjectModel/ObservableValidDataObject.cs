@@ -84,7 +84,6 @@ namespace XstarS.ComponentModel
             this.ValidateProperty(propertyName);
         }
 
-
         /// <summary>
         /// 验证指定属性的错误。
         /// </summary>

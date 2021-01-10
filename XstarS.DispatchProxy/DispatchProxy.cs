@@ -62,7 +62,8 @@ namespace XstarS.Reflection
         /// <paramref name="instance"/> 为 <see langword="null"/>。</exception>
         public static TInterface Create(TInterface instance)
         {
-            return DispatchProxy<TInterface>.Create(instance, DefaultHandler);
+            return DispatchProxy<TInterface>.Create(
+                instance, DispatchProxy<TInterface>.DefaultHandler);
         }
 
         /// <summary>
