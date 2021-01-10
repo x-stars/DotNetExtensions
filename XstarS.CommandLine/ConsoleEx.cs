@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security;
+using XstarS.Text;
 using mstring = System.Text.StringBuilder;
 
 namespace XstarS
@@ -13,59 +14,10 @@ namespace XstarS
     public static class ConsoleEx
     {
         /// <summary>
-        /// 提供类似于 <see cref="int.Parse(string)"/> 的字符串解析方法的委托。
+        /// 表示所有分隔值的字符的集合。
         /// </summary>
-        /// <typeparam name="T">要解析为的数值类型。</typeparam>
-        private static class ParseMethod<T>
-        {
-            /// <summary>
-            /// 表示 <typeparamref name="T"/> 类型的字符串解析方法的委托。
-            /// </summary>
-            internal static readonly Converter<string, T> Delegate = ParseMethod<T>.CreateDelegate();
-
-            /// <summary>
-            /// 创建 <typeparamref name="T"/> 类型的字符串解析方法的委托。
-            /// </summary>
-            /// <returns><typeparamref name="T"/> 类型的字符串解析方法的委托。</returns>
-            [System.Diagnostics.CodeAnalysis.SuppressMessage(
-                "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-            private static Converter<string, T> CreateDelegate()
-            {
-                try
-                {
-                    var method = typeof(T).GetMethod(nameof(int.Parse), new[] { typeof(string) });
-                    return (!(method is null) && method.IsStatic && (method.ReturnType == typeof(T))) ?
-                        (Converter<string, T>)method.CreateDelegate(typeof(Converter<string, T>)) : null;
-                }
-                catch (Exception) { return null; }
-            }
-        }
-
-        /// <summary>
-        /// 表示所有空白字符的集合。
-        /// </summary>
-        private static readonly char[] WhiteSpaces = Enumerable.Range(
+        private static readonly char[] TokenSeparators = Enumerable.Range(
             0, char.MaxValue + 1).Select(Convert.ToChar).Where(char.IsWhiteSpace).ToArray();
-
-        /// <summary>
-        /// 将当前字符串表示形式转换为其等效的数值形式。
-        /// </summary>
-        /// <typeparam name="T">数值形式的类型，
-        /// 应为枚举类型或包含类似与 <see cref="int.Parse(string)"/> 的方法。</typeparam>
-        /// <param name="text">包含要转换数值的字符串。</param>
-        /// <returns>与 <paramref name="text"/> 等效的数值形式。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="text"/> 不表示有效的值。</exception>
-        /// <exception cref="FormatException"><paramref name="text"/> 的格式不正确。</exception>
-        /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
-        /// <exception cref="OverflowException">
-        /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
-        public static T ParseAs<T>(this string text)
-        {
-            return !(ParseMethod<T>.Delegate is null) ? ParseMethod<T>.Delegate.Invoke(text) :
-                typeof(T).IsEnum ? (T)Enum.Parse(typeof(T), text) : throw new InvalidCastException();
-        }
 
         /// <summary>
         /// 从标准输入流读取下一个字符串值。
@@ -113,7 +65,7 @@ namespace XstarS
         /// <exception cref="OverflowException">
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static T ReadTokenAs<T>() => ConsoleEx.ParseAs<T>(ConsoleEx.ReadToken());
+        public static T ReadTokenAs<T>() => ConsoleEx.ReadToken().ParseAs<T>();
 
         /// <summary>
         /// 从标准输入流读取下一行的所有字符串值。
@@ -126,7 +78,7 @@ namespace XstarS
         /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static string[] ReadLineTokens() =>
-            Console.ReadLine().Split(ConsoleEx.WhiteSpaces, StringSplitOptions.RemoveEmptyEntries);
+            Console.ReadLine().Split(ConsoleEx.TokenSeparators, StringSplitOptions.RemoveEmptyEntries);
 
         /// <summary>
         /// 从标准输入流读取下一行字符，并将其包含的所有字符串值转换为指定的数值形式。
@@ -145,7 +97,7 @@ namespace XstarS
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static T[] ReadLineTokensAs<T>() =>
-            Array.ConvertAll(ConsoleEx.ReadLineTokens(), ConsoleEx.ParseAs<T>);
+            Array.ConvertAll(ConsoleEx.ReadLineTokens(), StringParseExtensions.ParseAs<T>);
 
         /// <summary>
         /// 从标准输入流读取到末尾的所有字符。
@@ -168,7 +120,7 @@ namespace XstarS
         /// 没有足够的内存来为到末尾的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static string[] ReadTokensToEnd() =>
-            ConsoleEx.ReadToEnd().Split(ConsoleEx.WhiteSpaces, StringSplitOptions.RemoveEmptyEntries);
+            ConsoleEx.ReadToEnd().Split(ConsoleEx.TokenSeparators, StringSplitOptions.RemoveEmptyEntries);
 
         /// <summary>
         /// 从标准输入流读取到末尾的所有字符，并将其包含的所有字符串值转换为指定的数值形式。
@@ -184,7 +136,7 @@ namespace XstarS
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static T[] ReadTokensToEndAs<T>() =>
-            Array.ConvertAll(ConsoleEx.ReadTokensToEnd(), ConsoleEx.ParseAs<T>);
+            Array.ConvertAll(ConsoleEx.ReadTokensToEnd(), StringParseExtensions.ParseAs<T>);
 
         /// <summary>
         /// 将指定的字符串值以指定的前景色和背景色写入标准输出流。
