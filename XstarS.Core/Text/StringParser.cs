@@ -3,38 +3,79 @@
 namespace XstarS.Text
 {
     /// <summary>
-    /// 提供将字符串转解析为数值的静态方法。
+    /// 为字符串解析对象 <see cref="IStringParser{T}"/> 提供抽象基类。
+    /// </summary>
+    /// <typeparam name="T">要解析为的数值的类型。</typeparam>
+    [Serializable]
+    public abstract class StringParser<T> : IStringParser, IStringParser<T>
+    {
+        /// <summary>
+        /// 初始化 <see cref="StringParser{T}"/> 类的新实例。
+        /// </summary>
+        protected StringParser() { }
+
+        /// <summary>
+        /// 获取 <see cref="StringParser{T}"/> 类的默认实例。
+        /// </summary>
+        /// <returns><see cref="StringParser{T}"/> 类的默认实例。</returns>
+        public static StringParser<T> Default { get; } = new DefaultStringParser<T>();
+
+        /// <summary>
+        /// 创建以指定的委托定义的 <see cref="StringParser{T}"/> 类的实例。
+        /// </summary>
+        /// <param name="parser">用于解析字符串为数值的方法的
+        /// <see cref="Converter{TInput, TOutput}"/> 委托。</param>
+        /// <returns>以委托定义的指定类型的 <see cref="StringParser{T}"/> 类的实例。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="parser"/> 为 <see langword="null"/>。</exception>
+        public static StringParser<T> Create(Converter<string, T> parser) =>
+            new DelegateStringParser<T>(parser);
+
+        /// <summary>
+        /// 将指定的字符串表示形式转换为其等效的数值形式。
+        /// </summary>
+        /// <param name="text">包含要转换的数值的字符串。</param>
+        /// <returns>与 <paramref name="text"/> 等效的数值形式。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException"><paramref name="text"/> 不表示有效的值。</exception>
+        /// <exception cref="FormatException"><paramref name="text"/> 的格式不正确。</exception>
+        /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
+        /// <exception cref="OverflowException">
+        /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
+        public abstract T Parse(string text);
+
+        /// <summary>
+        /// 将指定的字符串表示形式转换为其等效的数值形式。
+        /// </summary>
+        /// <param name="text">包含要转换的数值的字符串。</param>
+        /// <returns>与 <paramref name="text"/> 等效的数值形式。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException"><paramref name="text"/> 不表示有效的值。</exception>
+        /// <exception cref="FormatException"><paramref name="text"/> 的格式不正确。</exception>
+        /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
+        /// <exception cref="OverflowException">
+        /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
+        object IStringParser.Parse(string text) => this.Parse(text);
+    }
+
+    /// <summary>
+    /// 提供将字符串转解析为数值的方法。
     /// </summary>
     public static class StringParser
     {
         /// <summary>
-        /// 提供类似于 <see cref="int.Parse(string)"/> 的字符串解析方法的委托。
+        /// 创建以指定的委托定义的指定类型的 <see cref="StringParser{T}"/> 类的实例。
         /// </summary>
-        /// <typeparam name="T">要解析为的数值类型。</typeparam>
-        private static class ParseMethod<T>
-        {
-            /// <summary>
-            /// 表示 <typeparamref name="T"/> 类型的字符串解析方法的委托。
-            /// </summary>
-            internal static readonly Converter<string, T> Delegate = ParseMethod<T>.CreateDelegate();
-
-            /// <summary>
-            /// 创建 <typeparamref name="T"/> 类型的字符串解析方法的委托。
-            /// </summary>
-            /// <returns><typeparamref name="T"/> 类型的字符串解析方法的委托。</returns>
-            [System.Diagnostics.CodeAnalysis.SuppressMessage(
-                "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-            private static Converter<string, T> CreateDelegate()
-            {
-                try
-                {
-                    var method = typeof(T).GetMethod(nameof(int.Parse), new[] { typeof(string) });
-                    return (!(method is null) && method.IsStatic && (method.ReturnType == typeof(T))) ?
-                        (Converter<string, T>)method.CreateDelegate(typeof(Converter<string, T>)) : null;
-                }
-                catch (Exception) { return null; }
-            }
-        }
+        /// <typeparam name="T">数值形式的类型。</typeparam>
+        /// <param name="parser">用于解析字符串为数值的方法的
+        /// <see cref="Converter{TInput, TOutput}"/> 委托。</param>
+        /// <returns>以委托定义的指定类型的 <see cref="StringParser{T}"/> 类的实例。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="parser"/> 为 <see langword="null"/>。</exception>
+        public static StringParser<T> Create<T>(Converter<string, T> parser) =>
+            StringParser<T>.Create(parser);
 
         /// <summary>
         /// 将当前字符串表示形式转换为其等效的数值形式。
@@ -50,10 +91,6 @@ namespace XstarS.Text
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="OverflowException">
         /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
-        public static T ParseAs<T>(this string text)
-        {
-            return !(ParseMethod<T>.Delegate is null) ? ParseMethod<T>.Delegate.Invoke(text) :
-                typeof(T).IsEnum ? (T)Enum.Parse(typeof(T), text) : throw new InvalidCastException();
-        }
+        public static T ParseAs<T>(this string text) => StringParser<T>.Default.Parse(text);
     }
 }
