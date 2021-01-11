@@ -65,7 +65,7 @@ namespace XstarS
         /// <exception cref="OverflowException">
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static T ReadTokenAs<T>() => ConsoleEx.ReadToken().ParseAs<T>();
+        public static T ReadTokenAs<T>() => StringParser.ParseAs<T>(ConsoleEx.ReadToken());
 
         /// <summary>
         /// 从标准输入流读取下一行的所有字符串值。
@@ -97,7 +97,7 @@ namespace XstarS
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static T[] ReadLineTokensAs<T>() =>
-            Array.ConvertAll(ConsoleEx.ReadLineTokens(), StringParseExtensions.ParseAs<T>);
+            Array.ConvertAll(ConsoleEx.ReadLineTokens(), StringParser.ParseAs<T>);
 
         /// <summary>
         /// 从标准输入流读取到末尾的所有字符。
@@ -136,7 +136,7 @@ namespace XstarS
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static T[] ReadTokensToEndAs<T>() =>
-            Array.ConvertAll(ConsoleEx.ReadTokensToEnd(), StringParseExtensions.ParseAs<T>);
+            Array.ConvertAll(ConsoleEx.ReadTokensToEnd(), StringParser.ParseAs<T>);
 
         /// <summary>
         /// 将指定的字符串值以指定的前景色和背景色写入标准输出流。

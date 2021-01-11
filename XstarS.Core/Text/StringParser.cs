@@ -3,9 +3,9 @@
 namespace XstarS.Text
 {
     /// <summary>
-    /// 提供解析字符串的扩展方法。
+    /// 提供将字符串转解析为数值的静态方法。
     /// </summary>
-    public static class StringParseExtensions
+    public static class StringParser
     {
         /// <summary>
         /// 提供类似于 <see cref="int.Parse(string)"/> 的字符串解析方法的委托。
@@ -41,7 +41,7 @@ namespace XstarS.Text
         /// </summary>
         /// <typeparam name="T">数值形式的类型，
         /// 应为枚举类型或包含类似于 <see cref="int.Parse(string)"/> 的方法。</typeparam>
-        /// <param name="text">包含要转换数值的字符串。</param>
+        /// <param name="text">包含要转换的数值的字符串。</param>
         /// <returns>与 <paramref name="text"/> 等效的数值形式。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
