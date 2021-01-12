@@ -28,6 +28,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{39421A54-3AA8-40D6-BAAA-6B0E75AB9D61}"
 	ProjectSection(SolutionItems) = preProject
 		DotNetExtensions.snk = DotNetExtensions.snk
+		Invoke-DotNetFsi.ps1 = Invoke-DotNetFsi.ps1
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{BA4F1AD2-DACC-4B0D-BBC8-771D83C32CED}"
