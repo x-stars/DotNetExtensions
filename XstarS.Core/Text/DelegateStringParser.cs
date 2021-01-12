@@ -12,10 +12,10 @@ namespace XstarS.Text
         /// <summary>
         /// 表示将字符串解析为指定类型的数值的方法的委托。
         /// </summary>
-        private readonly Converter<string, T> Parser;
+        private readonly Converter<string, T> Delegate;
 
         /// <summary>
-        /// 以指定的委托初始化 <see cref="DefaultStringParser{T}"/> 类的新实例。
+        /// 以指定的委托初始化 <see cref="DelegateStringParser{T}"/> 类的新实例。
         /// </summary>
         /// <param name="parser">用于解析字符串为数值的方法的
         /// <see cref="Converter{TInput, TOutput}"/> 委托。</param>
@@ -23,7 +23,7 @@ namespace XstarS.Text
         /// <paramref name="parser"/> 为 <see langword="null"/>。</exception>
         public DelegateStringParser(Converter<string, T> parser)
         {
-            this.Parser = parser ?? throw new ArgumentNullException(nameof(parser));
+            this.Delegate = parser ?? throw new ArgumentNullException(nameof(parser));
         }
 
         /// <summary>
@@ -38,10 +38,6 @@ namespace XstarS.Text
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="OverflowException">
         /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
-        public override T Parse(string text)
-        {
-            return !(this.Parser is null) ? this.Parser.Invoke(text) :
-                typeof(T).IsEnum ? (T)Enum.Parse(typeof(T), text) : throw new InvalidCastException();
-        }
+        public override T Parse(string text) => this.Delegate.Invoke(text);
     }
 }

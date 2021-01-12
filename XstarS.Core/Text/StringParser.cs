@@ -18,7 +18,7 @@ namespace XstarS.Text
         /// 获取 <see cref="StringParser{T}"/> 类的默认实例。
         /// </summary>
         /// <returns><see cref="StringParser{T}"/> 类的默认实例。</returns>
-        public static StringParser<T> Default { get; } = new DefaultStringParser<T>();
+        public static StringParser<T> Default { get; } = StringParser<T>.CreateDefault();
 
         /// <summary>
         /// 创建以指定的委托定义的 <see cref="StringParser{T}"/> 类的实例。
@@ -30,6 +30,13 @@ namespace XstarS.Text
         /// <paramref name="parser"/> 为 <see langword="null"/>。</exception>
         public static StringParser<T> Create(Converter<string, T> parser) =>
             new DelegateStringParser<T>(parser);
+
+        /// <summary>
+        /// 创建 <see cref="StringParser{T}"/> 类的默认实例。
+        /// </summary>
+        /// <returns><see cref="StringParser{T}"/> 类的默认实例。</returns>
+        private static StringParser<T> CreateDefault() =>
+            typeof(T).IsEnum ? new EnumStringParser<T>() : new ParsableStringParser<T>();
 
         /// <summary>
         /// 将指定的字符串表示形式转换为其等效的数值形式。
