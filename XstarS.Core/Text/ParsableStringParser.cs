@@ -10,34 +10,37 @@ namespace XstarS.Text
     internal sealed class ParsableStringParser<T> : SimpleStringParser<T>
     {
         /// <summary>
-        /// 表示将字符串解析为指定类型的数值的方法的委托。
+        /// 提供类似于 <see cref="int.Parse(string)"/> 的方法的委托。
         /// </summary>
-        private readonly Converter<string, T> Delegate;
+        private static class ParseMethod
+        {
+            /// <summary>
+            /// 表示将字符串解析为指定类型的数值的方法的委托。
+            /// </summary>
+            internal static readonly Converter<string, T> Delegate = ParseMethod.CreateDelegate();
+
+            /// <summary>
+            /// 创建 <typeparamref name="T"/> 类型的字符串解析方法的委托。
+            /// </summary>
+            /// <returns><typeparamref name="T"/> 类型的字符串解析方法的委托。</returns>
+            [System.Diagnostics.CodeAnalysis.SuppressMessage(
+                "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+            private static Converter<string, T> CreateDelegate()
+            {
+                try
+                {
+                    var method = typeof(T).GetMethod(nameof(int.Parse), new[] { typeof(string) });
+                    return (!(method is null) && method.IsStatic && (method.ReturnType == typeof(T))) ?
+                        (Converter<string, T>)method.CreateDelegate(typeof(Converter<string, T>)) : null;
+                }
+                catch (Exception) { return null; }
+            }
+        }
 
         /// <summary>
         /// 初始化 <see cref="ParsableStringParser{T}"/> 类的新实例。
         /// </summary>
-        public ParsableStringParser()
-        {
-            this.Delegate = ParsableStringParser<T>.CreateDelegate();
-        }
-
-        /// <summary>
-        /// 创建 <typeparamref name="T"/> 类型的字符串解析方法的委托。
-        /// </summary>
-        /// <returns><typeparamref name="T"/> 类型的字符串解析方法的委托。</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private static Converter<string, T> CreateDelegate()
-        {
-            try
-            {
-                var method = typeof(T).GetMethod(nameof(int.Parse), new[] { typeof(string) });
-                return (!(method is null) && method.IsStatic && (method.ReturnType == typeof(T))) ?
-                    (Converter<string, T>)method.CreateDelegate(typeof(Converter<string, T>)) : null;
-            }
-            catch (Exception) { return null; }
-        }
+        public ParsableStringParser() { }
 
         /// <summary>
         /// 将指定的字符串表示形式转换为其等效的数值形式。
@@ -53,7 +56,7 @@ namespace XstarS.Text
         /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         public override T Parse(string text)
         {
-            return (this.Delegate ?? throw new InvalidCastException()).Invoke(text);
+            return (ParseMethod.Delegate ?? throw new InvalidCastException()).Invoke(text);
         }
     }
 }
