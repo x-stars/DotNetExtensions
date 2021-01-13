@@ -35,8 +35,21 @@ namespace XstarS.Text
         /// 创建 <see cref="StringParser{T}"/> 类的默认实例。
         /// </summary>
         /// <returns><see cref="StringParser{T}"/> 类的默认实例。</returns>
-        private static StringParser<T> CreateDefault() =>
-            typeof(T).IsEnum ? new EnumStringParser<T>() : new ParsableStringParser<T>();
+        private static StringParser<T> CreateDefault()
+        {
+            if (typeof(T) == typeof(string))
+            {
+                return (StringParser<T>)(object)new StringStringParser();
+            }
+            else if (typeof(T).IsEnum)
+            {
+                return new EnumStringParser<T>();
+            }
+            else
+            {
+                return new ParsableStringParser<T>();
+            }
+        }
 
         /// <summary>
         /// 将指定的字符串表示形式转换为其等效的数值形式。
