@@ -8,7 +8,7 @@ namespace XstarS.Diagnostics
     /// </summary>
     /// <typeparam name="T">结构化对象的类型。</typeparam>
     [Serializable]
-    public class StructuralRepresenter<T> : Representer<T>
+    public sealed class StructuralRepresenter<T> : Representer<T>
     {
         /// <summary>
         /// 初始化 <see cref="StructuralRepresenter{T}"/> 类型的新实例。

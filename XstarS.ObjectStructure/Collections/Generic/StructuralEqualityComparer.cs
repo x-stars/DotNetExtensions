@@ -8,7 +8,7 @@ namespace XstarS.Collections.Generic
     /// </summary>
     /// <typeparam name="T">结构化对象的类型。</typeparam>
     [Serializable]
-    public class StructuralEqualityComparer<T> : SimpleEqualityComparer<T>
+    public sealed class StructuralEqualityComparer<T> : SimpleEqualityComparer<T>
     {
         /// <summary>
         /// 初始化 <see cref="StructuralEqualityComparer{T}"/> 类的新实例。
