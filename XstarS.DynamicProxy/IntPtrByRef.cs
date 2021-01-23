@@ -10,52 +10,10 @@ namespace XstarS.Reflection
     public static class IntPtrByRef
     {
         /// <summary>
-        /// 封装将引用传递 <see langword="ref"/> 转换为等效的 <see cref="IntPtr"/> 的方法。
-        /// </summary>
-        /// <typeparam name="T">引用传递 <see langword="ref"/> 的类型。</typeparam>
-        /// <param name="value">按引用转递的值。</param>
-        /// <returns>引用传递 <see langword="ref"/> 转换得到的 <see cref="IntPtr"/>。</returns>
-        private delegate IntPtr Converter<T>(ref T value);
-
-        /// <summary>
-        /// 提供 <see cref="IntPtrByRef.Implementation"/> 中各方法的委托。
-        /// </summary>
-        /// <typeparam name="T">引用传递 <see langword="ref"/> 的类型。</typeparam>
-        private static class Delegates<T>
-        {
-            /// <summary>
-            /// 表示 <see cref="IntPtrByRef.Implementation"/> 中
-            /// <see cref="IntPtrByRef.ToIntPtr{T}(ref T)"/> 方法的委托。
-            /// </summary>
-            internal static readonly Converter<T> ToIntPtr =
-                (Converter<T>)IntPtrByRef.Implementation.GetMethod(
-                    nameof(IntPtrByRef.ToIntPtr)).MakeGenericMethod(
-                        typeof(T)).CreateDelegate(typeof(Converter<T>));
-
-            /// <summary>
-            /// 表示 <see cref="IntPtrByRef.Implementation"/> 中
-            /// <see cref="IntPtrByRef.GetValue{T}(IntPtr)"/> 方法的委托。
-            /// </summary>
-            internal static readonly Func<IntPtr, T> GetValue =
-                (Func<IntPtr, T>)IntPtrByRef.Implementation.GetMethod(
-                    nameof(IntPtrByRef.GetValue)).MakeGenericMethod(
-                        typeof(T)).CreateDelegate(typeof(Func<IntPtr, T>));
-
-            /// <summary>
-            /// 表示 <see cref="IntPtrByRef.Implementation"/> 中
-            /// <see cref="IntPtrByRef.SetValue{T}(IntPtr, T)"/> 方法的委托。
-            /// </summary>
-            internal static readonly Action<IntPtr, T> SetValue =
-                (Action<IntPtr, T>)IntPtrByRef.Implementation.GetMethod(
-                    nameof(IntPtrByRef.SetValue)).MakeGenericMethod(
-                        typeof(T)).CreateDelegate(typeof(Action<IntPtr, T>));
-        }
-
-        /// <summary>
         /// <see cref="IntPtrByRef.Implementation"/> 的延迟初始化对象。
         /// </summary>
         private static readonly Lazy<Type> LazyImplementation =
-            new Lazy<Type>(IntPtrByRef.CreateRealType);
+            new Lazy<Type>(IntPtrByRef.CreateImplementation);
 
         /// <summary>
         /// 获取提供 <see cref="IntPtrByRef"/> 方法实现的类型的 <see cref="Type"/> 对象。
@@ -103,7 +61,7 @@ namespace XstarS.Reflection
         /// 创建提供 <see cref="IntPtrByRef"/> 方法实现的类型。
         /// </summary>
         /// <returns>提供 <see cref="IntPtrByRef"/> 方法实现的类型。</returns>
-        private static Type CreateRealType()
+        private static Type CreateImplementation()
         {
             var typeName = typeof(IntPtrByRef).ToString();
             var assembly = AssemblyBuilder.DefineDynamicAssembly(
@@ -157,6 +115,48 @@ namespace XstarS.Reflection
             }
 
             return type.CreateTypeInfo();
+        }
+
+        /// <summary>
+        /// 封装将引用传递 <see langword="ref"/> 转换为等效的 <see cref="IntPtr"/> 的方法。
+        /// </summary>
+        /// <typeparam name="T">引用传递 <see langword="ref"/> 的类型。</typeparam>
+        /// <param name="value">按引用转递的值。</param>
+        /// <returns>引用传递 <see langword="ref"/> 转换得到的 <see cref="IntPtr"/>。</returns>
+        private delegate IntPtr Converter<T>(ref T value);
+
+        /// <summary>
+        /// 提供 <see cref="IntPtrByRef.Implementation"/> 中各方法的委托。
+        /// </summary>
+        /// <typeparam name="T">引用传递 <see langword="ref"/> 的类型。</typeparam>
+        private static class Delegates<T>
+        {
+            /// <summary>
+            /// 表示 <see cref="IntPtrByRef.Implementation"/> 中
+            /// <see cref="IntPtrByRef.ToIntPtr{T}(ref T)"/> 方法的委托。
+            /// </summary>
+            internal static readonly Converter<T> ToIntPtr =
+                (Converter<T>)IntPtrByRef.Implementation.GetMethod(
+                    nameof(IntPtrByRef.ToIntPtr)).MakeGenericMethod(
+                        typeof(T)).CreateDelegate(typeof(Converter<T>));
+
+            /// <summary>
+            /// 表示 <see cref="IntPtrByRef.Implementation"/> 中
+            /// <see cref="IntPtrByRef.GetValue{T}(IntPtr)"/> 方法的委托。
+            /// </summary>
+            internal static readonly Func<IntPtr, T> GetValue =
+                (Func<IntPtr, T>)IntPtrByRef.Implementation.GetMethod(
+                    nameof(IntPtrByRef.GetValue)).MakeGenericMethod(
+                        typeof(T)).CreateDelegate(typeof(Func<IntPtr, T>));
+
+            /// <summary>
+            /// 表示 <see cref="IntPtrByRef.Implementation"/> 中
+            /// <see cref="IntPtrByRef.SetValue{T}(IntPtr, T)"/> 方法的委托。
+            /// </summary>
+            internal static readonly Action<IntPtr, T> SetValue =
+                (Action<IntPtr, T>)IntPtrByRef.Implementation.GetMethod(
+                    nameof(IntPtrByRef.SetValue)).MakeGenericMethod(
+                        typeof(T)).CreateDelegate(typeof(Action<IntPtr, T>));
         }
     }
 }

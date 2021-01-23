@@ -28,8 +28,10 @@ namespace XstarS.Text
         /// <returns>以委托定义的指定类型的 <see cref="StringParser{T}"/> 类的实例。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="parser"/> 为 <see langword="null"/>。</exception>
-        public static StringParser<T> Create(Converter<string, T> parser) =>
-            new DelegateStringParser<T>(parser);
+        public static StringParser<T> Create(Converter<string, T> parser)
+        {
+            return new DelegateStringParser<T>(parser);
+        }
 
         /// <summary>
         /// 创建 <see cref="StringParser{T}"/> 类的默认实例。
@@ -94,8 +96,10 @@ namespace XstarS.Text
         /// <returns>以委托定义的指定类型的 <see cref="StringParser{T}"/> 类的实例。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="parser"/> 为 <see langword="null"/>。</exception>
-        public static StringParser<T> Create<T>(Converter<string, T> parser) =>
-            StringParser<T>.Create(parser);
+        public static StringParser<T> Create<T>(Converter<string, T> parser)
+        {
+            return StringParser<T>.Create(parser);
+        }
 
         /// <summary>
         /// 将当前字符串表示形式转换为其等效的数值形式。
@@ -111,6 +115,9 @@ namespace XstarS.Text
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="OverflowException">
         /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
-        public static T ParseAs<T>(this string text) => StringParser<T>.Default.Parse(text);
+        public static T ParseAs<T>(this string text)
+        {
+            return StringParser<T>.Default.Parse(text);
+        }
     }
 }
