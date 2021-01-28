@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security;
-using XstarS.Text;
-using mstring = System.Text.StringBuilder;
+using XstarS.IO;
 
 namespace XstarS
 {
@@ -13,12 +11,6 @@ namespace XstarS
     /// </summary>
     public static class ConsoleEx
     {
-        /// <summary>
-        /// 表示所有分隔值的字符的集合。
-        /// </summary>
-        private static readonly char[] TokenSeparators = Enumerable.Range(
-            0, char.MaxValue + 1).Select(Convert.ToChar).Where(char.IsWhiteSpace).ToArray();
-
         /// <summary>
         /// 从标准输入流读取下一个字符串值。
         /// </summary>
@@ -29,32 +21,13 @@ namespace XstarS
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一个字符串值分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static string ReadToken()
-        {
-            lock (Console.In)
-            {
-                var iChar = -1;
-                while ((iChar = Console.Read()) != -1)
-                {
-                    if (!char.IsWhiteSpace((char)iChar)) { break; }
-                }
-                var token = new mstring();
-                token.Append((char)iChar);
-                while ((iChar = Console.Read()) != -1)
-                {
-                    if (char.IsWhiteSpace((char)iChar)) { break; }
-                    token.Append((char)iChar);
-                }
-                return token.ToString();
-            }
-        }
+        public static string ReadToken() => Console.In.ReadToken();
 
         /// <summary>
         /// 从标准输入流读取下一个字符串值，并将其转换为指定的数值形式。
         /// </summary>
         /// <typeparam name="T">数值形式的类型。</typeparam>
         /// <returns>输入流中的下一个字符串值的数值形式。</returns>
-        /// <exception cref="ArgumentNullException">当前没有更多的可用字符串值。</exception>
         /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// 下一个字符串值的字符数大于 <see cref="int.MaxValue"/>。</exception>
@@ -65,27 +38,24 @@ namespace XstarS
         /// <exception cref="OverflowException">
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static T ReadTokenAs<T>() => StringParser.ParseAs<T>(ConsoleEx.ReadToken());
+        public static T ReadTokenAs<T>() => Console.In.ReadTokenAs<T>();
 
         /// <summary>
         /// 从标准输入流读取下一行的所有字符串值。
         /// </summary>
         /// <returns>输入流中的下一行包含的所有字符串值。</returns>
-        /// <exception cref="ArgumentNullException">当前没有更多的可用行。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// 下一行中的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static string[] ReadLineTokens() =>
-            Console.ReadLine().Split(ConsoleEx.TokenSeparators, StringSplitOptions.RemoveEmptyEntries);
+        public static string[] ReadLineTokens() => Console.In.ReadLineTokens();
 
         /// <summary>
         /// 从标准输入流读取下一行字符，并将其包含的所有字符串值转换为指定的数值形式。
         /// </summary>
         /// <typeparam name="T">数值形式的类型。</typeparam>
         /// <returns>输入流中的下一行包含的所有字符串值的数值形式。</returns>
-        /// <exception cref="ArgumentNullException">当前没有更多的可用行。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// 下一行中的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
         /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
@@ -96,8 +66,7 @@ namespace XstarS
         /// <exception cref="OverflowException">
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static T[] ReadLineTokensAs<T>() =>
-            Array.ConvertAll(ConsoleEx.ReadLineTokens(), StringParser.ParseAs<T>);
+        public static T[] ReadLineTokensAs<T>() => Console.In.ReadLineTokensAs<T>();
 
         /// <summary>
         /// 从标准输入流读取到末尾的所有字符。
@@ -119,8 +88,7 @@ namespace XstarS
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为到末尾的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static string[] ReadTokensToEnd() =>
-            ConsoleEx.ReadToEnd().Split(ConsoleEx.TokenSeparators, StringSplitOptions.RemoveEmptyEntries);
+        public static string[] ReadTokensToEnd() => Console.In.ReadTokensToEnd();
 
         /// <summary>
         /// 从标准输入流读取到末尾的所有字符，并将其包含的所有字符串值转换为指定的数值形式。
@@ -128,15 +96,14 @@ namespace XstarS
         /// <typeparam name="T">数值形式的类型。</typeparam>
         /// <returns>输入流读取到末尾的所有字符串值的数值形式。</returns>
         /// <exception cref="ArgumentOutOfRangeException">
-        /// 下一行中的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
         /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static T[] ReadTokensToEndAs<T>() =>
-            Array.ConvertAll(ConsoleEx.ReadTokensToEnd(), StringParser.ParseAs<T>);
+        public static T[] ReadTokensToEndAs<T>() => Console.In.ReadTokensToEndAs<T>();
 
         /// <summary>
         /// 将指定的字符串值以指定的前景色和背景色写入标准输出流。

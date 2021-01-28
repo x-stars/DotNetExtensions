@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using mstring = System.Text.StringBuilder;
 
 namespace XstarS
@@ -9,6 +10,12 @@ namespace XstarS
     /// </summary>
     public static class StringExtensions
     {
+        /// <summary>
+        /// 表示所有分隔字符串值的字符的集合。
+        /// </summary>
+        private static readonly char[] TokenSeparators = Enumerable.Range(
+            0, char.MaxValue + 1).Select(Convert.ToChar).Where(char.IsWhiteSpace).ToArray();
+
         /// <summary>
         /// 返回一个新字符串，此字符串将当前字符串重复指定次数。
         /// </summary>
@@ -82,6 +89,19 @@ namespace XstarS
                 yield return token.ToString();
                 token.Clear();
             }
+        }
+
+        /// <summary>
+        /// 将当前字符串按空白字符分隔为多个字符串值。
+        /// </summary>
+        /// <param name="text">要进行分隔的字符串。</param>
+        /// <returns>按空白字符分隔得到字符串值的数组。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
+        public static string[] SplitToTokens(this string text)
+        {
+            return (text ?? throw new ArgumentNullException(nameof(text))).Split(
+                StringExtensions.TokenSeparators, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }
