@@ -54,6 +54,10 @@ namespace XstarS.Collections.Generic
                     return new ArrayEqualityComparer<T>();
                 }
             }
+            else if (type == typeof(string))
+            {
+                return new PlainEqualityComparer<T>();
+            }
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 return (StructuralEqualityComparerBase<T>)Activator.CreateInstance(
@@ -64,18 +68,12 @@ namespace XstarS.Collections.Generic
                 return (StructuralEqualityComparerBase<T>)
                     (object)new DictionaryEntryEqualityComaprer();
             }
-            else if (type.IsGenericType)
+            else if (type.IsGenericType &&
+                (type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>)))
             {
-                if (type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
-                {
-                    var keyValueTypes = type.GetGenericArguments();
-                    return (StructuralEqualityComparerBase<T>)Activator.CreateInstance(
-                        typeof(KeyValuePairEqualityComparer<,>).MakeGenericType(keyValueTypes));
-                }
-                else
-                {
-                    return new PlainEqualityComparer<T>();
-                }
+                var keyValueTypes = type.GetGenericArguments();
+                return (StructuralEqualityComparerBase<T>)Activator.CreateInstance(
+                    typeof(KeyValuePairEqualityComparer<,>).MakeGenericType(keyValueTypes));
             }
             else
             {

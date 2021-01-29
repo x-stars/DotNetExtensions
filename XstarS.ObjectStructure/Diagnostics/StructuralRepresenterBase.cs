@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using XstarS.Collections;
 using XstarS.Collections.Generic;
+using XstarS.Reflection;
 
 namespace XstarS.Diagnostics
 {
@@ -33,6 +34,19 @@ namespace XstarS.Diagnostics
             StructuralRepresenterBase<T>.LazyDefault.Value;
 
         /// <summary>
+        /// 判断当前类型的 <see cref="object.ToString"/> 方法是否返回类型名称。
+        /// </summary>
+        /// <returns>若当前类型的 <see cref="object.ToString"/> 方法定义于
+        /// <see cref="object"/> 或 <see cref="ValueType"/> 类，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        internal static bool IsTypeNameToString()
+        {
+            var method = typeof(T).GetMethod(nameof(object.ToString), Type.EmptyTypes);
+            return (method.DeclaringType == typeof(object)) ||
+                (method.DeclaringType == typeof(ValueType));
+        }
+
+        /// <summary>
         /// 创建 <see cref="StructuralRepresenterBase{T}"/> 类的默认实例。
         /// </summary>
         /// <returns><see cref="StructuralRepresenterBase{T}"/> 类的默认实例。</returns>
@@ -56,27 +70,29 @@ namespace XstarS.Diagnostics
                     return new ArrayRepresenter<T>();
                 }
             }
+            else if (type == typeof(string))
+            {
+                return new PlainRepresenter<T>();
+            }
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 return (StructuralRepresenterBase<T>)Activator.CreateInstance(
-                    typeof(SZArrayRepresenter<>).MakeGenericType(type));
+                    typeof(EnumerableRepresenter<>).MakeGenericType(type));
             }
             else if (type == typeof(DictionaryEntry))
             {
                 return (StructuralRepresenterBase<T>)(object)new DictionaryEntryRepresenter();
             }
-            else if (type.IsGenericType)
+            else if (type.IsGenericType &&
+                (type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>)))
             {
-                if (type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>))
-                {
-                    var keyValueTypes = type.GetGenericArguments();
-                    return (StructuralRepresenterBase<T>)Activator.CreateInstance(
-                        typeof(KeyValuePairRepresenter<,>).MakeGenericType(keyValueTypes));
-                }
-                else
-                {
-                    return new PlainRepresenter<T>();
-                }
+                var keyValueTypes = type.GetGenericArguments();
+                return (StructuralRepresenterBase<T>)Activator.CreateInstance(
+                    typeof(KeyValuePairRepresenter<,>).MakeGenericType(keyValueTypes));
+            }
+            else if (StructuralRepresenterBase<T>.IsTypeNameToString())
+            {
+                return new MemberRepresenter<T>();
             }
             else
             {
