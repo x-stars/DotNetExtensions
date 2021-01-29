@@ -11,6 +11,11 @@ namespace XstarS
     public static class StringExtensions
     {
         /// <summary>
+        /// 表示所有分隔行的字符串的集合。
+        /// </summary>
+        private static readonly string[] LineSeparators = new[] { "\r\n", "\r", "\n" };
+
+        /// <summary>
         /// 表示所有分隔字符串值的字符的集合。
         /// </summary>
         private static readonly char[] TokenSeparators = Enumerable.Range(
@@ -92,10 +97,23 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将当前字符串按空白字符分隔为多个字符串值。
+        /// 将当前字符串按行分隔为多个子字符串。
         /// </summary>
         /// <param name="text">要进行分隔的字符串。</param>
-        /// <returns>按空白字符分隔得到字符串值的数组。</returns>
+        /// <returns>按行分隔得到子字符串的数组。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
+        public static string[] SplitToLines(this string text)
+        {
+            return (text ?? throw new ArgumentNullException(nameof(text))).Split(
+                StringExtensions.LineSeparators, StringSplitOptions.RemoveEmptyEntries);
+        }
+
+        /// <summary>
+        /// 将当前字符串按空白字符分隔为多个子字符串。
+        /// </summary>
+        /// <param name="text">要进行分隔的字符串。</param>
+        /// <returns>按空白字符分隔得到子字符串的数组。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         public static string[] SplitToTokens(this string text)
