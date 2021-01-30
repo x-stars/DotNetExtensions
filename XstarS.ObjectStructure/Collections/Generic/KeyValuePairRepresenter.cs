@@ -31,7 +31,7 @@ namespace XstarS.Collections.Generic
             var valueRepresenter = StructuralRepresenter.OfType(value.Value?.GetType());
             var keyRepresent = keyRepresenter.Represent(value.Key, represented);
             var valueRepresent = valueRepresenter.Represent(value.Value, represented);
-            return $"[{keyRepresent}, {valueRepresent}]";
+            return $"[{keyRepresent}] = {valueRepresent}";
         }
     }
 }
