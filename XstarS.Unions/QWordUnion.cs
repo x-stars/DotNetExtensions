@@ -9,7 +9,7 @@ namespace XstarS.Unions
     /// </summary>
     [Serializable]
     [StructLayout(LayoutKind.Explicit, Size = 8)]
-    public struct QWordUnion : IEquatable<QWordUnion>, ISerializable
+    public unsafe struct QWordUnion : IEquatable<QWordUnion>, ISerializable
     {
         /// <summary>
         /// 表示 <see cref="QWordUnion"/> 实例的大小。
@@ -51,7 +51,7 @@ namespace XstarS.Unions
         /// 表示当前 <see cref="QWordUnion"/> 的字节缓冲区。
         /// </summary>
         [CLSCompliant(false)]
-        [FieldOffset(0)] public unsafe fixed byte Bytes[8];
+        [FieldOffset(0)] public fixed byte Bytes[8];
 
         /// <summary>
         /// 将 <see cref="QWordUnion"/> 结构的新实例初始化为指定的 64 位有符号整数。
@@ -88,11 +88,27 @@ namespace XstarS.Unions
         /// <param name="context">包含序列化流的源和目标的上下文对象。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="info"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="InvalidCastException">
+        /// 名为 <c>Value</c> 的值无法转换为 64 位无符号整数。</exception>
+        /// <exception cref="SerializationException">
+        /// 在 <paramref name="info"/> 中未找到名为 <c>Value</c> 的值。</exception>
         private QWordUnion(SerializationInfo info, StreamingContext context) : this()
         {
             if (info is null) { throw new ArgumentNullException(nameof(info)); }
-            this.Int64 = info.GetInt64("Value");
+            this.UInt64 = info.GetUInt64("Value");
         }
+
+        /// <summary>
+        /// 将非负整数的字符串表示形式转换为它的等效 <see cref="QWordUnion"/> 表示形式。
+        /// </summary>
+        /// <param name="text">包含要转换的非负整数的字符串。</param>
+        /// <returns>与 <paramref name="text"/> 中包含的整数等效的 <see cref="QWordUnion"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="FormatException"><paramref name="text"/> 的格式不正确。</exception>
+        /// <exception cref="OverflowException">
+        /// <paramref name="text"/> 表示一个负数或大于 <see cref="ulong.MaxValue"/> 的整数。</exception>
+        public static QWordUnion Parse(string text) => new QWordUnion(ulong.Parse(text));
 
         /// <summary>
         /// 将当前 <see cref="QWordUnion"/> 的值复制到指定字节数组中，并指定数组的偏移量。
@@ -101,10 +117,10 @@ namespace XstarS.Unions
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
-        public unsafe void CopyTo(byte[] bytes, int offset = 0)
+        public void CopyTo(byte[] bytes, int offset = 0)
         {
             if (bytes is null) { throw new ArgumentNullException(nameof(bytes)); }
-            fixed (byte* pBytes = bytes) { *(long*)(pBytes + offset) = this.Int64; }
+            fixed (byte* pBytes = bytes) { *(ulong*)(pBytes + offset) = this.UInt64; }
         }
 
         /// <summary>
@@ -113,7 +129,7 @@ namespace XstarS.Unions
         /// <param name="other">要与当前实例进行比较的 <see cref="QWordUnion"/>。</param>
         /// <returns>若当前 <see cref="QWordUnion"/> 的值与 <paramref name="other"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public bool Equals(QWordUnion other) => this.Int64 == other.Int64;
+        public bool Equals(QWordUnion other) => this.UInt64 == other.UInt64;
 
         /// <summary>
         /// 确定当前 <see cref="QWordUnion"/> 与指定的对象是否相等。
@@ -128,7 +144,7 @@ namespace XstarS.Unions
         /// 获取当前 <see cref="QWordUnion"/> 的哈希代码。
         /// </summary>
         /// <returns>当前 <see cref="QWordUnion"/> 哈希代码。</returns>
-        public override int GetHashCode() => this.Int64.GetHashCode();
+        public override int GetHashCode() => this.UInt64.GetHashCode();
 
         /// <summary>
         /// 将指定字节数组的值复制到当前 <see cref="QWordUnion"/> 中，并指定数组偏移量。
@@ -137,10 +153,10 @@ namespace XstarS.Unions
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
-        public unsafe void LoadFrom(byte[] bytes, int offset = 0)
+        public void LoadFrom(byte[] bytes, int offset = 0)
         {
             if (bytes is null) { throw new ArgumentNullException(nameof(bytes)); }
-            fixed (byte* pBytes = bytes) { this.Int64 = *(long*)(pBytes + offset); }
+            fixed (byte* pBytes = bytes) { this.UInt64 = *(ulong*)(pBytes + offset); }
         }
 
         /// <summary>
@@ -153,7 +169,7 @@ namespace XstarS.Unions
         /// 将当前 <see cref="QWordUnion"/> 转换为其等效的字符串表达形式。
         /// </summary>
         /// <returns>当前 <see cref="QWordUnion"/> 对象的字符串表达形式。</returns>
-        public override string ToString() => this.Int64.ToString();
+        public override string ToString() => this.UInt64.ToString();
 
         /// <summary>
         /// 获取序列化当前 <see cref="QWordUnion"/> 所需的数据。
@@ -165,26 +181,26 @@ namespace XstarS.Unions
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             if (info is null) { throw new ArgumentNullException(nameof(info)); }
-            info.AddValue("Value", this.Int64);
+            info.AddValue("Value", this.UInt64);
         }
 
         /// <summary>
         /// 确定两个指定的 <see cref="QWordUnion"/> 是否相等。
         /// </summary>
-        /// <param name="union1">要比较的第一个 <see cref="QWordUnion"/>。</param>
-        /// <param name="union2">要比较的第二个 <see cref="QWordUnion"/>。</param>
-        /// <returns>若 <paramref name="union1"/> 的值与 <paramref name="union2"/> 的值相等，
+        /// <param name="left">要比较的第一个 <see cref="QWordUnion"/>。</param>
+        /// <param name="right">要比较的第二个 <see cref="QWordUnion"/>。</param>
+        /// <returns>若 <paramref name="left"/> 的值与 <paramref name="right"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool operator ==(QWordUnion union1, QWordUnion union2) => union1.Int64 == union2.Int64;
+        public static bool operator ==(QWordUnion left, QWordUnion right) => left.UInt64 == right.UInt64;
 
         /// <summary>
         /// 确定两个指定的 <see cref="QWordUnion"/> 是否不等。
         /// </summary>
-        /// <param name="union1">要比较的第一个 <see cref="QWordUnion"/>。</param>
-        /// <param name="union2">要比较的第二个 <see cref="QWordUnion"/>。</param>
-        /// <returns>若 <paramref name="union1"/> 的值与 <paramref name="union2"/> 的值不等，
+        /// <param name="left">要比较的第一个 <see cref="QWordUnion"/>。</param>
+        /// <param name="right">要比较的第二个 <see cref="QWordUnion"/>。</param>
+        /// <returns>若 <paramref name="left"/> 的值与 <paramref name="right"/> 的值不等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool operator !=(QWordUnion union1, QWordUnion union2) => union1.Int64 != union2.Int64;
+        public static bool operator !=(QWordUnion left, QWordUnion right) => left.UInt64 != right.UInt64;
 
         /// <summary>
         /// 将指定的 64 位有符号整数隐式转换为 <see cref="QWordUnion"/>。
@@ -235,27 +251,27 @@ namespace XstarS.Unions
         /// </summary>
         /// <param name="union">要转换的 <see cref="ByteUnion"/>。</param>
         /// <returns>转换得到的 <see cref="QWordUnion"/>。</returns>
-        public static implicit operator QWordUnion(ByteUnion union) => new QWordUnion((long)union.Byte);
+        public static implicit operator QWordUnion(ByteUnion union) => new QWordUnion((ulong)union.Byte);
 
         /// <summary>
         /// 将指定的 <see cref="WordUnion"/> 隐式转换为 <see cref="QWordUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="WordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="QWordUnion"/>。</returns>
-        public static implicit operator QWordUnion(WordUnion union) => new QWordUnion((long)union.Int16);
+        public static implicit operator QWordUnion(WordUnion union) => new QWordUnion((ulong)union.UInt16);
 
         /// <summary>
         /// 将指定的 <see cref="DWordUnion"/> 隐式转换为 <see cref="QWordUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="DWordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="QWordUnion"/>。</returns>
-        public static implicit operator QWordUnion(DWordUnion union) => new QWordUnion((long)union.Int32);
+        public static implicit operator QWordUnion(DWordUnion union) => new QWordUnion((ulong)union.UInt32);
 
         /// <summary>
         /// 将指定的 <see cref="HandleUnion"/> 显式转换为 <see cref="QWordUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="HandleUnion"/>。</param>
         /// <returns>转换得到的 <see cref="QWordUnion"/>。</returns>
-        public static explicit operator QWordUnion(HandleUnion union) => new QWordUnion((long)union.IntPtr);
+        public static explicit operator QWordUnion(HandleUnion union) => new QWordUnion((ulong)union.Pointer);
     }
 }
