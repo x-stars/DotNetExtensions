@@ -125,10 +125,10 @@ namespace XstarS
         public static unsafe Half FromBytes(ushort word) => *(Half*)&word;
 
         /// <summary>
-        /// 将数字的字符串表示形式转换为它的等效 24 位有符号整数。
+        /// 将数字的字符串表示形式转换为它的等效半精度浮点数。
         /// </summary>
         /// <param name="s">包含要转换的数字的字符串。</param>
-        /// <returns>与 <paramref name="s"/> 中包含的数字等效的 24 位有符号整数。</returns>
+        /// <returns>与 <paramref name="s"/> 中包含的数字等效的半精度浮点数。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="s"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="FormatException"><paramref name="s"/> 的格式不正确。</exception>
         /// <exception cref="OverflowException"><paramref name="s"/> 表示一个小于 <see cref="Half.MinValue"/>
@@ -137,11 +137,11 @@ namespace XstarS
             Half.Parse(s, NumberStyles.Float | NumberStyles.AllowThousands, null);
 
         /// <summary>
-        /// 将指定样式的数字的字符串表示形式转换为它的等效 24 位有符号整数。
+        /// 将指定样式的数字的字符串表示形式转换为它的等效半精度浮点数。
         /// </summary>
         /// <param name="s">包含要转换的数字的字符串。</param>
         /// <param name="style">指示数字字符串参数中允许的样式。</param>
-        /// <returns>与 <paramref name="s"/> 中包含的数字等效的 24 位有符号整数。</returns>
+        /// <returns>与 <paramref name="s"/> 中包含的数字等效的半精度浮点数。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="s"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException"><paramref name="style"/> 不是 <see cref="NumberStyles"/> 值。</exception>
         /// <exception cref="FormatException"><paramref name="s"/> 的格式不符合 <paramref name="style"/>。</exception>
@@ -150,7 +150,7 @@ namespace XstarS
         public static Half Parse(string s, NumberStyles style) => Half.Parse(s, style, null);
 
         /// <summary>
-        /// 将指定的区域性特定格式的数字的字符串表示形式转换为它的等效 24 位有符号整数。
+        /// 将指定的区域性特定格式的数字的字符串表示形式转换为它的等效半精度浮点数。
         /// </summary>
         /// <param name="s">包含要转换的数字的字符串。</param>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
@@ -163,7 +163,7 @@ namespace XstarS
             Half.Parse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider);
 
         /// <summary>
-        /// 将指定样式和区域性特定格式的数字的字符串表示形式转换为它的等效 24 位有符号整数。
+        /// 将指定样式和区域性特定格式的数字的字符串表示形式转换为它的等效半精度浮点数。
         /// </summary>
         /// <param name="s">包含要转换的数字的字符串。</param>
         /// <param name="style">指示数字字符串参数中允许的样式。</param>
@@ -186,7 +186,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将数字的字符串表示形式转换为它的等效 24 位有符号整数。并返回转换是否成功。
+        /// 将数字的字符串表示形式转换为它的等效半精度浮点数。并返回转换是否成功。
         /// </summary>
         /// <param name="s">包含要转换的数字的字符串。</param>
         /// <param name="result">如果转换成功，则包含与 <paramref name="s"/>
@@ -199,7 +199,7 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将指定样式和区域性特定格式的数字的字符串表示形式转换为它的等效 24 位有符号整数。并返回转换是否成功。
+        /// 将指定样式和区域性特定格式的数字的字符串表示形式转换为它的等效半精度浮点数。并返回转换是否成功。
         /// </summary>
         /// <param name="s">包含要转换的数字的字符串。</param>
         /// <param name="style">指示数字字符串参数中允许的样式。</param>
