@@ -13,59 +13,76 @@ namespace XstarS.ComponentModel
         where TEnum : struct, Enum
     {
         /// <summary>
-        /// 表示当前视图表示的枚举值的索引。
+        /// 表示当前视图选中的枚举值的索引。
         /// </summary>
-        private int IndexValue;
+        private int ItemIndex;
 
         /// <summary>
         /// 初始化 <see cref="EnumListView{TEnum}"/> 类的新实例。
         /// </summary>
-        public EnumListView() : base(new ObservableCollection<TEnum>())
+        public EnumListView() : base(EnumListView<TEnum>.CreateItems()) { }
+
+        /// <summary>
+        /// 创建当前枚举类型中所有枚举值的集合。
+        /// </summary>
+        /// <returns>当前枚举类型中所有枚举值的集合。</returns>
+        private static ObservableCollection<TEnum> CreateItems()
         {
             var values = (TEnum[])Enum.GetValues(typeof(TEnum));
-            foreach (var value in values) { this.Items.Add(value); }
+            return new ObservableCollection<TEnum>(values);
         }
 
         /// <summary>
-        /// 获取或设置当前视图表示的枚举值的索引。
+        /// 获取或设置当前视图选中的枚举值的索引。
         /// </summary>
         /// <returns>当前视图表示的枚举值的索引。</returns>
-        public int Index
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="value"/> 不为小于当前枚举值数量的非负整数。</exception>
+        public int SelectedIndex
         {
-            get => this.IndexValue;
-            set => this.SetIndex(value);
+            get => this.ItemIndex;
+            set => this.SelectIndex(value);
         }
 
         /// <summary>
-        /// 获取或设置当前视图表示的枚举值。
+        /// 获取或设置当前视图选中的枚举值。
         /// </summary>
-        /// <returns>当前视图表示的枚举值。</returns>
-        public TEnum Value
+        /// <returns>当前视图选中的枚举值。</returns>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="value"/> 不为有效的枚举值。</exception>
+        public TEnum SelectedItem
         {
-            get => this[this.Index];
-            set => this.Index = this.IndexOf(value);
+            get => this[this.SelectedIndex];
+            set => this.SelectedIndex = this.IndexOf(value);
         }
 
         /// <summary>
-        /// 设置当前视图表示的枚举值的索引。
+        /// 设置当前视图选中的枚举值的索引。
         /// </summary>
         /// <param name="index">要设置的枚举值的索引。</param>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/>
-        /// 不在 -1 和 <see cref="Collection{T}.Count"/> - 1 之间。</exception>
-        protected virtual void SetIndex(int index)
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> 不为小于当前枚举值数量的非负整数。</exception>
+        protected virtual void SelectIndex(int index)
         {
             if ((index < 0) || (index >= this.Count))
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
-            if (index != this.IndexValue)
+            if (this.ItemIndex != index)
             {
-                this.IndexValue = index;
-                this.OnPropertyChanged(
-                    new PropertyChangedEventArgs(nameof(this.Index)));
-                this.OnPropertyChanged(
-                    new PropertyChangedEventArgs(nameof(this.Value)));
+                this.ItemIndex = index;
+                this.NotifyPropertyChanged(nameof(this.SelectedIndex));
+                this.NotifyPropertyChanged(nameof(this.SelectedItem));
             }
+        }
+
+        /// <summary>
+        /// 通知指定属性的值已更改。
+        /// </summary>
+        /// <param name="propertyName">已更改属性的名称。</param>
+        protected void NotifyPropertyChanged(string propertyName)
+        {
+            this.OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
     }
 }

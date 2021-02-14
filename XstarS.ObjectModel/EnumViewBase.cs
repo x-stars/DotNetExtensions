@@ -26,14 +26,20 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
+        /// 将当前视图表示的枚举值转换为其等效的字符串表示形式。
+        /// </summary>
+        /// <returns>当前视图表示的枚举值的字符串表示形式。</returns>
+        public override string ToString() => this.Value.ToString();
+
+        /// <summary>
         /// 设置当前视图表示的枚举值。
         /// </summary>
-        /// <param name="enumValue">要设置的枚举值。</param>
-        protected virtual void SetEnumValue(TEnum enumValue)
+        /// <param name="value">要设置的枚举值。</param>
+        protected virtual void SetEnumValue(TEnum value)
         {
-            var thisValue = this.Value;
-            this.SetProperty(enumValue, nameof(this.Value));
-            var valueChanged = !object.Equals(thisValue, enumValue);
+            var enumValue = this.Value;
+            this.SetProperty(value, nameof(this.Value));
+            var valueChanged = !object.Equals(enumValue, value);
             if (valueChanged) { this.NotifyEnumPropertiesChanged(); }
         }
 
@@ -46,11 +52,5 @@ namespace XstarS.ComponentModel
             Array.ForEach(enumNames, this.NotifyPropertyChanged);
             this.NotifyPropertyChanged(ObservableDataObject.IndexerName);
         }
-
-        /// <summary>
-        /// 将当前视图表示的枚举值转换为其等效的字符串表示形式。
-        /// </summary>
-        /// <returns>当前视图表示的枚举值的字符串表示形式。</returns>
-        public override string ToString() => this.Value.ToString();
     }
 }
