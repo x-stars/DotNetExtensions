@@ -80,7 +80,7 @@ namespace XstarS.Windows.Input
         }
 
         /// <summary>
-        /// 设定在指定对象的指定名称的属性发生更改时通知当前命令的可执行状态已更改。
+        /// 设定在指定属性发生更改时，通知当前命令的可执行状态已更改。
         /// </summary>
         /// <param name="source">发出属性更改通知的事件源对象。</param>
         /// <param name="propertyName">要接收更改通知的属性的名称。</param>
@@ -97,7 +97,7 @@ namespace XstarS.Windows.Input
         }
 
         /// <summary>
-        /// 提供在指定名称的属性发生更改时通知命令的可执行状态已更改的方法。
+        /// 提供在属性发生更改时，通知命令的可执行状态发生更改的方法。
         /// </summary>
         private sealed class CanExecuteObserver
         {
