@@ -16,11 +16,6 @@ namespace XstarS.ComponentModel
     public abstract class ObservableValidDataObject : ObservableDataObject, INotifyDataErrorInfo
     {
         /// <summary>
-        /// 表示在验证错误时应忽略的属性的名称。
-        /// </summary>
-        private readonly HashSet<string> IgnoreProperties;
-
-        /// <summary>
         /// 表示所有属性的验证错误。
         /// </summary>
         private readonly ConcurrentDictionary<string, IEnumerable> PropertiesErrors;
@@ -30,7 +25,6 @@ namespace XstarS.ComponentModel
         /// </summary>
         protected ObservableValidDataObject()
         {
-            this.IgnoreProperties = new HashSet<string>();
             this.PropertiesErrors = new ConcurrentDictionary<string, IEnumerable>();
         }
 
@@ -105,12 +99,10 @@ namespace XstarS.ComponentModel
             [CallerMemberName] string propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;
-            if (this.IgnoreProperties.Contains(propertyName)) { return; }
             var value = this.GetProperty<T>(propertyName);
             var context = new ValidationContext(this) { MemberName = propertyName };
             var results = new List<ValidationResult>();
-            try { Validator.TryValidateProperty(value, context, results); }
-            catch (Exception) { this.IgnoreProperties.Add(propertyName); }
+            try { Validator.TryValidateProperty(value, context, results); } catch { }
             var errors = new List<string>(results.Count);
             foreach (var result in results) { errors.Add(result.ErrorMessage); }
             this.SetErrors(errors, propertyName);

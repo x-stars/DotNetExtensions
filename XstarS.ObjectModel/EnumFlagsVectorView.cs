@@ -40,7 +40,8 @@ namespace XstarS.ComponentModel
             [CallerMemberName] string flagName = null)
         {
             flagName = flagName ?? string.Empty;
-            return this[(TEnum)Enum.Parse(typeof(TEnum), flagName)];
+            var flagValue = this.ParseEnum(flagName);
+            return this[flagValue];
         }
 
         /// <summary>
@@ -54,7 +55,8 @@ namespace XstarS.ComponentModel
             [CallerMemberName] string flagName = null)
         {
             flagName = flagName ?? string.Empty;
-            this[(TEnum)Enum.Parse(typeof(TEnum), flagName)] = value;
+            var flagValue = this.ParseEnum(flagName);
+            this[flagValue] = value;
         }
 
         /// <summary>

@@ -26,10 +26,14 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 将当前视图表示的枚举值转换为其等效的字符串表示形式。
+        /// 将当前枚举类型的枚举名称转换为等效的枚举值。
         /// </summary>
-        /// <returns>当前视图表示的枚举值的字符串表示形式。</returns>
-        public override string ToString() => this.Value.ToString();
+        /// <param name="enumName">要转换的枚举值的名称。</param>
+        /// <returns>名为 <paramref name="enumName"/> 的枚举值。</returns>
+        protected TEnum ParseEnum(string enumName)
+        {
+            return (TEnum)Enum.Parse(typeof(TEnum), enumName);
+        }
 
         /// <summary>
         /// 设置当前视图表示的枚举值。
