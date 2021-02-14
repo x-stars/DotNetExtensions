@@ -16,6 +16,11 @@ namespace XstarS.ComponentModel
     public abstract class ObservableValidDataObject : ObservableDataObject, INotifyDataErrorInfo
     {
         /// <summary>
+        /// 表示在验证错误时应忽略的属性的名称。
+        /// </summary>
+        private readonly HashSet<string> IgnoreProperties;
+
+        /// <summary>
         /// 表示所有属性的验证错误。
         /// </summary>
         private readonly ConcurrentDictionary<string, IEnumerable> PropertiesErrors;
@@ -25,6 +30,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         protected ObservableValidDataObject()
         {
+            this.IgnoreProperties = new HashSet<string>();
             this.PropertiesErrors = new ConcurrentDictionary<string, IEnumerable>();
         }
 
@@ -63,11 +69,15 @@ namespace XstarS.ComponentModel
             [CallerMemberName] string propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;
+            var thisHadErrors = !this.PropertiesErrors.IsEmpty;
+            var hadErrors = !(this.GetErrors(propertyName) is null);
             var hasErrors = !(errors is null) && errors.GetEnumerator().MoveNext();
             if (hasErrors) { this.PropertiesErrors[propertyName] = errors; }
             else { this.PropertiesErrors.TryRemove(propertyName, out errors); }
-            this.NotifyErrorsChanged(propertyName);
-            this.NotifyPropertyChanged(nameof(this.HasErrors));
+            var errorsChanged = hadErrors ^ hasErrors;
+            if (errorsChanged) { this.NotifyErrorsChanged(propertyName); }
+            var hasErrorsChanged = thisHadErrors ^ this.HasErrors;
+            if (hasErrorsChanged) { this.NotifyPropertyChanged(nameof(this.HasErrors)); }
         }
 
         /// <summary>
@@ -81,23 +91,26 @@ namespace XstarS.ComponentModel
         {
             propertyName = propertyName ?? string.Empty;
             base.SetProperty(value, propertyName);
-            this.ValidateProperty(propertyName);
+            this.ValidateProperty<T>(propertyName);
         }
 
         /// <summary>
         /// 验证指定属性的错误。
         /// </summary>
+        /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="propertyName">要验证错误的属性的名称。</param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        protected virtual void ValidateProperty(
+        protected virtual void ValidateProperty<T>(
             [CallerMemberName] string propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;
-            var value = this.GetProperty<object>(propertyName);
+            if (this.IgnoreProperties.Contains(propertyName)) { return; }
+            var value = this.GetProperty<T>(propertyName);
             var context = new ValidationContext(this) { MemberName = propertyName };
             var results = new List<ValidationResult>();
-            try { Validator.TryValidateProperty(value, context, results); } catch { }
+            try { Validator.TryValidateProperty(value, context, results); }
+            catch (Exception) { this.IgnoreProperties.Add(propertyName); }
             var errors = new List<string>(results.Count);
             foreach (var result in results) { errors.Add(result.ErrorMessage); }
             this.SetErrors(errors, propertyName);

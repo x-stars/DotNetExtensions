@@ -22,7 +22,6 @@ namespace XstarS.ComponentModel
         /// </summary>
         public EnumListView() : base(new ObservableCollection<TEnum>())
         {
-            this.IndexValue = -1;
             var values = (TEnum[])Enum.GetValues(typeof(TEnum));
             foreach (var value in values) { this.Items.Add(value); }
         }
@@ -43,7 +42,7 @@ namespace XstarS.ComponentModel
         /// <returns>当前视图表示的枚举值。</returns>
         public TEnum Value
         {
-            get => this.Index < 0 ? default(TEnum) : this[this.Index];
+            get => this[this.Index];
             set => this.Index = this.IndexOf(value);
         }
 
@@ -55,15 +54,18 @@ namespace XstarS.ComponentModel
         /// 不在 -1 和 <see cref="Collection{T}.Count"/> - 1 之间。</exception>
         protected virtual void SetIndex(int index)
         {
-            if ((index < -1) || (index >= this.Count))
+            if ((index < 0) || (index >= this.Count))
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
-            this.IndexValue = index;
-            this.OnPropertyChanged(
-                new PropertyChangedEventArgs(nameof(this.Index)));
-            this.OnPropertyChanged(
-                new PropertyChangedEventArgs(nameof(this.Value)));
+            if (index != this.IndexValue)
+            {
+                this.IndexValue = index;
+                this.OnPropertyChanged(
+                    new PropertyChangedEventArgs(nameof(this.Index)));
+                this.OnPropertyChanged(
+                    new PropertyChangedEventArgs(nameof(this.Value)));
+            }
         }
     }
 }
