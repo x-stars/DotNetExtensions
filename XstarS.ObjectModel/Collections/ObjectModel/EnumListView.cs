@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 
 namespace XstarS.Collections.ObjectModel
 {
@@ -9,6 +10,7 @@ namespace XstarS.Collections.ObjectModel
     /// </summary>
     /// <typeparam name="TEnum">枚举的类型。</typeparam>
     [Serializable]
+    [DebuggerDisplay("Selected = {" + nameof(SelectedItem) + "}")]
     public class EnumListView<TEnum> : ReadOnlyObservableCollection<TEnum>
         where TEnum : struct, Enum
     {

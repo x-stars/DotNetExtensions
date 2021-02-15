@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace XstarS.ComponentModel
 {
@@ -7,6 +8,7 @@ namespace XstarS.ComponentModel
     /// </summary>
     /// <typeparam name="TEnum">枚举的类型。</typeparam>
     [Serializable]
+    [DebuggerDisplay("Value = {" + nameof(Value) + "}")]
     public abstract class EnumViewBase<TEnum> : ObservableDataObject
         where TEnum : struct, Enum
     {
