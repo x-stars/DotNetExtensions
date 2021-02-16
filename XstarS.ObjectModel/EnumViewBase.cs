@@ -30,11 +30,11 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 将当前枚举类型的枚举名称转换为等效的枚举值。
         /// </summary>
-        /// <param name="enumName">要转换的枚举值的名称。</param>
-        /// <returns>名为 <paramref name="enumName"/> 的枚举值。</returns>
-        protected TEnum ParseEnum(string enumName)
+        /// <param name="name">要转换的枚举值的名称。</param>
+        /// <returns>名为 <paramref name="name"/> 的枚举值。</returns>
+        protected TEnum ParseEnum(string name)
         {
-            return (TEnum)Enum.Parse(typeof(TEnum), enumName);
+            return (TEnum)Enum.Parse(typeof(TEnum), name);
         }
 
         /// <summary>

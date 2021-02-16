@@ -3,7 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 
-namespace XstarS.Collections.ObjectModel
+namespace XstarS.ComponentModel
 {
     /// <summary>
     /// 表示枚举的列表视图。
