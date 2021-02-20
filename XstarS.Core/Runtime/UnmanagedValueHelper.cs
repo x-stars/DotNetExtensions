@@ -93,12 +93,12 @@
         }
 
         /// <summary>
-        /// 将当前非托管类型的值填充到对应长度的字节数组并返回。
+        /// 将当前非托管类型的二进制值填充到对应长度的字节数组并返回。
         /// </summary>
         /// <typeparam name="T">非托管值的类型。</typeparam>
         /// <param name="value">要填充到字节数组的非托管类型的值。</param>
-        /// <returns>以 <paramref name="value"/> 的值填充的字节数组。</returns>
-        public static unsafe byte[] ValueToByteArray<T>(this T value)
+        /// <returns>以 <paramref name="value"/> 的二进制值填充的字节数组。</returns>
+        public static unsafe byte[] BinaryToByteArray<T>(this T value)
             where T : unmanaged
         {
             var size = UnmanagedValueHelper.SizeOf<T>();
