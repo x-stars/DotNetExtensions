@@ -283,7 +283,7 @@ namespace XstarS
         /// <summary>
         /// 确定当前数组是否为一个下限为零的一维数组。
         /// </summary>
-        /// <param name="array"></param>
+        /// <param name="array">要进行判断的数组。</param>
         /// <returns>若 <paramref name="array"/> 为下限为零的一维数组，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
@@ -332,6 +332,32 @@ namespace XstarS
                 offset %= scale;
             }
             return result;
+        }
+
+        /// <summary>
+        /// 将当前字节数组转换为十六进制数字的等效字符串表示形式。
+        /// </summary>
+        /// <param name="bytes">要转换为字符串的字节数组。</param>
+        /// <returns>当前字节数组的十六进制数字的等效字符串表示形式。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
+        public static string ToHexString(this byte[] bytes)
+        {
+            if (bytes is null)
+            {
+                throw new ArgumentNullException(nameof(bytes));
+            }
+
+            if (BitConverter.IsLittleEndian)
+            {
+                var length = bytes.Length;
+                var rBytes = new byte[length];
+                Array.Copy(bytes, rBytes, length);
+                Array.Reverse(rBytes);
+                bytes = rBytes;
+            }
+            var hexes = Array.ConvertAll(bytes, @byte => @byte.ToString("X2"));
+            return string.Join(string.Empty, hexes);
         }
     }
 }
