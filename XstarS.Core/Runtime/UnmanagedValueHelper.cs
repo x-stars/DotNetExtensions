@@ -3,26 +3,14 @@
     /// <summary>
     /// 提供非托管类型的值相关的帮助方法。
     /// </summary>
-    public static class UnmanagedValueHelper
+    public static unsafe class UnmanagedValueHelper
     {
-        /// <summary>
-        /// 提供指定非托管类型的相关常数值。
-        /// </summary>
-        /// <typeparam name="T">非托管值的类型。</typeparam>
-        private static class Constants<T> where T : unmanaged
-        {
-            /// <summary>
-            /// 表示当前非托管类型以字节为单位的大小。
-            /// </summary>
-            internal static readonly unsafe int Size = sizeof(T);
-        }
-
         /// <summary>
         /// 获取当前非托管类型以字节为单位的大小。
         /// </summary>
         /// <typeparam name="T">要获取大小的非托管类型。</typeparam>
         /// <returns>当前非托管类型以字节为单位的大小。</returns>
-        public static int SizeOf<T>() where T : unmanaged => Constants<T>.Size;
+        public static int SizeOf<T>() where T : unmanaged => sizeof(T);
 
         /// <summary>
         /// 确定当前非托管类型的值与指定非托管类型的值是否二进制相等。
@@ -32,11 +20,9 @@
         /// <param name="other">要与当前值进行比较的非托管类型的值。</param>
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 二进制相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static unsafe bool BinaryEquals<T>(this T value, T other)
-            where T : unmanaged
+        public static bool BinaryEquals<T>(this T value, T other) where T : unmanaged
         {
-            var size = UnmanagedValueHelper.SizeOf<T>();
-            return UnmanagedValueHelper.BinaryEquals(&value, &other, size);
+            return UnmanagedValueHelper.BinaryEquals(&value, &other, sizeof(T));
         }
 
         /// <summary>
@@ -45,11 +31,9 @@
         /// <typeparam name="T">非托管值的类型。</typeparam>
         /// <param name="value">要获取基于二进制值的哈希代码的非托管类型的值。</param>
         /// <returns><paramref name="value"/> 基于二进制值的哈希代码。</returns>
-        public static unsafe int GetBinaryHashCode<T>(this T value)
-            where T : unmanaged
+        public static int GetBinaryHashCode<T>(this T value) where T : unmanaged
         {
-            var size = UnmanagedValueHelper.SizeOf<T>();
-            return UnmanagedValueHelper.GetBinaryHashCode(&value, size);
+            return UnmanagedValueHelper.GetBinaryHashCode(&value, sizeof(T));
         }
 
         /// <summary>
@@ -60,8 +44,7 @@
         /// <param name="other">要与当前值进行比较的非托管类型的数组。</param>
         /// <returns>若 <paramref name="array"/> 与 <paramref name="other"/> 二进制相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static unsafe bool BinaryEquals<T>(this T[] array, T[] other)
-            where T : unmanaged
+        public static bool BinaryEquals<T>(this T[] array, T[] other) where T : unmanaged
         {
             if (object.ReferenceEquals(array, other)) { return true; }
             if ((array is null) ^ (other is null)) { return false; }
@@ -69,7 +52,7 @@
 
             fixed (T* pArray = array, pOther = other)
             {
-                var size = UnmanagedValueHelper.SizeOf<T>() * array.Length;
+                var size = sizeof(T) * array.Length;
                 return UnmanagedValueHelper.BinaryEquals(pArray, pOther, size);
             }
         }
@@ -80,14 +63,13 @@
         /// <typeparam name="T">非托管类型的数组中的元素的类型。</typeparam>
         /// <param name="array">要获取基于二进制值的哈希代码的非托管类型的数组。</param>
         /// <returns><paramref name="array"/> 基于二进制值的哈希代码。</returns>
-        public static unsafe int GetBinaryHashCode<T>(this T[] array)
-            where T : unmanaged
+        public static int GetBinaryHashCode<T>(this T[] array) where T : unmanaged
         {
             if (array is null) { return 0; }
 
             fixed (T* pArray = array)
             {
-                var size = UnmanagedValueHelper.SizeOf<T>() * array.Length;
+                var size = sizeof(T) * array.Length;
                 return UnmanagedValueHelper.GetBinaryHashCode(pArray, size);
             }
         }
@@ -98,10 +80,9 @@
         /// <typeparam name="T">非托管值的类型。</typeparam>
         /// <param name="value">要填充到字节数组的非托管类型的值。</param>
         /// <returns>以 <paramref name="value"/> 的二进制值填充的字节数组。</returns>
-        public static unsafe byte[] BinaryToByteArray<T>(this T value)
-            where T : unmanaged
+        public static byte[] BinaryToByteArray<T>(this T value) where T : unmanaged
         {
-            var size = UnmanagedValueHelper.SizeOf<T>();
+            var size = sizeof(T);
             var bytes = new byte[size];
             fixed (byte* pBytes = bytes)
             {
@@ -118,7 +99,7 @@
         /// <param name="size">指针指向的值以字节为单位的大小。</param>
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 指向的值二进制相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        internal static unsafe bool BinaryEquals(void* value, void* other, int size)
+        internal static bool BinaryEquals(void* value, void* other, int size)
         {
             switch (size)
             {
@@ -166,7 +147,7 @@
         /// <param name="value">指向要获取基于二进制的哈希代码的值的指针。</param>
         /// <param name="size">指针指向的值以字节为单位的大小。</param>
         /// <returns><paramref name="value"/> 指向的值基于二进制的哈希代码。</returns>
-        internal static unsafe int GetBinaryHashCode(void* value, int size)
+        internal static int GetBinaryHashCode(void* value, int size)
         {
             switch (size)
             {
