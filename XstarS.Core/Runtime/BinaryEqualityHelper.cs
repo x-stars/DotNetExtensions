@@ -42,7 +42,7 @@
                 default:
                     var lValue = (ulong*)value;
                     var lOther = (ulong*)other;
-                    var pEnd = (void*)((byte*)value + size);
+                    var pEnd = lValue + (size / 8);
                     while (lValue < pEnd)
                     {
                         if (*lValue++ != *lOther++)
@@ -50,7 +50,7 @@
                             return false;
                         }
                     }
-                    return (lValue == pEnd) ||
+                    return (size % 8 == 0) ||
                         BinaryEqualityHelper.BinaryEquals(lValue, lOther, size % 8);
             }
         }
@@ -80,12 +80,12 @@
                 default:
                     var hashCode = 0;
                     var iValue = (int*)value;
-                    var pEnd = (void*)((byte*)value + size);
+                    var pEnd = iValue + (size / 4);
                     while (iValue < pEnd)
                     {
                         hashCode = hashCode * -1521134295 + *iValue++;
                     }
-                    return (iValue == pEnd) ? hashCode : (hashCode * -1521134295 +
+                    return (size % 4 == 0) ? hashCode : (hashCode * -1521134295 +
                         BinaryEqualityHelper.GetBinaryHashCode(iValue, size % 4));
             }
         }
