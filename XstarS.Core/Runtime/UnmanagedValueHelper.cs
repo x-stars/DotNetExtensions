@@ -154,11 +154,11 @@
                 case 0:
                     return 0;
                 case 1:
-                    return *(sbyte*)value;
+                    return *(byte*)value;
                 case 2:
-                    return *(short*)value;
+                    return *(ushort*)value;
                 case 3:
-                    var sValue = (short*)value;
+                    var sValue = (ushort*)value;
                     return *sValue++ * -1521134295 +
                         UnmanagedValueHelper.GetBinaryHashCode(sValue, size - 2);
                 case 4:
