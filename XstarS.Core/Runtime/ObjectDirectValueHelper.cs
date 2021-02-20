@@ -53,7 +53,7 @@
             var ptrValue = *(void**)&refValue;
             var ptrOther = *(void**)&refOther;
             var size = ObjectDirectValueHelper.SizeOf<T>();
-            return UnmanagedValueHelper.BinaryEquals(ptrValue, ptrOther, size);
+            return BinaryEqualityHelper.BinaryEquals(ptrValue, ptrOther, size);
         }
 
         /// <summary>
@@ -67,7 +67,7 @@
             var refValue = __makeref(value);
             var ptrValue = *(void**)&refValue;
             var size = TypeProperties<T>.Size;
-            return UnmanagedValueHelper.GetBinaryHashCode(ptrValue, size);
+            return BinaryEqualityHelper.GetBinaryHashCode(ptrValue, size);
         }
 
         /// <summary>
