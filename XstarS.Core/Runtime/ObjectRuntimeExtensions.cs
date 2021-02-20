@@ -43,18 +43,6 @@ namespace XstarS.Runtime
             (T)ObjectRuntimeHelper.SerializationClone(value);
 
         /// <summary>
-        /// 确定当前对象与指定对象是否直接相等。
-        /// </summary>
-        /// <typeparam name="T">对象的类型。</typeparam>
-        /// <param name="value">要进行相等比较的对象。</param>
-        /// <param name="other">要与当前对象进行比较的对象。</param>
-        /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 均为引用类型且引用相等，
-        /// 或 <paramref name="value"/> 与 <paramref name="other"/> 均为值类型且所有字段均直接相等，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool DirectEquals<T>(this T value, T other) =>
-            RuntimeHelpers.Equals(value, other);
-
-        /// <summary>
         /// 确定当前对象与指定对象的引用是否相等。
         /// </summary>
         /// <typeparam name="T">对象的类型。</typeparam>
