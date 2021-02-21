@@ -18,7 +18,8 @@ namespace XstarS.Runtime
         /// <summary>
         /// 获取提供 <see cref="IntPtrByRefHelper"/> 方法实现的类型的 <see cref="Type"/> 对象。
         /// </summary>
-        private static Type Implementation => IntPtrByRefHelper.LazyImplementation.Value;
+        private static Type Implementation =>
+            IntPtrByRefHelper.LazyImplementation.Value;
 
         /// <summary>
         /// 将指定的引用传递 <see langword="ref"/> 转换为等效的 <see cref="IntPtr"/>。
@@ -41,7 +42,7 @@ namespace XstarS.Runtime
         /// 表示的引用传递 <see langword="ref"/> 所引用的值。</returns>
         public static T GetRefValue<T>(this IntPtr reference)
         {
-            return IntPtrByRefHelper.Delegates<T>.GetValue.Invoke(reference);
+            return IntPtrByRefHelper.Delegates<T>.GetRefValue.Invoke(reference);
         }
 
         /// <summary>
@@ -54,7 +55,7 @@ namespace XstarS.Runtime
         /// 表示的引用传递 <see langword="ref"/> 所引用的值。</param>
         public static void SetRefValue<T>(this IntPtr reference, T value)
         {
-            IntPtrByRefHelper.Delegates<T>.SetValue.Invoke(reference, value);
+            IntPtrByRefHelper.Delegates<T>.SetRefValue.Invoke(reference, value);
         }
 
         /// <summary>
@@ -144,7 +145,7 @@ namespace XstarS.Runtime
             /// 表示 <see cref="IntPtrByRefHelper.Implementation"/> 中
             /// <see cref="IntPtrByRefHelper.GetRefValue{T}(IntPtr)"/> 方法的委托。
             /// </summary>
-            internal static readonly Func<IntPtr, T> GetValue =
+            internal static readonly Func<IntPtr, T> GetRefValue =
                 (Func<IntPtr, T>)IntPtrByRefHelper.Implementation.GetMethod(
                     nameof(IntPtrByRefHelper.GetRefValue)).MakeGenericMethod(
                         typeof(T)).CreateDelegate(typeof(Func<IntPtr, T>));
@@ -153,7 +154,7 @@ namespace XstarS.Runtime
             /// 表示 <see cref="IntPtrByRefHelper.Implementation"/> 中
             /// <see cref="IntPtrByRefHelper.SetRefValue{T}(IntPtr, T)"/> 方法的委托。
             /// </summary>
-            internal static readonly Action<IntPtr, T> SetValue =
+            internal static readonly Action<IntPtr, T> SetRefValue =
                 (Action<IntPtr, T>)IntPtrByRefHelper.Implementation.GetMethod(
                     nameof(IntPtrByRefHelper.SetRefValue)).MakeGenericMethod(
                         typeof(T)).CreateDelegate(typeof(Action<IntPtr, T>));
