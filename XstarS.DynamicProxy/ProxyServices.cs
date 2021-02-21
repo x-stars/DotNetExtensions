@@ -14,8 +14,8 @@ namespace XstarS.Reflection
         /// <typeparam name="T">引用传递 <see langword="ref"/> 的类型。</typeparam>
         /// <param name="value">按引用转递的值。</param>
         /// <returns><paramref name="value"/> 的引用转换得到的 <see cref="IntPtr"/>。</returns>
-        public static IntPtr ByRefToIntPtr<T>(ref T value) =>
-            IntPtrByRefHelper.ToIntPtr(ref value);
+        public static IntPtr RefAsIntPtr<T>(ref T value) =>
+            IntPtrByRef.RefAsIntPtr(ref value);
 
         /// <summary>
         /// 获取当前 <see cref="IntPtr"/> 表示的引用传递 <see langword="ref"/> 所引用的值。
@@ -26,7 +26,7 @@ namespace XstarS.Reflection
         /// <returns><paramref name="reference"/>
         /// 表示的引用传递 <see langword="ref"/> 所引用的值。</returns>
         public static T GetRefValue<T>(this IntPtr reference) =>
-            IntPtrByRefHelper.GetRefValue<T>(reference);
+            IntPtrByRef.GetRefValue<T>(reference);
 
         /// <summary>
         /// 设置当前 <see cref="IntPtr"/> 表示的引用传递 <see langword="ref"/> 所引用的值。
@@ -37,6 +37,6 @@ namespace XstarS.Reflection
         /// <param name="value">要设置为 <see cref="IntPtr"/>
         /// 表示的引用传递 <see langword="ref"/> 所引用的值。</param>
         public static void SetRefValue<T>(this IntPtr reference, T value) =>
-            IntPtrByRefHelper.SetRefValue(reference, value);
+            IntPtrByRef.SetRefValue(reference, value);
     }
 }
