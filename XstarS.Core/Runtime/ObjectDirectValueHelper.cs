@@ -3,6 +3,9 @@
     /// <summary>
     /// 提供对象的直接值相关的帮助方法。
     /// </summary>
+    /// <remarks>
+    /// 对于引用类型，直接值即为对象的引用；对于值类型，直接值即为对象所有字段的序列。
+    /// </remarks>
     public static unsafe class ObjectDirectValueHelper
     {
         /// <summary>
