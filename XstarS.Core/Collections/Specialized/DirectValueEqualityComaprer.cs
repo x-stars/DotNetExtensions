@@ -29,13 +29,13 @@ namespace XstarS.Collections.Specialized
         /// <param name="y">要比较的第二个对象。</param>
         /// <returns>若 <paramref name="x"/> 与 <paramref name="y"/> 的直接值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public override bool Equals(T x, T y) => ObjectDirectValueHelper.DirectValueEquals(x, y);
+        public override bool Equals(T x, T y) => ObjectDirectValue.Equals(x, y);
 
         /// <summary>
         /// 获取指定对象基于直接值的哈希代码。
         /// </summary>
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <returns><paramref name="obj"/> 基于直接值的哈希代码。</returns>
-        public override int GetHashCode(T obj) => ObjectDirectValueHelper.GetDirectValueHashCode(obj);
+        public override int GetHashCode(T obj) => ObjectDirectValue.GetHashCode(obj);
     }
 }

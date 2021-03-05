@@ -43,7 +43,7 @@ namespace XstarS
             {
                 var xItem = methodGet.Invoke(xArray, xArray.OffsetToIndices(index).Box());
                 var yItem = methodGet.Invoke(yArray, yArray.OffsetToIndices(index).Box());
-                if (!PointerHelper.Equals(xItem, yItem)) { return false; }
+                if (!PointerEqualityComparer.Equals(xItem, yItem)) { return false; }
             }
             return true;
         }
@@ -63,7 +63,8 @@ namespace XstarS
             for (int index = 0; index < array.Length; index++)
             {
                 var item = methodGet.Invoke(array, array.OffsetToIndices(index).Box());
-                hashCode = this.CombineHashCode(hashCode, PointerHelper.GetHashCode(item));
+                var nextHashCode = PointerEqualityComparer.GetHashCode(item);
+                hashCode = this.CombineHashCode(hashCode, nextHashCode);
             }
             return hashCode;
         }

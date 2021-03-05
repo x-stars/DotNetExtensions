@@ -8,34 +8,34 @@ namespace XstarS.Runtime
 {
     using ObjectPair = KeyValuePair<object, object>;
 
-    partial class ObjectRuntimeHelper
+    partial class ObjectValues
     {
         /// <summary>
-        /// 确定指定的两个对象的值是否相等。
+        /// 确定指定的两个对象包含的值是否递归相等。
         /// </summary>
         /// <remarks>基于反射调用，可能存在性能问题。</remarks>
         /// <param name="value">要进行值相等比较的第一个对象。</param>
         /// <param name="other">要进行值相等比较的第二个对象。</param>
-        /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的值相等，
+        /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 包含的值递归相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        public static bool ValueEquals(object value, object other)
+        public static bool RecursiveEquals(object value, object other)
         {
             var comparer = PairReferenceEqualityComparer.Default;
             var compared = new HashSet<ObjectPair>(comparer);
-            return ObjectRuntimeHelper.ValueEquals(value, other, compared);
+            return ObjectValues.RecursiveEquals(value, other, compared);
         }
 
         /// <summary>
-        /// 确定指定的两个对象的值是否相等。
+        /// 确定指定的两个对象包含的值是否递归相等。
         /// </summary>
         /// <param name="value">要进行值相等比较的第一个对象。</param>
         /// <param name="other">要进行值相等比较的第二个对象。</param>
         /// <param name="compared">当前已经比较过的对象的键值对。</param>
-        /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的值相等，
+        /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 包含的值递归相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        private static bool ValueEquals(
+        private static bool RecursiveEquals(
             object value, object other, HashSet<ObjectPair> compared)
         {
             if (RuntimeHelpers.Equals(value, other)) { return true; }
@@ -48,19 +48,19 @@ namespace XstarS.Runtime
             var type = value.GetType();
             if (type.IsPrimitive)
             {
-                return ObjectRuntimeHelper.PrimitiveEquals(value, other);
+                return ObjectValues.PrimitiveEquals(value, other);
             }
             if (type == typeof(string))
             {
-                return ObjectRuntimeHelper.PrimitiveEquals(value, other);
+                return ObjectValues.PrimitiveEquals(value, other);
             }
             else if (type.IsArray)
             {
-                return ObjectRuntimeHelper.ArrayValueEquals((Array)value, (Array)other, compared);
+                return ObjectValues.ArrayRecursiveEquals((Array)value, (Array)other, compared);
             }
             else
             {
-                return ObjectRuntimeHelper.ObjectValueEquals(value, other, compared);
+                return ObjectValues.ObjectRecursiveEquals(value, other, compared);
             }
         }
 
@@ -89,15 +89,15 @@ namespace XstarS.Runtime
         }
 
         /// <summary>
-        /// 确定指定的两个数组 <see cref="Array"/> 的所有元素的值是否相等。
+        /// 确定指定的两个数组 <see cref="Array"/> 的所有元素的值是否递归相等。
         /// </summary>
         /// <param name="value">要进行值相等比较的第一个数组。</param>
         /// <param name="other">要进行值相等比较的第二个数组。</param>
         /// <param name="compared">当前已经比较过的对象的键值对。</param>
         /// <returns>若 <paramref name="value"/> 和 <paramref name="other"/>
-        /// 均为数组 <see cref="Array"/>，且类型和尺寸相同，每个元素的值相等，
+        /// 均为数组 <see cref="Array"/>，且类型和尺寸相同，每个元素的值递归相等，
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        private static bool ArrayValueEquals(
+        private static bool ArrayRecursiveEquals(
             Array value, Array other, HashSet<ObjectPair> compared)
         {
             if (value.Rank != other.Rank) { return false; }
@@ -118,7 +118,7 @@ namespace XstarS.Runtime
                 {
                     var valueItem = methodGet.Invoke(value, value.OffsetToIndices(index).Box());
                     var otherItem = methodGet.Invoke(other, other.OffsetToIndices(index).Box());
-                    if (!ObjectRuntimeHelper.BoxedPointerEquals(valueItem, otherItem))
+                    if (!ObjectValues.BoxedPointerEquals(valueItem, otherItem))
                     {
                         return false;
                     }
@@ -133,7 +133,7 @@ namespace XstarS.Runtime
                         value.GetValue(index) : value.GetValue(value.OffsetToIndices(index));
                     var otherItem = isSZArray ?
                         other.GetValue(index) : other.GetValue(other.OffsetToIndices(index));
-                    if (!ObjectRuntimeHelper.ValueEquals(valueItem, otherItem, compared))
+                    if (!ObjectValues.RecursiveEquals(valueItem, otherItem, compared))
                     {
                         return false;
                     }
@@ -143,16 +143,16 @@ namespace XstarS.Runtime
         }
 
         /// <summary>
-        /// 确定指定的两个对象的所有字段的值是否相等。
+        /// 确定指定的两个对象的所有字段的值是否递归相等。
         /// </summary>
         /// <param name="value">要进行值相等比较的第一个对象。</param>
         /// <param name="other">要进行值相等比较的第二个对象。</param>
         /// <param name="compared">当前已经比较过的对象的键值对。</param>
-        /// <returns>若 <paramref name="value"/> 和 <paramref name="other"/>
-        /// 的类型相同，且每个实例字段的值相等，
+        /// <returns>若 <paramref name="value"/> 和
+        /// <paramref name="other"/> 的类型相同，且每个实例字段的值递归相等，
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        private static bool ObjectValueEquals(
+        private static bool ObjectRecursiveEquals(
             object value, object other, HashSet<ObjectPair> compared)
         {
             for (var type = value.GetType(); !(type is null); type = type.BaseType)
@@ -165,14 +165,14 @@ namespace XstarS.Runtime
                     var otherMember = field.GetValue(other);
                     if (field.FieldType.IsPointer)
                     {
-                        if (!ObjectRuntimeHelper.BoxedPointerEquals(valueMember, otherMember))
+                        if (!ObjectValues.BoxedPointerEquals(valueMember, otherMember))
                         {
                             return false;
                         }
                     }
                     else
                     {
-                        if (!ObjectRuntimeHelper.ValueEquals(valueMember, otherMember, compared))
+                        if (!ObjectValues.RecursiveEquals(valueMember, otherMember, compared))
                         {
                             return false;
                         }

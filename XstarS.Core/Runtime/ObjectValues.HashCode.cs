@@ -5,20 +5,20 @@ using XstarS.Collections.Specialized;
 
 namespace XstarS.Runtime
 {
-    partial class ObjectRuntimeHelper
+    partial class ObjectValues
     {
         /// <summary>
-        /// 获取指定对象基于值的哈希代码。
+        /// 获取指定对象递归包含的值的哈希代码。
         /// </summary>
         /// <remarks>基于反射调用，可能存在性能问题。</remarks>
-        /// <param name="value">要获取基于值的哈希代码的对象。</param>
-        /// <returns><paramref name="value"/> 基于值的哈希代码。</returns>
+        /// <param name="value">要获取递归包含的值的哈希代码的对象。</param>
+        /// <returns><paramref name="value"/> 递归包含的值的哈希代码。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        public static int GetValueHashCode(object value)
+        public static int RecursiveGetHashCode(object value)
         {
             var comparer = ReferenceEqualityComparer.Default;
             var computed = new HashSet<object>(comparer);
-            return ObjectRuntimeHelper.GetValueHashCode(value, computed);
+            return ObjectValues.RecursiveGetHashCode(value, computed);
         }
 
         /// <summary>
@@ -34,13 +34,13 @@ namespace XstarS.Runtime
         }
 
         /// <summary>
-        /// 获取指定对象基于值的哈希代码。
+        /// 获取指定对象递归包含的值的哈希代码。
         /// </summary>
         /// <param name="value">要获取基于值的哈希代码的对象。</param>
         /// <param name="computed">已经计算过哈希代码的对象。</param>
-        /// <returns><paramref name="value"/> 基于值的哈希代码。</returns>
+        /// <returns><paramref name="value"/> 递归包含的值的哈希代码。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        private static int GetValueHashCode(object value, HashSet<object> computed)
+        private static int RecursiveGetHashCode(object value, HashSet<object> computed)
         {
             if (value is null) { return 0; }
 
@@ -49,19 +49,19 @@ namespace XstarS.Runtime
             var type = value.GetType();
             if (type.IsPrimitive)
             {
-                return ObjectRuntimeHelper.GetPrimitiveHashCode(value);
+                return ObjectValues.GetPrimitiveHashCode(value);
             }
             if (type == typeof(string))
             {
-                return ObjectRuntimeHelper.GetPrimitiveHashCode(value);
+                return ObjectValues.GetPrimitiveHashCode(value);
             }
             else if (type.IsArray)
             {
-                return ObjectRuntimeHelper.GetArrayValueHashCode((Array)value, computed);
+                return ObjectValues.RecursiveGetArrayHashCode((Array)value, computed);
             }
             else
             {
-                return ObjectRuntimeHelper.GetObjectValueHashCode(value, computed);
+                return ObjectValues.RecursiveGetObjectHashCode(value, computed);
             }
         }
 
@@ -86,13 +86,13 @@ namespace XstarS.Runtime
         }
 
         /// <summary>
-        /// 获取指定数组中所有元素的基于值的哈希代码。
+        /// 获取指定数组中所有元素的递归包含的值的哈希代码。
         /// </summary>
         /// <param name="value">要获取基于值的哈希代码的数组。</param>
         /// <param name="computed">已经计算过哈希代码的对象。</param>
-        /// <returns><paramref name="value"/> 中所有元素的基于值的哈希代码。</returns>
+        /// <returns><paramref name="value"/> 中所有元素的递归包含的值的哈希代码。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        private static int GetArrayValueHashCode(Array value, HashSet<object> computed)
+        private static int RecursiveGetArrayHashCode(Array value, HashSet<object> computed)
         {
             var hashCode = value.GetType().GetHashCode();
 
@@ -103,8 +103,8 @@ namespace XstarS.Runtime
                 for (int index = 0; index < value.Length; index++)
                 {
                     var item = methodGet.Invoke(value, value.OffsetToIndices(index).Box());
-                    hashCode = ObjectRuntimeHelper.CombineHashCode(
-                        hashCode, ObjectRuntimeHelper.GetBoxedPointerHashCode(item));
+                    hashCode = ObjectValues.CombineHashCode(
+                        hashCode, ObjectValues.GetBoxedPointerHashCode(item));
                 }
             }
             else
@@ -114,8 +114,8 @@ namespace XstarS.Runtime
                 {
                     var item = isSZArray ?
                         value.GetValue(index) : value.GetValue(value.OffsetToIndices(index));
-                    hashCode = ObjectRuntimeHelper.CombineHashCode(
-                        hashCode, ObjectRuntimeHelper.GetValueHashCode(item, computed));
+                    hashCode = ObjectValues.CombineHashCode(
+                        hashCode, ObjectValues.RecursiveGetHashCode(item, computed));
                 }
             }
 
@@ -123,13 +123,13 @@ namespace XstarS.Runtime
         }
 
         /// <summary>
-        /// 获取指定对象中所有字段的基于值的哈希代码。
+        /// 获取指定对象中所有字段的递归包含的值的哈希代码。
         /// </summary>
         /// <param name="value">要获取基于值的哈希代码的对象。</param>
         /// <param name="computed">已经计算过哈希代码的对象。</param>
-        /// <returns><paramref name="value"/> 中所有字段的基于值的哈希代码。</returns>
+        /// <returns><paramref name="value"/> 中所有字段的递归包含的值的哈希代码。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        private static int GetObjectValueHashCode(object value, HashSet<object> computed)
+        private static int RecursiveGetObjectHashCode(object value, HashSet<object> computed)
         {
             var hashCode = value.GetType().GetHashCode();
 
@@ -142,13 +142,13 @@ namespace XstarS.Runtime
                     var member = field.GetValue(value);
                     if (field.FieldType.IsPointer)
                     {
-                        hashCode = ObjectRuntimeHelper.CombineHashCode(
-                            hashCode, ObjectRuntimeHelper.GetBoxedPointerHashCode(member));
+                        hashCode = ObjectValues.CombineHashCode(
+                            hashCode, ObjectValues.GetBoxedPointerHashCode(member));
                     }
                     else
                     {
-                        hashCode = ObjectRuntimeHelper.CombineHashCode(
-                            hashCode, ObjectRuntimeHelper.GetValueHashCode(member, computed));
+                        hashCode = ObjectValues.CombineHashCode(
+                            hashCode, ObjectValues.RecursiveGetHashCode(member, computed));
                     }
                 }
             }

@@ -9,30 +9,30 @@ using XstarS.Collections.Specialized;
 
 namespace XstarS.Runtime
 {
-    partial class ObjectRuntimeHelper
+    partial class ObjectValues
     {
         /// <summary>
         /// 表示 <see cref="object.MemberwiseClone()"/> 方法的静态调用委托。
         /// </summary>
-        private static readonly Converter<object, object> StaticMemberwiseClone =
-            typeof(object).GetMethod(nameof(ObjectRuntimeHelper.MemberwiseClone),
+        private static readonly Converter<object, object> CloneDelegate =
+            typeof(object).GetMethod(nameof(ObjectValues.MemberwiseClone),
                 BindingFlags.Instance | BindingFlags.NonPublic).CreateDelegate(
                     typeof(Converter<object, object>)) as Converter<object, object>;
 
         /// <summary>
         /// 表示用于二进制序列化和反序列化对象的 <see cref="BinaryFormatter"/> 对象。
         /// </summary>
-        private static readonly BinaryFormatter BinarySerializer = new BinaryFormatter();
+        private static readonly BinaryFormatter Serializer = new BinaryFormatter();
 
         /// <summary>
         /// 获取指定对象的浅表副本。
         /// </summary>
         /// <param name="value">要获取浅表副本的对象。</param>
         /// <returns><paramref name="value"/> 的浅表副本。</returns>
-        public static object ObjectClone(object value)
+        public static object Clone(object value)
         {
             return (value is null) ? null :
-                ObjectRuntimeHelper.StaticMemberwiseClone.Invoke(value);
+                ObjectValues.CloneDelegate.Invoke(value);
         }
 
         /// <summary>
@@ -42,12 +42,12 @@ namespace XstarS.Runtime
         /// <param name="value">要获取深度副本的对象。</param>
         /// <returns><paramref name="value"/> 的深度副本。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        public static object ObjectRecurseClone(object value)
+        public static object RecursiveClone(object value)
         {
             if (value is null) { return null; }
             var comparer = ReferenceEqualityComparer.Default;
             var cloned = new Dictionary<object, object>(comparer);
-            return ObjectRuntimeHelper.ObjectRecurseClone(value, cloned);
+            return ObjectValues.RecursiveClone(value, cloned);
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace XstarS.Runtime
         {
             if (value is null) { return null; }
             using var stream = new MemoryStream();
-            var serializer = ObjectRuntimeHelper.BinarySerializer;
+            var serializer = ObjectValues.Serializer;
             serializer.Serialize(stream, value);
             stream.Position = 0L;
             return serializer.Deserialize(stream);
@@ -75,22 +75,22 @@ namespace XstarS.Runtime
         /// <param name="value">要获取深度副本的对象。</param>
         /// <returns><paramref name="value"/> 的深度副本。</returns>
         /// <param name="cloned">已经创建副本的对象及其对应的副本。</param>
-        private static object ObjectRecurseClone(object value, Dictionary<object, object> cloned)
+        private static object RecursiveClone(object value, Dictionary<object, object> cloned)
         {
             if (value is null) { return null; }
             if (cloned.ContainsKey(value)) { return cloned[value]; }
 
-            var clone = ObjectRuntimeHelper.ObjectClone(value);
+            var clone = ObjectValues.Clone(value);
             cloned[value] = clone;
 
             var type = clone.GetType();
             if (type.IsArray)
             {
-                ObjectRuntimeHelper.ArrayElementsRecurseClone((Array)clone, cloned);
+                ObjectValues.ArrayRecursiveClone((Array)clone, cloned);
             }
             else if (!type.IsPrimitive)
             {
-                ObjectRuntimeHelper.ObjectMembersRecurseClone(clone, cloned);
+                ObjectValues.ObjectRecursiveClone(clone, cloned);
             }
 
             return clone;
@@ -101,7 +101,7 @@ namespace XstarS.Runtime
         /// </summary>
         /// <param name="value">要将元素替换为其深度副本的数组。</param>
         /// <param name="cloned">已经创建副本的对象及其对应的副本。</param>
-        private static void ArrayElementsRecurseClone(Array value, Dictionary<object, object> cloned)
+        private static void ArrayRecursiveClone(Array value, Dictionary<object, object> cloned)
         {
             if (!value.GetType().GetElementType().IsPointer)
             {
@@ -110,7 +110,7 @@ namespace XstarS.Runtime
                     for (int index = 0; index < value.Length; index++)
                     {
                         var item = value.GetValue(index);
-                        var clone = ObjectRuntimeHelper.ObjectRecurseClone(item, cloned);
+                        var clone = ObjectValues.RecursiveClone(item, cloned);
                         value.SetValue(clone, index);
                     }
                 }
@@ -120,7 +120,7 @@ namespace XstarS.Runtime
                     {
                         var indices = value.OffsetToIndices(index);
                         var item = value.GetValue(indices);
-                        var clone = ObjectRuntimeHelper.ObjectRecurseClone(item, cloned);
+                        var clone = ObjectValues.RecursiveClone(item, cloned);
                         value.SetValue(clone, indices);
                     }
                 }
@@ -133,7 +133,7 @@ namespace XstarS.Runtime
         /// <param name="value">要将成员替换为其深度副本的对象。</param>
         /// <param name="cloned">已经创建副本的对象及其对应的副本。</param>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        private static void ObjectMembersRecurseClone(object value, Dictionary<object, object> cloned)
+        private static void ObjectRecursiveClone(object value, Dictionary<object, object> cloned)
         {
             for (var type = value.GetType(); !(type is null); type = type.BaseType)
             {
@@ -144,7 +144,7 @@ namespace XstarS.Runtime
                     if (!field.FieldType.IsPointer)
                     {
                         var member = field.GetValue(value);
-                        var clone = ObjectRuntimeHelper.ObjectRecurseClone(member, cloned);
+                        var clone = ObjectValues.RecursiveClone(member, cloned);
                         field.SetValue(value, clone);
                     }
                 }
