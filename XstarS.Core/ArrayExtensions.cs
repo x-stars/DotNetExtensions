@@ -335,10 +335,10 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将当前字节数组转换为十六进制数字的等效字符串表示形式。
+        /// 将当前字节数组转换为大端序十六进制数字的等效字符串表示形式。
         /// </summary>
         /// <param name="bytes">要转换为字符串的字节数组。</param>
-        /// <returns>当前字节数组的十六进制数字的等效字符串表示形式。</returns>
+        /// <returns>当前字节数组的大端序十六进制数字的等效字符串表示形式。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
         public static string ToHexString(this byte[] bytes)
