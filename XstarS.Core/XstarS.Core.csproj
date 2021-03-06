@@ -49,16 +49,14 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.01234567890`))'=='net' And&#xD;&#xA;                        '$(TargetFramework.CompareTo(`net47`))'&lt;'0'">
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.01234567890`))'=='net' And
+                        '$(TargetFramework.CompareTo(`net47`))'&lt;'0'">
     <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard' And&#xD;&#xA;                        '$(TargetFramework.CompareTo(`netstandard2.1`))'&lt;'0'">
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard' And
+                        '$(TargetFramework.CompareTo(`netstandard2.1`))'&lt;'0'">
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Reflection\Emit\ILGenerationExtensions.cs~RF5c37c849.TMP" />
   </ItemGroup>
 
 </Project>
