@@ -335,10 +335,32 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将当前字节数组转换为大端序十六进制数字的等效字符串表示形式。
+        /// 返回将当前数组中元素的顺序反转后得到的新数组。
+        /// </summary>
+        /// <typeparam name="T">数组的元素的类型。</typeparam>
+        /// <param name="array">要反转元素的顺序的数组。</param>
+        /// <returns>将当前数组中元素的顺序反转后得到的新数组。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+        public static T[] Reverse<T>(this T[] array)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            var length = array.Length;
+            var result = new T[length];
+            Array.Copy(array, result, length);
+            Array.Reverse(result);
+            return result;
+        }
+
+        /// <summary>
+        /// 将当前字节数组转换为十六进制数字的等效字符串表示形式。
         /// </summary>
         /// <param name="bytes">要转换为字符串的字节数组。</param>
-        /// <returns>当前字节数组的大端序十六进制数字的等效字符串表示形式。</returns>
+        /// <returns>当前字节数组的十六进制数字的等效字符串表示形式。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
         public static string ToHexString(this byte[] bytes)
@@ -348,14 +370,6 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(bytes));
             }
 
-            if (BitConverter.IsLittleEndian)
-            {
-                var length = bytes.Length;
-                var rBytes = new byte[length];
-                Array.Copy(bytes, rBytes, length);
-                Array.Reverse(rBytes);
-                bytes = rBytes;
-            }
             var hexes = Array.ConvertAll(bytes, @byte => @byte.ToString("X2"));
             return string.Join(string.Empty, hexes);
         }
