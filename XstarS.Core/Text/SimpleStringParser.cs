@@ -28,7 +28,6 @@ namespace XstarS.Text
         /// </summary>
         /// <returns>当前对象的哈希代码。</returns>
         public sealed override int GetHashCode() =>
-            this.GetType().GetHashCode() * -1521134295 +
-            typeof(SimpleStringParser<T>).GetHashCode();
+            this.GetType().GetHashCode() * -1521134295;
     }
 }

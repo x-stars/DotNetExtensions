@@ -29,7 +29,6 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <returns>当前对象的哈希代码。</returns>
         public sealed override int GetHashCode() =>
-            this.GetType().GetHashCode() * -1521134295 +
-            typeof(SimpleComparer<T>).GetHashCode();
+            this.GetType().GetHashCode() * -1521134295;
     }
 }
