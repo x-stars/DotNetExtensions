@@ -97,7 +97,7 @@ namespace XstarS.Runtime
         /// <param name="value">要获取基于值的哈希代码的对象。</param>
         /// <returns>由 <paramref name="value"/> 基于值的哈希代码。</returns>
         public static int GetValueHashCode<T>(this T value) =>
-            ObjectValues.RecursiveGetHashCode(value);
+            ObjectValues.GetRecursiveHashCode(value);
 
         /// <summary>
         /// 获取当前对象的基于直接值的哈希代码。

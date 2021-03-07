@@ -37,6 +37,6 @@ namespace XstarS.Collections.Specialized
         /// </summary>
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <returns><paramref name="obj"/> 基于值的哈希代码。</returns>
-        public override int GetHashCode(T obj) => ObjectValues.RecursiveGetHashCode(obj);
+        public override int GetHashCode(T obj) => ObjectValues.GetRecursiveHashCode(obj);
     }
 }

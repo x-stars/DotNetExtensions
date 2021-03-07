@@ -17,13 +17,13 @@
             /// <summary>
             /// 表示当前类型的直接值以字节为单位的大小。
             /// </summary>
-            internal static readonly int Size = TypeProperties<T>.GetSize();
+            internal static readonly int Size = TypeProperties<T>.ComputeSize();
 
             /// <summary>
             /// 获取当前类型的直接值以字节为单位的大小。
             /// </summary>
             /// <returns>当前类型以字节为单位的大小。</returns>
-            private static int GetSize()
+            private static int ComputeSize()
             {
                 var array = new T[2];
                 var ref0 = __makeref(array[0]);

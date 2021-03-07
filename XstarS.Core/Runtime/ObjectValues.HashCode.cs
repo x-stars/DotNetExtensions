@@ -14,11 +14,11 @@ namespace XstarS.Runtime
         /// <param name="value">要获取递归包含的值的哈希代码的对象。</param>
         /// <returns><paramref name="value"/> 递归包含的值的哈希代码。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        public static int RecursiveGetHashCode(object value)
+        public static int GetRecursiveHashCode(object value)
         {
             var comparer = ReferenceEqualityComparer.Default;
             var computed = new HashSet<object>(comparer);
-            return ObjectValues.RecursiveGetHashCode(value, computed);
+            return ObjectValues.GetRecursiveHashCode(value, computed);
         }
 
         /// <summary>
@@ -40,7 +40,7 @@ namespace XstarS.Runtime
         /// <param name="computed">已经计算过哈希代码的对象。</param>
         /// <returns><paramref name="value"/> 递归包含的值的哈希代码。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        private static int RecursiveGetHashCode(object value, HashSet<object> computed)
+        private static int GetRecursiveHashCode(object value, HashSet<object> computed)
         {
             if (value is null) { return 0; }
 
@@ -57,11 +57,11 @@ namespace XstarS.Runtime
             }
             else if (type.IsArray)
             {
-                return ObjectValues.RecursiveGetArrayHashCode((Array)value, computed);
+                return ObjectValues.GetArrayRecursiveHashCode((Array)value, computed);
             }
             else
             {
-                return ObjectValues.RecursiveGetObjectHashCode(value, computed);
+                return ObjectValues.GetObjectRecursiveHashCode(value, computed);
             }
         }
 
@@ -92,7 +92,7 @@ namespace XstarS.Runtime
         /// <param name="computed">已经计算过哈希代码的对象。</param>
         /// <returns><paramref name="value"/> 中所有元素的递归包含的值的哈希代码。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        private static int RecursiveGetArrayHashCode(Array value, HashSet<object> computed)
+        private static int GetArrayRecursiveHashCode(Array value, HashSet<object> computed)
         {
             var hashCode = value.GetType().GetHashCode();
 
@@ -115,7 +115,7 @@ namespace XstarS.Runtime
                     var item = isSZArray ?
                         value.GetValue(index) : value.GetValue(value.OffsetToIndices(index));
                     hashCode = ObjectValues.CombineHashCode(
-                        hashCode, ObjectValues.RecursiveGetHashCode(item, computed));
+                        hashCode, ObjectValues.GetRecursiveHashCode(item, computed));
                 }
             }
 
@@ -129,7 +129,7 @@ namespace XstarS.Runtime
         /// <param name="computed">已经计算过哈希代码的对象。</param>
         /// <returns><paramref name="value"/> 中所有字段的递归包含的值的哈希代码。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        private static int RecursiveGetObjectHashCode(object value, HashSet<object> computed)
+        private static int GetObjectRecursiveHashCode(object value, HashSet<object> computed)
         {
             var hashCode = value.GetType().GetHashCode();
 
@@ -148,7 +148,7 @@ namespace XstarS.Runtime
                     else
                     {
                         hashCode = ObjectValues.CombineHashCode(
-                            hashCode, ObjectValues.RecursiveGetHashCode(member, computed));
+                            hashCode, ObjectValues.GetRecursiveHashCode(member, computed));
                     }
                 }
             }
