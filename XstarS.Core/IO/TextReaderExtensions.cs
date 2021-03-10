@@ -146,7 +146,7 @@ namespace XstarS.IO
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            return Array.ConvertAll(reader.ReadLineTokens(), StringParser.ParseAs<T>);
+            return Array.ConvertAll(reader.ReadLineTokens(), ValueParser.ParseAs<T>);
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace XstarS.IO
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            return Array.ConvertAll(reader.ReadLinesToEnd(), StringParser.ParseAs<T>);
+            return Array.ConvertAll(reader.ReadLinesToEnd(), ValueParser.ParseAs<T>);
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace XstarS.IO
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            return Array.ConvertAll(reader.ReadTokensToEnd(), StringParser.ParseAs<T>);
+            return Array.ConvertAll(reader.ReadTokensToEnd(), ValueParser.ParseAs<T>);
         }
     }
 }

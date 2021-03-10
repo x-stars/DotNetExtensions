@@ -7,12 +7,12 @@ namespace XstarS.Text
     /// </summary>
     /// <typeparam name="T">要转换为的数值的类型。</typeparam>
     [Serializable]
-    internal sealed class ParsableStringParser<T> : SimpleStringParser<T>
+    internal sealed class ParsableValueParser<T> : SimpleValueParser<T>
     {
         /// <summary>
-        /// 初始化 <see cref="ParsableStringParser{T}"/> 类的新实例。
+        /// 初始化 <see cref="ParsableValueParser{T}"/> 类的新实例。
         /// </summary>
-        public ParsableStringParser() { }
+        public ParsableValueParser() { }
 
         /// <summary>
         /// 将指定的字符串表示形式转换为其等效的数值形式。
