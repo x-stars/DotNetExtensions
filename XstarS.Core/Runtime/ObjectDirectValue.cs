@@ -55,7 +55,7 @@
             var refOther = __makeref(other);
             var ptrValue = *(void**)&refValue;
             var ptrOther = *(void**)&refOther;
-            var size = ObjectDirectValue.SizeOf<T>();
+            var size = TypeProperties<T>.Size;
             return BinaryEqualityComparer.Equals(ptrValue, ptrOther, size);
         }
 
