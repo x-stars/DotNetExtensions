@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Security;
 using XstarS.IO;
 
 namespace XstarS
@@ -9,7 +8,7 @@ namespace XstarS
     /// <summary>
     /// 提供控制台应用程序的输入流、输出流和错误流的扩展方法。
     /// </summary>
-    public static class ConsoleEx
+    public static partial class ConsoleEx
     {
         /// <summary>
         /// 从标准输入流读取下一个字符串值。
@@ -21,6 +20,7 @@ namespace XstarS
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一个字符串值分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static string ReadToken() => Console.In.ReadToken();
 
         /// <summary>
@@ -38,6 +38,7 @@ namespace XstarS
         /// <exception cref="OverflowException">
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static T ReadTokenAs<T>() => Console.In.ReadTokenAs<T>();
 
         /// <summary>
@@ -55,6 +56,7 @@ namespace XstarS
         /// <exception cref="OverflowException">
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static T ReadLineAs<T>() => Console.In.ReadLineAs<T>();
 
         /// <summary>
@@ -66,6 +68,7 @@ namespace XstarS
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static string[] ReadLineTokens() => Console.In.ReadLineTokens();
 
         /// <summary>
@@ -83,6 +86,7 @@ namespace XstarS
         /// <exception cref="OverflowException">
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static T[] ReadLineTokensAs<T>() => Console.In.ReadLineTokensAs<T>();
 
         /// <summary>
@@ -109,6 +113,7 @@ namespace XstarS
         /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static T ReadToEndAs<T>() => Console.In.ReadToEndAs<T>();
 
         /// <summary>
@@ -120,6 +125,7 @@ namespace XstarS
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为到末尾的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static string[] ReadLinesToEnd() => Console.In.ReadLinesToEnd();
 
         /// <summary>
@@ -135,6 +141,7 @@ namespace XstarS
         /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static T[] ReadLinesToEndAs<T>() => Console.In.ReadLinesToEndAs<T>();
 
         /// <summary>
@@ -146,6 +153,7 @@ namespace XstarS
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为到末尾的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static string[] ReadTokensToEnd() => Console.In.ReadTokensToEnd();
 
         /// <summary>
@@ -161,171 +169,48 @@ namespace XstarS
         /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static T[] ReadTokensToEndAs<T>() => Console.In.ReadTokensToEndAs<T>();
 
         /// <summary>
-        /// 将指定的字符串值以指定的前景色和背景色写入标准输出流。
+        /// 将指定的多个字符串值逐个（后跟当前行终止符）写入标准输出流。
         /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <param name="background">要使用的控制台背景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
+        /// <param name="values">要写入的多个字符串值。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteInColor(string value, ConsoleColor foreground, ConsoleColor background)
-        {
-            lock (Console.Out)
-            {
-                Console.ForegroundColor = foreground;
-                Console.BackgroundColor = background;
-                Console.Write(value);
-                Console.ResetColor();
-            }
-        }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteTokens(params string[] values) => Console.Out.WriteTokens(values);
 
         /// <summary>
-        /// 将指定的字符串值以指定的前景色写入标准输出流。
+        /// 将指定的多个对象的文本表示形式逐个（后跟当前行终止符）写入标准输出流。
         /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
+        /// <param name="values">要写入的多个对象。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteInColor(string value, ConsoleColor foreground)
-        {
-            lock (Console.Out)
-            {
-                Console.ResetColor();
-                Console.ForegroundColor = foreground;
-                Console.Write(value);
-                Console.ResetColor();
-            }
-        }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteTokens(params object[] values) => Console.Out.WriteTokens(values);
 
         /// <summary>
-        /// 将指定对象的文本表示形式以指定的前景色和背景色写入标准输出流。
+        /// 将指定的多个字符串值逐行（后跟当前行终止符）写入标准输出流。
         /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <param name="background">要使用的控制台背景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
+        /// <param name="values">要写入的多个字符串值。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteInColor(object value, ConsoleColor foreground, ConsoleColor background)
-        {
-            lock (Console.Out)
-            {
-                Console.ForegroundColor = foreground;
-                Console.BackgroundColor = background;
-                Console.Write(value);
-                Console.ResetColor();
-            }
-        }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteLines(params string[] values) => Console.Out.WriteLines(values);
 
         /// <summary>
-        /// 将指定对象的文本表示形式以指定的前景色写入标准输出流。
+        /// 将指定的多个对象的文本表示形式逐行（后跟当前行终止符）写入标准输出流。
         /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
+        /// <param name="values">要写入的多个对象。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteInColor(object value, ConsoleColor foreground)
-        {
-            lock (Console.Out)
-            {
-                Console.ResetColor();
-                Console.ForegroundColor = foreground;
-                Console.Write(value);
-                Console.ResetColor();
-            }
-        }
-
-        /// <summary>
-        /// 将指定的字符串值（后跟当前行终止符）以指定的前景色和背景色写入标准输出流。
-        /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <param name="background">要使用的控制台背景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteLineInColor(string value, ConsoleColor foreground, ConsoleColor background)
-        {
-            lock (Console.Out)
-            {
-                Console.ForegroundColor = foreground;
-                Console.BackgroundColor = background;
-                Console.WriteLine(value);
-                Console.ResetColor();
-            }
-        }
-
-        /// <summary>
-        /// 将指定的字符串值（后跟当前行终止符）以指定的前景色写入标准输出流。
-        /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteLineInColor(string value, ConsoleColor foreground)
-        {
-            lock (Console.Out)
-            {
-                Console.ResetColor();
-                Console.ForegroundColor = foreground;
-                Console.WriteLine(value);
-                Console.ResetColor();
-            }
-        }
-
-        /// <summary>
-        /// 将指定对象的文本表示形式（后跟当前行终止符）以指定的前景色和背景色写入标准输出流。
-        /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <param name="background">要使用的控制台背景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteLineInColor(object value, ConsoleColor foreground, ConsoleColor background)
-        {
-            lock (Console.Out)
-            {
-                Console.ForegroundColor = foreground;
-                Console.BackgroundColor = background;
-                Console.WriteLine(value);
-                Console.ResetColor();
-            }
-        }
-
-        /// <summary>
-        /// 将指定对象的文本表示形式（后跟当前行终止符）以指定的前景色写入标准输出流。
-        /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteLineInColor(object value, ConsoleColor foreground)
-        {
-            lock (Console.Out)
-            {
-                Console.ResetColor();
-                Console.ForegroundColor = foreground;
-                Console.WriteLine(value);
-                Console.ResetColor();
-            }
-        }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteLines(params object[] values) => Console.Out.WriteLines(values);
 
         /// <summary>
         /// 将指定的字符串值写入标准错误输出流。
@@ -445,167 +330,43 @@ namespace XstarS
             Console.Error.WriteLine(format, arg);
 
         /// <summary>
-        /// 将指定的字符串值以指定的前景色和背景色写入标准错误输出流。
+        /// 将指定的多个字符串值逐个（后跟当前行终止符）写入标准错误输出流。
         /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <param name="background">要使用的控制台背景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
+        /// <param name="values">要写入的多个字符串值。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorInColor(string value, ConsoleColor foreground, ConsoleColor background)
-        {
-            lock (Console.Out)
-            {
-                Console.ForegroundColor = foreground;
-                Console.BackgroundColor = background;
-                ConsoleEx.WriteError(value);
-                Console.ResetColor();
-            }
-        }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteErrorTokens(params string[] values) => Console.Error.WriteTokens(values);
 
         /// <summary>
-        /// 将指定的字符串值以指定的前景色写入标准错误输出流。
+        /// 将指定的多个对象的文本表示形式逐个（后跟当前行终止符）写入标准错误输出流。
         /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
+        /// <param name="values">要写入的多个对象。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorInColor(string value, ConsoleColor foreground)
-        {
-            lock (Console.Out)
-            {
-                Console.ResetColor();
-                Console.ForegroundColor = foreground;
-                ConsoleEx.WriteError(value);
-                Console.ResetColor();
-            }
-        }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteErrorTokens(params object[] values) => Console.Error.WriteTokens(values);
 
         /// <summary>
-        /// 将指定对象的文本表示形式以指定的前景色和背景色写入标准错误输出流。
+        /// 将指定的多个字符串值逐行（后跟当前行终止符）写入标准错误输出流。
         /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <param name="background">要使用的控制台背景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
+        /// <param name="values">要写入的多个字符串值。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorInColor(object value, ConsoleColor foreground, ConsoleColor background)
-        {
-            lock (Console.Out)
-            {
-                Console.ForegroundColor = foreground;
-                Console.BackgroundColor = background;
-                ConsoleEx.WriteError(value);
-                Console.ResetColor();
-            }
-        }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteErrorLines(params string[] values) => Console.Error.WriteLines(values);
 
         /// <summary>
-        /// 将指定对象的文本表示形式以指定的前景色写入标准错误输出流。
+        /// 将指定的多个对象的文本表示形式逐行（后跟当前行终止符）写入标准错误输出流。
         /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
+        /// <param name="values">要写入的多个对象。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorInColor(object value, ConsoleColor foreground)
-        {
-            lock (Console.Out)
-            {
-                Console.ResetColor();
-                Console.ForegroundColor = foreground;
-                ConsoleEx.WriteError(value);
-                Console.ResetColor();
-            }
-        }
-
-        /// <summary>
-        /// 将指定的字符串值（后跟当前行终止符）以指定的前景色和背景色写入标准错误输出流。
-        /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <param name="background">要使用的控制台背景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorLineInColor(string value, ConsoleColor foreground, ConsoleColor background)
-        {
-            lock (Console.Out)
-            {
-                Console.ForegroundColor = foreground;
-                Console.BackgroundColor = background;
-                ConsoleEx.WriteErrorLine(value);
-                Console.ResetColor();
-            }
-        }
-
-        /// <summary>
-        /// 将指定的字符串值（后跟当前行终止符）以指定的前景色写入标准错误输出流。
-        /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorLineInColor(string value, ConsoleColor foreground)
-        {
-            lock (Console.Out)
-            {
-                Console.ResetColor();
-                Console.ForegroundColor = foreground;
-                ConsoleEx.WriteErrorLine(value);
-                Console.ResetColor();
-            }
-        }
-
-        /// <summary>
-        /// 将指定对象的文本表示形式（后跟当前行终止符）以指定的前景色和背景色写入标准错误输出流。
-        /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <param name="background">要使用的控制台背景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorLineInColor(object value, ConsoleColor foreground, ConsoleColor background)
-        {
-            lock (Console.Out)
-            {
-                Console.ForegroundColor = foreground;
-                Console.BackgroundColor = background;
-                ConsoleEx.WriteErrorLine(value);
-                Console.ResetColor();
-            }
-        }
-
-        /// <summary>
-        /// 将指定对象的文本表示形式（后跟当前行终止符）以指定的前景色写入标准错误输出流。
-        /// </summary>
-        /// <param name="value">要写入的值。</param>
-        /// <param name="foreground">要使用的控制台前景色。</param>
-        /// <exception cref="ArgumentException">
-        /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
-        /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorLineInColor(object value, ConsoleColor foreground)
-        {
-            lock (Console.Out)
-            {
-                Console.ResetColor();
-                Console.ForegroundColor = foreground;
-                ConsoleEx.WriteErrorLine(value);
-                Console.ResetColor();
-            }
-        }
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteErrorLines(params object[] values) => Console.Error.WriteLines(values);
     }
 }

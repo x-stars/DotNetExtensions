@@ -20,6 +20,8 @@ namespace XstarS.IO
         /// <paramref name="reader"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// 下一个字符串值的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="ObjectDisposedException">
+        /// <see cref="TextReader"/> 已关闭。</exception>
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一个字符串值分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
@@ -59,6 +61,8 @@ namespace XstarS.IO
         /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// 下一个字符串值的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="ObjectDisposedException">
+        /// <see cref="TextReader"/> 已关闭。</exception>
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一个字符串值分配缓冲区。</exception>
         /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
@@ -86,6 +90,8 @@ namespace XstarS.IO
         /// <paramref name="reader"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// 下一行中的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="ObjectDisposedException">
+        /// <see cref="TextReader"/> 已关闭。</exception>
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
@@ -108,6 +114,8 @@ namespace XstarS.IO
         /// <paramref name="reader"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// 下一行中的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="ObjectDisposedException">
+        /// <see cref="TextReader"/> 已关闭。</exception>
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
@@ -132,6 +140,8 @@ namespace XstarS.IO
         /// <exception cref="ArgumentOutOfRangeException">
         /// 下一行中的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
         /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
+        /// <exception cref="ObjectDisposedException">
+        /// <see cref="TextReader"/> 已关闭。</exception>
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
@@ -160,6 +170,8 @@ namespace XstarS.IO
         /// <exception cref="ArgumentOutOfRangeException">
         /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
         /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
+        /// <exception cref="ObjectDisposedException">
+        /// <see cref="TextReader"/> 已关闭。</exception>
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="ObjectDisposedException">当前文本读取器已关闭。</exception>
@@ -185,6 +197,8 @@ namespace XstarS.IO
         /// <paramref name="reader"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="ObjectDisposedException">
+        /// <see cref="TextReader"/> 已关闭。</exception>
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为到末尾的字符串分配缓冲区。</exception>
         /// <exception cref="ObjectDisposedException">当前文本读取器已关闭。</exception>
@@ -210,6 +224,8 @@ namespace XstarS.IO
         /// <exception cref="ArgumentOutOfRangeException">
         /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
         /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
+        /// <exception cref="ObjectDisposedException">
+        /// <see cref="TextReader"/> 已关闭。</exception>
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="ObjectDisposedException">当前文本读取器已关闭。</exception>
@@ -235,6 +251,8 @@ namespace XstarS.IO
         /// <paramref name="reader"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="ObjectDisposedException">
+        /// <see cref="TextReader"/> 已关闭。</exception>
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为到末尾的字符串分配缓冲区。</exception>
         /// <exception cref="ObjectDisposedException">当前文本读取器已关闭。</exception>
@@ -260,6 +278,8 @@ namespace XstarS.IO
         /// <exception cref="ArgumentOutOfRangeException">
         /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
         /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
+        /// <exception cref="ObjectDisposedException">
+        /// <see cref="TextReader"/> 已关闭。</exception>
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="ObjectDisposedException">当前文本读取器已关闭。</exception>
