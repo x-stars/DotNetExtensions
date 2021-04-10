@@ -103,7 +103,7 @@ namespace XstarS
         /// <returns>按行分隔得到子字符串的数组。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
-        public static string[] SplitToLines(this string text)
+        public static string[] SplitLines(this string text)
         {
             return (text ?? throw new ArgumentNullException(nameof(text))).Split(
                 StringExtensions.LineSeparators, StringSplitOptions.RemoveEmptyEntries);
@@ -116,7 +116,7 @@ namespace XstarS
         /// <returns>按空白字符分隔得到子字符串的数组。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
-        public static string[] SplitToTokens(this string text)
+        public static string[] SplitTokens(this string text)
         {
             return (text ?? throw new ArgumentNullException(nameof(text))).Split(
                 StringExtensions.TokenSeparators, StringSplitOptions.RemoveEmptyEntries);

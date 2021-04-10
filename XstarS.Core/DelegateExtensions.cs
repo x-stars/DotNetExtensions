@@ -18,6 +18,30 @@ namespace XstarS
                 BindingFlags.Instance | BindingFlags.NonPublic);
 
         /// <summary>
+        /// 确定当前委托是否是否能转换为另一类型的委托。
+        /// </summary>
+        /// <typeparam name="TDelegate">要转换到的委托的类型。</typeparam>
+        /// <param name="delegate">要确定是否能转换的委托。</param>
+        /// <returns>若 <paramref name="delegate"/> 的参数列表和返回值与
+        /// <typeparamref name="TDelegate"/> 的相同，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="delegate"/> 为 <see langword="null"/>。</exception>
+        public static bool CanConvertTo<TDelegate>(this Delegate @delegate)
+            where TDelegate : Delegate
+        {
+            if (@delegate is null)
+            {
+                throw new ArgumentNullException(nameof(@delegate));
+            }
+
+            var comparer = MethodSignatureEqualityComparer.Default;
+            var sourceInvoke = @delegate.GetType().GetMethod("Invoke");
+            var targetInvoke = typeof(TDelegate).GetMethod("Invoke");
+            return comparer.Equals(sourceInvoke, targetInvoke);
+        }
+
+        /// <summary>
         /// 将当前委托转换为另一种类型的委托。
         /// </summary>
         /// <typeparam name="TDelegate">要转换到的委托类型。</typeparam>
@@ -35,7 +59,7 @@ namespace XstarS
             {
                 throw new ArgumentNullException(nameof(@delegate));
             }
-            if (!@delegate.IsCompatibleWith<TDelegate>())
+            if (!@delegate.CanConvertTo<TDelegate>())
             {
                 throw new InvalidCastException();
             }
@@ -45,29 +69,6 @@ namespace XstarS
             var data = FormatterServices.GetObjectData(@delegate, fields);
             FormatterServices.PopulateObjectMembers(result, fields, data);
             return (TDelegate)result;
-        }
-
-        /// <summary>
-        /// 确定当前委托是否是否与另一委托类型兼容。
-        /// </summary>
-        /// <typeparam name="TDelegate">要确定是否兼容的委托类型。</typeparam>
-        /// <param name="delegate">要确定是否兼容的委托。</param>
-        /// <returns>若 <paramref name="delegate"/> 的参数列表和返回值与
-        /// <typeparamref name="TDelegate"/> 的相匹配，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="delegate"/> 为 <see langword="null"/>。</exception>
-        public static bool IsCompatibleWith<TDelegate>(this Delegate @delegate)
-            where TDelegate : Delegate
-        {
-            if (@delegate is null)
-            {
-                throw new ArgumentNullException(nameof(@delegate));
-            }
-
-            var sourceInvoke = @delegate.GetType().GetMethod("Invoke");
-            var targetInvoke = typeof(TDelegate).GetMethod("Invoke");
-            return MethodSignatureEqualityComparer.Default.Equals(sourceInvoke, targetInvoke);
         }
     }
 }

@@ -126,7 +126,7 @@ namespace XstarS.IO
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            return (reader.ReadLine() ?? string.Empty).SplitToTokens();
+            return (reader.ReadLine() ?? string.Empty).SplitTokens();
         }
 
         /// <summary>
@@ -210,7 +210,7 @@ namespace XstarS.IO
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            return (reader.ReadToEnd() ?? string.Empty).SplitToLines();
+            return (reader.ReadToEnd() ?? string.Empty).SplitLines();
         }
 
         /// <summary>
@@ -264,7 +264,7 @@ namespace XstarS.IO
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            return (reader.ReadToEnd() ?? string.Empty).SplitToTokens();
+            return (reader.ReadToEnd() ?? string.Empty).SplitTokens();
         }
 
         /// <summary>
