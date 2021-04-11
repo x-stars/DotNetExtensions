@@ -106,7 +106,7 @@ namespace XstarS
         public static string[] SplitLines(this string text)
         {
             return (text ?? throw new ArgumentNullException(nameof(text))).Split(
-                StringExtensions.LineSeparators, StringSplitOptions.RemoveEmptyEntries);
+                StringExtensions.LineSeparators, StringSplitOptions.None);
         }
 
         /// <summary>
