@@ -95,7 +95,8 @@ namespace XstarS
         /// <returns>输入流到末尾的所有字符。</returns>
         /// <exception cref="ArgumentOutOfRangeException">
         /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
-        /// <exception cref="OutOfMemoryException">没有足够的内存来为到末尾的字符串分配缓冲区。</exception>
+        /// <exception cref="OutOfMemoryException">
+        /// 没有足够的内存来为到末尾的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
         public static string ReadToEnd() => Console.In.ReadToEnd();
