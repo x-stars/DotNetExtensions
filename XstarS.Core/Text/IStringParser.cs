@@ -5,7 +5,7 @@ namespace XstarS.Text
     /// <summary>
     /// 提供将字符串转换为数值的方法。
     /// </summary>
-    public interface IValueParser
+    public interface IStringParser
     {
         /// <summary>
         /// 将指定的字符串表示形式转换为其等效的数值形式。
@@ -23,10 +23,10 @@ namespace XstarS.Text
     }
 
     /// <summary>
-    /// 提供将字符串转换为指定类型的数值的方法。
+    /// 提供字符串转换为指定类型的数值的方法。
     /// </summary>
     /// <typeparam name="T">要转换为的数值的类型。</typeparam>
-    public interface IValueParser<out T>
+    public interface IStringParser<out T>
     {
         /// <summary>
         /// 将指定的字符串表示形式转换为其等效的数值形式。

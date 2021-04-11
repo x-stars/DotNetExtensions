@@ -7,7 +7,7 @@ namespace XstarS.Text
     /// </summary>
     /// <typeparam name="T">要转换为的数值的类型。</typeparam>
     [Serializable]
-    internal sealed class DelegateValueParser<T> : ValueParser<T>
+    internal sealed class DelegateStringParser<T> : StringParser<T>
     {
         /// <summary>
         /// 表示将字符串解析为指定类型的数值的方法的委托。
@@ -15,13 +15,13 @@ namespace XstarS.Text
         private readonly Converter<string, T> Delegate;
 
         /// <summary>
-        /// 以指定的委托初始化 <see cref="DelegateValueParser{T}"/> 类的新实例。
+        /// 以指定的委托初始化 <see cref="DelegateStringParser{T}"/> 类的新实例。
         /// </summary>
         /// <param name="parser">用于解析字符串为数值的方法的
         /// <see cref="Converter{TInput, TOutput}"/> 委托。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="parser"/> 为 <see langword="null"/>。</exception>
-        public DelegateValueParser(Converter<string, T> parser)
+        public DelegateStringParser(Converter<string, T> parser)
         {
             this.Delegate = parser ?? throw new ArgumentNullException(nameof(parser));
         }

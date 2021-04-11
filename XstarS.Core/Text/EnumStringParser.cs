@@ -7,12 +7,12 @@ namespace XstarS.Text
     /// </summary>
     /// <typeparam name="T">要转换为的枚举的类型。</typeparam>
     [Serializable]
-    internal sealed class EnumValueParser<T> : SimpleValueParser<T>
+    internal sealed class EnumStringParser<T> : SimpleStringParser<T>
     {
         /// <summary>
-        /// 初始化 <see cref="EnumValueParser{T}"/> 类的新实例。
+        /// 初始化 <see cref="EnumStringParser{T}"/> 类的新实例。
         /// </summary>
-        public EnumValueParser() { }
+        public EnumStringParser() { }
 
         /// <summary>
         /// 将指定的字符串表示形式转换为其等效的枚举形式。

@@ -3,16 +3,16 @@
 namespace XstarS.Text
 {
     /// <summary>
-    /// 为无参数的字符串解析对象 <see cref="IValueParser{T}"/> 提供抽象基类。
+    /// 为无参数的字符串解析对象 <see cref="IStringParser{T}"/> 提供抽象基类。
     /// </summary>
     /// <typeparam name="T">要转换为的数值的类型。</typeparam>
     [Serializable]
-    public abstract class SimpleValueParser<T> : ValueParser<T>
+    public abstract class SimpleStringParser<T> : StringParser<T>
     {
         /// <summary>
-        /// 初始化 <see cref="SimpleValueParser{T}"/> 类的新实例。
+        /// 初始化 <see cref="SimpleStringParser{T}"/> 类的新实例。
         /// </summary>
-        protected SimpleValueParser() { }
+        protected SimpleStringParser() { }
 
         /// <summary>
         /// 确定指定的对象是否等于当前对象。
