@@ -11,22 +11,43 @@ namespace XstarS
     public static partial class ConsoleEx
     {
         /// <summary>
+        /// 提供控制台的标准输入流、输出流和错误流。
+        /// </summary>
+        private static class StandardStreams
+        {
+            /// <summary>
+            /// 表示标准输入流。
+            /// </summary>
+            internal static readonly Stream Input = Console.OpenStandardInput();
+
+            /// <summary>
+            /// 表示标准输出流。
+            /// </summary>
+            internal static readonly Stream Output = Console.OpenStandardOutput();
+
+            /// <summary>
+            /// 表示标准错误流。
+            /// </summary>
+            internal static readonly Stream Error = Console.OpenStandardError();
+        }
+
+        /// <summary>
         /// 获取标准输入流。
         /// </summary>
         /// <returns>标准输入流。</returns>
-        public static Stream InStream => Console.OpenStandardInput();
+        public static Stream InStream => ConsoleEx.StandardStreams.Input;
 
         /// <summary>
         /// 获取标准输出流。
         /// </summary>
         /// <returns>标准输出流。</returns>
-        public static Stream OutStream => Console.OpenStandardOutput();
+        public static Stream OutStream => ConsoleEx.StandardStreams.Output;
 
         /// <summary>
         /// 获取标准错误流。
         /// </summary>
         /// <returns>标准错误流。</returns>
-        public static Stream ErrorStream => Console.OpenStandardError();
+        public static Stream ErrorStream => ConsoleEx.StandardStreams.Error;
 
         /// <summary>
         /// 从标准输入流读取下一个字符串值。
