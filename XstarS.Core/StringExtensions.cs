@@ -11,15 +11,22 @@ namespace XstarS
     public static class StringExtensions
     {
         /// <summary>
-        /// 表示所有分隔行的字符串的集合。
+        /// 提供字符串分隔符的集合。
         /// </summary>
-        private static readonly string[] LineSeparators = new[] { "\r\n", "\r", "\n" };
+        private static class Separators
+        {
+            /// <summary>
+            /// 表示所有行结束符的字符串的集合。
+            /// </summary>
+            internal static readonly string[] NewLines = new[] { "\r\n", "\r", "\n" };
 
-        /// <summary>
-        /// 表示所有分隔字符串值的字符的集合。
-        /// </summary>
-        private static readonly char[] TokenSeparators = Enumerable.Range(
-            0, char.MaxValue + 1).Select(Convert.ToChar).Where(char.IsWhiteSpace).ToArray();
+            /// <summary>
+            /// 表示所有空白字符的集合。
+            /// </summary>
+            internal static readonly char[] WhiteSpaces =
+                Enumerable.Range(char.MinValue, char.MaxValue - char.MinValue + 1
+                    ).Select(Convert.ToChar).Where(char.IsWhiteSpace).ToArray();
+        }
 
         /// <summary>
         /// 返回一个新字符串，此字符串将当前字符串重复指定次数。
@@ -59,8 +66,8 @@ namespace XstarS
         /// 并根据 <paramref name="options"/> 的指示去除空字符串。</returns>
         /// <exception cref="ArgumentNullException">
         /// 存在为 <see langword="null"/> 的参数。</exception>
-        public static IEnumerable<string> Split(this string text,
-            Predicate<char> isSeparator, StringSplitOptions options = StringSplitOptions.None)
+        public static IEnumerable<string> Split(this string text, Predicate<char> isSeparator,
+            StringSplitOptions options = StringSplitOptions.None)
         {
             if (text is null)
             {
@@ -106,7 +113,7 @@ namespace XstarS
         public static string[] SplitLines(this string text)
         {
             return (text ?? throw new ArgumentNullException(nameof(text))).Split(
-                StringExtensions.LineSeparators, StringSplitOptions.None);
+                Separators.NewLines, StringSplitOptions.None);
         }
 
         /// <summary>
@@ -119,7 +126,7 @@ namespace XstarS
         public static string[] SplitTokens(this string text)
         {
             return (text ?? throw new ArgumentNullException(nameof(text))).Split(
-                StringExtensions.TokenSeparators, StringSplitOptions.RemoveEmptyEntries);
+                Separators.WhiteSpaces, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }
