@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace XstarS.Text
 {
@@ -40,16 +41,37 @@ namespace XstarS.Text
         /// <paramref name="typeName"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="TypeLoadException">
         /// 在当前应用程序域中无法找到名为 <paramref name="typeName"/> 的类型。</exception>
-        internal static Type FindType(string typeName)
+        private static Type FindType(string typeName)
+        {
+            return Type.GetType(typeName,
+                assemblyResolver: null,
+                typeResolver: TypeStringParser.FindType,
+                throwOnError: true,
+                ignoreCase: false);
+        }
+
+        /// <summary>
+        /// 在当前应用程序域中查找具有指定名称的类型。
+        /// </summary>
+        /// <param name="unused">不使用此参数。</param>
+        /// <param name="typeName">类型的完整名称。</param>
+        /// <param name="ignoreCase">指定查找时是否忽略类型名称的大小写。。</param>
+        /// <returns>名为 <paramref name="typeName"/> 的类型；
+        /// 若未找到匹配的类型，则为 <see langword="null"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="typeName"/> 为 <see langword="null"/>。</exception>
+        private static Type FindType(
+            Assembly unused, string typeName, bool ignoreCase)
         {
             var domain = AppDomain.CurrentDomain;
             var assemblies = domain.GetAssemblies();
             foreach (var assembly in assemblies)
             {
-                var type = assembly.GetType(typeName);
+                var type = assembly.GetType(typeName,
+                    throwOnError: false, ignoreCase);
                 if (!(type is null)) { return type; }
             }
-            throw new TypeLoadException();
+            return null;
         }
     }
 }
