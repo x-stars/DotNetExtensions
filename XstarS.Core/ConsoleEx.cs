@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using XstarS.IO;
 
 namespace XstarS
@@ -31,33 +30,62 @@ namespace XstarS
             /// </summary>
             private static volatile Stream Error;
 
-#pragma warning disable CS0420  // 对可变字段的引用不被视为可变字段。
-
             /// <summary>
             /// 获取标准输入流；若标准输入流已经释放，则重新获取标准输入流。
             /// </summary>
             /// <returns>标准输入流。</returns>
-            internal static Stream GetOrReloadInput() =>
-                StandardStreams.GetOrReloadStream(
-                    ref StandardStreams.Input, Console.OpenStandardInput);
+            internal static Stream GetOrReloadInput()
+            {
+                if (StandardStreams.IsNullOrDisposed(StandardStreams.Input))
+                {
+                    lock (typeof(StandardStreams))
+                    {
+                        if (StandardStreams.IsNullOrDisposed(StandardStreams.Input))
+                        {
+                            StandardStreams.Input = Console.OpenStandardInput();
+                        }
+                    }
+                }
+                return StandardStreams.Input;
+            }
 
             /// <summary>
             /// 获取标准输出流；若标准输出流已经释放，则重新获取标准输出流。
             /// </summary>
             /// <returns>标准输出流。</returns>
-            internal static Stream GetOrReloadOutput() =>
-                StandardStreams.GetOrReloadStream(
-                    ref StandardStreams.Output, Console.OpenStandardOutput);
+            internal static Stream GetOrReloadOutput()
+            {
+                if (StandardStreams.IsNullOrDisposed(StandardStreams.Output))
+                {
+                    lock (typeof(StandardStreams))
+                    {
+                        if (StandardStreams.IsNullOrDisposed(StandardStreams.Output))
+                        {
+                            StandardStreams.Output = Console.OpenStandardOutput();
+                        }
+                    }
+                }
+                return StandardStreams.Output;
+            }
 
             /// <summary>
             /// 获取标准错误流；若标准错误流已经释放，则重新获取标准错误流。
             /// </summary>
             /// <returns>标准错误流。</returns>
-            internal static Stream GetOrReloadError() =>
-                StandardStreams.GetOrReloadStream(
-                    ref StandardStreams.Error, Console.OpenStandardError);
-
-#pragma warning restore CS0420  // 对可变字段的引用不被视为可变字段。
+            internal static Stream GetOrReloadError()
+            {
+                if (StandardStreams.IsNullOrDisposed(StandardStreams.Error))
+                {
+                    lock (typeof(StandardStreams))
+                    {
+                        if (StandardStreams.IsNullOrDisposed(StandardStreams.Error))
+                        {
+                            StandardStreams.Error = Console.OpenStandardError();
+                        }
+                    }
+                }
+                return StandardStreams.Error;
+            }
 
             /// <summary>
             /// 确定流是否为 <see langword="null"/> 或已经被释放。
@@ -67,22 +95,6 @@ namespace XstarS
             /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
             private static bool IsNullOrDisposed(Stream stream) =>
                 (stream is null) || (!stream.CanRead && !stream.CanWrite);
-
-            /// <summary>
-            /// 获取指定引用的流；若流已经释放，则调用委托重新获取流。
-            /// </summary>
-            /// <returns>指定引用的流。</returns>
-            private static Stream GetOrReloadStream(ref Stream stream, Func<Stream> reloader)
-            {
-                if (StandardStreams.IsNullOrDisposed(Volatile.Read(ref stream)))
-                {
-                    lock (typeof(StandardStreams))
-                    {
-                        Volatile.Write(ref stream, reloader.Invoke());
-                    }
-                }
-                return Volatile.Read(ref stream);
-            }
         }
 
         /// <summary>
