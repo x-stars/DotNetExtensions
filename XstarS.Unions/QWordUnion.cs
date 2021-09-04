@@ -88,11 +88,27 @@ namespace XstarS.Unions
         /// <param name="context">包含序列化流的源和目标的上下文对象。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="info"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="InvalidCastException">
+        /// 名为 <c>Value</c> 的值无法转换为 64 位无符号整数。</exception>
+        /// <exception cref="SerializationException">
+        /// 在 <paramref name="info"/> 中未找到名为 <c>Value</c> 的值。</exception>
         private QWordUnion(SerializationInfo info, StreamingContext context) : this()
         {
             if (info is null) { throw new ArgumentNullException(nameof(info)); }
             this.UInt64 = info.GetUInt64("Value");
         }
+
+        /// <summary>
+        /// 将非负整数的字符串表示形式转换为它的等效 <see cref="QWordUnion"/> 表示形式。
+        /// </summary>
+        /// <param name="text">包含要转换的非负整数的字符串。</param>
+        /// <returns>与 <paramref name="text"/> 中包含的整数等效的 <see cref="QWordUnion"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="FormatException"><paramref name="text"/> 的格式不正确。</exception>
+        /// <exception cref="OverflowException">
+        /// <paramref name="text"/> 表示一个负数或大于 <see cref="ulong.MaxValue"/> 的整数。</exception>
+        public static QWordUnion Parse(string text) => new QWordUnion(ulong.Parse(text));
 
         /// <summary>
         /// 将当前 <see cref="QWordUnion"/> 的值复制到指定字节数组中，并指定数组的偏移量。
