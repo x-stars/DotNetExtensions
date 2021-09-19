@@ -297,7 +297,7 @@ namespace XstarS
 
             var type = array.GetType();
             var itemType = type.GetElementType();
-            return itemType.MakeArrayType() == type;
+            return type == itemType.MakeArrayType();
         }
 
         /// <summary>

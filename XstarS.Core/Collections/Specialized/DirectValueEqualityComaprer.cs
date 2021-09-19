@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using XstarS.Collections.Generic;
 using XstarS.Runtime;
 
 namespace XstarS.Collections.Specialized
@@ -9,7 +9,7 @@ namespace XstarS.Collections.Specialized
     /// </summary>
     /// <typeparam name="T">要比较的对象的类型。</typeparam>
     [Serializable]
-    public sealed class DirectValueEqualityComaprer<T> : EqualityComparer<T>
+    public sealed class DirectValueEqualityComaprer<T> : SimpleEqualityComparer<T>
     {
         /// <summary>
         /// 初始化 <see cref="DirectValueEqualityComaprer{T}"/> 类的新实例。

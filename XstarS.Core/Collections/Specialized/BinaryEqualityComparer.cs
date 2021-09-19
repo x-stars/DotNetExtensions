@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using XstarS.Collections.Generic;
 using XstarS.Runtime;
 
 namespace XstarS.Collections.Specialized
@@ -9,7 +9,7 @@ namespace XstarS.Collections.Specialized
     /// </summary>
     /// <typeparam name="T">要比较的非托管值的类型。</typeparam>
     [Serializable]
-    public sealed class BinaryEqualityComparer<T> : EqualityComparer<T> where T : unmanaged
+    public sealed class BinaryEqualityComparer<T> : SimpleEqualityComparer<T> where T : unmanaged
     {
         /// <summary>
         /// 初始化 <see cref="BinaryEqualityComparer{T}"/> 类的新实例。
