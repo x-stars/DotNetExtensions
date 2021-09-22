@@ -108,11 +108,11 @@ namespace XstarS.Runtime
         /// <returns>提供 <see cref="ByRefConverter"/> 方法实现的对象。</returns>
         private static ByRefConverter CreateImplementation()
         {
-            var typeName = typeof(ByRefConverter).ToString();
+            var baseType = typeof(ByRefConverter);
+            var typeName = baseType.ToString();
             var assembly = AssemblyBuilder.DefineDynamicAssembly(
                 new AssemblyName(typeName), AssemblyBuilderAccess.Run);
             var module = assembly.DefineDynamicModule($"{typeName}.dll");
-            var baseType = typeof(ByRefConverter);
             var type = module.DefineType(typeName, TypeAttributes.Public |
                 TypeAttributes.Sealed | TypeAttributes.BeforeFieldInit, baseType);
 
