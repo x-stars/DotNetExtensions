@@ -66,7 +66,7 @@ namespace XstarS.Collections.Generic
             else if (type == typeof(DictionaryEntry))
             {
                 return (InternalStructuralEqualityComparer<T>)
-                    (object)new DictionaryEntryEqualityComaprer();
+                    (object)new DictionaryEntryEqualityComparer();
             }
             else if (type.IsGenericType &&
                 (type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>)))

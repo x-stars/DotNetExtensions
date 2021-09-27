@@ -11,12 +11,12 @@ namespace XstarS.Collections
     /// 提供 <see cref="DictionaryBase"/> 中的键值的相对比较方法。
     /// </summary>
     [Serializable]
-    internal sealed class DictionaryEntryEqualityComaprer : InternalStructuralEqualityComparer<DictionaryEntry>
+    internal sealed class DictionaryEntryEqualityComparer : InternalStructuralEqualityComparer<DictionaryEntry>
     {
         /// <summary>
-        /// 初始化 <see cref="DictionaryEntryEqualityComaprer"/> 类的新实例。
+        /// 初始化 <see cref="DictionaryEntryEqualityComparer"/> 类的新实例。
         /// </summary>
-        public DictionaryEntryEqualityComaprer() { }
+        public DictionaryEntryEqualityComparer() { }
 
         /// <summary>
         /// 确定两个指定的 <see cref="DictionaryEntry"/> 中的键值是否相等。
