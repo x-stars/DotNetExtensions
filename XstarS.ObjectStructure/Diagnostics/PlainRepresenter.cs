@@ -8,7 +8,7 @@ namespace XstarS.Diagnostics
     /// </summary>
     /// <typeparam name="T">非结构化对象的类型。</typeparam>
     [Serializable]
-    internal sealed class PlainRepresenter<T> : StructuralRepresenterBase<T>
+    internal sealed class PlainRepresenter<T> : InternalStructuralRepresenter<T>
     {
         /// <summary>
         /// 初始化 <see cref="PlainRepresenter{T}"/> 类的新实例。

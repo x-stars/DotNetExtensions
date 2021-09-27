@@ -10,7 +10,7 @@ namespace XstarS
     /// </summary>
     /// <typeparam name="T">指针数组的类型。</typeparam>
     [Serializable]
-    internal sealed class PointerArrayRepresenter<T> : StructuralRepresenterBase<T>
+    internal sealed class PointerArrayRepresenter<T> : InternalStructuralRepresenter<T>
     {
         /// <summary>
         /// 表示数组根据索引获取元素的方法的 <see cref="MethodInfo"/> 对象。

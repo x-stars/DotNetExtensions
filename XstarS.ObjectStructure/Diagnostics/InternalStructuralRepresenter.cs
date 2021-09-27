@@ -12,26 +12,26 @@ namespace XstarS.Diagnostics
     /// </summary>
     /// <typeparam name="T">要表示为字符串的对象的类型。</typeparam>
     [Serializable]
-    internal abstract class StructuralRepresenterBase<T> : SimpleAcyclicRepresenter<T>
+    internal abstract class InternalStructuralRepresenter<T> : SimpleAcyclicRepresenter<T>
     {
         /// <summary>
-        /// 表示 <see cref="StructuralRepresenterBase{T}.Default"/> 的延迟初始化值。
+        /// 表示 <see cref="InternalStructuralRepresenter{T}.Default"/> 的延迟初始化值。
         /// </summary>
-        private static readonly Lazy<StructuralRepresenterBase<T>> LazyDefault =
-            new Lazy<StructuralRepresenterBase<T>>(
-                StructuralRepresenterBase<T>.CreateDefault);
+        private static readonly Lazy<InternalStructuralRepresenter<T>> LazyDefault =
+            new Lazy<InternalStructuralRepresenter<T>>(
+                InternalStructuralRepresenter<T>.CreateDefault);
 
         /// <summary>
-        /// 初始化 <see cref="StructuralRepresenterBase{T}"/> 类的新实例。
+        /// 初始化 <see cref="InternalStructuralRepresenter{T}"/> 类的新实例。
         /// </summary>
-        protected StructuralRepresenterBase() { }
+        protected InternalStructuralRepresenter() { }
 
         /// <summary>
-        /// 获取 <see cref="StructuralRepresenterBase{T}"/> 类的默认实例。
+        /// 获取 <see cref="InternalStructuralRepresenter{T}"/> 类的默认实例。
         /// </summary>
-        /// <returns><see cref="StructuralRepresenterBase{T}"/> 类的默认实例。</returns>
-        public new static StructuralRepresenterBase<T> Default =>
-            StructuralRepresenterBase<T>.LazyDefault.Value;
+        /// <returns><see cref="InternalStructuralRepresenter{T}"/> 类的默认实例。</returns>
+        public new static InternalStructuralRepresenter<T> Default =>
+            InternalStructuralRepresenter<T>.LazyDefault.Value;
 
         /// <summary>
         /// 判断当前类型的 <see cref="object.ToString"/> 方法是否为默认定义。
@@ -47,10 +47,10 @@ namespace XstarS.Diagnostics
         }
 
         /// <summary>
-        /// 创建 <see cref="StructuralRepresenterBase{T}"/> 类的默认实例。
+        /// 创建 <see cref="InternalStructuralRepresenter{T}"/> 类的默认实例。
         /// </summary>
-        /// <returns><see cref="StructuralRepresenterBase{T}"/> 类的默认实例。</returns>
-        private static StructuralRepresenterBase<T> CreateDefault()
+        /// <returns><see cref="InternalStructuralRepresenter{T}"/> 类的默认实例。</returns>
+        private static InternalStructuralRepresenter<T> CreateDefault()
         {
             var type = typeof(T);
             if (type.IsArray)
@@ -62,7 +62,7 @@ namespace XstarS.Diagnostics
                 }
                 if (itemType.MakeArrayType() == type)
                 {
-                    return (StructuralRepresenterBase<T>)Activator.CreateInstance(
+                    return (InternalStructuralRepresenter<T>)Activator.CreateInstance(
                         typeof(SZArrayRepresenter<>).MakeGenericType(itemType));
                 }
                 else
@@ -76,21 +76,21 @@ namespace XstarS.Diagnostics
             }
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
-                return (StructuralRepresenterBase<T>)Activator.CreateInstance(
+                return (InternalStructuralRepresenter<T>)Activator.CreateInstance(
                     typeof(EnumerableRepresenter<>).MakeGenericType(type));
             }
             else if (type == typeof(DictionaryEntry))
             {
-                return (StructuralRepresenterBase<T>)(object)new DictionaryEntryRepresenter();
+                return (InternalStructuralRepresenter<T>)(object)new DictionaryEntryRepresenter();
             }
             else if (type.IsGenericType &&
                 (type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>)))
             {
                 var keyValueTypes = type.GetGenericArguments();
-                return (StructuralRepresenterBase<T>)Activator.CreateInstance(
+                return (InternalStructuralRepresenter<T>)Activator.CreateInstance(
                     typeof(KeyValuePairRepresenter<,>).MakeGenericType(keyValueTypes));
             }
-            else if (StructuralRepresenterBase<T>.IsDefaultToString())
+            else if (InternalStructuralRepresenter<T>.IsDefaultToString())
             {
                 return new MemberRepresenter<T>();
             }

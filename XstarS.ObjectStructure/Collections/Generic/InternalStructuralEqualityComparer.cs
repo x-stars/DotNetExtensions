@@ -9,32 +9,32 @@ namespace XstarS.Collections.Generic
     /// </summary>
     /// <typeparam name="T">结构化对象的类型。</typeparam>
     [Serializable]
-    internal abstract class StructuralEqualityComparerBase<T> : SimpleAcyclicEqualityComparer<T>
+    internal abstract class InternalStructuralEqualityComparer<T> : SimpleAcyclicEqualityComparer<T>
     {
         /// <summary>
-        /// 表示 <see cref="StructuralEqualityComparerBase{T}.Default"/> 的延迟初始化值。 
+        /// 表示 <see cref="InternalStructuralEqualityComparer{T}.Default"/> 的延迟初始化值。 
         /// </summary>
-        private static readonly Lazy<StructuralEqualityComparerBase<T>> LazyDefault =
-            new Lazy<StructuralEqualityComparerBase<T>>(
-                StructuralEqualityComparerBase<T>.CreateDefault);
+        private static readonly Lazy<InternalStructuralEqualityComparer<T>> LazyDefault =
+            new Lazy<InternalStructuralEqualityComparer<T>>(
+                InternalStructuralEqualityComparer<T>.CreateDefault);
 
         /// <summary>
-        /// 初始化 <see cref="StructuralEqualityComparerBase{T}"/> 类的新实例。
+        /// 初始化 <see cref="InternalStructuralEqualityComparer{T}"/> 类的新实例。
         /// </summary>
-        protected StructuralEqualityComparerBase() { }
+        protected InternalStructuralEqualityComparer() { }
 
         /// <summary>
-        /// 获取 <see cref="StructuralEqualityComparerBase{T}"/> 类的默认实例。
+        /// 获取 <see cref="InternalStructuralEqualityComparer{T}"/> 类的默认实例。
         /// </summary>
-        /// <returns><see cref="StructuralEqualityComparerBase{T}"/> 类的默认实例。</returns>
-        public static new StructuralEqualityComparerBase<T> Default =>
-            StructuralEqualityComparerBase<T>.LazyDefault.Value;
+        /// <returns><see cref="InternalStructuralEqualityComparer{T}"/> 类的默认实例。</returns>
+        public static new InternalStructuralEqualityComparer<T> Default =>
+            InternalStructuralEqualityComparer<T>.LazyDefault.Value;
 
         /// <summary>
-        /// 创建 <see cref="StructuralEqualityComparerBase{T}"/> 类的默认实例。
+        /// 创建 <see cref="InternalStructuralEqualityComparer{T}"/> 类的默认实例。
         /// </summary>
-        /// <returns><see cref="StructuralEqualityComparerBase{T}"/> 类的默认实例。</returns>
-        private static StructuralEqualityComparerBase<T> CreateDefault()
+        /// <returns><see cref="InternalStructuralEqualityComparer{T}"/> 类的默认实例。</returns>
+        private static InternalStructuralEqualityComparer<T> CreateDefault()
         {
             var type = typeof(T);
             if (type.IsArray)
@@ -46,7 +46,7 @@ namespace XstarS.Collections.Generic
                 }
                 else if (itemType.MakeArrayType() == type)
                 {
-                    return (StructuralEqualityComparerBase<T>)Activator.CreateInstance(
+                    return (InternalStructuralEqualityComparer<T>)Activator.CreateInstance(
                         typeof(SZArrayEqualityComparer<>).MakeGenericType(itemType));
                 }
                 else
@@ -60,19 +60,19 @@ namespace XstarS.Collections.Generic
             }
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
-                return (StructuralEqualityComparerBase<T>)Activator.CreateInstance(
+                return (InternalStructuralEqualityComparer<T>)Activator.CreateInstance(
                     typeof(EnumerableEqualityComparer<>).MakeGenericType(type));
             }
             else if (type == typeof(DictionaryEntry))
             {
-                return (StructuralEqualityComparerBase<T>)
+                return (InternalStructuralEqualityComparer<T>)
                     (object)new DictionaryEntryEqualityComaprer();
             }
             else if (type.IsGenericType &&
                 (type.GetGenericTypeDefinition() == typeof(KeyValuePair<,>)))
             {
                 var keyValueTypes = type.GetGenericArguments();
-                return (StructuralEqualityComparerBase<T>)Activator.CreateInstance(
+                return (InternalStructuralEqualityComparer<T>)Activator.CreateInstance(
                     typeof(KeyValuePairEqualityComparer<,>).MakeGenericType(keyValueTypes));
             }
             else

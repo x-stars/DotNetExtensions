@@ -45,7 +45,7 @@ namespace XstarS.Collections.Generic
     public static class StructuralEqualityComparer
     {
         /// <summary>
-        /// 表示指定类型的 <see cref="StructuralEqualityComparerBase{T}"/> 类的默认实例。
+        /// 表示指定类型的 <see cref="InternalStructuralEqualityComparer{T}"/> 类的默认实例。
         /// </summary>
         private static readonly ConcurrentDictionary<Type, IAcyclicEqualityComparer> Defaults =
             new ConcurrentDictionary<Type, IAcyclicEqualityComparer>();
@@ -77,29 +77,29 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
-        /// 获取指定类型的 <see cref="StructuralEqualityComparerBase{T}"/> 类的默认实例。
+        /// 获取指定类型的 <see cref="InternalStructuralEqualityComparer{T}"/> 类的默认实例。
         /// </summary>
         /// <param name="type">结构化对象的类型 <see cref="Type"/> 对象。</param>
         /// <returns>类型参数为 <paramref name="type"/> 的
-        /// <see cref="StructuralEqualityComparerBase{T}"/> 类的默认实例。</returns>
+        /// <see cref="InternalStructuralEqualityComparer{T}"/> 类的默认实例。</returns>
         internal static IAcyclicEqualityComparer OfType(Type type)
         {
             return (type is null) ?
-                StructuralEqualityComparerBase<object>.Default :
+                InternalStructuralEqualityComparer<object>.Default :
                 StructuralEqualityComparer.Defaults.GetOrAdd(
                     type, StructuralEqualityComparer.GetDefault);
         }
 
         /// <summary>
-        /// 获取指定类型的 <see cref="StructuralEqualityComparerBase{T}"/> 类的默认实例。
+        /// 获取指定类型的 <see cref="InternalStructuralEqualityComparer{T}"/> 类的默认实例。
         /// </summary>
         /// <param name="type">结构化对象的类型 <see cref="Type"/> 对象。</param>
         /// <returns>类型参数为 <paramref name="type"/> 的
-        /// <see cref="StructuralEqualityComparerBase{T}"/> 类的默认实例。</returns>
+        /// <see cref="InternalStructuralEqualityComparer{T}"/> 类的默认实例。</returns>
         private static IAcyclicEqualityComparer GetDefault(Type type)
         {
-            var typeComparer = typeof(StructuralEqualityComparerBase<>).MakeGenericType(type);
-            var nameDefualt = nameof(StructuralEqualityComparerBase<object>.Default);
+            var typeComparer = typeof(InternalStructuralEqualityComparer<>).MakeGenericType(type);
+            var nameDefualt = nameof(InternalStructuralEqualityComparer<object>.Default);
             var propertyDefault = typeComparer.GetProperty(nameDefualt);
             return (IAcyclicEqualityComparer)propertyDefault.GetValue(null);
         }

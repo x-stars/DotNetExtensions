@@ -36,7 +36,7 @@ namespace XstarS.Diagnostics
     public static class StructuralRepresenter
     {
         /// <summary>
-        /// 表示指定类型的 <see cref="StructuralRepresenterBase{T}"/> 类的默认实例。
+        /// 表示指定类型的 <see cref="InternalStructuralRepresenter{T}"/> 类的默认实例。
         /// </summary>
         private static readonly ConcurrentDictionary<Type, IAcyclicRepresenter> Defaults =
             new ConcurrentDictionary<Type, IAcyclicRepresenter>();
@@ -52,27 +52,27 @@ namespace XstarS.Diagnostics
         }
 
         /// <summary>
-        /// 获取指定类型的 <see cref="StructuralRepresenterBase{T}"/> 类的默认实例。
+        /// 获取指定类型的 <see cref="InternalStructuralRepresenter{T}"/> 类的默认实例。
         /// </summary>
         /// <param name="type">要表示的类型 <see cref="Type"/> 对象。</param>
         /// <returns>类型参数为 <paramref name="type"/> 的
-        /// <see cref="StructuralRepresenterBase{T}"/> 类的默认实例。</returns>
+        /// <see cref="InternalStructuralRepresenter{T}"/> 类的默认实例。</returns>
         internal static IAcyclicRepresenter OfType(Type type)
         {
-            return (type is null) ? StructuralRepresenterBase<object>.Default :
+            return (type is null) ? InternalStructuralRepresenter<object>.Default :
                 StructuralRepresenter.Defaults.GetOrAdd(type, StructuralRepresenter.GetDefault);
         }
 
         /// <summary>
-        /// 获取指定类型的 <see cref="StructuralRepresenterBase{T}"/> 类的默认实例。
+        /// 获取指定类型的 <see cref="InternalStructuralRepresenter{T}"/> 类的默认实例。
         /// </summary>
         /// <param name="type">要表示的类型 <see cref="Type"/> 对象。</param>
         /// <returns>类型参数为 <paramref name="type"/> 的
-        /// <see cref="StructuralRepresenterBase{T}"/> 类的默认实例。</returns>
+        /// <see cref="InternalStructuralRepresenter{T}"/> 类的默认实例。</returns>
         private static IAcyclicRepresenter GetDefault(Type type)
         {
-            var typeRepresenter = typeof(StructuralRepresenterBase<>).MakeGenericType(type);
-            var nameDefualt = nameof(StructuralRepresenterBase<object>.Default);
+            var typeRepresenter = typeof(InternalStructuralRepresenter<>).MakeGenericType(type);
+            var nameDefualt = nameof(InternalStructuralRepresenter<object>.Default);
             var propertyDefault = typeRepresenter.GetProperty(nameDefualt);
             return (IAcyclicRepresenter)propertyDefault.GetValue(null);
         }

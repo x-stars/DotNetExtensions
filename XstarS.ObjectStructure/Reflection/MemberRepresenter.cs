@@ -14,7 +14,7 @@ namespace XstarS.Reflection
     /// </summary>
     /// <typeparam name="T">要表示为字符串的对象的类型。</typeparam>
     [Serializable]
-    internal sealed class MemberRepresenter<T> : StructuralRepresenterBase<T>
+    internal sealed class MemberRepresenter<T> : InternalStructuralRepresenter<T>
     {
         /// <summary>
         /// 表示当前类型的所有公共实例字段的 <see cref="FieldInfo"/> 对象。

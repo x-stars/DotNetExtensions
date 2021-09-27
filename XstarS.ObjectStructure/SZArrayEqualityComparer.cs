@@ -11,7 +11,7 @@ namespace XstarS
     /// </summary>
     /// <typeparam name="TItem">数组中的元素的类型。</typeparam>
     [Serializable]
-    internal sealed class SZArrayEqualityComparer<TItem> : StructuralEqualityComparerBase<TItem[]>
+    internal sealed class SZArrayEqualityComparer<TItem> : InternalStructuralEqualityComparer<TItem[]>
     {
         /// <summary>
         /// 初始化 <see cref="SZArrayEqualityComparer{TItem}"/> 类的新实例。
