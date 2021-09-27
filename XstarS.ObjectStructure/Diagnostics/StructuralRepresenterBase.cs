@@ -12,7 +12,7 @@ namespace XstarS.Diagnostics
     /// </summary>
     /// <typeparam name="T">要表示为字符串的对象的类型。</typeparam>
     [Serializable]
-    internal abstract class StructuralRepresenterBase<T> : AcyclicRepresenter<T>
+    internal abstract class StructuralRepresenterBase<T> : SimpleAcyclicRepresenter<T>
     {
         /// <summary>
         /// 表示 <see cref="StructuralRepresenterBase{T}.Default"/> 的延迟初始化值。
