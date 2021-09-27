@@ -34,12 +34,12 @@ namespace XstarS.Diagnostics
             StructuralRepresenterBase<T>.LazyDefault.Value;
 
         /// <summary>
-        /// 判断当前类型的 <see cref="object.ToString"/> 方法是否返回类型名称。
+        /// 判断当前类型的 <see cref="object.ToString"/> 方法是否为默认定义。
         /// </summary>
         /// <returns>若当前类型的 <see cref="object.ToString"/> 方法定义于
         /// <see cref="object"/> 或 <see cref="ValueType"/> 类，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        internal static bool IsTypeNameToString()
+        internal static bool IsDefaultToString()
         {
             var method = typeof(T).GetMethod(nameof(object.ToString), Type.EmptyTypes);
             return (method.DeclaringType == typeof(object)) ||
@@ -90,7 +90,7 @@ namespace XstarS.Diagnostics
                 return (StructuralRepresenterBase<T>)Activator.CreateInstance(
                     typeof(KeyValuePairRepresenter<,>).MakeGenericType(keyValueTypes));
             }
-            else if (StructuralRepresenterBase<T>.IsTypeNameToString())
+            else if (StructuralRepresenterBase<T>.IsDefaultToString())
             {
                 return new MemberRepresenter<T>();
             }

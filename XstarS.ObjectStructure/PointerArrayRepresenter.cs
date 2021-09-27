@@ -30,7 +30,8 @@ namespace XstarS
         /// <returns>表示 <paramref name="value"/> 中的元素的字符串。</returns>
         protected override string RepresentCore(T value, ISet<object> represented)
         {
-            return this.RepresentArray((Array)(object)value, Array.Empty<int>(), represented);
+            return value.GetType().ToString() + " " +
+                this.RepresentArray((Array)(object)value, Array.Empty<int>(), represented);
         }
 
         /// <summary>

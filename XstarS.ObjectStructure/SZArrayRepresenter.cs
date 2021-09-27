@@ -30,7 +30,7 @@ namespace XstarS
                 var representer = StructuralRepresenter.OfType(item?.GetType());
                 represents.Add(representer.Represent(item, represented));
             }
-            return $"{{ {string.Join(", ", represents)} }}";
+            return $"{value.GetType().ToString()} {{ {string.Join(", ", represents)} }}";
         }
     }
 }
