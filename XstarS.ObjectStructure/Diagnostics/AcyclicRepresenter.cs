@@ -15,7 +15,7 @@ namespace XstarS.Diagnostics
         /// <summary>
         /// 表示已经在路径中表示过的对象的字符串表示。
         /// </summary>
-        private const string RepresentedString = "{ ... }";
+        protected const string RepresentedString = "{ ... }";
 
         /// <summary>
         /// 初始化 <see cref="AcyclicRepresenter{T}"/> 类的新实例。
@@ -42,7 +42,7 @@ namespace XstarS.Diagnostics
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
         protected string Represent(T value, ISet<object> represented)
         {
-            if (value is null) { return null; }
+            if (value is null) { return Representer<T>.NullRefString; }
 
             if (!represented.Add(value))
             {

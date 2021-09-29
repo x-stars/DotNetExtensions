@@ -22,6 +22,7 @@ namespace XstarS.Diagnostics
         /// <param name="value">要表示为字符串的对象。</param>
         /// <returns>调用 <paramref name="value"/> 的
         /// <see cref="IRepresentable.Represent()"/> 方法返回的字符串。</returns>
-        public override string Represent(T value) => value?.Represent();
+        public override string Represent(T value) =>
+            (value is null) ? Representer<T>.NullRefString : value.Represent();
     }
 }

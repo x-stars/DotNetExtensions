@@ -10,6 +10,11 @@ namespace XstarS.Diagnostics
     public abstract class Representer<T> : IRepresenter, IRepresenter<T>
     {
         /// <summary>
+        /// 表示空引用 <see langword="null"/> 的字符串表示形式。
+        /// </summary>
+        protected const string NullRefString = "(NullRef)";
+
+        /// <summary>
         /// 表示 <see cref="Representer{T}.Default"/> 的延迟初始化值。
         /// </summary>
         private static readonly Lazy<Representer<T>> LazyDefault =
@@ -32,10 +37,20 @@ namespace XstarS.Diagnostics
         /// <returns><see cref="Representer{T}"/> 类的默认实例。</returns>
         private static Representer<T> CreateDefault()
         {
-            if (typeof(IRepresentable).IsAssignableFrom(typeof(T)))
+            var type = typeof(T);
+            if (type.IsPrimitive)
             {
                 return (Representer<T>)Activator.CreateInstance(
-                    typeof(RepresentableRepresenter<>).MakeGenericType(typeof(T)));
+                    typeof(PrimitiveRepresenter<>).MakeGenericType(type));
+            }
+            else if (type == typeof(string))
+            {
+                return (Representer<T>)(object)new StringRepresenter();
+            }
+            else if (typeof(IRepresentable).IsAssignableFrom(type))
+            {
+                return (Representer<T>)Activator.CreateInstance(
+                    typeof(RepresentableRepresenter<>).MakeGenericType(type));
             }
             else
             {
