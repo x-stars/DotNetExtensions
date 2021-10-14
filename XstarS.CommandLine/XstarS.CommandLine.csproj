@@ -48,4 +48,8 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\XstarS.Core\XstarS.Core.csproj" />
+  </ItemGroup>
+
 </Project>
