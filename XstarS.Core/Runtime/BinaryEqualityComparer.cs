@@ -19,18 +19,18 @@
             {
                 case 0:
                     return true;
-                case sizeof(byte):
-                    return *(byte*)value == *(byte*)other;
+                case sizeof(sbyte):
+                    return *(sbyte*)value == *(sbyte*)other;
                 case sizeof(short):
                     return *(short*)value == *(short*)other;
-                case sizeof(int) - sizeof(byte):
+                case sizeof(short) + sizeof(sbyte):
                     return (*(short*)value == *(short*)other) &&
-                        (*(byte*)((short*)value + 1) == *(byte*)((short*)other + 1));
+                        (*(sbyte*)((short*)value + 1) == *(sbyte*)((short*)other + 1));
                 case sizeof(int):
                     return *(int*)value == *(int*)other;
-                case sizeof(int) + sizeof(byte):
+                case sizeof(int) + sizeof(sbyte):
                     return (*(int*)value == *(int*)other) &&
-                        (*(byte*)((int*)value + 1) == *(byte*)((int*)other + 1));
+                        (*(sbyte*)((int*)value + 1) == *(sbyte*)((int*)other + 1));
                 case sizeof(int) + sizeof(short):
                     return (*(int*)value == *(int*)other) &&
                         (*(short*)((int*)value + 1) == *(short*)((int*)other + 1));
@@ -73,16 +73,16 @@
             {
                 case 0:
                     return 0;
-                case sizeof(byte):
-                    return *(byte*)value;
+                case sizeof(sbyte):
+                    return *(sbyte*)value;
                 case sizeof(short):
                     return *(short*)value;
                 case sizeof(short) + sizeof(sbyte):
-                    return *(short*)value ^ *(byte*)((short*)value + 1);
+                    return *(short*)value ^ *(sbyte*)((short*)value + 1);
                 case sizeof(int):
                     return *(int*)value;
-                case sizeof(int) + sizeof(byte):
-                    return *(int*)value ^ *(byte*)((int*)value + 1);
+                case sizeof(int) + sizeof(sbyte):
+                    return *(int*)value ^ *(sbyte*)((int*)value + 1);
                 case sizeof(int) + sizeof(short):
                     return *(int*)value ^ *(short*)((int*)value + 1);
                 case sizeof(int) * 2 - sizeof(byte):
