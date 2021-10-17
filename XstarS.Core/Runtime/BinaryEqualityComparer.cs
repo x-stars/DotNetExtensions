@@ -77,8 +77,9 @@
                     return *(sbyte*)value;
                 case sizeof(short):
                     return *(short*)value;
-                case sizeof(short) + sizeof(sbyte):
-                    return *(short*)value ^ *(sbyte*)((short*)value + 1);
+                case sizeof(ushort) + sizeof(sbyte):
+                    return *(ushort*)value |
+                        (*(sbyte*)((short*)value + 1) << (sizeof(ushort) * 8));
                 case sizeof(int):
                     return *(int*)value;
                 case sizeof(int) + sizeof(sbyte):
