@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Diagnostics
 {
@@ -13,7 +14,7 @@ namespace XstarS.Diagnostics
         /// <param name="value">要表示为字符串的对象。</param>
         /// <param name="represented">已经在路径中表示过的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        string Represent(object value, ISet<object> represented);
+        string Represent(object? value, ISet<object> represented);
     }
 
     /// <summary>
@@ -28,6 +29,6 @@ namespace XstarS.Diagnostics
         /// <param name="value">要表示为字符串的对象。</param>
         /// <param name="represented">已经在路径中表示过的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        string Represent(T value, ISet<object> represented);
+        string Represent([AllowNull] T value, ISet<object> represented);
     }
 }

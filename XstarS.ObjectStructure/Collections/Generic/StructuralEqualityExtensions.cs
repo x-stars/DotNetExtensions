@@ -1,4 +1,6 @@
-﻿namespace XstarS.Collections.Generic
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace XstarS.Collections.Generic
 {
     /// <summary>
     /// 提供结构化对象相等比较的扩展方法。
@@ -13,7 +15,7 @@
         /// <typeparam name="T">结构化对象的类型。</typeparam>
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的每个元素都对应相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool StructuralEquals<T>(this T value, T other) =>
+        public static bool StructuralEquals<T>([AllowNull] this T value, [AllowNull] T other) =>
             StructuralEqualityComparer.Equals(value, other);
 
         /// <summary>
@@ -22,7 +24,7 @@
         /// <param name="value">要为其获取哈希代码的结构化对象。</param>
         /// <typeparam name="T">结构化对象的类型。</typeparam>
         /// <returns>遍历 <paramref name="value"/> 的元素得到的哈希代码。</returns>
-        public static int GetStructuralHashCode<T>(this T value) =>
+        public static int GetStructuralHashCode<T>([DisallowNull] this T value) =>
             StructuralEqualityComparer.GetHashCode(value);
     }
 }

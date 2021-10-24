@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Collections.Generic
 {
@@ -29,14 +30,16 @@ namespace XstarS.Collections.Generic
         /// <param name="y">要比较的第二个结构化对象。</param>
         /// <returns>如果 <paramref name="x"/> 和 <paramref name="y"/> 中的元素相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public override bool Equals(T x, T y) => StructuralEqualityComparer.Equals(x, y);
+        public override bool Equals([AllowNull] T x, [AllowNull] T y) =>
+            StructuralEqualityComparer.Equals(x, y);
 
         /// <summary>
         /// 获取指定的结构化对象中的元素的哈希代码。
         /// </summary>
         /// <param name="obj">要获取哈希代码的结构化对象。</param>
         /// <returns><paramref name="obj"/> 中的元素的哈希代码。</returns>
-        public override int GetHashCode(T obj) => StructuralEqualityComparer.GetHashCode(obj);
+        public override int GetHashCode([DisallowNull] T obj) =>
+            StructuralEqualityComparer.GetHashCode(obj);
     }
 
     /// <summary>
@@ -57,7 +60,7 @@ namespace XstarS.Collections.Generic
         /// <param name="y">要比较的第二个结构化对象。</param>
         /// <returns>如果 <paramref name="x"/> 和 <paramref name="y"/> 中的元素相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static new bool Equals(object x, object y)
+        public static new bool Equals(object? x, object? y)
         {
             if (x?.GetType() != y?.GetType()) { return false; }
 
@@ -73,7 +76,7 @@ namespace XstarS.Collections.Generic
         public static int GetHashCode(object obj)
         {
             var comparer = StructuralEqualityComparer.OfType(obj?.GetType());
-            return comparer.GetHashCode(obj);
+            return comparer.GetHashCode(obj!);
         }
 
         /// <summary>
@@ -82,7 +85,7 @@ namespace XstarS.Collections.Generic
         /// <param name="type">结构化对象的类型 <see cref="Type"/> 对象。</param>
         /// <returns>类型参数为 <paramref name="type"/> 的
         /// <see cref="InternalStructuralEqualityComparer{T}"/> 类的默认实例。</returns>
-        internal static IAcyclicEqualityComparer OfType(Type type)
+        internal static IAcyclicEqualityComparer OfType(Type? type)
         {
             return (type is null) ?
                 InternalStructuralEqualityComparer<object>.Default :
@@ -101,7 +104,7 @@ namespace XstarS.Collections.Generic
             var typeComparer = typeof(InternalStructuralEqualityComparer<>).MakeGenericType(type);
             var nameDefualt = nameof(InternalStructuralEqualityComparer<object>.Default);
             var propertyDefault = typeComparer.GetProperty(nameDefualt);
-            return (IAcyclicEqualityComparer)propertyDefault.GetValue(null);
+            return (IAcyclicEqualityComparer)propertyDefault!.GetValue(null)!;
         }
     }
 }

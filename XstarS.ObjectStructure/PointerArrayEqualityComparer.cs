@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using XstarS.Collections.Generic;
 using XstarS.Reflection;
@@ -18,7 +19,7 @@ namespace XstarS
         /// <summary>
         /// 表示数组根据索引获取元素的方法的 <see cref="MethodInfo"/> 对象。
         /// </summary>
-        private static readonly MethodInfo GetMethod = typeof(T).GetMethod("Get");
+        private static readonly MethodInfo GetMethod = typeof(T).GetMethod("Get")!;
 
         /// <summary>
         /// 初始化 <see cref="PointerArrayEqualityComparer{T}"/> 类的新实例。
@@ -33,7 +34,8 @@ namespace XstarS
         /// <param name="compared">已经比较过的对象。</param>
         /// <returns>如果 <paramref name="x"/> 和 <paramref name="y"/> 中的元素相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        protected override bool EqualsCore(T x, T y, ISet<ObjectPair> compared)
+        protected override bool EqualsCore(
+            [DisallowNull] T x, [DisallowNull] T y, ISet<ObjectPair> compared)
         {
             var xArray = (Array)(object)x;
             var yArray = (Array)(object)y;
@@ -54,7 +56,7 @@ namespace XstarS
         /// <param name="obj">要获取哈希代码的指针数组。</param>
         /// <param name="computed">已经计算过哈希代码的对象。</param>
         /// <returns><paramref name="obj"/> 中的元素的哈希代码。</returns>
-        protected override int GetHashCodeCore(T obj, ISet<object> computed)
+        protected override int GetHashCodeCore([DisallowNull] T obj, ISet<object> computed)
         {
             var array = (Array)(object)obj;
 

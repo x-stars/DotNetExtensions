@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Diagnostics
 {
@@ -21,7 +22,7 @@ namespace XstarS.Diagnostics
         /// <param name="value">要表示为字符串的对象。</param>
         /// <param name="represented">已经在路径中表示过的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        protected override string RepresentCore(T value, ISet<object> represented)
+        protected override string RepresentCore([DisallowNull] T value, ISet<object> represented)
         {
             return Representer<T>.Default.Represent(value);
         }

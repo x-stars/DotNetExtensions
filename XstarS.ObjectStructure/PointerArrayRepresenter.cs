@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using XstarS.Diagnostics;
 
@@ -15,7 +16,7 @@ namespace XstarS
         /// <summary>
         /// 表示数组根据索引获取元素的方法的 <see cref="MethodInfo"/> 对象。
         /// </summary>
-        private static readonly MethodInfo GetMethod = typeof(T).GetMethod("Get");
+        private static readonly MethodInfo GetMethod = typeof(T).GetMethod("Get")!;
 
         /// <summary>
         /// 初始化 <see cref="PointerArrayRepresenter{T}"/> 类的新实例。
@@ -28,7 +29,7 @@ namespace XstarS
         /// <param name="value">要表示为字符串的指针数组。</param>
         /// <param name="represented">已经在路径中访问过的对象。</param>
         /// <returns>表示 <paramref name="value"/> 中的元素的字符串。</returns>
-        protected override string RepresentCore(T value, ISet<object> represented)
+        protected override string RepresentCore([DisallowNull] T value, ISet<object> represented)
         {
             return value.GetType().ToString() + " " +
                 this.RepresentArray((Array)(object)value, Array.Empty<int>(), represented);
@@ -46,7 +47,7 @@ namespace XstarS
         {
             if (indices.Length == array.Rank)
             {
-                var item = PointerArrayRepresenter<T>.GetMethod.Invoke(array, indices.Box());
+                var item = PointerArrayRepresenter<T>.GetMethod.Invoke(array, indices.Box())!;
                 unsafe { return ((IntPtr)Pointer.Unbox(item)).ToString(); }
             }
             else

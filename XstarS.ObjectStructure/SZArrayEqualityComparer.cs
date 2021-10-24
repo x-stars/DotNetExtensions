@@ -54,7 +54,7 @@ namespace XstarS
             for (int index = 0; index < length; index++)
             {
                 var comparer = StructuralEqualityComparer.OfType(obj[index]?.GetType());
-                var nextHashCode = comparer.GetHashCode(obj[index]);
+                var nextHashCode = comparer.GetHashCode(obj[index]!);
                 hashCode = this.CombineHashCode(hashCode, nextHashCode);
             }
             return hashCode;

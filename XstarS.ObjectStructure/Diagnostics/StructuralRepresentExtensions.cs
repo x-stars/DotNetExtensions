@@ -1,4 +1,6 @@
-﻿namespace XstarS.Diagnostics
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace XstarS.Diagnostics
 {
     /// <summary>
     /// 提供将结构化对象表示为字符串的扩展方法。
@@ -10,7 +12,7 @@
         /// </summary>
         /// <param name="value">要表示为字符串的结构化对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        public static string StructuralRepresent<T>(this T value) =>
+        public static string StructuralRepresent<T>([AllowNull] this T value) =>
             StructuralRepresenter.Represent(value);
     }
 }

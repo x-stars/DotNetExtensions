@@ -41,7 +41,7 @@ namespace XstarS.Diagnostics
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         internal static bool IsDefaultToString()
         {
-            var method = typeof(T).GetMethod(nameof(object.ToString), Type.EmptyTypes);
+            var method = typeof(T).GetMethod(nameof(object.ToString), Type.EmptyTypes)!;
             return (method.DeclaringType == typeof(object)) ||
                 (method.DeclaringType == typeof(ValueType));
         }
@@ -56,14 +56,14 @@ namespace XstarS.Diagnostics
             if (type.IsArray)
             {
                 var itemType = type.GetElementType();
-                if (itemType.IsPointer)
+                if (itemType!.IsPointer)
                 {
                     return new PointerArrayRepresenter<T>();
                 }
                 if (itemType.MakeArrayType() == type)
                 {
                     return (InternalStructuralRepresenter<T>)Activator.CreateInstance(
-                        typeof(SZArrayRepresenter<>).MakeGenericType(itemType));
+                        typeof(SZArrayRepresenter<>).MakeGenericType(itemType))!;
                 }
                 else
                 {
@@ -77,7 +77,7 @@ namespace XstarS.Diagnostics
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 return (InternalStructuralRepresenter<T>)Activator.CreateInstance(
-                    typeof(EnumerableRepresenter<>).MakeGenericType(type));
+                    typeof(EnumerableRepresenter<>).MakeGenericType(type))!;
             }
             else if (type == typeof(DictionaryEntry))
             {
@@ -88,7 +88,7 @@ namespace XstarS.Diagnostics
             {
                 var keyValueTypes = type.GetGenericArguments();
                 return (InternalStructuralRepresenter<T>)Activator.CreateInstance(
-                    typeof(KeyValuePairRepresenter<,>).MakeGenericType(keyValueTypes));
+                    typeof(KeyValuePairRepresenter<,>).MakeGenericType(keyValueTypes))!;
             }
             else if (InternalStructuralRepresenter<T>.IsDefaultToString())
             {

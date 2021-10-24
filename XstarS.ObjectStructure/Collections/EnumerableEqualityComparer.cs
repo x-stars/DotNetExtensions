@@ -73,7 +73,7 @@ namespace XstarS.Collections
             foreach (var item in obj)
             {
                 var comparer = StructuralEqualityComparer.OfType(item?.GetType());
-                var nextHashCode = comparer.GetHashCode(item, computed);
+                var nextHashCode = comparer.GetHashCode(item!, computed);
                 hashCode = this.CombineHashCode(hashCode, nextHashCode);
             }
             return hashCode;

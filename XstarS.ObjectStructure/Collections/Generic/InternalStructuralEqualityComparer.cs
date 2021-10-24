@@ -39,7 +39,7 @@ namespace XstarS.Collections.Generic
             var type = typeof(T);
             if (type.IsArray)
             {
-                var itemType = type.GetElementType();
+                var itemType = type.GetElementType()!;
                 if (itemType.IsPointer)
                 {
                     return new PointerArrayEqualityComparer<T>();
@@ -47,7 +47,7 @@ namespace XstarS.Collections.Generic
                 else if (itemType.MakeArrayType() == type)
                 {
                     return (InternalStructuralEqualityComparer<T>)Activator.CreateInstance(
-                        typeof(SZArrayEqualityComparer<>).MakeGenericType(itemType));
+                        typeof(SZArrayEqualityComparer<>).MakeGenericType(itemType))!;
                 }
                 else
                 {
@@ -61,7 +61,7 @@ namespace XstarS.Collections.Generic
             else if (typeof(IEnumerable).IsAssignableFrom(type))
             {
                 return (InternalStructuralEqualityComparer<T>)Activator.CreateInstance(
-                    typeof(EnumerableEqualityComparer<>).MakeGenericType(type));
+                    typeof(EnumerableEqualityComparer<>).MakeGenericType(type))!;
             }
             else if (type == typeof(DictionaryEntry))
             {
@@ -73,7 +73,7 @@ namespace XstarS.Collections.Generic
             {
                 var keyValueTypes = type.GetGenericArguments();
                 return (InternalStructuralEqualityComparer<T>)Activator.CreateInstance(
-                    typeof(KeyValuePairEqualityComparer<,>).MakeGenericType(keyValueTypes));
+                    typeof(KeyValuePairEqualityComparer<,>).MakeGenericType(keyValueTypes))!;
             }
             else
             {

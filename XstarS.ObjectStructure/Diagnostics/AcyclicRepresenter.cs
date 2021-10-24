@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using XstarS.Collections.Specialized;
 
 namespace XstarS.Diagnostics
@@ -27,7 +28,7 @@ namespace XstarS.Diagnostics
         /// </summary>
         /// <param name="value">要表示为字符串的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        public sealed override string Represent(T value)
+        public sealed override string Represent([AllowNull] T value)
         {
             var comparer = ReferenceEqualityComparer.Default;
             var represented = new HashSet<object>(comparer);
@@ -40,7 +41,7 @@ namespace XstarS.Diagnostics
         /// <param name="value">要表示为字符串的对象。</param>
         /// <param name="represented">已经在路径中表示过的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        protected string Represent(T value, ISet<object> represented)
+        protected string Represent([AllowNull] T value, ISet<object> represented)
         {
             if (value is null) { return Representer<T>.NullRefString; }
 
@@ -60,7 +61,7 @@ namespace XstarS.Diagnostics
         /// <param name="value">要表示为字符串的对象。</param>
         /// <param name="represented">已经在路径中表示过的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        protected abstract string RepresentCore(T value, ISet<object> represented);
+        protected abstract string RepresentCore([DisallowNull] T value, ISet<object> represented);
 
         /// <summary>
         /// 将指定对象无环地表示为字符串。
@@ -68,7 +69,7 @@ namespace XstarS.Diagnostics
         /// <param name="value">要表示为字符串的对象。</param>
         /// <param name="represented">已经在路径中表示过的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        string IAcyclicRepresenter<T>.Represent(T value, ISet<object> represented)
+        string IAcyclicRepresenter<T>.Represent([AllowNull] T value, ISet<object> represented)
         {
             return this.Represent(value, represented);
         }
@@ -81,8 +82,10 @@ namespace XstarS.Diagnostics
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
         /// <exception cref="InvalidCastException">
         /// 无法强制转换 <paramref name="value"/> 到 <typeparamref name="T"/> 类型。</exception>
-        string IAcyclicRepresenter.Represent(object value, ISet<object> represented)
+        string IAcyclicRepresenter.Represent(object? value, ISet<object> represented)
         {
+            if (value is null) { return Representer<T>.NullRefString; }
+
             return this.Represent((T)value, represented);
         }
     }

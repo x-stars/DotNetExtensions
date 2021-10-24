@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using XstarS.Diagnostics;
 
 namespace XstarS.Reflection
 {
-    using NamedValue = KeyValuePair<string, object>;
-    using NamedValues = Dictionary<string, object>;
+    using NamedValue = KeyValuePair<string, object?>;
+    using NamedValues = Dictionary<string, object?>;
 
     /// <summary>
     /// 提供将对象中的公共成员表示为字符串的方法。
@@ -49,7 +50,7 @@ namespace XstarS.Reflection
         private static PropertyInfo[] GetPublicProperties()
         {
             return typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(
-                property => property.CanRead && property.GetMethod.IsPublic).ToArray();
+                property => property.CanRead && property.GetMethod!.IsPublic).ToArray();
         }
 
         /// <summary>
@@ -59,7 +60,7 @@ namespace XstarS.Reflection
         /// <returns><paramref name="value"/> 的所有公共实例成员的名称和对应的值。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="value"/> 为 <see langword="null"/>。</exception>
-        private NamedValues GetPublicValues(T value)
+        private NamedValues GetPublicValues([DisallowNull] T value)
         {
             if (value is null) { throw new ArgumentNullException(nameof(value)); }
             var namedFields = MemberRepresenter<T>.PublicFields.Select(
@@ -76,9 +77,8 @@ namespace XstarS.Reflection
         /// <param name="value">要表示为字符串的对象。</param>
         /// <param name="represented">已经在路径中访问过的对象。</param>
         /// <returns>表示 <paramref name="value"/> 中的成员的字符串。</returns>
-        protected override string RepresentCore(T value, ISet<object> represented)
+        protected override string RepresentCore([DisallowNull] T value, ISet<object> represented)
         {
-            if (value is null) { return null; }
             var represents = this.GetPublicValues(value).Select(namedValue =>
             {
                 var valueType = namedValue.Value?.GetType();
