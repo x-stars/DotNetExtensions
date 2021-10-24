@@ -14,7 +14,7 @@ namespace XstarS
         /// <exception cref="ArgumentNullException">
         /// <paramref name="valueInfo"/> 的值为 <see langword="null"/>。</exception>
         public static IValueInfo<T> IsNotNull<T>(
-            this IValueInfo<T> valueInfo, string message = null)
+            this IValueInfo<T> valueInfo, string? message = null)
             where T : class
         {
             if (valueInfo.Value is null)

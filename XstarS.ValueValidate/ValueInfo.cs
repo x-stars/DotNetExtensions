@@ -14,7 +14,7 @@ namespace XstarS
         /// </summary>
         /// <param name="value">待验证的参数的值。</param>
         /// <param name="name">待验证的参数的名称。</param>
-        public ValueInfo(T value, string name = null)
+        public ValueInfo(T value, string? name = null)
         {
             this.Value = value;
             this.Name = name;
@@ -30,7 +30,7 @@ namespace XstarS
         /// 获取待验证的对象的名称。
         /// </summary>
         /// <returns>待验证的对象的名称。</returns>
-        public string Name { get; }
+        public string? Name { get; }
 
         /// <summary>
         /// 返回此实例的字符串表达形式。

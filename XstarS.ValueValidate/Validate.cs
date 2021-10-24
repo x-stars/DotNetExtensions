@@ -14,7 +14,7 @@
         /// <param name="value">待验证的对象的值。</param>
         /// <param name="name">待验证的对象的名称，一般通过 <see langword="nameof"/> 获取。</param>
         /// <returns><see cref="IValueInfo{T}"/> 接口的新实例。</returns>
-        public static IValueInfo<T> Value<T>(T value, string name = null)
+        public static IValueInfo<T> Value<T>(T value, string? name = null)
         {
             return new ValueInfo<T>(value, name);
         }

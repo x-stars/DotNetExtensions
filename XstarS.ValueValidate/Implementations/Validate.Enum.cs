@@ -61,7 +61,7 @@ namespace XstarS
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="valueInfo"/> 的值不为有效的枚举值。</exception>
         public static IValueInfo<T> IsValidEnum<T>(
-            this IValueInfo<T> valueInfo, string message = null)
+            this IValueInfo<T> valueInfo, string? message = null)
             where T : struct, Enum
         {
             if (EnumInfo<T>.IsFlags)

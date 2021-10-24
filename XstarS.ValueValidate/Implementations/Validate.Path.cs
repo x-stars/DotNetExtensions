@@ -16,7 +16,7 @@ namespace XstarS
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static IValueInfo<string> IsValidPath(
-            this IValueInfo<string> valueInfo, string message = null)
+            this IValueInfo<string> valueInfo, string? message = null)
         {
             try
             {
@@ -40,7 +40,7 @@ namespace XstarS
         /// <exception cref="FileNotFoundException">
         /// <paramref name="valueInfo"/> 的值对应的文件不存在。</exception>
         public static IValueInfo<string> IsExistingFile(
-            this IValueInfo<string> valueInfo, string message = null)
+            this IValueInfo<string> valueInfo, string? message = null)
         {
             if (!File.Exists(valueInfo.Value))
             {
@@ -59,7 +59,7 @@ namespace XstarS
         /// <exception cref="DirectoryNotFoundException">
         /// <paramref name="valueInfo"/> 的值对应的目录不存在。</exception>
         public static IValueInfo<string> IsExistingDirectory(
-            this IValueInfo<string> valueInfo, string message = null)
+            this IValueInfo<string> valueInfo, string? message = null)
         {
             if (!Directory.Exists(valueInfo.Value))
             {

@@ -16,6 +16,6 @@
         /// 获取待验证的对象的名称。
         /// </summary>
         /// <returns>待验证的对象的名称。</returns>
-        string Name { get; }
+        string? Name { get; }
     }
 }

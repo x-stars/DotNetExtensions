@@ -17,8 +17,8 @@ namespace XstarS
         /// <param name="innerException">引发当前异常的异常。</param>
         /// <exception cref="ArgumentException">
         /// 总是抛出 <see cref="ArgumentException"/> 类型的异常。</exception>
-        internal static void ThrowArgumentException(string paramName = null,
-            string message = null, Exception innerException = null)
+        internal static void ThrowArgumentException(string? paramName = null,
+            string? message = null, Exception? innerException = null)
         {
             message = message ?? new ArgumentException().Message;
             throw new ArgumentException(message, paramName, innerException);
@@ -31,8 +31,8 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <exception cref="ArgumentNullException">
         /// 总是抛出 <see cref="ArgumentNullException"/> 类型的异常。</exception>
-        internal static void ThrowArgumentNullException(string paramName = null,
-            string message = null)
+        internal static void ThrowArgumentNullException(string? paramName = null,
+            string? message = null)
         {
             message = message ?? new ArgumentNullException().Message;
             throw new ArgumentNullException(paramName, message);
@@ -46,8 +46,8 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <exception cref="ArgumentOutOfRangeException">
         /// 总是抛出 <see cref="ArgumentOutOfRangeException"/> 类型的异常。</exception>
-        internal static void ThrowArgumentOutOfRangeException(string paramName = null,
-            object actualValue = null, string message = null)
+        internal static void ThrowArgumentOutOfRangeException(string? paramName = null,
+            object? actualValue = null, string? message = null)
         {
             message = message ?? new ArgumentOutOfRangeException().Message;
             throw new ArgumentOutOfRangeException(paramName, actualValue, message);
@@ -61,7 +61,7 @@ namespace XstarS
         /// <exception cref="IndexOutOfRangeException">
         /// 总是抛出 <see cref="IndexOutOfRangeException"/> 类型的异常。</exception>
         internal static void ThrowIndexOutOfRangeException(
-            string message = null, Exception innerException = null)
+            string? message = null, Exception? innerException = null)
         {
             message = message ?? new IndexOutOfRangeException().Message;
             throw new IndexOutOfRangeException(message, innerException);
@@ -75,7 +75,7 @@ namespace XstarS
         /// <exception cref="KeyNotFoundException">
         /// 总是抛出 <see cref="KeyNotFoundException"/> 类型的异常。</exception>
         internal static void ThrowKeyNotFoundException(
-            string message = null, Exception innerException = null)
+            string? message = null, Exception? innerException = null)
         {
             message = message ?? new KeyNotFoundException().Message;
             throw new KeyNotFoundException(message, innerException);
@@ -89,8 +89,8 @@ namespace XstarS
         /// <param name="innerException">引发当前异常的异常。</param>
         /// <exception cref="FileNotFoundException">
         /// 总是抛出 <see cref="FileNotFoundException"/> 类型的异常。</exception>
-        internal static void ThrowFileNotFoundException(string fileName = null,
-            string message = null, Exception innerException = null)
+        internal static void ThrowFileNotFoundException(string? fileName = null,
+            string? message = null, Exception? innerException = null)
         {
             message = message ?? new FileNotFoundException().Message;
             throw new FileNotFoundException(message, fileName, innerException);
@@ -104,7 +104,7 @@ namespace XstarS
         /// <exception cref="DirectoryNotFoundException">
         /// 总是抛出 <see cref="DirectoryNotFoundException"/> 类型的异常。</exception>
         internal static void ThrowDirectoryNotFoundException(
-            string message = null, Exception innerException = null)
+            string? message = null, Exception? innerException = null)
         {
             message = message ?? new DirectoryNotFoundException().Message;
             throw new DirectoryNotFoundException(message, innerException);

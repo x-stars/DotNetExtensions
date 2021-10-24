@@ -15,7 +15,7 @@ namespace XstarS
         /// <exception cref="IndexOutOfRangeException"><paramref name="valueInfo"/> 的值不在
         /// <paramref name="startIndex"/> 和 <paramref name="endIndex"/> 之间。</exception>
         public static IValueInfo<int> IsInIndexRange(
-            this IValueInfo<int> valueInfo, int startIndex, int endIndex, string message = null)
+            this IValueInfo<int> valueInfo, int startIndex, int endIndex, string? message = null)
         {
             if ((valueInfo.Value < startIndex) || (valueInfo.Value > endIndex))
             {
@@ -36,7 +36,7 @@ namespace XstarS
         /// <exception cref="IndexOutOfRangeException"><paramref name="valueInfo"/>
         /// 的值不在 0 和 <paramref name="count"/> - 1 之间。</exception>
         public static IValueInfo<int> IsInIndexRange(
-            this IValueInfo<int> valueInfo, int count, string message = null)
+            this IValueInfo<int> valueInfo, int count, string? message = null)
         {
             return valueInfo.IsInIndexRange(0, count - 1, message);
         }

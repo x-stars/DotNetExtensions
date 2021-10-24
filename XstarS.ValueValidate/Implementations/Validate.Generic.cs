@@ -17,7 +17,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值不等于 <paramref name="value"/>。</exception>
         public static IValueInfo<T> EqualsTo<T>(
-            this IValueInfo<T> valueInfo, T value, string message = null)
+            this IValueInfo<T> valueInfo, T value, string? message = null)
         {
             if (!EqualityComparer<T>.Default.Equals(valueInfo.Value, value))
             {
@@ -38,7 +38,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值等于 <paramref name="value"/>。</exception>
         public static IValueInfo<T> NotEqualsTo<T>(
-            this IValueInfo<T> valueInfo, T value, string message = null)
+            this IValueInfo<T> valueInfo, T value, string? message = null)
         {
             if (EqualityComparer<T>.Default.Equals(valueInfo.Value, value))
             {
@@ -58,7 +58,7 @@ namespace XstarS
         /// <exception cref="ArgumentNullException">
         /// <paramref name="valueInfo"/> 的值等于 <see langword="null"/>。</exception>
         public static IValueInfo<T> NotEqualsToNull<T>(
-            this IValueInfo<T> valueInfo, string message = null)
+            this IValueInfo<T> valueInfo, string? message = null)
         {
             if (object.Equals(valueInfo.Value, null))
             {
@@ -78,7 +78,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值不为 <typeparamref name="T"/> 类型的实例。</exception>
         public static IValueInfo<object> IsInstanceOf<T>(
-            this IValueInfo<object> valueInfo, string message = null)
+            this IValueInfo<object> valueInfo, string? message = null)
         {
             if (!(valueInfo.Value is T))
             {
@@ -99,7 +99,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值不为 <paramref name="type"/> 类型的实例。</exception>
         public static IValueInfo<object> IsInstanceOf(
-            this IValueInfo<object> valueInfo, Type type, string message = null)
+            this IValueInfo<object> valueInfo, Type type, string? message = null)
         {
             if (!type.IsInstanceOfType(valueInfo.Value))
             {
@@ -121,7 +121,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="condition"/> 返回 <see langword="false"/>。</exception>
         public static IValueInfo<T> MatchesCondition<T>(
-            this IValueInfo<T> valueInfo, bool condition, string message = null)
+            this IValueInfo<T> valueInfo, bool condition, string? message = null)
         {
             if (condition)
             {
@@ -142,7 +142,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="predicate"/> 返回 <see langword="false"/>。</exception>
         public static IValueInfo<T> MatchesCondition<T>(
-            this IValueInfo<T> valueInfo, Predicate<T> predicate, string message = null)
+            this IValueInfo<T> valueInfo, Predicate<T> predicate, string? message = null)
         {
             if (predicate(valueInfo.Value))
             {
@@ -163,14 +163,14 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值不在 <paramref name="collection"/> 中。</exception>
         public static IValueInfo<T> IsInCollection<T>(
-            this IValueInfo<T> valueInfo, IEnumerable<T> collection, string message = null)
+            this IValueInfo<T> valueInfo, IEnumerable<T> collection, string? message = null)
         {
             if (!collection.Contains(valueInfo.Value))
             {
                 ThrowHelper.ThrowArgumentException(valueInfo.Name, message);
             }
 
-            return null;
+            return valueInfo;
         }
 
         /// <summary>
@@ -184,14 +184,14 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值在 <paramref name="collection"/> 中。</exception>
         public static IValueInfo<T> IsNotInCollection<T>(
-            this IValueInfo<T> valueInfo, IEnumerable<T> collection, string message = null)
+            this IValueInfo<T> valueInfo, IEnumerable<T> collection, string? message = null)
         {
             if (!collection.Contains(valueInfo.Value))
             {
                 ThrowHelper.ThrowArgumentException(valueInfo.Name, message);
             }
 
-            return null;
+            return valueInfo;
         }
 
         /// <summary>
@@ -205,7 +205,7 @@ namespace XstarS
         /// <exception cref="KeyNotFoundException">
         /// <paramref name="valueInfo"/> 的值不在 <paramref name="keyCollection"/> 中。</exception>
         public static IValueInfo<T> IsInKeys<T>(
-            this IValueInfo<T> valueInfo, IEnumerable<T> keyCollection, string message = null)
+            this IValueInfo<T> valueInfo, IEnumerable<T> keyCollection, string? message = null)
         {
             if (!keyCollection.Contains(valueInfo.Value))
             {
@@ -227,7 +227,7 @@ namespace XstarS
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="valueInfo"/> 的值不在
         /// <paramref name="minValue"/> 和 <paramref name="maxValue"/> 之间。</exception>
         public static IValueInfo<T> IsInRange<T>(
-            this IValueInfo<T> valueInfo, T minValue, T maxValue, string message = null)
+            this IValueInfo<T> valueInfo, T minValue, T maxValue, string? message = null)
             where T : IComparable<T>
         {
             if ((valueInfo.Value.CompareTo(minValue) < 0) ||

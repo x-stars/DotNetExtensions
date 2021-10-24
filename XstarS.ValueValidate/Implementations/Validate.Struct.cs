@@ -15,7 +15,7 @@ namespace XstarS
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="valueInfo"/> 的值为默认值。</exception>
         public static IValueInfo<T> IsNotDefault<T>(
-            this IValueInfo<T> valueInfo, string message = null)
+            this IValueInfo<T> valueInfo, string? message = null)
             where T : struct
         {
             if (EqualityComparer<T>.Default.Equals(valueInfo.Value, default(T)))
