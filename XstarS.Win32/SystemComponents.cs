@@ -21,7 +21,7 @@ namespace XstarS.Win32
             /// </summary>
             /// <returns>计算机上运行的 Internet Explorer 的版本。</returns>
             /// <exception cref="SecurityException">程序没有足够的权限读取注册表。</exception>
-            public static Version Version
+            public static Version? Version
             {
                 get
                 {
