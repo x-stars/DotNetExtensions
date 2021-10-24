@@ -138,7 +138,7 @@ namespace XstarS.Unions
         /// <returns>若 <paramref name="obj"/> 为 <see cref="QWordUnion"/>，
         /// 且当前 <see cref="QWordUnion"/> 的值与 <paramref name="obj"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public override bool Equals(object obj) => (obj is QWordUnion other) && this.Equals(other);
+        public override bool Equals(object? obj) => (obj is QWordUnion other) && this.Equals(other);
 
         /// <summary>
         /// 获取当前 <see cref="QWordUnion"/> 的哈希代码。

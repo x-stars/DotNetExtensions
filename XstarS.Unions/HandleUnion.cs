@@ -134,7 +134,7 @@ namespace XstarS.Unions
         /// <returns>若 <paramref name="obj"/> 为 <see cref="HandleUnion"/>，
         /// 且当前 <see cref="HandleUnion"/> 的值与 <paramref name="obj"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public override bool Equals(object obj) => (obj is HandleUnion other) && this.Equals(other);
+        public override bool Equals(object? obj) => (obj is HandleUnion other) && this.Equals(other);
 
         /// <summary>
         /// 获取当前 <see cref="HandleUnion"/> 的哈希代码。
