@@ -58,9 +58,10 @@ namespace XstarS.Reflection.Emit
             il.MarkLabel(invokeLabel);
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Callvirt, typeof(PropertyChangedEventHandler).GetMethod(
-                nameof(PropertyChangedEventHandler.Invoke),
-                new[] { typeof(object), typeof(PropertyChangedEventArgs) }));
+            il.Emit(OpCodes.Callvirt,
+                typeof(PropertyChangedEventHandler).GetMethod(
+                    nameof(PropertyChangedEventHandler.Invoke),
+                    new[] { typeof(object), typeof(PropertyChangedEventArgs) })!);
             il.Emit(OpCodes.Ret);
 
             return method;
@@ -120,7 +121,7 @@ namespace XstarS.Reflection.Emit
 
             if (baseProperty.CanRead)
             {
-                var baseMethod = baseProperty.GetMethod;
+                var baseMethod = baseProperty.GetMethod!;
 
                 var method = type.DefineMethodOverride(baseMethod);
 
@@ -130,7 +131,7 @@ namespace XstarS.Reflection.Emit
                 {
                     il.EmitLdarg(index + 1);
                 }
-                il.Emit(OpCodes.Call, baseProperty.GetMethod);
+                il.Emit(OpCodes.Call, baseMethod);
                 il.Emit(OpCodes.Ret);
 
                 property.SetGetMethod(method);
@@ -138,7 +139,7 @@ namespace XstarS.Reflection.Emit
 
             if (baseProperty.CanWrite)
             {
-                var baseMethod = baseProperty.SetMethod;
+                var baseMethod = baseProperty.SetMethod!;
 
                 var method = type.DefineMethodOverride(baseMethod);
 
@@ -148,11 +149,11 @@ namespace XstarS.Reflection.Emit
                 {
                     il.EmitLdarg(index + 1);
                 }
-                il.Emit(OpCodes.Call, baseProperty.SetMethod);
+                il.Emit(OpCodes.Call, baseMethod);
                 var propertyNotifyName = (baseProperty.GetIndexParameters().Length == 0) ?
                     baseProperty.Name : $"{baseProperty.Name}[]";
                 var eventArgsConstructor =
-                    typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) });
+                    typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) })!;
                 il.Emit(OpCodes.Ldarg_0);
                 il.Emit(OpCodes.Ldstr, propertyNotifyName);
                 il.Emit(OpCodes.Newobj, eventArgsConstructor);
@@ -252,7 +253,7 @@ namespace XstarS.Reflection.Emit
                 il.Emit(OpCodes.Ldarg_1);
                 il.Emit(OpCodes.Stfld, field);
                 var eventArgsConstructor =
-                    typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) });
+                    typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) })!;
                 il.Emit(OpCodes.Ldarg_0);
                 il.Emit(OpCodes.Ldstr, baseProperty.Name);
                 il.Emit(OpCodes.Newobj, eventArgsConstructor);

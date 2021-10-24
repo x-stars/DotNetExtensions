@@ -29,12 +29,12 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 表示属性更改通知类型的 <see cref="TypeBuilder"/> 对象。
         /// </summary>
-        private TypeBuilder ObservableTypeBuilder;
+        private TypeBuilder? ObservableTypeBuilder;
 
         /// <summary>
         /// 表示 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的触发方法。
         /// </summary>
-        private MethodInfo OnPropertyChangedMethod;
+        private MethodInfo? OnPropertyChangedMethod;
 
         /// <summary>
         /// 使用指定的原型类型初始化 <see cref="ObservableTypeProvider"/> 类的新实例。
@@ -106,7 +106,7 @@ namespace XstarS.ComponentModel
             this.DefineObservableTypeEvents();
             this.DefineObservableTypeMethods();
 
-            return this.ObservableTypeBuilder.CreateTypeInfo();
+            return this.ObservableTypeBuilder!.CreateTypeInfo()!;
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace XstarS.ComponentModel
         private void DefinePropertyChangedEvent()
         {
             var baseType = this.BaseType;
-            var type = this.ObservableTypeBuilder;
+            var type = this.ObservableTypeBuilder!;
 
             var baseEvent = baseType.GetInterfaces().Contains(typeof(INotifyPropertyChanged)) ?
                 baseType.GetAccessibleEvents().Where(@event =>
@@ -182,7 +182,7 @@ namespace XstarS.ComponentModel
                     (@event.EventHandlerType == typeof(PropertyChangedEventHandler))).FirstOrDefault() :
                 typeof(INotifyPropertyChanged).GetEvent(nameof(INotifyPropertyChanged.PropertyChanged));
 
-            if (baseEvent?.AddMethod.IsAbstract == true)
+            if (baseEvent?.AddMethod!.IsAbstract == true)
             {
                 var field = type.DefineDefaultEventOverride(baseEvent).Value;
                 var method = type.DefineOnPropertyChangedMethod(field);
@@ -213,8 +213,8 @@ namespace XstarS.ComponentModel
         private void DefineObservableTypeProperties()
         {
             var baseType = this.BaseType;
-            var type = this.ObservableTypeBuilder;
-            var onPropertyChangedMethod = this.OnPropertyChangedMethod;
+            var type = this.ObservableTypeBuilder!;
+            var onPropertyChangedMethod = this.OnPropertyChangedMethod!;
 
             foreach (var baseProperty in baseType.GetAccessibleProperties().Where(
                 property => property.GetAccessors(true).All(accessor => accessor.IsInheritable())))
@@ -258,7 +258,7 @@ namespace XstarS.ComponentModel
                 if ((baseEvent.Name != nameof(INotifyPropertyChanged.PropertyChanged)) &&
                     (baseEvent.EventHandlerType != typeof(PropertyChangedEventHandler)))
                 {
-                    if (baseEvent.AddMethod.IsAbstract)
+                    if (baseEvent.AddMethod!.IsAbstract)
                     {
                         type.DefineNotImplementedEventOverride(baseEvent);
                     }

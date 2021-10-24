@@ -62,7 +62,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="MethodAccessException">
         /// <see cref="ObservableFactory{T}.ObservableType"/> 的无参构造函数访问级别过低。</exception>
         public T CreateInstance() =>
-            (T)Activator.CreateInstance(this.ObservableType);
+            (T)Activator.CreateInstance(this.ObservableType)!;
 
         /// <summary>
         /// 使用与指定参数匹配程度最高的构造函数创建属性更改通知类型的实例。
@@ -78,6 +78,6 @@ namespace XstarS.ComponentModel
         /// <see cref="ObservableFactory{T}.ObservableType"/> 
         /// 中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
         public T CreateInstance(params object[] arguments) =>
-            (T)Activator.CreateInstance(this.ObservableType, arguments);
+            (T)Activator.CreateInstance(this.ObservableType, arguments)!;
     }
 }
