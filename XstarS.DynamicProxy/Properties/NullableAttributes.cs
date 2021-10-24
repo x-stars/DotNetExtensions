@@ -162,6 +162,12 @@ namespace System.Diagnostics.CodeAnalysis
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     internal sealed class DoesNotReturnAttribute : Attribute
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DoesNotReturnAttribute"/> class.
+        /// </summary>
+        public DoesNotReturnAttribute()
+        {
+        }
     }
 
     /// <summary>
