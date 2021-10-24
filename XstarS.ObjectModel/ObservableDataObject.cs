@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace XstarS.ComponentModel
@@ -19,21 +20,21 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 表示所有属性的值。
         /// </summary>
-        private readonly ConcurrentDictionary<string, object> Properties;
+        private readonly ConcurrentDictionary<string, object?> Properties;
 
         /// <summary>
         /// 初始化 <see cref="ObservableDataObject"/> 类的新实例。
         /// </summary>
         protected ObservableDataObject()
         {
-            this.Properties = new ConcurrentDictionary<string, object>();
+            this.Properties = new ConcurrentDictionary<string, object?>();
         }
 
         /// <summary>
         /// 在属性值更改时发生。
         /// </summary>
         [field: NonSerialized]
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
         /// 获取指定属性的值。
@@ -41,8 +42,9 @@ namespace XstarS.ComponentModel
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="propertyName">要获取值的属性的名称。</param>
         /// <returns>指定属性的值。</returns>
+        [return: MaybeNull]
         protected T GetProperty<T>(
-            [CallerMemberName] string propertyName = null)
+            [CallerMemberName] string? propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;
             this.Properties.TryGetValue(propertyName, out var value);
@@ -55,12 +57,13 @@ namespace XstarS.ComponentModel
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="value">属性的新值。</param>
         /// <param name="propertyName">要设置值的属性的名称。</param>
-        protected virtual void SetProperty<T>(T value,
-            [CallerMemberName] string propertyName = null)
+        protected virtual void SetProperty<T>(
+            [param: MaybeNull] T value,
+            [CallerMemberName] string? propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;
             var property = this.GetProperty<T>(propertyName);
-            this.Properties[propertyName] = (object)value;
+            this.Properties[propertyName] = (object?)value;
             var propertyChanged = !RuntimeHelpers.Equals(property, value);
             if (propertyChanged) { this.NotifyPropertyChanged(propertyName); }
         }
@@ -70,7 +73,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="propertyName">已更改属性的名称。</param>
         protected void NotifyPropertyChanged(
-            [CallerMemberName] string propertyName = null)
+            [CallerMemberName] string? propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;
             this.OnPropertyChanged(new PropertyChangedEventArgs(propertyName));

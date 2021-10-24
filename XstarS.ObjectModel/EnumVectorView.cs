@@ -37,7 +37,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="ArgumentException">
         /// <paramref name="enumName"/> 不为有效的枚举值名称。</exception>
         protected bool IsEnum(
-            [CallerMemberName] string enumName = null)
+            [CallerMemberName] string? enumName = null)
         {
             enumName = enumName ?? string.Empty;
             var enumValue = this.ParseEnum(enumName);
@@ -52,7 +52,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="ArgumentException">
         /// <paramref name="enumName"/> 不为有效的枚举值名称。</exception>
         protected void SetEnum(bool value,
-            [CallerMemberName] string enumName = null)
+            [CallerMemberName] string? enumName = null)
         {
             enumName = enumName ?? string.Empty;
             var enumValue = this.ParseEnum(enumName);

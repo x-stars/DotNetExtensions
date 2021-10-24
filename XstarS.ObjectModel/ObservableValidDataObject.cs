@@ -4,6 +4,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace XstarS.ComponentModel
@@ -18,14 +19,14 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 表示所有属性的验证错误。
         /// </summary>
-        private readonly ConcurrentDictionary<string, IEnumerable> PropertiesErrors;
+        private readonly ConcurrentDictionary<string, IEnumerable?> PropertiesErrors;
 
         /// <summary>
         /// 初始化 <see cref="ObservableValidDataObject"/> 类的新实例。
         /// </summary>
         protected ObservableValidDataObject()
         {
-            this.PropertiesErrors = new ConcurrentDictionary<string, IEnumerable>();
+            this.PropertiesErrors = new ConcurrentDictionary<string, IEnumerable?>();
         }
 
         /// <summary>
@@ -39,15 +40,16 @@ namespace XstarS.ComponentModel
         /// 当验证错误更改时发生。
         /// </summary>
         [field: NonSerialized]
-        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+        public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         /// <summary>
         /// 获取指定属性的验证错误。
         /// </summary>
         /// <param name="propertyName">要获取验证错误的属性的名称。</param>
         /// <returns>指定属性的验证错误。</returns>
+        [return: MaybeNull]
         public IEnumerable GetErrors(
-            [CallerMemberName] string propertyName = null)
+            [CallerMemberName] string? propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;
             this.PropertiesErrors.TryGetValue(propertyName, out var errors);
@@ -59,8 +61,9 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="errors">属性的验证错误。</param>
         /// <param name="propertyName">要设置验证错误的属性的名称。</param>
-        protected virtual void SetErrors(IEnumerable errors,
-            [CallerMemberName] string propertyName = null)
+        protected virtual void SetErrors(
+            [param: MaybeNull] IEnumerable errors,
+            [CallerMemberName] string? propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;
             var thisHadErrors = !this.PropertiesErrors.IsEmpty;
@@ -80,8 +83,9 @@ namespace XstarS.ComponentModel
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="value">属性的新值。</param>
         /// <param name="propertyName">要设置值的属性的名称。</param>
-        protected override void SetProperty<T>(T value,
-            [CallerMemberName] string propertyName = null)
+        protected override void SetProperty<T>(
+            [param: MaybeNull] T value,
+            [CallerMemberName] string? propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;
             base.SetProperty(value, propertyName);
@@ -94,7 +98,7 @@ namespace XstarS.ComponentModel
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="propertyName">要验证错误的属性的名称。</param>
         protected virtual void ValidateProperty<T>(
-            [CallerMemberName] string propertyName = null)
+            [CallerMemberName] string? propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;
             var value = this.GetProperty<T>(propertyName);
@@ -112,7 +116,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="propertyName">验证错误已更改的属性的名称。</param>
         protected void NotifyErrorsChanged(
-            [CallerMemberName] string propertyName = null)
+            [CallerMemberName] string? propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;
             this.OnErrorsChanged(new DataErrorsChangedEventArgs(propertyName));

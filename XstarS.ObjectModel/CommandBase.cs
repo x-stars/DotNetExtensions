@@ -32,7 +32,7 @@ namespace XstarS.Windows.Input
         /// <summary>
         /// 当出现影响是否应执行该命令的更改时发生。
         /// </summary>
-        public event EventHandler CanExecuteChanged;
+        public event EventHandler? CanExecuteChanged;
 
         /// <summary>
         /// 在当前状态下执行此命令。
@@ -69,9 +69,9 @@ namespace XstarS.Windows.Input
         /// 使用指定的事件数据引发 <see cref="CommandBase.CanExecuteChanged"/> 事件。
         /// </summary>
         /// <param name="e">包含事件数据的 <see cref="EventArgs"/>。</param>
-        private void OnCanExecuteChanged(object e)
+        private void OnCanExecuteChanged(object? e)
         {
-            this.CanExecuteChanged?.Invoke(this, (EventArgs)e);
+            this.CanExecuteChanged?.Invoke(this, (EventArgs)e!);
         }
     }
 }

@@ -37,7 +37,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="ArgumentException">
         /// <paramref name="flagName"/> 不为有效的枚举值名称。</exception>
         protected bool HasFlag(
-            [CallerMemberName] string flagName = null)
+            [CallerMemberName] string? flagName = null)
         {
             flagName = flagName ?? string.Empty;
             var flagValue = this.ParseEnum(flagName);
@@ -52,7 +52,7 @@ namespace XstarS.ComponentModel
         /// <exception cref="ArgumentException">
         /// <paramref name="flagName"/> 不为有效的枚举值名称。</exception>
         protected void SetFlag(bool value,
-            [CallerMemberName] string flagName = null)
+            [CallerMemberName] string? flagName = null)
         {
             flagName = flagName ?? string.Empty;
             var flagValue = this.ParseEnum(flagName);
