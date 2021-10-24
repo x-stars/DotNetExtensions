@@ -170,7 +170,7 @@ namespace XstarS
                 ThrowHelper.ThrowArgumentException(valueInfo.Name, message);
             }
 
-            return null;
+            return valueInfo;
         }
 
         /// <summary>
@@ -191,7 +191,7 @@ namespace XstarS
                 ThrowHelper.ThrowArgumentException(valueInfo.Name, message);
             }
 
-            return null;
+            return valueInfo;
         }
 
         /// <summary>
