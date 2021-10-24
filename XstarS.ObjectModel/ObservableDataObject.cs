@@ -58,7 +58,7 @@ namespace XstarS.ComponentModel
         /// <param name="value">属性的新值。</param>
         /// <param name="propertyName">要设置值的属性的名称。</param>
         protected virtual void SetProperty<T>(
-            [param: MaybeNull] T value,
+            [param: AllowNull] T value,
             [CallerMemberName] string? propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;

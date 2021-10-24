@@ -62,7 +62,7 @@ namespace XstarS.ComponentModel
         /// <param name="errors">属性的验证错误。</param>
         /// <param name="propertyName">要设置验证错误的属性的名称。</param>
         protected virtual void SetErrors(
-            [param: MaybeNull] IEnumerable errors,
+            [param: AllowNull] IEnumerable errors,
             [CallerMemberName] string? propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;
@@ -70,7 +70,7 @@ namespace XstarS.ComponentModel
             var hadErrors = !(this.GetErrors(propertyName) is null);
             var hasErrors = !(errors is null) && errors.GetEnumerator().MoveNext();
             if (hasErrors) { this.PropertiesErrors[propertyName] = errors; }
-            else { this.PropertiesErrors.TryRemove(propertyName, out errors); }
+            else { this.PropertiesErrors.TryRemove(propertyName, out errors!); }
             var errorsChanged = hadErrors ^ hasErrors;
             if (errorsChanged) { this.NotifyErrorsChanged(propertyName); }
             var hasErrorsChanged = thisHadErrors ^ this.HasErrors;
@@ -84,7 +84,7 @@ namespace XstarS.ComponentModel
         /// <param name="value">属性的新值。</param>
         /// <param name="propertyName">要设置值的属性的名称。</param>
         protected override void SetProperty<T>(
-            [param: MaybeNull] T value,
+            [param: AllowNull] T value,
             [CallerMemberName] string? propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;
