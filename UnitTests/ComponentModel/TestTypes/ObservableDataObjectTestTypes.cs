@@ -6,7 +6,7 @@ namespace XstarS.ComponentModel.TestTypes
     {
         public ObservablePersonName() { }
 
-        public string FamilyName
+        public string? FamilyName
         {
             get => this.GetProperty<string>();
             set
@@ -16,7 +16,7 @@ namespace XstarS.ComponentModel.TestTypes
             }
         }
 
-        public string GivenName
+        public string? GivenName
         {
             get => this.GetProperty<string>();
             set

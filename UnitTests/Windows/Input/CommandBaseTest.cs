@@ -17,10 +17,10 @@ namespace XstarS.Windows.Input
                     if (canExecute)
                     {
                         canExecute = false;
-                        command.NotifyCanExecuteChanged();
+                        command!.NotifyCanExecuteChanged();
                         Console.WriteLine(DateTime.Now);
                         canExecute = true;
-                        command.NotifyCanExecuteChanged();
+                        command!.NotifyCanExecuteChanged();
                     }
                 },
                 _ => canExecute);

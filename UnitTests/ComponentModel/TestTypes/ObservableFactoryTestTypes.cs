@@ -75,7 +75,7 @@ namespace XstarS.ComponentModel.TestTypes
         [RelatedProperties(nameof(Size))]
         public override int Width { get; set; }
 
-        public override event PropertyChangedEventHandler PropertyChanged;
+        public override event PropertyChangedEventHandler? PropertyChanged;
 
         public override void Deconstruct(out int height, out int width)
         {
@@ -102,7 +102,7 @@ namespace XstarS.ComponentModel.TestTypes
         public override int Width { get; set; }
 
 #pragma warning disable CS0067
-        public sealed override event PropertyChangedEventHandler PropertyChanged;
+        public sealed override event PropertyChangedEventHandler? PropertyChanged;
 #pragma warning restore CS0067
 
         public override void Deconstruct(out int height, out int width)

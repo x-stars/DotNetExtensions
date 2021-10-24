@@ -76,7 +76,7 @@ namespace XstarS.Reflection.TestTypes
 
     public class ByRefValueBox<T>
     {
-        private T _Value;
+        private T? _Value;
 
         public ByRefValueBox() { }
 
@@ -85,8 +85,8 @@ namespace XstarS.Reflection.TestTypes
             this._Value = value;
         }
 
-        public virtual T Value { get => this._Value; set => this._Value = value; }
+        public virtual T? Value { get => this._Value; set => this._Value = value; }
 
-        public virtual ref T RefValue => ref this._Value;
+        public virtual ref T? RefValue => ref this._Value;
     }
 }

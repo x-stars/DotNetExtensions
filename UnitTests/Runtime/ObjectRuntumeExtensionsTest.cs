@@ -52,9 +52,9 @@ namespace XstarS.Runtime
             var n1 = l.AddLast("1");
             var n2 = l.AddLast("2");
             var lc = l.RecurseClone();
-            var n0c = lc.First;
-            var n1c = n0c.Next;
-            var n2c = n1c.Next;
+            var n0c = lc.First!;
+            var n1c = n0c.Next!;
+            var n2c = n1c.Next!;
             Assert.IsFalse(object.ReferenceEquals(l, lc));
             Assert.IsFalse(object.ReferenceEquals(n0, n0c));
             Assert.IsFalse(object.ReferenceEquals(n1, n1c));
