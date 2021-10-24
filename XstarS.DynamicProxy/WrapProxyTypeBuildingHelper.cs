@@ -25,7 +25,7 @@ namespace XstarS.Reflection.Emit
             }
 
             return (method.DeclaringType != typeof(IWrapProxy)) &&
-                ((method.DeclaringType == typeof(object)) || method.DeclaringType.IsInterface) &&
+                ((method.DeclaringType == typeof(object)) || method.DeclaringType!.IsInterface) &&
                 method.IsPublic && method.IsOverridable() &&
                 !method.ReturnParameter.ParameterType.IsNotILBoxable() &&
                 Array.TrueForAll(
@@ -49,7 +49,7 @@ namespace XstarS.Reflection.Emit
             }
 
             return (method.DeclaringType != typeof(IWrapProxy)) &&
-                ((method.DeclaringType == typeof(object)) || method.DeclaringType.IsInterface) &&
+                ((method.DeclaringType == typeof(object)) || method.DeclaringType!.IsInterface) &&
                 method.IsPublic && method.IsOverridable() && !method.IsWrapProxyOverride();
         }
 

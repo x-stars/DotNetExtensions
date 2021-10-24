@@ -96,7 +96,7 @@ namespace XstarS.Reflection
         /// <exception cref="MethodAccessException">
         /// <see cref="ProxyFactory{T}.ProxyType"/> 的无参构造函数访问级别过低。</exception>
         public T CreateInstance() =>
-            this.InitializeHandler((T)Activator.CreateInstance(this.ProxyType));
+            this.InitializeHandler((T)Activator.CreateInstance(this.ProxyType)!);
 
         /// <summary>
         /// 使用与指定参数匹配程度最高的构造函数创建代理类型的实例。
@@ -111,7 +111,7 @@ namespace XstarS.Reflection
         /// <see cref="ProxyFactory{T}.ProxyType"/>
         /// 中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
         public T CreateInstance(params object[] arguments) =>
-            this.InitializeHandler((T)Activator.CreateInstance(this.ProxyType, arguments));
+            this.InitializeHandler((T)Activator.CreateInstance(this.ProxyType, arguments)!);
 
         /// <summary>
         /// 初始化代理类型的实例的代理委托字段。

@@ -245,7 +245,7 @@ namespace XstarS.Reflection.Emit
             else
             {
                 il.Emit(OpCodes.Newobj,
-                    typeof(NotImplementedException).GetConstructor(Type.EmptyTypes));
+                    typeof(NotImplementedException).GetConstructor(Type.EmptyTypes)!);
                 il.Emit(OpCodes.Throw);
             }
 
@@ -355,10 +355,11 @@ namespace XstarS.Reflection.Emit
                 il.Emit(OpCodes.Ldtoken,
                     !baseMethod.IsGenericMethod ? baseMethod :
                     baseMethod.MakeGenericMethod(nestedType.GetGenericArguments()));
-                il.Emit(OpCodes.Ldtoken, baseMethod.DeclaringType);
-                il.Emit(OpCodes.Call, typeof(MethodBase).GetMethod(
-                    nameof(MethodBase.GetMethodFromHandle),
-                    new[] { typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle) }));
+                il.Emit(OpCodes.Ldtoken, baseMethod.DeclaringType!);
+                il.Emit(OpCodes.Call,
+                    typeof(MethodBase).GetMethod(
+                        nameof(MethodBase.GetMethodFromHandle),
+                        new[] { typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle) })!);
                 il.Emit(OpCodes.Castclass, typeof(MethodInfo));
                 il.Emit(OpCodes.Stsfld, infoField);
                 il.Emit(OpCodes.Ldnull);
@@ -421,10 +422,10 @@ namespace XstarS.Reflection.Emit
             if (baseMethod.IsGenericMethod)
             {
                 baseMethodDelegateField = TypeBuilder.GetField(
-                    baseMethodDelegateField.DeclaringType.MakeGenericType(
+                    baseMethodDelegateField.DeclaringType!.MakeGenericType(
                         method.GetGenericArguments()), baseMethodDelegateField);
                 baseMethodInfoField = TypeBuilder.GetField(
-                    baseMethodInfoField.DeclaringType.MakeGenericType(
+                    baseMethodInfoField.DeclaringType!.MakeGenericType(
                         method.GetGenericArguments()), baseMethodInfoField);
             }
 
@@ -439,12 +440,13 @@ namespace XstarS.Reflection.Emit
             if (baseHasGenericConstraints)
             {
                 il.Emit(OpCodes.Ldtoken, baseMethodInfoField);
-                il.Emit(OpCodes.Ldtoken, baseMethodInfoField.DeclaringType);
-                il.Emit(OpCodes.Call, typeof(FieldInfo).GetMethod(
-                    nameof(FieldInfo.GetFieldFromHandle),
-                    new[] { typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle) }));
+                il.Emit(OpCodes.Ldtoken, baseMethodInfoField.DeclaringType!);
+                il.Emit(OpCodes.Call,
+                    typeof(FieldInfo).GetMethod(
+                        nameof(FieldInfo.GetFieldFromHandle),
+                        new[] { typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle) })!);
                 il.Emit(OpCodes.Ldnull);
-                il.Emit(OpCodes.Callvirt, typeof(FieldInfo).GetMethod(nameof(FieldInfo.GetValue)));
+                il.Emit(OpCodes.Callvirt, typeof(FieldInfo).GetMethod(nameof(FieldInfo.GetValue))!);
             }
             else
             {
@@ -453,12 +455,13 @@ namespace XstarS.Reflection.Emit
             if (baseHasGenericConstraints)
             {
                 il.Emit(OpCodes.Ldtoken, baseMethodDelegateField);
-                il.Emit(OpCodes.Ldtoken, baseMethodDelegateField.DeclaringType);
-                il.Emit(OpCodes.Call, typeof(FieldInfo).GetMethod(
-                    nameof(FieldInfo.GetFieldFromHandle),
-                    new[] { typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle) }));
+                il.Emit(OpCodes.Ldtoken, baseMethodDelegateField.DeclaringType!);
+                il.Emit(OpCodes.Call,
+                    typeof(FieldInfo).GetMethod(
+                        nameof(FieldInfo.GetFieldFromHandle),
+                        new[] { typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle) })!);
                 il.Emit(OpCodes.Ldnull);
-                il.Emit(OpCodes.Callvirt, typeof(FieldInfo).GetMethod(nameof(FieldInfo.GetValue)));
+                il.Emit(OpCodes.Callvirt, typeof(FieldInfo).GetMethod(nameof(FieldInfo.GetValue))!);
             }
             else
             {
@@ -477,7 +480,7 @@ namespace XstarS.Reflection.Emit
                 il.Emit(OpCodes.Stelem_Ref);
             }
             il.Emit(OpCodes.Callvirt,
-                typeof(MethodInvokeHandler).GetMethod(nameof(MethodInvokeHandler.Invoke)));
+                typeof(MethodInvokeHandler).GetMethod(nameof(MethodInvokeHandler.Invoke))!);
             if (baseMethod.ReturnType != typeof(void))
             {
                 il.EmitUnbox(baseMethod.ReturnType);

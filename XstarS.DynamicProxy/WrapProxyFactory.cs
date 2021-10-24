@@ -95,7 +95,7 @@ namespace XstarS.Reflection
         /// <paramref name="instance"/> 为 <see langword="null"/>。</exception>
         public T CreateInstance(T instance) =>
             this.InitializeHandler(this.InitializeInstance(
-                (T)Activator.CreateInstance(this.ProxyType), instance));
+                (T)Activator.CreateInstance(this.ProxyType)!, instance));
 
         /// <summary>
         /// 初始化代理类型的实例的代理对象字段。
