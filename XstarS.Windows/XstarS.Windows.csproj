@@ -5,6 +5,7 @@
     <RootNamespace>XstarS.Windows</RootNamespace>
     <TargetFrameworks>net461;net472;netcoreapp3.1</TargetFrameworks>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -46,6 +47,15 @@
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
+
+  <ItemGroup Condition="('$(TargetFramework.TrimEnd(`.01234567890`))'=='net' And
+                         '$(TargetFramework.CompareTo(`net5.0`))'&gt;='0') Or
+                        ('$(TargetFramework.TrimEnd(`.01234567890`))'=='netcoreapp' And
+                         '$(TargetFramework.CompareTo(`netcoreapp3.0`))'&gt;='0') Or
+                        ('$(TargetFramework.TrimEnd(`.01234567890`))'=='netstandard' And
+                         '$(TargetFramework.CompareTo(`netstandard2.1`))'&gt;='0')">
+    <Compile Remove="Properties\NullableAttributes.cs" />
+  </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netcoreapp'">
     <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
