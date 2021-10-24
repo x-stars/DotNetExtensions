@@ -6,6 +6,7 @@
       net461;net472;netcoreapp2.1;netcoreapp3.1;netstandard2.0;netstandard2.1
     </TargetFrameworks>
     <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -47,6 +48,15 @@
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
+
+  <ItemGroup Condition="('$(TargetFramework.TrimEnd(`.01234567890`))'=='net' And
+                         '$(TargetFramework.CompareTo(`net5.0`))'&gt;='0') Or
+                        ('$(TargetFramework.TrimEnd(`.01234567890`))'=='netcoreapp' And
+                         '$(TargetFramework.CompareTo(`netcoreapp3.0`))'&gt;='0') Or
+                        ('$(TargetFramework.TrimEnd(`.01234567890`))'=='netstandard' And
+                         '$(TargetFramework.CompareTo(`netstandard2.1`))'&gt;='0')">
+    <Compile Remove="Properties\NullableAttributes.cs" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\XstarS.Core\XstarS.Core.csproj" />

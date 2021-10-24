@@ -30,8 +30,8 @@ namespace XstarS.CommandLine.Specialized
         /// <param name="argumentNames">所有有名参数名称列表，必选参数应在可选参数之前。</param>
         /// <param name="optionNames">所有选项参数名称列表。</param>
         public PowerShellArgumentReader(string[] arguments,
-            IEnumerable<string> argumentNames = null,
-            IEnumerable<string> optionNames = null)
+            IEnumerable<string>? argumentNames = null,
+            IEnumerable<string>? optionNames = null)
             : base(arguments, true, argumentNames, optionNames) { }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace XstarS.CommandLine.Specialized
         /// 若仍不存在则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
-        public override string GetArgument(string name)
+        public override string? GetArgument(string name)
         {
             if (name is null)
             {
@@ -93,7 +93,7 @@ namespace XstarS.CommandLine.Specialized
         /// <param name="position">要解析的无名参数在所有无名参数中的位置。</param>
         /// <returns>总是引发 <see cref="NotSupportedException"/> 异常。</returns>
         /// <exception cref="NotSupportedException">不支持此方法。</exception>
-        public override string GetArgument(int position)
+        public override string? GetArgument(int position)
         {
             throw new NotSupportedException();
         }

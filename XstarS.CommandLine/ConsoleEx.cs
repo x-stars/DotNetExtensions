@@ -18,17 +18,17 @@ namespace XstarS
             /// <summary>
             /// 表示标准输入流。
             /// </summary>
-            private static volatile Stream Input;
+            private static volatile Stream? Input;
 
             /// <summary>
             /// 表示标准输出流。
             /// </summary>
-            private static volatile Stream Output;
+            private static volatile Stream? Output;
 
             /// <summary>
             /// 表示标准错误流。
             /// </summary>
-            private static volatile Stream Error;
+            private static volatile Stream? Error;
 
             /// <summary>
             /// 获取标准输入流；若标准输入流已经释放，则重新获取标准输入流。
@@ -46,7 +46,7 @@ namespace XstarS
                         }
                     }
                 }
-                return StandardStreams.Input;
+                return StandardStreams.Input!;
             }
 
             /// <summary>
@@ -65,7 +65,7 @@ namespace XstarS
                         }
                     }
                 }
-                return StandardStreams.Output;
+                return StandardStreams.Output!;
             }
 
             /// <summary>
@@ -84,7 +84,7 @@ namespace XstarS
                         }
                     }
                 }
-                return StandardStreams.Error;
+                return StandardStreams.Error!;
             }
 
             /// <summary>
@@ -93,7 +93,7 @@ namespace XstarS
             /// <param name="stream">要确定状态的流。</param>
             /// <returns>若流为 <see langword="null"/> 或已经被释放，
             /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-            private static bool IsNullOrDisposed(Stream stream) =>
+            private static bool IsNullOrDisposed(Stream? stream) =>
                 (stream is null) || (!stream.CanRead && !stream.CanWrite);
         }
 

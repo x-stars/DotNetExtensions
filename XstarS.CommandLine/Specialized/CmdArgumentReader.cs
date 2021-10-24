@@ -26,8 +26,8 @@ namespace XstarS.CommandLine.Specialized
         /// <param name="argumentNames">所有有名参数名称列表。</param>
         /// <param name="optionNames">所有选项参数名称列表。</param>
         public CmdArgumentReader(string[] arguments,
-            IEnumerable<string> argumentNames = null,
-            IEnumerable<string> optionNames = null)
+            IEnumerable<string>? argumentNames = null,
+            IEnumerable<string>? optionNames = null)
             : base(arguments, true, argumentNames, optionNames) { }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace XstarS.CommandLine.Specialized
         /// 若不存在则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
-        public override string GetArgument(string name)
+        public override string? GetArgument(string name)
         {
             if (name is null)
             {
@@ -65,7 +65,7 @@ namespace XstarS.CommandLine.Specialized
         /// 若不存在则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="position"/> 小于 0。</exception>
-        public override string GetArgument(int position)
+        public override string? GetArgument(int position)
         {
             if (position < 0)
             {
