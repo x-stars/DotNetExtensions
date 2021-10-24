@@ -29,12 +29,12 @@ namespace XstarS.Reflection
         /// <summary>
         /// 表示当前 <see cref="DispatchProxy{TInterface}"/> 的代理对象。
         /// </summary>
-        protected TInterface Instance;
+        protected TInterface? Instance;
 
         /// <summary>
         /// 表示当前 <see cref="DispatchProxy{TInterface}"/> 的代理委托。
         /// </summary>
-        protected InvocationHandler Handler;
+        protected InvocationHandler? Handler;
 
         /// <summary>
         /// 初始化 <see cref="DispatchProxy{TInterface}"/> 类的新实例。用于内部实现，请勿直接调用。
@@ -50,7 +50,7 @@ namespace XstarS.Reflection
         /// <returns>方法的返回值。若无返回值，应为 <see langword="null"/>。</returns>
         protected override object Invoke(MethodInfo method, object[] arguments)
         {
-            return this.Handler.Invoke(this.Instance, method, arguments);
+            return this.Handler!.Invoke(this.Instance!, method, arguments);
         }
 
         /// <summary>
