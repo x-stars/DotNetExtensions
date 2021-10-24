@@ -159,7 +159,7 @@ namespace XstarS
         /// <exception cref="FormatException"><paramref name="s"/> 的格式不正确。</exception>
         /// <exception cref="OverflowException"><paramref name="s"/> 表示一个小于 <see cref="Half.MinValue"/>
         /// 或大于 <see cref="Half.MaxValue"/> 的数字，且 <paramref name="s"/> 不表示无穷大值。</exception>
-        public static Half Parse(string s, IFormatProvider provider) =>
+        public static Half Parse(string s, IFormatProvider? provider) =>
             Half.Parse(s, NumberStyles.Float | NumberStyles.AllowThousands, provider);
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace XstarS
         /// <exception cref="FormatException"><paramref name="s"/> 的格式不符合 <paramref name="style"/>。</exception>
         /// <exception cref="OverflowException"><paramref name="s"/> 表示一个小于 <see cref="Half.MinValue"/>
         /// 或大于 <see cref="Half.MaxValue"/> 的数字，且 <paramref name="s"/> 不表示无穷大值。</exception>
-        public static Half Parse(string s, NumberStyles style, IFormatProvider provider)
+        public static Half Parse(string s, NumberStyles style, IFormatProvider? provider)
         {
             var value = float.Parse(s, style, provider);
             if (((value < Half.MinValue) || (value > Half.MaxValue)) &&
@@ -210,7 +210,7 @@ namespace XstarS
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        public static bool TryParse(string s, NumberStyles style, IFormatProvider provider, out Half result)
+        public static bool TryParse(string s, NumberStyles style, IFormatProvider? provider, out Half result)
         {
             try { result = Half.Parse(s, style, provider); return true; }
             catch (Exception) { result = default(Half); return false; }
@@ -224,7 +224,7 @@ namespace XstarS
         /// <paramref name="obj"/>，则大于零；若此实例等于 <paramref name="obj"/>，则为零。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="obj"/> 不为 <see cref="Half"/>。</exception>
-        public int CompareTo(object obj) => (obj is null) ? this.CompareTo(default(Half)) :
+        public int CompareTo(object? obj) => (obj is null) ? this.CompareTo(default(Half)) :
             (obj is Half other) ? this.CompareTo(other) : throw new ArgumentException();
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace XstarS
         /// <param name="obj">要进行比较的对象。</param>
         /// <returns>若 <paramref name="obj"/> 为 <see cref="Half"/> 且与此实例相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public override bool Equals(object obj) => (obj is Half other) && this.Equals(other);
+        public override bool Equals(object? obj) => (obj is Half other) && this.Equals(other);
 
         /// <summary>
         /// 返回此实例的哈希代码。
@@ -282,7 +282,7 @@ namespace XstarS
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>此实例的值的字符串表示形式，由 <paramref name="provider"/> 指定。</returns>
-        public string ToString(IFormatProvider provider) => this.ToString(null, provider);
+        public string ToString(IFormatProvider? provider) => this.ToString(null, provider);
 
         /// <summary>
         /// 使用指定的格式和区域性特定格式信息，将此实例的值转换为它的等效字符串表示形式。
@@ -292,105 +292,105 @@ namespace XstarS
         /// <returns>此实例的值的字符串表示形式，由 <paramref name="format"/>
         /// 和 <paramref name="provider"/> 指定。</returns>
         /// <exception cref="FormatException"><paramref name="format"/> 无效或不受支持。</exception>
-        public string ToString(string format, IFormatProvider provider) => this.ToSingle().ToString(format, provider);
+        public string ToString(string? format, IFormatProvider? provider) => this.ToSingle().ToString(format, provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为等效的 <see cref="bool"/> 值。
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>与此实例的值等效的 <see cref="bool"/> 值。</returns>
-        bool IConvertible.ToBoolean(IFormatProvider provider) => ((IConvertible)(float)this).ToBoolean(provider);
+        bool IConvertible.ToBoolean(IFormatProvider? provider) => ((IConvertible)(float)this).ToBoolean(provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为等效的 <see cref="char"/> 值。
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>与此实例的值等效的 <see cref="char"/> 值。</returns>
-        char IConvertible.ToChar(IFormatProvider provider) => ((IConvertible)(float)this).ToChar(provider);
+        char IConvertible.ToChar(IFormatProvider? provider) => ((IConvertible)(float)this).ToChar(provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为等效的 <see cref="sbyte"/> 值。
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>与此实例的值等效的 <see cref="sbyte"/> 值。</returns>
-        sbyte IConvertible.ToSByte(IFormatProvider provider) => ((IConvertible)(float)this).ToSByte(provider);
+        sbyte IConvertible.ToSByte(IFormatProvider? provider) => ((IConvertible)(float)this).ToSByte(provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为等效的 <see cref="byte"/> 值。
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>与此实例的值等效的 <see cref="byte"/> 值。</returns>
-        byte IConvertible.ToByte(IFormatProvider provider) => ((IConvertible)(float)this).ToByte(provider);
+        byte IConvertible.ToByte(IFormatProvider? provider) => ((IConvertible)(float)this).ToByte(provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为等效的 <see cref="short"/> 值。
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>与此实例的值等效的 <see cref="short"/> 值。</returns>
-        short IConvertible.ToInt16(IFormatProvider provider) => ((IConvertible)(float)this).ToInt16(provider);
+        short IConvertible.ToInt16(IFormatProvider? provider) => ((IConvertible)(float)this).ToInt16(provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为等效的 <see cref="ushort"/> 值。
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>与此实例的值等效的 <see cref="ushort"/> 值。</returns>
-        ushort IConvertible.ToUInt16(IFormatProvider provider) => ((IConvertible)(float)this).ToUInt16(provider);
+        ushort IConvertible.ToUInt16(IFormatProvider? provider) => ((IConvertible)(float)this).ToUInt16(provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为等效的 <see cref="int"/> 值。
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>与此实例的值等效的 <see cref="int"/> 值。</returns>
-        int IConvertible.ToInt32(IFormatProvider provider) => ((IConvertible)(float)this).ToInt32(provider);
+        int IConvertible.ToInt32(IFormatProvider? provider) => ((IConvertible)(float)this).ToInt32(provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为等效的 <see cref="uint"/> 值。
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>与此实例的值等效的 <see cref="uint"/> 值。</returns>
-        uint IConvertible.ToUInt32(IFormatProvider provider) => ((IConvertible)(float)this).ToUInt32(provider);
+        uint IConvertible.ToUInt32(IFormatProvider? provider) => ((IConvertible)(float)this).ToUInt32(provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为等效的 <see cref="long"/> 值。
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>与此实例的值等效的 <see cref="long"/> 值。</returns>
-        long IConvertible.ToInt64(IFormatProvider provider) => ((IConvertible)(float)this).ToInt64(provider);
+        long IConvertible.ToInt64(IFormatProvider? provider) => ((IConvertible)(float)this).ToInt64(provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为等效的 <see cref="ulong"/> 值。
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>与此实例的值等效的 <see cref="ulong"/> 值。</returns>
-        ulong IConvertible.ToUInt64(IFormatProvider provider) => ((IConvertible)(float)this).ToUInt64(provider);
+        ulong IConvertible.ToUInt64(IFormatProvider? provider) => ((IConvertible)(float)this).ToUInt64(provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为等效的 <see cref="float"/> 值。
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>与此实例的值等效的 <see cref="float"/> 值。</returns>
-        float IConvertible.ToSingle(IFormatProvider provider) => ((IConvertible)(float)this).ToSingle(provider);
+        float IConvertible.ToSingle(IFormatProvider? provider) => ((IConvertible)(float)this).ToSingle(provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为等效的 <see cref="double"/> 值。
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>与此实例的值等效的 <see cref="double"/> 值。</returns>
-        double IConvertible.ToDouble(IFormatProvider provider) => ((IConvertible)(float)this).ToDouble(provider);
+        double IConvertible.ToDouble(IFormatProvider? provider) => ((IConvertible)(float)this).ToDouble(provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为等效的 <see cref="decimal"/> 值。
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>与此实例的值等效的 <see cref="decimal"/> 值。</returns>
-        decimal IConvertible.ToDecimal(IFormatProvider provider) => ((IConvertible)(float)this).ToDecimal(provider);
+        decimal IConvertible.ToDecimal(IFormatProvider? provider) => ((IConvertible)(float)this).ToDecimal(provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为等效的 <see cref="DateTime"/> 值。
         /// </summary>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>与此实例的值等效的 <see cref="DateTime"/> 值。</returns>
-        DateTime IConvertible.ToDateTime(IFormatProvider provider) => ((IConvertible)(float)this).ToDateTime(provider);
+        DateTime IConvertible.ToDateTime(IFormatProvider? provider) => ((IConvertible)(float)this).ToDateTime(provider);
 
         /// <summary>
         /// 使用指定的区域性特定格式设置信息将此实例的值转换为具有等效值的指定类型的对象。
@@ -398,7 +398,7 @@ namespace XstarS
         /// <param name="conversionType">要将此实例的值转换为的类型。</param>
         /// <param name="provider">一个提供区域性特定的格式设置信息的对象。</param>
         /// <returns>其值与此实例值等效的 <paramref name="conversionType"/> 类型的对象。</returns>
-        object IConvertible.ToType(Type conversionType, IFormatProvider provider)
+        object IConvertible.ToType(Type conversionType, IFormatProvider? provider)
         {
             return ((IConvertible)(float)this).ToType(conversionType, provider);
         }
