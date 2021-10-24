@@ -17,8 +17,8 @@ namespace XstarS.Reflection
         /// <param name="method">当前调用的方法。</param>
         /// <param name="arguments">方法的参数列表。</param>
         /// <returns>方法的返回值。若无返回值，应为 <see langword="null"/>。</returns>
-        public delegate object InvocationHandler(
-            TInterface instance, MethodInfo method, object[] arguments);
+        public delegate object? InvocationHandler(
+            TInterface instance, MethodInfo method, object?[]? arguments);
 
         /// <summary>
         /// 表示默认的 <see cref="InvocationHandler"/> 代理委托，调用方法并返回。
@@ -48,7 +48,7 @@ namespace XstarS.Reflection
         /// <param name="method">当前调用的方法。</param>
         /// <param name="arguments">方法的参数列表。</param>
         /// <returns>方法的返回值。若无返回值，应为 <see langword="null"/>。</returns>
-        protected override object Invoke(MethodInfo method, object[] arguments)
+        protected override object? Invoke(MethodInfo method, object?[]? arguments)
         {
             return this.Handler!.Invoke(this.Instance!, method, arguments);
         }
