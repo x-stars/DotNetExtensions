@@ -7,7 +7,7 @@ namespace XstarS.Text
     /// </summary>
     /// <typeparam name="T">要解析为的数值的类型。</typeparam>
     [Serializable]
-    public abstract class StringParser<T> : IStringParser, IStringParser<T>
+    public abstract class StringParser<T> : IStringParser, IStringParser<T> where T : notnull
     {
         /// <summary>
         /// 初始化 <see cref="StringParser{T}"/> 类的新实例。
@@ -105,6 +105,7 @@ namespace XstarS.Text
         /// <exception cref="ArgumentNullException">
         /// <paramref name="parser"/> 为 <see langword="null"/>。</exception>
         public static StringParser<T> Create<T>(Converter<string, T> parser)
+            where T : notnull
         {
             return StringParser<T>.Create(parser);
         }
@@ -124,6 +125,7 @@ namespace XstarS.Text
         /// <exception cref="OverflowException">
         /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         public static T ParseAs<T>(this string text)
+            where T : notnull
         {
             return StringParser<T>.Default.Parse(text);
         }

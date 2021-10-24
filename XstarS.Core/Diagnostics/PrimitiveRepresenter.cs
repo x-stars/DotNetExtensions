@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Diagnostics
 {
@@ -21,6 +22,6 @@ namespace XstarS.Diagnostics
         /// <param name="value">要表示为字符串的对象。</param>
         /// <returns>调用 <paramref name="value"/> 的
         /// <see cref="object.ToString"/> 方法返回的字符串。</returns>
-        public override string Represent(T value) => value.ToString();
+        public override string Represent([DisallowNull] T value) => value.ToString()!;
     }
 }

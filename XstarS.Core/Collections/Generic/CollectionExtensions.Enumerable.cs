@@ -45,7 +45,7 @@ namespace XstarS.Collections.Generic
         /// <exception cref="ArgumentNullException">
         /// <paramref name="enumerable"/> 为 <see langword="null"/>。</exception>
         public static int CountOf<T>(this IEnumerable<T> enumerable, T value,
-            IEqualityComparer<T> comparer = null)
+            IEqualityComparer<T>? comparer = null)
         {
             if (enumerable is null)
             {

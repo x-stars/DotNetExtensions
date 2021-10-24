@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Collections
 {
@@ -11,7 +12,8 @@ namespace XstarS.Collections
     /// <typeparam name="TValue">字典中值的类型。</typeparam>
     [Serializable]
     public sealed class GenericDictionary<TKey, TValue>
-        : IDictionary, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>
+        : IDictionary, IDictionary<TKey, TValue?>, IReadOnlyDictionary<TKey, TValue?>
+        where TKey : notnull
     {
         /// <summary>
         /// 表示当前实例包装的字典。
@@ -43,14 +45,14 @@ namespace XstarS.Collections
         }
 
         /// <inheritdoc/>
-        public TValue this[TKey key]
+        public TValue? this[TKey key]
         {
-            get => (TValue)this.Dictionary[key];
+            get => (TValue?)this.Dictionary[key]!;
             set => this.Dictionary[key] = value;
         }
 
         /// <inheritdoc/>
-        object IDictionary.this[object key]
+        object? IDictionary.this[object key]
         {
             get => this.Dictionary[key];
             set => this.Dictionary[key] = value;
@@ -66,19 +68,19 @@ namespace XstarS.Collections
         public ValueCollection Values => this.DictionaryGenericValues;
 
         /// <inheritdoc/>
-        ICollection<TKey> IDictionary<TKey, TValue>.Keys => this.Keys;
+        ICollection<TKey> IDictionary<TKey, TValue?>.Keys => this.Keys;
 
         /// <inheritdoc/>
-        ICollection<TValue> IDictionary<TKey, TValue>.Values => this.Values;
+        ICollection<TValue?> IDictionary<TKey, TValue?>.Values => this.Values;
 
         /// <inheritdoc/>
-        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue>.Keys => this.Keys;
+        IEnumerable<TKey> IReadOnlyDictionary<TKey, TValue?>.Keys => this.Keys;
 
         /// <inheritdoc/>
-        IEnumerable<TValue> IReadOnlyDictionary<TKey, TValue>.Values => this.Values;
+        IEnumerable<TValue?> IReadOnlyDictionary<TKey, TValue?>.Values => this.Values;
 
         /// <inheritdoc/>
-        bool ICollection<KeyValuePair<TKey, TValue>>.IsReadOnly => this.Dictionary.IsReadOnly;
+        bool ICollection<KeyValuePair<TKey, TValue?>>.IsReadOnly => this.Dictionary.IsReadOnly;
 
         /// <inheritdoc/>
         ICollection IDictionary.Keys => this.Dictionary.Keys;
@@ -99,16 +101,16 @@ namespace XstarS.Collections
         bool ICollection.IsSynchronized => this.Dictionary.IsSynchronized;
 
         /// <inheritdoc/>
-        public void Add(TKey key, TValue value) => this.Dictionary.Add(key, value);
+        public void Add(TKey key, TValue? value) => this.Dictionary.Add(key, value);
 
         /// <inheritdoc/>
-        public void Add(KeyValuePair<TKey, TValue> item) => this.Add(item.Key, item.Value);
+        public void Add(KeyValuePair<TKey, TValue?> item) => this.Add(item.Key, item.Value);
 
         /// <inheritdoc/>
         public void Clear() => this.Dictionary.Clear();
 
         /// <inheritdoc/>
-        public bool Contains(KeyValuePair<TKey, TValue> item) =>
+        public bool Contains(KeyValuePair<TKey, TValue?> item) =>
             this.ContainsKey(item.Key) &&
             ValueCollection.Comparer.Equals(this[item.Key], item.Value);
 
@@ -116,20 +118,20 @@ namespace XstarS.Collections
         public bool ContainsKey(TKey key) => this.Dictionary.Contains(key);
 
         /// <inheritdoc/>
-        public void CopyTo(KeyValuePair<TKey, TValue>[] array, int index)
+        public void CopyTo(KeyValuePair<TKey, TValue?>[] array, int index)
         {
             var entries = new DictionaryEntry[array.Length];
             this.Dictionary.CopyTo(entries, index);
             for (int offset = index; offset < array.Length; offset++)
             {
-                array[offset] = new KeyValuePair<TKey, TValue>(
-                    (TKey)entries[offset].Key, (TValue)entries[offset].Value);
+                array[offset] = new KeyValuePair<TKey, TValue?>(
+                    (TKey)entries[offset].Key, (TValue?)entries[offset].Value);
             }
         }
 
         /// <inheritdoc/>
-        public GenericDictionaryEnumerator<TKey, TValue> GetEnumerator() =>
-            new GenericDictionaryEnumerator<TKey, TValue>(this.Dictionary.GetEnumerator());
+        public GenericDictionaryEnumerator<TKey, TValue?> GetEnumerator() =>
+            new GenericDictionaryEnumerator<TKey, TValue?>(this.Dictionary.GetEnumerator());
 
         /// <inheritdoc/>
         public bool Remove(TKey key)
@@ -140,7 +142,7 @@ namespace XstarS.Collections
         }
 
         /// <inheritdoc/>
-        public bool Remove(KeyValuePair<TKey, TValue> item)
+        public bool Remove(KeyValuePair<TKey, TValue?> item)
         {
             var contains = this.Contains(item);
             if (contains) { this.Dictionary.Remove(item.Key); }
@@ -148,14 +150,14 @@ namespace XstarS.Collections
         }
 
         /// <inheritdoc/>
-        public bool TryGetValue(TKey key, out TValue value)
+        public bool TryGetValue(TKey key, out TValue? value)
         {
             if (this.ContainsKey(key)) { value = this[key]; return true; }
             else { value = default(TValue); return false; }
         }
 
         /// <inheritdoc/>
-        void IDictionary.Add(object key, object value) => this.Dictionary.Add(key, value);
+        void IDictionary.Add(object key, object? value) => this.Dictionary.Add(key, value);
 
         /// <inheritdoc/>
         bool IDictionary.Contains(object key) => this.Dictionary.Contains(key);
@@ -164,7 +166,7 @@ namespace XstarS.Collections
         void ICollection.CopyTo(Array array, int index) => this.Dictionary.CopyTo(array, index);
 
         /// <inheritdoc/>
-        IEnumerator<KeyValuePair<TKey, TValue>> IEnumerable<KeyValuePair<TKey, TValue>>.GetEnumerator() =>
+        IEnumerator<KeyValuePair<TKey, TValue?>> IEnumerable<KeyValuePair<TKey, TValue?>>.GetEnumerator() =>
             this.GetEnumerator();
 
         /// <inheritdoc/>
@@ -227,7 +229,7 @@ namespace XstarS.Collections
 
             /// <inheritdoc/>
             public IEnumerator<TKey> GetEnumerator() =>
-                new GenericEnumerator<TKey>(this.DictionaryKeys.GetEnumerator());
+                new GenericEnumerator<TKey>(this.DictionaryKeys.GetEnumerator())!;
 
             /// <inheritdoc/>
             void ICollection<TKey>.Add(TKey item) => throw new NotSupportedException();
@@ -254,13 +256,13 @@ namespace XstarS.Collections
         [Serializable]
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
-        public sealed class ValueCollection : ICollection, ICollection<TValue>, IReadOnlyCollection<TValue>
+        public sealed class ValueCollection : ICollection, ICollection<TValue?>, IReadOnlyCollection<TValue?>
         {
             /// <summary>
             /// 表示用于比较字典中值的比较器。
             /// </summary>
-            internal static readonly EqualityComparer<TValue> Comparer =
-                EqualityComparer<TValue>.Default;
+            internal static readonly EqualityComparer<TValue?> Comparer =
+                EqualityComparer<TValue?>.Default;
 
             /// <summary>
             /// 表示当前实例包装的字典。
@@ -289,7 +291,7 @@ namespace XstarS.Collections
             public int Count => this.Dictionary.Count;
 
             /// <inheritdoc/>
-            bool ICollection<TValue>.IsReadOnly => true;
+            bool ICollection<TValue?>.IsReadOnly => true;
 
             /// <inheritdoc/>
             object ICollection.SyncRoot => this.DictionaryValues.SyncRoot;
@@ -298,20 +300,20 @@ namespace XstarS.Collections
             bool ICollection.IsSynchronized => this.DictionaryValues.IsSynchronized;
 
             /// <inheritdoc/>
-            public void CopyTo(TValue[] array, int index) => this.DictionaryValues.CopyTo(array, index);
+            public void CopyTo(TValue?[] array, int index) => this.DictionaryValues.CopyTo(array, index);
 
             /// <inheritdoc/>
-            public IEnumerator<TValue> GetEnumerator() =>
-                new GenericEnumerator<TValue>(this.DictionaryValues.GetEnumerator());
+            public IEnumerator<TValue?> GetEnumerator() =>
+                new GenericEnumerator<TValue?>(this.DictionaryValues.GetEnumerator());
 
             /// <inheritdoc/>
-            void ICollection<TValue>.Add(TValue item) => throw new NotSupportedException();
+            void ICollection<TValue?>.Add([AllowNull] TValue item) => throw new NotSupportedException();
 
             /// <inheritdoc/>
-            void ICollection<TValue>.Clear() => throw new NotSupportedException();
+            void ICollection<TValue?>.Clear() => throw new NotSupportedException();
 
             /// <inheritdoc/>
-            bool ICollection<TValue>.Contains(TValue item)
+            bool ICollection<TValue?>.Contains([AllowNull] TValue item)
             {
                 var comparer = ValueCollection.Comparer;
                 foreach (var value in this)
@@ -325,7 +327,7 @@ namespace XstarS.Collections
             }
 
             /// <inheritdoc/>
-            bool ICollection<TValue>.Remove(TValue item) => throw new NotSupportedException();
+            bool ICollection<TValue?>.Remove([AllowNull] TValue item) => throw new NotSupportedException();
 
             /// <inheritdoc/>
             void ICollection.CopyTo(Array array, int index) => this.DictionaryValues.CopyTo(array, index);

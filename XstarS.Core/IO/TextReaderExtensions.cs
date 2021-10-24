@@ -25,7 +25,7 @@ namespace XstarS.IO
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一个字符串值分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static string ReadToken(this TextReader reader)
+        public static string? ReadToken(this TextReader reader)
         {
             if (reader is null)
             {
@@ -70,7 +70,7 @@ namespace XstarS.IO
         /// <exception cref="OverflowException">
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static T ReadTokenAs<T>(this TextReader reader)
+        public static T ReadTokenAs<T>(this TextReader reader) where T : notnull
         {
             if (reader is null)
             {
@@ -95,7 +95,7 @@ namespace XstarS.IO
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static T ReadLineAs<T>(this TextReader reader)
+        public static T ReadLineAs<T>(this TextReader reader) where T : notnull
         {
             if (reader is null)
             {
@@ -149,7 +149,7 @@ namespace XstarS.IO
         /// <exception cref="OverflowException">
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static T[] ReadLineTokensAs<T>(this TextReader reader)
+        public static T[] ReadLineTokensAs<T>(this TextReader reader) where T : notnull
         {
             if (reader is null)
             {
@@ -178,7 +178,7 @@ namespace XstarS.IO
         /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static T ReadToEndAs<T>(this TextReader reader)
+        public static T ReadToEndAs<T>(this TextReader reader) where T : notnull
         {
             if (reader is null)
             {
@@ -232,7 +232,7 @@ namespace XstarS.IO
         /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static T[] ReadLinesToEndAs<T>(this TextReader reader)
+        public static T[] ReadLinesToEndAs<T>(this TextReader reader) where T : notnull
         {
             if (reader is null)
             {
@@ -286,7 +286,7 @@ namespace XstarS.IO
         /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static T[] ReadTokensToEndAs<T>(this TextReader reader)
+        public static T[] ReadTokensToEndAs<T>(this TextReader reader) where T : notnull
         {
             if (reader is null)
             {

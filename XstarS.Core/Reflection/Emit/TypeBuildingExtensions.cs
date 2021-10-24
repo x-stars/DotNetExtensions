@@ -27,7 +27,7 @@ namespace XstarS.Reflection.Emit
                 throw new ArgumentNullException(nameof(method));
             }
 
-            return method.DeclaringType.IsVisible && !method.DeclaringType.IsSealed &&
+            return method.DeclaringType!.IsVisible && !method.DeclaringType.IsSealed &&
                 !method.IsStatic && (method.IsPublic || method.IsFamily || method.IsFamilyOrAssembly);
         }
 
@@ -166,7 +166,7 @@ namespace XstarS.Reflection.Emit
             }
             var attributes = baseMethod.Attributes;
             attributes &= ~MethodAttributes.Abstract;
-            if (!baseMethod.DeclaringType.IsInterface)
+            if (!baseMethod.DeclaringType!.IsInterface)
             {
                 attributes &= ~MethodAttributes.NewSlot;
             }
@@ -232,7 +232,7 @@ namespace XstarS.Reflection.Emit
 
             var il = method.GetILGenerator();
             il.Emit(OpCodes.Newobj,
-                typeof(NotImplementedException).GetConstructor(Type.EmptyTypes));
+                typeof(NotImplementedException).GetConstructor(Type.EmptyTypes)!);
             il.Emit(OpCodes.Throw);
 
             return method;
@@ -277,13 +277,13 @@ namespace XstarS.Reflection.Emit
 
             if (baseProperty.CanRead)
             {
-                var method = type.DefineNotImplementedMethodOverride(baseProperty.GetMethod, explicitOverride);
+                var method = type.DefineNotImplementedMethodOverride(baseProperty.GetMethod!, explicitOverride);
                 property.SetGetMethod(method);
             }
 
             if (baseProperty.CanWrite)
             {
-                var method = type.DefineNotImplementedMethodOverride(baseProperty.SetMethod, explicitOverride);
+                var method = type.DefineNotImplementedMethodOverride(baseProperty.SetMethod!, explicitOverride);
                 property.SetSetMethod(method);
             }
 
@@ -336,7 +336,7 @@ namespace XstarS.Reflection.Emit
 
             if (baseProperty.CanRead)
             {
-                var baseMethod = baseProperty.GetMethod;
+                var baseMethod = baseProperty.GetMethod!;
 
                 var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
@@ -350,7 +350,7 @@ namespace XstarS.Reflection.Emit
 
             if (baseProperty.CanWrite)
             {
-                var baseMethod = baseProperty.SetMethod;
+                var baseMethod = baseProperty.SetMethod!;
 
                 var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
@@ -387,7 +387,7 @@ namespace XstarS.Reflection.Emit
             {
                 throw new ArgumentNullException(nameof(baseEvent));
             }
-            if (!baseEvent.AddMethod.IsOverridable())
+            if (!baseEvent.AddMethod!.IsOverridable())
             {
                 throw new ArgumentException(new ArgumentException().Message, nameof(baseEvent));
             }
@@ -395,21 +395,21 @@ namespace XstarS.Reflection.Emit
             var eventName = baseEvent.Name;
             if (explicitOverride)
             {
-                var baseHandle = baseEvent.AddMethod.MethodHandle;
+                var baseHandle = baseEvent.AddMethod!.MethodHandle;
                 eventName += $"#{baseHandle.Value.ToString()}";
             }
 
             var @event = type.DefineEvent(
-                eventName, baseEvent.Attributes, baseEvent.EventHandlerType);
+                eventName, baseEvent.Attributes, baseEvent.EventHandlerType!);
 
             {
-                var baseMethod = baseEvent.AddMethod;
+                var baseMethod = baseEvent.AddMethod!;
                 var method = type.DefineNotImplementedMethodOverride(baseMethod, explicitOverride);
                 @event.SetAddOnMethod(method);
             }
 
             {
-                var baseMethod = baseEvent.RemoveMethod;
+                var baseMethod = baseEvent.RemoveMethod!;
                 var method = type.DefineNotImplementedMethodOverride(baseMethod, explicitOverride);
                 @event.SetRemoveOnMethod(method);
             }
@@ -438,7 +438,7 @@ namespace XstarS.Reflection.Emit
             {
                 throw new ArgumentNullException(nameof(baseEvent));
             }
-            if (!baseEvent.AddMethod.IsOverridable())
+            if (!baseEvent.AddMethod!.IsOverridable())
             {
                 throw new ArgumentException(new ArgumentException().Message, nameof(baseEvent));
             }
@@ -446,23 +446,23 @@ namespace XstarS.Reflection.Emit
             var eventName = baseEvent.Name;
             if (explicitOverride)
             {
-                var baseHandle = baseEvent.AddMethod.MethodHandle;
+                var baseHandle = baseEvent.AddMethod!.MethodHandle;
                 eventName += $"#{baseHandle.Value.ToString()}";
             }
 
             var @event = type.DefineEvent(
-                eventName, baseEvent.Attributes, baseEvent.EventHandlerType);
+                eventName, baseEvent.Attributes, baseEvent.EventHandlerType!);
 
             var field = type.DefineField(
-                eventName, baseEvent.EventHandlerType, FieldAttributes.Private);
+                eventName, baseEvent.EventHandlerType!, FieldAttributes.Private);
 
             {
-                var baseMethod = baseEvent.AddMethod;
+                var baseMethod = baseEvent.AddMethod!;
 
                 var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
                 var il = method.GetILGenerator();
-                var eventType = baseEvent.EventHandlerType;
+                var eventType = baseEvent.EventHandlerType!;
                 var local0 = il.DeclareLocal(eventType);
                 var local1 = il.DeclareLocal(eventType);
                 var local2 = il.DeclareLocal(eventType);
@@ -475,9 +475,10 @@ namespace XstarS.Reflection.Emit
                 il.Emit(OpCodes.Stloc_1);
                 il.Emit(OpCodes.Ldloc_1);
                 il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Call, typeof(Delegate).GetMethod(
-                    nameof(Delegate.Combine),
-                    new[] { typeof(Delegate), typeof(Delegate) }));
+                il.Emit(OpCodes.Call,
+                    typeof(Delegate).GetMethod(
+                        nameof(Delegate.Combine),
+                        new[] { typeof(Delegate), typeof(Delegate) })!);
                 il.Emit(OpCodes.Castclass, eventType);
                 il.Emit(OpCodes.Stloc_2);
                 il.Emit(OpCodes.Ldarg_0);
@@ -497,12 +498,12 @@ namespace XstarS.Reflection.Emit
             }
 
             {
-                var baseMethod = baseEvent.RemoveMethod;
+                var baseMethod = baseEvent.RemoveMethod!;
 
                 var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
                 var il = method.GetILGenerator();
-                var eventType = baseEvent.EventHandlerType;
+                var eventType = baseEvent.EventHandlerType!;
                 var local0 = il.DeclareLocal(eventType);
                 var local1 = il.DeclareLocal(eventType);
                 var local2 = il.DeclareLocal(eventType);
@@ -515,9 +516,10 @@ namespace XstarS.Reflection.Emit
                 il.Emit(OpCodes.Stloc_1);
                 il.Emit(OpCodes.Ldloc_1);
                 il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Call, typeof(Delegate).GetMethod(
-                    nameof(Delegate.Remove),
-                    new[] { typeof(Delegate), typeof(Delegate) }));
+                il.Emit(OpCodes.Call,
+                    typeof(Delegate).GetMethod(
+                        nameof(Delegate.Remove),
+                        new[] { typeof(Delegate), typeof(Delegate) })!);
                 il.Emit(OpCodes.Castclass, eventType);
                 il.Emit(OpCodes.Stloc_2);
                 il.Emit(OpCodes.Ldarg_0);

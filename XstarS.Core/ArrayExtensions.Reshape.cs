@@ -22,11 +22,12 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(array));
             }
 
-            if (array.GetType().GetElementType().IsArray)
+            if (array.GetType().GetElementType()!.IsArray)
             {
                 foreach (var item in array)
                 {
-                    foreach (var innerItem in ((Array)item).RecurseEnumerate())
+                    var innerItems = ((Array)item!).RecurseEnumerate();
+                    foreach (var innerItem in innerItems)
                     {
                         yield return innerItem;
                     }
@@ -68,10 +69,10 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(lengths));
             }
 
-            var itemType = array.GetType().GetElementType();
+            var itemType = array.GetType().GetElementType()!;
             while (itemType.IsArray)
             {
-                itemType = itemType.GetElementType();
+                itemType = itemType.GetElementType()!;
             }
 
             if (itemType.IsPointer)
@@ -137,10 +138,10 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(lengths));
             }
 
-            var itemType = array.GetType().GetElementType();
+            var itemType = array.GetType().GetElementType()!;
             while (itemType.IsArray)
             {
-                itemType = itemType.GetElementType();
+                itemType = itemType.GetElementType()!;
             }
 
             if (itemType.IsPointer)
@@ -168,7 +169,7 @@ namespace XstarS
                     return product;
                 }
 
-                var result = default(Array);
+                var result = Array.CreateInstance(itemType, 0);
                 var items = array.RecurseEnumerate().GetEnumerator();
                 var lastLengths = lengths;
                 var restLengths = new int[lastLengths.Length - 1];

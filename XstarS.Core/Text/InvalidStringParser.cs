@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Text
 {
@@ -7,7 +8,7 @@ namespace XstarS.Text
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
-    internal sealed class InvalidStringParser<T> : SimpleStringParser<T>
+    internal sealed class InvalidStringParser<T> : SimpleStringParser<T> where T : notnull
     {
         /// <summary>
         /// 初始化 <see cref="InvalidStringParser{T}"/> 类的新实例。
@@ -20,6 +21,8 @@ namespace XstarS.Text
         /// <param name="text">要进行转换的字符串表达形式。</param>
         /// <returns>始终抛出 <see cref="InvalidCastException"/> 异常。</returns>
         /// <exception cref="InvalidCastException">始终抛出此异常。</exception>
+        [DoesNotReturn]
+        [return: NotNull]
         public override T Parse(string text) => throw new InvalidCastException();
     }
 }

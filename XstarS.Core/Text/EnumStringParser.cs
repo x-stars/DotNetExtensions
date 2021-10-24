@@ -7,7 +7,7 @@ namespace XstarS.Text
     /// </summary>
     /// <typeparam name="T">要转换为的枚举的类型。</typeparam>
     [Serializable]
-    internal sealed class EnumStringParser<T> : SimpleStringParser<T>
+    internal sealed class EnumStringParser<T> : SimpleStringParser<T> where T : notnull
     {
         /// <summary>
         /// 初始化 <see cref="EnumStringParser{T}"/> 类的新实例。

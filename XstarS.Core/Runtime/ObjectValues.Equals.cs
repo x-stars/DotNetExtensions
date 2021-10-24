@@ -19,7 +19,7 @@ namespace XstarS.Runtime
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 包含的值递归相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        public static bool RecursiveEquals(object value, object other)
+        public static bool RecursiveEquals(object? value, object? other)
         {
             var comparer = PairReferenceEqualityComparer.Default;
             var compared = new HashSet<ObjectPair>(comparer);
@@ -36,10 +36,10 @@ namespace XstarS.Runtime
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
         private static bool RecursiveEquals(
-            object value, object other, HashSet<ObjectPair> compared)
+            object? value, object? other, HashSet<ObjectPair> compared)
         {
             if (RuntimeHelpers.Equals(value, other)) { return true; }
-            if ((value is null) ^ (other is null)) { return false; }
+            if ((value is null) || (other is null)) { return false; }
             if (value.GetType() != other.GetType()) { return false; }
 
             var pair = new ObjectPair(value, other);
@@ -111,13 +111,13 @@ namespace XstarS.Runtime
             }
 
             var typeArray = value.GetType();
-            if (typeArray.GetElementType().IsPointer)
+            if (typeArray.GetElementType()!.IsPointer)
             {
-                var methodGet = typeArray.GetMethod("Get");
+                var methodGet = typeArray.GetMethod("Get")!;
                 for (int index = 0; index < value.Length; index++)
                 {
-                    var valueItem = methodGet.Invoke(value, value.OffsetToIndices(index).Box());
-                    var otherItem = methodGet.Invoke(other, other.OffsetToIndices(index).Box());
+                    var valueItem = methodGet.Invoke(value, value.OffsetToIndices(index).Box())!;
+                    var otherItem = methodGet.Invoke(other, other.OffsetToIndices(index).Box())!;
                     if (!ObjectValues.BoxedPointerEquals(valueItem, otherItem))
                     {
                         return false;
@@ -165,7 +165,7 @@ namespace XstarS.Runtime
                     var otherMember = field.GetValue(other);
                     if (field.FieldType.IsPointer)
                     {
-                        if (!ObjectValues.BoxedPointerEquals(valueMember, otherMember))
+                        if (!ObjectValues.BoxedPointerEquals(valueMember!, otherMember!))
                         {
                             return false;
                         }

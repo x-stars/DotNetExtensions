@@ -7,7 +7,7 @@ namespace XstarS.Text
     /// </summary>
     /// <typeparam name="T">要转换为的数值的类型。</typeparam>
     [Serializable]
-    public abstract class SimpleStringParser<T> : StringParser<T>
+    public abstract class SimpleStringParser<T> : StringParser<T> where T : notnull
     {
         /// <summary>
         /// 初始化 <see cref="SimpleStringParser{T}"/> 类的新实例。
@@ -20,7 +20,7 @@ namespace XstarS.Text
         /// <param name="obj">要与当前对象进行比较的对象。</param>
         /// <returns>如果指定的对象等于当前对象，
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        public sealed override bool Equals(object obj) =>
+        public sealed override bool Equals(object? obj) =>
             this.GetType() == obj?.GetType();
 
         /// <summary>

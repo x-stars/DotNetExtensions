@@ -33,7 +33,7 @@ namespace XstarS.Reflection
         /// 或 <paramref name="y"/> 不为以 <see cref="Pointer"/> 包装的指针。</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Design", "CA1061:DoNotHideBaseClassMethods")]
-        public static new bool Equals(object x, object y) => Pointer.Unbox(x) == Pointer.Unbox(y);
+        public static new bool Equals(object? x, object? y) => Pointer.Unbox(x!) == Pointer.Unbox(y!);
 
         /// <summary>
         /// 获取指定以 <see cref="Pointer"/> 包装的指针的哈希代码。
@@ -44,7 +44,7 @@ namespace XstarS.Reflection
         /// <paramref name="obj"/> 不为以 <see cref="Pointer"/> 包装的指针。</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Design", "CA1061:DoNotHideBaseClassMethods")]
-        public static int GetHashCode(object obj) => ((IntPtr)Pointer.Unbox(obj)).GetHashCode();
+        public static int GetHashCode(object? obj) => ((IntPtr)Pointer.Unbox(obj!)).GetHashCode();
 
         /// <summary>
         /// 确定指定的两个以 <see cref="Pointer"/> 包装的指针是否相等。
@@ -55,7 +55,7 @@ namespace XstarS.Reflection
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentException"><paramref name="x"/>
         /// 或 <paramref name="y"/> 不为以 <see cref="Pointer"/> 包装的指针。</exception>
-        public override bool Equals(Pointer x, Pointer y) => PointerEqualityComparer.Equals(x, y);
+        public override bool Equals(Pointer? x, Pointer? y) => PointerEqualityComparer.Equals(x, y);
 
         /// <summary>
         /// 获取指定以 <see cref="Pointer"/> 包装的指针的哈希代码。
@@ -64,6 +64,6 @@ namespace XstarS.Reflection
         /// <returns><paramref name="obj"/> 中包装的指针的哈希代码。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="obj"/> 不为以 <see cref="Pointer"/> 包装的指针。</exception>
-        public override int GetHashCode(Pointer obj) => PointerEqualityComparer.GetHashCode(obj);
+        public override int GetHashCode(Pointer? obj) => PointerEqualityComparer.GetHashCode(obj);
     }
 }

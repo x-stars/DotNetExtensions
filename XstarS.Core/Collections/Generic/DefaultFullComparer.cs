@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Collections.Generic
 {
@@ -37,7 +38,8 @@ namespace XstarS.Collections.Generic
         /// <returns>若 <paramref name="x"/> 小于 <paramref name="y"/>，则为负数；
         /// 若 <paramref name="x"/> 等于 <paramref name="y"/>，则为零；
         /// 若 <paramref name="x"/> 大于 <paramref name="y"/>，则为正数。</returns>
-        public override int Compare(T x, T y) => this.Comparer.Compare(x, y);
+        public override int Compare([AllowNull] T x, [AllowNull] T y) =>
+            this.Comparer.Compare(x!, y!);
 
         /// <summary>
         /// 确定指定的对象是否相等。
@@ -46,13 +48,15 @@ namespace XstarS.Collections.Generic
         /// <param name="y">要比较的第一个对象。</param>
         /// <returns>如果指定的对象相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public override bool Equals(T x, T y) => this.EqualityComparer.Equals(x, y);
+        public override bool Equals([AllowNull] T x, [AllowNull] T y) =>
+            this.EqualityComparer.Equals(x!, y!);
 
         /// <summary>
         /// 获取指定对象的哈希代码。
         /// </summary>
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <returns>指定对象的哈希代码。</returns>
-        public override int GetHashCode(T obj) => this.EqualityComparer.GetHashCode(obj);
+        public override int GetHashCode([AllowNull] T obj) =>
+            this.EqualityComparer.GetHashCode(obj!);
     }
 }

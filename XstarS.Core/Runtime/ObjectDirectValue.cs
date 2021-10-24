@@ -1,4 +1,6 @@
-﻿namespace XstarS.Runtime
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace XstarS.Runtime
 {
     /// <summary>
     /// 提供对象的直接值相关的帮助方法。
@@ -49,7 +51,7 @@
         /// <param name="other">要与当前对象进行比较的对象。</param>
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的直接值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool Equals<T>(T value, T other)
+        public static bool Equals<T>([AllowNull] T value, [AllowNull] T other)
         {
             var refValue = __makeref(value);
             var refOther = __makeref(other);
@@ -65,7 +67,7 @@
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要获取基于直接值哈希代码的对象。</param>
         /// <returns><paramref name="value"/> 基于的直接值的哈希代码。</returns>
-        public static int GetHashCode<T>(T value)
+        public static int GetHashCode<T>([AllowNull] T value)
         {
             var refValue = __makeref(value);
             var ptrValue = *(void**)&refValue;
@@ -79,7 +81,7 @@
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要将直接值填充到字节数组的对象。</param>
         /// <returns>以 <paramref name="value"/> 的直接值填充的字节数组。</returns>
-        public static byte[] ToByteArray<T>(T value)
+        public static byte[] ToByteArray<T>([AllowNull] T value)
         {
             var refValue = __makeref(value);
             var ptrValue = *(byte**)&refValue;

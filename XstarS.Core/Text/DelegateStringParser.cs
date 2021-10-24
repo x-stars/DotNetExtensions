@@ -7,7 +7,7 @@ namespace XstarS.Text
     /// </summary>
     /// <typeparam name="T">要转换为的数值的类型。</typeparam>
     [Serializable]
-    internal sealed class DelegateStringParser<T> : StringParser<T>
+    internal sealed class DelegateStringParser<T> : StringParser<T> where T : notnull
     {
         /// <summary>
         /// 表示将字符串解析为指定类型的数值的方法的委托。

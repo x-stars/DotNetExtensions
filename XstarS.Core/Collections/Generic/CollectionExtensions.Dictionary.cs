@@ -19,6 +19,7 @@ namespace XstarS.Collections.Generic
         /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
         public static ReadOnlyDictionary<TKey, TValue> AsReadOnly<TKey, TValue>(
             this IDictionary<TKey, TValue> dictionary)
+            where TKey : notnull
         {
             return new ReadOnlyDictionary<TKey, TValue>(dictionary);
         }
@@ -34,6 +35,7 @@ namespace XstarS.Collections.Generic
         /// 或 <paramref name="action"/> 为 <see langword="null"/>。</exception>
         public static void ForEach<TKey, TValue>(
             this IDictionary<TKey, TValue> dictionary, Action<TKey, TValue> action)
+            where TKey : notnull
         {
             if (dictionary is null)
             {
@@ -65,6 +67,7 @@ namespace XstarS.Collections.Generic
         /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
         public static TValue GetOrAdd<TKey, TValue>(
             this IDictionary<TKey, TValue> dictionary, TKey key, TValue value)
+            where TKey : notnull
         {
             if (dictionary is null)
             {
@@ -90,6 +93,7 @@ namespace XstarS.Collections.Generic
         /// 或 <paramref name="valueFactory"/> 为 <see langword="null"/>。</exception>
         public static TValue GetOrAdd<TKey, TValue>(
             this IDictionary<TKey, TValue> dictionary, TKey key, Func<TKey, TValue> valueFactory)
+            where TKey : notnull
         {
             if (dictionary is null)
             {
@@ -116,8 +120,10 @@ namespace XstarS.Collections.Generic
         /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
         public static IDictionary<TValue, ICollection<TKey>> Inverse<TKey, TValue>(
             this IDictionary<TKey, TValue> dictionary,
-            IEqualityComparer<TKey> keyComparer = null,
-            IEqualityComparer<TValue> valueComparer = null)
+            IEqualityComparer<TKey>? keyComparer = null,
+            IEqualityComparer<TValue>? valueComparer = null)
+            where TKey : notnull
+            where TValue : notnull
         {
             if (dictionary is null)
             {
@@ -153,8 +159,9 @@ namespace XstarS.Collections.Generic
         /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
         public static ICollection<TKey> KeysOf<TKey, TValue>(
             this IDictionary<TKey, TValue> dictionary, TValue value,
-            IEqualityComparer<TKey> keyComparer = null,
-            IEqualityComparer<TValue> valueComparer = null)
+            IEqualityComparer<TKey>? keyComparer = null,
+            IEqualityComparer<TValue>? valueComparer = null)
+            where TKey : notnull
         {
             if (dictionary is null)
             {
@@ -188,6 +195,7 @@ namespace XstarS.Collections.Generic
         /// 或 <paramref name="keys"/> 为 <see langword="null"/>。</exception>
         public static int RemoveRange<TKey, TValue>(
             this IDictionary<TKey, TValue> dictionary, IEnumerable<TKey> keys)
+            where TKey : notnull
         {
             if (dictionary is null)
             {
@@ -222,7 +230,8 @@ namespace XstarS.Collections.Generic
         /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
         public static ConcurrentDictionary<TKey, TValue> ToConcurrent<TKey, TValue>(
             this IDictionary<TKey, TValue> dictionary,
-            IEqualityComparer<TKey> comparer = null)
+            IEqualityComparer<TKey>? comparer = null)
+            where TKey : notnull
         {
             comparer = comparer ?? EqualityComparer<TKey>.Default;
             return new ConcurrentDictionary<TKey, TValue>(dictionary, comparer);
@@ -243,7 +252,8 @@ namespace XstarS.Collections.Generic
         /// <see cref="Dictionary{TKey, TValue}"/> 中已存在具有相同键的元素。</exception>
         public static Dictionary<TKey, TValue> ToDictionary<TKey, TValue>(
             this IEnumerable<KeyValuePair<TKey, TValue>> pairs,
-            IEqualityComparer<TKey> comparer = null)
+            IEqualityComparer<TKey>? comparer = null)
+            where TKey : notnull
         {
             if (pairs is null)
             {

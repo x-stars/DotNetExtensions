@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Diagnostics
 {
@@ -41,7 +42,7 @@ namespace XstarS.Diagnostics
             if (type.IsPrimitive)
             {
                 return (Representer<T>)Activator.CreateInstance(
-                    typeof(PrimitiveRepresenter<>).MakeGenericType(type));
+                    typeof(PrimitiveRepresenter<>).MakeGenericType(type))!;
             }
             else if (type == typeof(string))
             {
@@ -50,7 +51,7 @@ namespace XstarS.Diagnostics
             else if (typeof(IRepresentable).IsAssignableFrom(type))
             {
                 return (Representer<T>)Activator.CreateInstance(
-                    typeof(RepresentableRepresenter<>).MakeGenericType(type));
+                    typeof(RepresentableRepresenter<>).MakeGenericType(type))!;
             }
             else
             {
@@ -63,7 +64,7 @@ namespace XstarS.Diagnostics
         /// </summary>
         /// <param name="value">要表示为字符串的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        public abstract string Represent(T value);
+        public abstract string Represent([AllowNull] T value);
 
         /// <summary>
         /// 将指定对象表示为字符串。
@@ -72,6 +73,7 @@ namespace XstarS.Diagnostics
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
         /// <exception cref="InvalidCastException">
         /// 无法强制转换 <paramref name="value"/> 到 <typeparamref name="T"/> 类型。</exception>
-        string IRepresenter.Represent(object value) => this.Represent((T)value);
+        string IRepresenter.Represent(object? value) =>
+            (value is null) ? Representer<T>.NullRefString : this.Represent((T)value);
     }
 }

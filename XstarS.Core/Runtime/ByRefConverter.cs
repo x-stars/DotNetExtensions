@@ -127,7 +127,7 @@ namespace XstarS.Runtime
                 il.Emit(OpCodes.Ret);
             }
 
-            return (ByRefConverter)Activator.CreateInstance(type.CreateTypeInfo());
+            return (ByRefConverter)Activator.CreateInstance(type.CreateTypeInfo()!)!;
         }
     }
 }

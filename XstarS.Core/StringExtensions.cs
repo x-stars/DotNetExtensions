@@ -47,7 +47,7 @@ namespace XstarS
         /// </summary>
         /// <param name="text">要反转顺序的字符串。</param>
         /// <returns>将 <paramref name="text"/> 反转顺序得到的新字符串。</returns>
-        public static string Reverse(this string text)
+        public static string? Reverse(this string? text)
         {
             if (text is null) { return null; }
             var chars = text.ToCharArray();

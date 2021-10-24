@@ -43,7 +43,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="pairs"/> 中存在具有相同键的键值对。</exception>
         public static Dictionary<TKey, TValue> DictOf<TKey, TValue>(
-            params (TKey Key, TValue Value)[] pairs)
+            params (TKey Key, TValue Value)[] pairs) where TKey : notnull
         {
             if (pairs is null) { throw new ArgumentNullException(nameof(pairs)); }
             var result = new Dictionary<TKey, TValue>(pairs.Length);
@@ -87,7 +87,7 @@ namespace XstarS
         /// <exception cref="ArgumentException">
         /// <paramref name="pairs"/> 中存在具有相同键的键值对。</exception>
         public static ReadOnlyDictionary<TKey, TValue> RoDictOf<TKey, TValue>(
-            params (TKey Key, TValue Value)[] pairs) =>
+            params (TKey Key, TValue Value)[] pairs) where TKey : notnull =>
             new ReadOnlyDictionary<TKey, TValue>(Operators.DictOf(pairs));
 
         /// <summary>

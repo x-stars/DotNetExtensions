@@ -18,7 +18,7 @@ namespace XstarS.IO
         /// <exception cref="ObjectDisposedException">
         /// <see cref="TextWriter"/> 已关闭。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteTokens(this TextWriter writer, params string[] values)
+        public static void WriteTokens(this TextWriter writer, params string?[] values)
         {
             if (writer is null)
             {
@@ -42,7 +42,7 @@ namespace XstarS.IO
         /// <exception cref="ObjectDisposedException">
         /// <see cref="TextWriter"/> 已关闭。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteTokens(this TextWriter writer, params object[] values)
+        public static void WriteTokens(this TextWriter writer, params object?[] values)
         {
             if (writer is null)
             {
@@ -66,7 +66,7 @@ namespace XstarS.IO
         /// <exception cref="ObjectDisposedException">
         /// <see cref="TextWriter"/> 已关闭。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteLines(this TextWriter writer, params string[] values)
+        public static void WriteLines(this TextWriter writer, params string?[] values)
         {
             if (writer is null)
             {
@@ -90,7 +90,7 @@ namespace XstarS.IO
         /// <exception cref="ObjectDisposedException">
         /// <see cref="TextWriter"/> 已关闭。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteLines(this TextWriter writer, params object[] values)
+        public static void WriteLines(this TextWriter writer, params object?[] values)
         {
             if (writer is null)
             {

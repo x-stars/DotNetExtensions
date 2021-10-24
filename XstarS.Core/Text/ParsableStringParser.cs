@@ -7,7 +7,7 @@ namespace XstarS.Text
     /// </summary>
     /// <typeparam name="T">要转换为的数值的类型。</typeparam>
     [Serializable]
-    internal sealed class ParsableStringParser<T> : SimpleStringParser<T>
+    internal sealed class ParsableStringParser<T> : SimpleStringParser<T> where T : notnull
     {
         /// <summary>
         /// 初始化 <see cref="ParsableStringParser{T}"/> 类的新实例。
@@ -31,7 +31,7 @@ namespace XstarS.Text
         /// <exception cref="FormatException"><paramref name="text"/> 的格式不正确。</exception>
         /// <exception cref="OverflowException">
         /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
-        public override T Parse(string text) => ParseMethod.Delegate.Invoke(text);
+        public override T Parse(string text) => ParseMethod.Delegate!.Invoke(text)!;
 
         /// <summary>
         /// 提供类似于 <see cref="int.Parse(string)"/> 的方法的委托。
@@ -41,7 +41,7 @@ namespace XstarS.Text
             /// <summary>
             /// 表示将字符串解析为指定类型的数值的方法的委托。
             /// </summary>
-            internal static readonly Converter<string, T> Delegate = ParseMethod.CreateDelegate();
+            internal static readonly Converter<string, T>? Delegate = ParseMethod.CreateDelegate();
 
             /// <summary>
             /// 创建 <typeparamref name="T"/> 类型的字符串解析方法的委托。
@@ -49,7 +49,7 @@ namespace XstarS.Text
             /// <returns><typeparamref name="T"/> 类型字符串解析方法的委托。</returns>
             [System.Diagnostics.CodeAnalysis.SuppressMessage(
                 "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-            private static Converter<string, T> CreateDelegate()
+            private static Converter<string, T>? CreateDelegate()
             {
                 try
                 {

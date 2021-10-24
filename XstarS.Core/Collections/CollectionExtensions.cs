@@ -30,7 +30,7 @@ namespace XstarS.Collections
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
         public static GenericDictionary<TKey, TValue> AsGeneric<TKey, TValue>(
-            this IDictionary dictionary) =>
+            this IDictionary dictionary) where TKey : notnull =>
             new GenericDictionary<TKey, TValue>(dictionary);
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace XstarS.Collections
         /// <exception cref="ArgumentNullException">
         /// <paramref name="enumerator"/> 为 <see langword="null"/>。</exception>
         public static GenericDictionaryEnumerator<TKey, TValue> AsGeneric<TKey, TValue>(
-            this IDictionaryEnumerator enumerator) =>
+            this IDictionaryEnumerator enumerator) where TKey : notnull =>
             new GenericDictionaryEnumerator<TKey, TValue>(enumerator);
 
         /// <summary>
@@ -66,17 +66,24 @@ namespace XstarS.Collections
         /// <returns>将 <paramref name="dictionary"/> 中的键值对强制转换类型后得到的序列。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<KeyValuePair<TKey, TValue>> Cast<TKey, TValue>(
-            this IDictionary dictionary)
+        public static IEnumerable<KeyValuePair<TKey, TValue?>> Cast<TKey, TValue>(
+            this IDictionary dictionary) where TKey : notnull
         {
             if (dictionary is null)
             {
                 throw new ArgumentNullException(nameof(dictionary));
             }
 
-            foreach (DictionaryEntry entry in dictionary)
+            var entryEtor = dictionary.GetEnumerator();
+            using ((IDisposable)entryEtor)
             {
-                yield return new KeyValuePair<TKey, TValue>((TKey)entry.Key, (TValue)entry.Value);
+                while (entryEtor.MoveNext())
+                {
+                    var key = (TKey)entryEtor.Key;
+                    var value = (TValue?)entryEtor.Value;
+                    var pair = new KeyValuePair<TKey, TValue?>(key, value);
+                    yield return pair;
+                }
             }
         }
     }

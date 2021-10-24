@@ -28,7 +28,11 @@ namespace XstarS.Text
         public override Type Parse(string text)
         {
             if (text is null) { throw new ArgumentNullException(nameof(text)); }
-            try { return Type.GetType(text) ?? TypeStringParser.FindType(text); }
+            try
+            {
+                return Type.GetType(text) ?? TypeStringParser.FindType(text) ??
+                    throw new TypeLoadException();
+            }
             catch (Exception e) { throw new ArgumentException(e.Message, e); }
         }
 
@@ -41,7 +45,7 @@ namespace XstarS.Text
         /// <paramref name="typeName"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="TypeLoadException">
         /// 在当前应用程序域中无法找到名为 <paramref name="typeName"/> 的类型。</exception>
-        private static Type FindType(string typeName)
+        private static Type? FindType(string typeName)
         {
             return Type.GetType(typeName,
                 assemblyResolver: null,
@@ -60,8 +64,8 @@ namespace XstarS.Text
         /// 若未找到匹配的类型，则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="typeName"/> 为 <see langword="null"/>。</exception>
-        private static Type FindType(
-            Assembly unused, string typeName, bool ignoreCase)
+        private static Type? FindType(
+            Assembly? unused, string typeName, bool ignoreCase)
         {
             var domain = AppDomain.CurrentDomain;
             var assemblies = domain.GetAssemblies();

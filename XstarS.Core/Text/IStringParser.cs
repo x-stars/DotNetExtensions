@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Text
 {
@@ -26,7 +27,7 @@ namespace XstarS.Text
     /// 提供字符串转换为指定类型的数值的方法。
     /// </summary>
     /// <typeparam name="T">要转换为的数值的类型。</typeparam>
-    public interface IStringParser<out T>
+    public interface IStringParser<out T> where T : notnull
     {
         /// <summary>
         /// 将指定的字符串表示形式转换为其等效的数值形式。
@@ -40,6 +41,7 @@ namespace XstarS.Text
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="OverflowException">
         /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
+        [return: NotNull]
         T Parse(string text);
     }
 }

@@ -9,7 +9,7 @@ namespace XstarS.Collections
     /// </summary>
     /// <typeparam name="T">要枚举的对象的类型。</typeparam>
     [Serializable]
-    public sealed class GenericEnumerator<T> : IEnumerator, IEnumerator<T>
+    public sealed class GenericEnumerator<T> : IEnumerator, IEnumerator<T?>
     {
         /// <summary>
         /// 表示当前实例包装的枚举数。
@@ -29,10 +29,10 @@ namespace XstarS.Collections
         }
 
         /// <inheritdoc/>
-        public T Current => (T)this.Enumerator.Current;
+        public T? Current => (T?)this.Enumerator.Current;
 
         /// <inheritdoc/>
-        object IEnumerator.Current => this.Enumerator.Current;
+        object? IEnumerator.Current => this.Enumerator.Current;
 
         /// <inheritdoc/>
         public void Dispose() => (this.Enumerator as IDisposable)?.Dispose();

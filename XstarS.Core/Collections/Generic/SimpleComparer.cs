@@ -21,7 +21,7 @@ namespace XstarS.Collections.Generic
         /// <param name="obj">要与当前对象进行比较的对象。</param>
         /// <returns>如果指定的对象等于当前对象，
         /// 则为 <see langword="true"/>，否则为 <see langword="false"/>。</returns>
-        public sealed override bool Equals(object obj) =>
+        public sealed override bool Equals(object? obj) =>
             this.GetType() == obj?.GetType();
 
         /// <summary>

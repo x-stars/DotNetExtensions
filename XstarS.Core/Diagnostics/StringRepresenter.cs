@@ -18,7 +18,7 @@ namespace XstarS.Diagnostics
         /// </summary>
         /// <param name="value">要进行包装并表示的字符串。</param>
         /// <returns>字符串 <paramref name="value"/> 的包装形式。</returns>
-        public override string Represent(string value) =>
+        public override string Represent(string? value) =>
             (value is null) ? Representer<string>.NullRefString : $"\"{value}\"";
     }
 }

@@ -11,7 +11,8 @@ namespace XstarS.Collections
     /// <typeparam name="TValue">要枚举的值的类型。</typeparam>
     [Serializable]
     public sealed class GenericDictionaryEnumerator<TKey, TValue>
-        : IEnumerator, IDictionaryEnumerator, IEnumerator<KeyValuePair<TKey, TValue>>
+        : IEnumerator, IDictionaryEnumerator, IEnumerator<KeyValuePair<TKey, TValue?>>
+        where TKey : notnull
     {
         /// <summary>
         /// 表示当前实例包装的字典的枚举数。
@@ -32,18 +33,18 @@ namespace XstarS.Collections
         }
 
         /// <inheritdoc/>
-        public KeyValuePair<TKey, TValue> Current =>
-            new KeyValuePair<TKey, TValue>(
-                (TKey)this.Enumerator.Key, (TValue)this.Enumerator.Value);
+        public KeyValuePair<TKey, TValue?> Current =>
+            new KeyValuePair<TKey, TValue?>(
+                (TKey)this.Enumerator.Key, (TValue?)this.Enumerator.Value);
 
         /// <inheritdoc/>
-        object IEnumerator.Current => this.Enumerator.Current;
+        object? IEnumerator.Current => this.Enumerator.Current;
 
         /// <inheritdoc/>
         object IDictionaryEnumerator.Key => this.Enumerator.Key;
 
         /// <inheritdoc/>
-        object IDictionaryEnumerator.Value => this.Enumerator.Value;
+        object? IDictionaryEnumerator.Value => this.Enumerator.Value;
 
         /// <inheritdoc/>
         DictionaryEntry IDictionaryEnumerator.Entry => this.Enumerator.Entry;

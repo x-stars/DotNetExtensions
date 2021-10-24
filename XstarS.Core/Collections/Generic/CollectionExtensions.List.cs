@@ -190,7 +190,7 @@ namespace XstarS.Collections.Generic
         /// <exception cref="ArgumentNullException">
         /// 存在为 <see langword="null"/> 的参数。</exception>
         public static void Sort<T, TKey>(this IList<T> list,
-            Converter<T, TKey> keySelector, IComparer<TKey> comparer = null)
+            Converter<T, TKey> keySelector, IComparer<TKey>? comparer = null)
         {
             if (list is null)
             {
@@ -219,7 +219,7 @@ namespace XstarS.Collections.Generic
         /// <param name="comparer">用于比较排序的 <see cref="IComparer{T}"/> 对象。</param>
         /// <exception cref="ArgumentNullException">
         /// 存在为 <see langword="null"/> 的参数。</exception>
-        public static void Sort<T>(this IList<T> list, IComparer<T> comparer = null)
+        public static void Sort<T>(this IList<T> list, IComparer<T>? comparer = null)
         {
             if (list is null)
             {

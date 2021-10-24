@@ -61,7 +61,7 @@ namespace XstarS
         /// <returns>将 <paramref name="array"/> 中的每个值装箱后得到的新数组。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
-        public static object[] Box<T>(this T?[] array) where T : struct
+        public static object?[] Box<T>(this T?[] array) where T : struct
         {
             if (array is null)
             {
@@ -69,7 +69,7 @@ namespace XstarS
             }
 
             var length = array.Length;
-            var result = new object[length];
+            var result = new object?[length];
             for (int index = 0; index < length; index++)
             {
                 result[index] = array[index];
@@ -296,7 +296,7 @@ namespace XstarS
             }
 
             var type = array.GetType();
-            var itemType = type.GetElementType();
+            var itemType = type.GetElementType()!;
             return type == itemType.MakeArrayType();
         }
 

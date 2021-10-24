@@ -67,10 +67,10 @@ namespace XstarS.Collections.Generic
         /// <paramref name="index"/> 不是 <see cref="IList"/> 中的有效索引。</exception>
         /// <exception cref="InvalidCastException">
         /// 无法将 <see langword="value"/> 转换为 <typeparamref name="T"/> 类型的对象。</exception>
-        object IList.this[int index]
+        object? IList.this[int index]
         {
             get => this[index];
-            set => this[index] = (T)value;
+            set => this[index] = (T)value!;
         }
 
         /// <summary>
@@ -185,18 +185,18 @@ namespace XstarS.Collections.Generic
                 var node = this.First;
                 for (int current = 0; current < index; current++)
                 {
-                    node = node.Next;
+                    node = node!.Next;
                 }
-                return node;
+                return node!;
             }
             else
             {
                 var node = this.Last;
                 for (int current = this.Count - 1; current > index; current--)
                 {
-                    node = node.Previous;
+                    node = node!.Previous;
                 }
-                return node;
+                return node!;
             }
         }
 
@@ -213,7 +213,7 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
 
-            this.Remove(this.NodeAt(index));
+            this.Remove(this.NodeAt(index)!);
         }
 
         /// <summary>
@@ -223,7 +223,7 @@ namespace XstarS.Collections.Generic
         /// <returns>插入了新元素的位置，-1 指示该项未插入到集合中。</returns>
         /// <exception cref="InvalidCastException">
         /// 无法将 <paramref name="value"/> 转换为 <typeparamref name="T"/> 类型的对象。</exception>
-        int IList.Add(object value) { this.Add((T)value); return this.Count; }
+        int IList.Add(object? value) { this.Add((T)value!); return this.Count; }
 
         /// <summary>
         /// 从 <see cref="IList"/> 中移除所有项。
@@ -236,7 +236,7 @@ namespace XstarS.Collections.Generic
         /// <param name="value">要在 <see cref="IList"/> 中定位的对象。</param>
         /// <returns> 如果在 <see cref="IList"/> 中找到了 <paramref name="value"/>，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        bool IList.Contains(object value) => (value is T item) && this.Contains(item);
+        bool IList.Contains(object? value) => (value is T item) && this.Contains(item);
 
         /// <summary>
         /// 确定 <see cref="IList"/> 中特定项的索引。
@@ -244,7 +244,7 @@ namespace XstarS.Collections.Generic
         /// <param name="value">要在 <see cref="IList"/> 中定位的对象。</param>
         /// <returns>如果在 <see cref="IList"/> 中找到，
         /// 则为 <paramref name="value"/> 的索引；否则为 -1。</returns>
-        int IList.IndexOf(object value) => (value is T item) ? this.IndexOf(item) : -1;
+        int IList.IndexOf(object? value) => (value is T item) ? this.IndexOf(item) : -1;
 
         /// <summary>
         /// 在 <see cref="IList"/> 中的指定索引处插入一个项。
@@ -253,7 +253,7 @@ namespace XstarS.Collections.Generic
         /// <param name="value">要插入到 <see cref="IList"/> 中的对象。</param>
         /// <exception cref="InvalidCastException">
         /// 无法将 <paramref name="value"/> 转换为 <typeparamref name="T"/> 类型的对象。</exception>
-        void IList.Insert(int index, object value) => this.Insert(index, (T)value);
+        void IList.Insert(int index, object? value) => this.Insert(index, (T)value!);
 
         /// <summary>
         /// 从 <see cref="IList"/> 中移除特定对象的第一个匹配项。
@@ -261,7 +261,7 @@ namespace XstarS.Collections.Generic
         /// <param name="value">要从 <see cref="IList"/> 中删除的对象。</param>
         /// <exception cref="InvalidCastException">
         /// 无法将 <paramref name="value"/> 转换为 <typeparamref name="T"/> 类型的对象。</exception>
-        void IList.Remove(object value) => this.Remove((T)value);
+        void IList.Remove(object? value) => this.Remove((T)value!);
 
         /// <summary>
         /// 从 <see cref="IList"/> 中移除位于指定索引处的项。

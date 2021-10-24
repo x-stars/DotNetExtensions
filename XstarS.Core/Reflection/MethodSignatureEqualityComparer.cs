@@ -29,10 +29,10 @@ namespace XstarS.Reflection
         /// <param name="y">要比较的第二个 <see cref="MethodInfo"/>。</param>
         /// <returns>若 <paramref name="x"/> 与 <paramref name="y"/> 的方法签名相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public override bool Equals(MethodInfo x, MethodInfo y)
+        public override bool Equals(MethodInfo? x, MethodInfo? y)
         {
             if (object.ReferenceEquals(x, y)) { return true; }
-            if ((x is null) ^ (y is null)) { return false; }
+            if ((x is null) || (y is null)) { return false; }
 
             if (x.Name != y.Name) { return false; }
             if (x.CallingConvention != y.CallingConvention) { return false; }
@@ -90,7 +90,7 @@ namespace XstarS.Reflection
         /// </summary>
         /// <param name="obj">要获取哈希代码的 <see cref="MethodInfo"/>。</param>
         /// <returns><paramref name="obj"/> 基于方法签名的哈希代码。</returns>
-        public override int GetHashCode(MethodInfo obj)
+        public override int GetHashCode(MethodInfo? obj)
         {
             if (obj is null) { return 0; }
 

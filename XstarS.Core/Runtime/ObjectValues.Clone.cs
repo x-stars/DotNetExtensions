@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -15,9 +16,9 @@ namespace XstarS.Runtime
         /// 表示 <see cref="object.MemberwiseClone()"/> 方法的静态调用委托。
         /// </summary>
         private static readonly Converter<object, object> CloneDelegate =
-            typeof(object).GetMethod(nameof(ObjectValues.MemberwiseClone),
-                BindingFlags.Instance | BindingFlags.NonPublic).CreateDelegate(
-                    typeof(Converter<object, object>)) as Converter<object, object>;
+            (typeof(object).GetMethod(nameof(ObjectValues.MemberwiseClone),
+                BindingFlags.Instance | BindingFlags.NonPublic)!.CreateDelegate(
+                    typeof(Converter<object, object>)) as Converter<object, object>)!;
 
         /// <summary>
         /// 表示用于二进制序列化和反序列化对象的 <see cref="BinaryFormatter"/> 对象。
@@ -29,7 +30,8 @@ namespace XstarS.Runtime
         /// </summary>
         /// <param name="value">要获取浅表副本的对象。</param>
         /// <returns><paramref name="value"/> 的浅表副本。</returns>
-        public static object Clone(object value)
+        [return: NotNullIfNotNull("value")]
+        public static object? Clone(object? value)
         {
             return (value is null) ? null :
                 ObjectValues.CloneDelegate.Invoke(value);
@@ -42,7 +44,8 @@ namespace XstarS.Runtime
         /// <param name="value">要获取深度副本的对象。</param>
         /// <returns><paramref name="value"/> 的深度副本。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        public static object RecursiveClone(object value)
+        [return: NotNullIfNotNull("value")]
+        public static object? RecursiveClone(object? value)
         {
             if (value is null) { return null; }
             var comparer = ReferenceEqualityComparer.Default;
@@ -59,7 +62,8 @@ namespace XstarS.Runtime
         /// <exception cref="SerializationException">
         /// <paramref name="value"/> 中的某个对象未标记为可序列化。</exception>
         /// <exception cref="SecurityException">调用方没有所要求的权限。</exception>
-        public static object SerializationClone(object value)
+        [return: NotNullIfNotNull("value")]
+        public static object? SerializationClone(object? value)
         {
             if (value is null) { return null; }
             using var stream = new MemoryStream();
@@ -75,7 +79,8 @@ namespace XstarS.Runtime
         /// <param name="value">要获取深度副本的对象。</param>
         /// <returns><paramref name="value"/> 的深度副本。</returns>
         /// <param name="cloned">已经创建副本的对象及其对应的副本。</param>
-        private static object RecursiveClone(object value, Dictionary<object, object> cloned)
+        [return: NotNullIfNotNull("value")]
+        private static object? RecursiveClone(object? value, Dictionary<object, object> cloned)
         {
             if (value is null) { return null; }
             if (cloned.ContainsKey(value)) { return cloned[value]; }
@@ -103,7 +108,7 @@ namespace XstarS.Runtime
         /// <param name="cloned">已经创建副本的对象及其对应的副本。</param>
         private static void ArrayRecursiveClone(Array value, Dictionary<object, object> cloned)
         {
-            if (!value.GetType().GetElementType().IsPointer)
+            if (!value.GetType().GetElementType()!.IsPointer)
             {
                 if (value.IsSZArray())
                 {

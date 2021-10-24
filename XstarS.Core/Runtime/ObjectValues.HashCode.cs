@@ -14,7 +14,7 @@ namespace XstarS.Runtime
         /// <param name="value">要获取递归包含的值的哈希代码的对象。</param>
         /// <returns><paramref name="value"/> 递归包含的值的哈希代码。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        public static int GetRecursiveHashCode(object value)
+        public static int GetRecursiveHashCode(object? value)
         {
             var comparer = ReferenceEqualityComparer.Default;
             var computed = new HashSet<object>(comparer);
@@ -40,7 +40,7 @@ namespace XstarS.Runtime
         /// <param name="computed">已经计算过哈希代码的对象。</param>
         /// <returns><paramref name="value"/> 递归包含的值的哈希代码。</returns>
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        private static int GetRecursiveHashCode(object value, HashSet<object> computed)
+        private static int GetRecursiveHashCode(object? value, HashSet<object> computed)
         {
             if (value is null) { return 0; }
 
@@ -97,12 +97,12 @@ namespace XstarS.Runtime
             var hashCode = value.GetType().GetHashCode();
 
             var typeArray = value.GetType();
-            if (typeArray.GetElementType().IsPointer)
+            if (typeArray.GetElementType()!.IsPointer)
             {
-                var methodGet = typeArray.GetMethod("Get");
+                var methodGet = typeArray.GetMethod("Get")!;
                 for (int index = 0; index < value.Length; index++)
                 {
-                    var item = methodGet.Invoke(value, value.OffsetToIndices(index).Box());
+                    var item = methodGet.Invoke(value, value.OffsetToIndices(index).Box())!;
                     hashCode = ObjectValues.CombineHashCode(
                         hashCode, ObjectValues.GetBoxedPointerHashCode(item));
                 }
@@ -143,7 +143,7 @@ namespace XstarS.Runtime
                     if (field.FieldType.IsPointer)
                     {
                         hashCode = ObjectValues.CombineHashCode(
-                            hashCode, ObjectValues.GetBoxedPointerHashCode(member));
+                            hashCode, ObjectValues.GetBoxedPointerHashCode(member!));
                     }
                     else
                     {

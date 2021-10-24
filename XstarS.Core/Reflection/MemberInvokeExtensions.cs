@@ -31,10 +31,10 @@ namespace XstarS.Reflection
         /// <exception cref="MissingMethodException">
         /// 找不到与 <paramref name="arguments"/> 中的参数匹配的构造函数。</exception>
         /// <exception cref="AmbiguousMatchException">多个构造函数与绑定条件匹配。</exception>
-        public static object CreateInstance(this Type type, params object[] arguments)
+        public static object? CreateInstance(this Type type, params object?[]? arguments)
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
-            return type.InvokeMember(null, BindingFlags.CreateInstance |
+            return type.InvokeMember(null!, BindingFlags.CreateInstance |
                 MemberInvokeExtensions.InstanceBindingFlags, null, null, arguments);
         }
 
@@ -50,7 +50,7 @@ namespace XstarS.Reflection
         /// <exception cref="MissingMethodException">
         /// 找不到与 <paramref name="arguments"/> 中参数匹配的名为 <paramref name="name"/> 的实例方法。</exception>
         /// <exception cref="AmbiguousMatchException">多个实例方法与绑定条件匹配。</exception>
-        public static object InvokeMethod(this object @object, string name, params object[] arguments)
+        public static object? InvokeMethod(this object @object, string name, params object?[]? arguments)
         {
             if (@object is null) { throw new ArgumentNullException(nameof(@object)); }
             return @object.GetType().InvokeMember(name, BindingFlags.InvokeMethod |
@@ -69,7 +69,7 @@ namespace XstarS.Reflection
         /// <exception cref="MissingMethodException">
         /// 找不到与 <paramref name="arguments"/> 中参数匹配的名为 <paramref name="name"/> 的静态方法。</exception>
         /// <exception cref="AmbiguousMatchException">多个静态方法与绑定条件匹配。</exception>
-        public static object InvokeStaticMethod(this Type type, string name, params object[] arguments)
+        public static object? InvokeStaticMethod(this Type type, string name, params object?[]? arguments)
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
             return type.InvokeMember(name, BindingFlags.InvokeMethod |
@@ -85,7 +85,7 @@ namespace XstarS.Reflection
         /// <exception cref="ArgumentNullException">
         /// <paramref name="object"/> 或 <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="MissingFieldException">找不到名为 <paramref name="name"/> 的实例字段。</exception>
-        public static object GetField(this object @object, string name)
+        public static object? GetField(this object @object, string name)
         {
             if (@object is null) { throw new ArgumentNullException(nameof(@object)); }
             return @object.GetType().InvokeMember(name, BindingFlags.GetField |
@@ -101,7 +101,7 @@ namespace XstarS.Reflection
         /// <exception cref="ArgumentNullException">
         /// <paramref name="object"/> 或 <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="MissingFieldException">找不到名为 <paramref name="name"/> 的实例字段。</exception>
-        public static void SetField(this object @object, string name, object value)
+        public static void SetField(this object @object, string name, object? value)
         {
             if (@object is null) { throw new ArgumentNullException(nameof(@object)); }
             @object.GetType().InvokeMember(name, BindingFlags.SetField |
@@ -117,7 +117,7 @@ namespace XstarS.Reflection
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 或 <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="MissingFieldException">找不到名为 <paramref name="name"/> 的静态字段。</exception>
-        public static object GetStaticField(this Type type, string name)
+        public static object? GetStaticField(this Type type, string name)
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
             return type.InvokeMember(name, BindingFlags.GetField |
@@ -134,7 +134,7 @@ namespace XstarS.Reflection
         /// <paramref name="type"/> 或 <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="FieldAccessException"><paramref name="name"/> 表示的字段为常量字段。</exception>
         /// <exception cref="MissingFieldException">找不到名为 <paramref name="name"/> 的静态字段。</exception>
-        public static void SetStaticField(this Type type, string name, object value)
+        public static void SetStaticField(this Type type, string name, object? value)
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
             type.InvokeMember(name, BindingFlags.SetField |
@@ -154,7 +154,7 @@ namespace XstarS.Reflection
         /// <exception cref="MissingMethodException">
         /// 找不到与 <paramref name="indices"/> 中索引参数匹配的名为 <paramref name="name"/> 的实例属性。</exception>
         /// <exception cref="AmbiguousMatchException">多个实例属性与绑定条件匹配。</exception>
-        public static object GetProperty(this object @object, string name, params object[] indices)
+        public static object? GetProperty(this object @object, string name, params object?[]? indices)
         {
             if (@object is null) { throw new ArgumentNullException(nameof(@object)); }
             return @object.GetType().InvokeMember(name, BindingFlags.GetProperty |
@@ -174,9 +174,10 @@ namespace XstarS.Reflection
         /// <exception cref="MissingMethodException">
         /// 找不到与 <paramref name="indices"/> 中索引参数匹配的名为 <paramref name="name"/> 的实例属性。</exception>
         /// <exception cref="AmbiguousMatchException">多个实例属性与绑定条件匹配。</exception>
-        public static void SetProperty(this object @object, string name, object value, params object[] indices)
+        public static void SetProperty(this object @object, string name, object? value, params object?[]? indices)
         {
             if (@object is null) { throw new ArgumentNullException(nameof(@object)); }
+            indices = indices ?? Array.Empty<object?>();
             @object.GetType().InvokeMember(name, BindingFlags.SetProperty |
                 MemberInvokeExtensions.InstanceBindingFlags, null, @object, indices.Append(value));
         }
@@ -194,7 +195,7 @@ namespace XstarS.Reflection
         /// <exception cref="MissingMethodException">
         /// 找不到与 <paramref name="indices"/> 中索引参数匹配的名为 <paramref name="name"/> 的静态属性。</exception>
         /// <exception cref="AmbiguousMatchException">多个静态属性与绑定条件匹配。</exception>
-        public static object GetStaticProperty(this Type type, string name, params object[] indices)
+        public static object? GetStaticProperty(this Type type, string name, params object?[]? indices)
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
             return type.InvokeMember(name, BindingFlags.GetProperty |
@@ -214,9 +215,10 @@ namespace XstarS.Reflection
         /// <exception cref="MissingMethodException">
         /// 找不到与 <paramref name="indices"/> 中索引参数匹配的名为 <paramref name="name"/> 的静态属性。</exception>
         /// <exception cref="AmbiguousMatchException">多个静态属性与绑定条件匹配。</exception>
-        public static void SetStaticProperty(this Type type, string name, object value, params object[] indices)
+        public static void SetStaticProperty(this Type type, string name, object? value, params object?[]? indices)
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
+            indices = indices ?? Array.Empty<object?>();
             type.InvokeMember(name, BindingFlags.SetProperty |
                 MemberInvokeExtensions.StaticBindingFlags, null, null, indices.Append(value));
         }
