@@ -40,7 +40,7 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <returns><paramref name="obj"/> 的哈希代码。</returns>
-        public sealed override int GetHashCode([DisallowNull] T obj)
+        public sealed override int GetHashCode([AllowNull] T obj)
         {
             var comparer = ReferenceEqualityComparer.Default;
             var computed = new HashSet<object>(comparer);
@@ -58,8 +58,8 @@ namespace XstarS.Collections.Generic
         protected bool Equals([AllowNull] T x, [AllowNull] T y, ISet<ObjectPair> compared)
         {
             if (RuntimeHelpers.Equals(x, y)) { return true; }
-            if ((x is null) ^ (y is null)) { return false; }
-            if (x!.GetType() != y!.GetType()) { return false; }
+            if ((x is null) || (y is null)) { return false; }
+            if (x.GetType() != y.GetType()) { return false; }
 
             var pair = new ObjectPair(x, y);
             if (!compared.Add(pair)) { return true; }
@@ -73,7 +73,7 @@ namespace XstarS.Collections.Generic
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <param name="computed">已经计算过哈希代码的对象。</param>
         /// <returns><paramref name="obj"/> 的哈希代码。</returns>
-        protected int GetHashCode([DisallowNull] T obj, ISet<object> computed)
+        protected int GetHashCode([AllowNull] T obj, ISet<object> computed)
         {
             if (obj is null) { return 0; }
 
@@ -121,7 +121,7 @@ namespace XstarS.Collections.Generic
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <param name="computed">已经计算过哈希代码的对象。</param>
         /// <returns><paramref name="obj"/> 的哈希代码。</returns>
-        int IAcyclicEqualityComparer<T>.GetHashCode([DisallowNull] T obj, ISet<object> computed)
+        int IAcyclicEqualityComparer<T>.GetHashCode([AllowNull] T obj, ISet<object> computed)
         {
             return this.GetHashCode(obj, computed);
         }
@@ -139,8 +139,8 @@ namespace XstarS.Collections.Generic
         bool IAcyclicEqualityComparer.Equals(object? x, object? y, ISet<ObjectPair> compared)
         {
             if (RuntimeHelpers.Equals(x, y)) { return true; }
-            if ((x is null) ^ (y is null)) { return false; }
-            if (x!.GetType() != y!.GetType()) { return false; }
+            if ((x is null) || (y is null)) { return false; }
+            if (x.GetType() != y.GetType()) { return false; }
 
             return this.Equals((T)x, (T)y, compared);
         }
@@ -153,7 +153,7 @@ namespace XstarS.Collections.Generic
         /// <returns><paramref name="obj"/> 的哈希代码。</returns>
         /// <exception cref="InvalidCastException">
         /// 无法强制转换 <paramref name="obj"/> 到 <typeparamref name="T"/> 类型。</exception>
-        int IAcyclicEqualityComparer.GetHashCode(object obj, ISet<object> computed)
+        int IAcyclicEqualityComparer.GetHashCode(object? obj, ISet<object> computed)
         {
             if (obj is null) { return 0; }
 

@@ -230,7 +230,7 @@ namespace XstarS.Reflection.Emit
 
             if (baseProperty.CanRead)
             {
-                var baseMethod = baseProperty.GetMethod;
+                var baseMethod = baseProperty.GetMethod!;
 
                 var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
@@ -244,7 +244,7 @@ namespace XstarS.Reflection.Emit
 
             if (baseProperty.CanWrite)
             {
-                var baseMethod = baseProperty.SetMethod;
+                var baseMethod = baseProperty.SetMethod!;
 
                 var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 

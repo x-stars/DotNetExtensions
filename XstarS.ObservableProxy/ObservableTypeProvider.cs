@@ -158,7 +158,7 @@ namespace XstarS.ComponentModel
         {
             var baseType = this.BaseType;
             var parent = !baseType.IsInterface ? baseType : typeof(object);
-            var type = this.ObservableTypeBuilder;
+            var type = this.ObservableTypeBuilder!;
 
             var baseConstructors = parent.GetConstructors().Where(
                 constructor => constructor.IsInheritable()).ToArray();
@@ -250,10 +250,10 @@ namespace XstarS.ComponentModel
         private void DefineObservableTypeEvents()
         {
             var baseType = this.BaseType;
-            var type = this.ObservableTypeBuilder;
+            var type = this.ObservableTypeBuilder!;
 
             foreach (var baseEvent in baseType.GetAccessibleEvents().Where(
-                @event => @event.AddMethod.IsInheritable()))
+                @event => @event.AddMethod!.IsInheritable()))
             {
                 if ((baseEvent.Name != nameof(INotifyPropertyChanged.PropertyChanged)) &&
                     (baseEvent.EventHandlerType != typeof(PropertyChangedEventHandler)))
@@ -272,7 +272,7 @@ namespace XstarS.ComponentModel
         private void DefineObservableTypeMethods()
         {
             var baseType = this.BaseType;
-            var type = this.ObservableTypeBuilder;
+            var type = this.ObservableTypeBuilder!;
 
             foreach (var baseMethod in baseType.GetAccessibleMethods().Where(
                 method => method.IsInheritable()))

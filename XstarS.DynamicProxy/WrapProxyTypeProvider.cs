@@ -252,7 +252,7 @@ namespace XstarS.Reflection
 
             var field = type.DefineField("Instance", baseType, FieldAttributes.Assembly);
 
-            var baseMethod = typeof(IWrapProxy).GetMethod(nameof(IWrapProxy.GetInstance));
+            var baseMethod = typeof(IWrapProxy).GetMethod(nameof(IWrapProxy.GetInstance))!;
             var method = type.DefineMethodOverride(baseMethod, explicitOverride: false);
             var il = method.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);

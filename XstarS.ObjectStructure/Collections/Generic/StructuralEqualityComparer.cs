@@ -38,7 +38,7 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <param name="obj">要获取哈希代码的结构化对象。</param>
         /// <returns><paramref name="obj"/> 中的元素的哈希代码。</returns>
-        public override int GetHashCode([DisallowNull] T obj) =>
+        public override int GetHashCode([AllowNull] T obj) =>
             StructuralEqualityComparer.GetHashCode(obj);
     }
 
@@ -73,7 +73,7 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <param name="obj">要获取哈希代码的结构化对象。</param>
         /// <returns><paramref name="obj"/> 中的元素的哈希代码。</returns>
-        public static int GetHashCode(object obj)
+        public static int GetHashCode(object? obj)
         {
             var comparer = StructuralEqualityComparer.OfType(obj?.GetType());
             return comparer.GetHashCode(obj!);

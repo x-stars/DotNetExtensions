@@ -72,6 +72,6 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <returns>指定对象的哈希代码。</returns>
-        int IEqualityComparer.GetHashCode(object? obj) => this.GetHashCode((T)obj);
+        int IEqualityComparer.GetHashCode(object? obj) => this.GetHashCode((T?)obj);
     }
 }

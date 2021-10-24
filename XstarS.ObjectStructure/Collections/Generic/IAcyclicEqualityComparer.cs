@@ -27,6 +27,6 @@ namespace XstarS.Collections.Generic
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <param name="computed">已经计算过哈希代码的对象。</param>
         /// <returns><paramref name="obj"/> 的哈希代码。</returns>
-        int GetHashCode([DisallowNull] T obj, ISet<object> computed);
+        int GetHashCode([AllowNull] T obj, ISet<object> computed);
     }
 }

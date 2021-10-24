@@ -126,7 +126,7 @@ namespace XstarS
         /// 没有足够的内存来为下一个字符串值分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static string ReadToken() => Console.In.ReadToken();
+        public static string? ReadToken() => Console.In.ReadToken();
 
         /// <summary>
         /// 从标准输入流读取下一个字符串值，并将其转换为指定的数值形式。
@@ -144,7 +144,7 @@ namespace XstarS
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static T ReadTokenAs<T>() => Console.In.ReadTokenAs<T>();
+        public static T ReadTokenAs<T>() where T : notnull => Console.In.ReadTokenAs<T>();
 
         /// <summary>
         /// 从标准输入流读取下一行字符串，并将其转换为指定的数值形式。
@@ -162,7 +162,7 @@ namespace XstarS
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static T ReadLineAs<T>() => Console.In.ReadLineAs<T>();
+        public static T ReadLineAs<T>() where T : notnull => Console.In.ReadLineAs<T>();
 
         /// <summary>
         /// 从标准输入流读取下一行的所有字符串值。
@@ -192,7 +192,7 @@ namespace XstarS
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static T[] ReadLineTokensAs<T>() => Console.In.ReadLineTokensAs<T>();
+        public static T[] ReadLineTokensAs<T>() where T : notnull => Console.In.ReadLineTokensAs<T>();
 
         /// <summary>
         /// 从标准输入流读取到末尾的所有字符。
@@ -220,7 +220,7 @@ namespace XstarS
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static T ReadToEndAs<T>() => Console.In.ReadToEndAs<T>();
+        public static T ReadToEndAs<T>() where T : notnull => Console.In.ReadToEndAs<T>();
 
         /// <summary>
         /// 从标准输入流读取到末尾的所有字符串行。
@@ -248,7 +248,7 @@ namespace XstarS
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static T[] ReadLinesToEndAs<T>() => Console.In.ReadLinesToEndAs<T>();
+        public static T[] ReadLinesToEndAs<T>() where T : notnull => Console.In.ReadLinesToEndAs<T>();
 
         /// <summary>
         /// 从标准输入流读取到末尾的所有字符串值。
@@ -276,7 +276,7 @@ namespace XstarS
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static T[] ReadTokensToEndAs<T>() => Console.In.ReadTokensToEndAs<T>();
+        public static T[] ReadTokensToEndAs<T>() where T : notnull => Console.In.ReadTokensToEndAs<T>();
 
         /// <summary>
         /// 将指定的多个字符串值逐个（后跟当前行终止符）写入标准输出流。

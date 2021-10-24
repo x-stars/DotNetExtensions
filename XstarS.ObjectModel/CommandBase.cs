@@ -38,7 +38,7 @@ namespace XstarS.Windows.Input
         /// 在当前状态下执行此命令。
         /// </summary>
         /// <param name="parameter">此命令使用的数据。</param>
-        public abstract void Execute(object parameter);
+        public abstract void Execute(object? parameter);
 
         /// <summary>
         /// 确定此命令是否可在其当前状态下执行。
@@ -46,7 +46,7 @@ namespace XstarS.Windows.Input
         /// <param name="parameter">此命令使用的数据。</param>
         /// <returns>如果可执行此命令，则为 <see langword="true"/>；
         /// 否则为 <see langword="false"/>。</returns>
-        public virtual bool CanExecute(object parameter) => true;
+        public virtual bool CanExecute(object? parameter) => true;
 
         /// <summary>
         /// 通知当前命令的可执行状态已更改。
