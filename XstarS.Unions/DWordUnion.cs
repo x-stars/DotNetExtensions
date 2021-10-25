@@ -99,7 +99,7 @@ namespace XstarS.Unions
         }
 
         /// <summary>
-        /// 将非负整数的字符串表示形式转换为它的等效 <see cref="DWordUnion"/> 表示形式。
+        /// 将十六进制数字的字符串表示形式转换为它的等效 <see cref="DWordUnion"/> 表示形式。
         /// </summary>
         /// <param name="text">包含要转换的非负整数的字符串。</param>
         /// <returns>与 <paramref name="text"/> 中包含的整数等效的 <see cref="DWordUnion"/>。</returns>
@@ -108,7 +108,11 @@ namespace XstarS.Unions
         /// <exception cref="FormatException"><paramref name="text"/> 的格式不正确。</exception>
         /// <exception cref="OverflowException">
         /// <paramref name="text"/> 表示一个负数或大于 <see cref="uint.MaxValue"/> 的整数。</exception>
-        public static DWordUnion Parse(string text) => new DWordUnion(uint.Parse(text));
+        public static DWordUnion Parse(string text)
+        {
+            if (text is null) { throw new ArgumentNullException(nameof(text)); }
+            return new DWordUnion(Convert.ToUInt32(text, 16));
+        }
 
         /// <summary>
         /// 将当前 <see cref="DWordUnion"/> 的值复制到指定字节数组中，并指定数组的偏移量。
@@ -169,7 +173,7 @@ namespace XstarS.Unions
         /// 将当前 <see cref="DWordUnion"/> 转换为其等效的字符串表达形式。
         /// </summary>
         /// <returns>当前 <see cref="DWordUnion"/> 的字符串表达形式。</returns>
-        public override string ToString() => this.UInt32.ToString();
+        public override string ToString() => "0x" + this.UInt32.ToString("X8");
 
         /// <summary>
         /// 获取序列化当前 <see cref="DWordUnion"/> 所需的数据。
