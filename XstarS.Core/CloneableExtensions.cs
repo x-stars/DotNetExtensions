@@ -14,11 +14,7 @@ namespace XstarS
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要创建副本的对象。</param>
         /// <returns><paramref name="value"/> 的副本。</returns>
-        [return: MaybeNull]
-        public static T TypedClone<T>([AllowNull] this T value)
-            where T : ICloneable
-        {
-            return (T?)value?.Clone();
-        }
+        [return: NotNullIfNotNull("value")]
+        public static T? TypedClone<T>(this T? value) where T : ICloneable => (T?)value?.Clone();
     }
 }

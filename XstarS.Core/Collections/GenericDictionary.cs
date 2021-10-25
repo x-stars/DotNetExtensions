@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Collections
 {
@@ -307,13 +306,13 @@ namespace XstarS.Collections
                 new GenericEnumerator<TValue?>(this.DictionaryValues.GetEnumerator());
 
             /// <inheritdoc/>
-            void ICollection<TValue?>.Add([AllowNull] TValue item) => throw new NotSupportedException();
+            void ICollection<TValue?>.Add(TValue? item) => throw new NotSupportedException();
 
             /// <inheritdoc/>
             void ICollection<TValue?>.Clear() => throw new NotSupportedException();
 
             /// <inheritdoc/>
-            bool ICollection<TValue?>.Contains([AllowNull] TValue item)
+            bool ICollection<TValue?>.Contains(TValue? item)
             {
                 var comparer = ValueCollection.Comparer;
                 foreach (var value in this)
@@ -327,7 +326,7 @@ namespace XstarS.Collections
             }
 
             /// <inheritdoc/>
-            bool ICollection<TValue?>.Remove([AllowNull] TValue item) => throw new NotSupportedException();
+            bool ICollection<TValue?>.Remove(TValue? item) => throw new NotSupportedException();
 
             /// <inheritdoc/>
             void ICollection.CopyTo(Array array, int index) => this.DictionaryValues.CopyTo(array, index);

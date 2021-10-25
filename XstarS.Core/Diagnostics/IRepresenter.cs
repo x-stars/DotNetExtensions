@@ -1,6 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-
-namespace XstarS.Diagnostics
+﻿namespace XstarS.Diagnostics
 {
     /// <summary>
     /// 提供将对象表示为字符串的方法。
@@ -26,6 +24,6 @@ namespace XstarS.Diagnostics
         /// </summary>
         /// <param name="value">要表示为字符串的对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        string Represent([AllowNull] T value);
+        string Represent(T? value);
     }
 }

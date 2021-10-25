@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Collections.Generic
 {
@@ -43,7 +42,6 @@ namespace XstarS.Collections.Generic
         /// <param name="y">要比较的第二个对象。</param>
         /// <returns>一个指示 <paramref name="x"/> 和 <paramref name="y"/> 的大小关系的有符号整数：
         /// 小于为正，相等为零，大于为负。</returns>
-        public override int Compare([AllowNull] T x, [AllowNull] T y) =>
-            -this.Comparer.Compare(x!, y!);
+        public override int Compare(T? x, T? y) => -this.Comparer.Compare(x!, y!);
     }
 }

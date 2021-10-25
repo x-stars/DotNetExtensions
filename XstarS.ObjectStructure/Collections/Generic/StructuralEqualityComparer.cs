@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Collections.Generic
 {
@@ -30,7 +29,7 @@ namespace XstarS.Collections.Generic
         /// <param name="y">要比较的第二个结构化对象。</param>
         /// <returns>如果 <paramref name="x"/> 和 <paramref name="y"/> 中的元素相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public override bool Equals([AllowNull] T x, [AllowNull] T y) =>
+        public override bool Equals(T? x, T? y) =>
             StructuralEqualityComparer.Equals(x, y);
 
         /// <summary>
@@ -38,7 +37,7 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <param name="obj">要获取哈希代码的结构化对象。</param>
         /// <returns><paramref name="obj"/> 中的元素的哈希代码。</returns>
-        public override int GetHashCode([AllowNull] T obj) =>
+        public override int GetHashCode(T? obj) =>
             StructuralEqualityComparer.GetHashCode(obj);
     }
 

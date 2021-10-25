@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Collections.Generic
 {
@@ -30,7 +29,7 @@ namespace XstarS.Collections.Generic
         /// <returns>若 <paramref name="x"/> 小于 <paramref name="y"/>，则为负数；
         /// 若 <paramref name="x"/> 等于 <paramref name="y"/>，则为零；
         /// 若 <paramref name="x"/> 大于 <paramref name="y"/>，则为正数。</returns>
-        public abstract int Compare([AllowNull] T x, [AllowNull] T y);
+        public abstract int Compare(T? x, T? y);
 
         /// <summary>
         /// 确定指定的对象是否相等。
@@ -39,14 +38,14 @@ namespace XstarS.Collections.Generic
         /// <param name="y">要比较的第一个对象。</param>
         /// <returns>如果指定的对象相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public abstract bool Equals([AllowNull] T x, [AllowNull] T y);
+        public abstract bool Equals(T? x, T? y);
 
         /// <summary>
         /// 获取指定对象的哈希代码。
         /// </summary>
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <returns>指定对象的哈希代码。</returns>
-        public abstract int GetHashCode([AllowNull] T obj);
+        public abstract int GetHashCode(T? obj);
 
         /// <summary>
         /// 比较两个对象并返回一个值，该值指示一个对象小于、等于还是大于另一个对象。
@@ -72,6 +71,6 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <returns>指定对象的哈希代码。</returns>
-        int IEqualityComparer.GetHashCode(object? obj) => this.GetHashCode((T?)obj);
+        int IEqualityComparer.GetHashCode(object obj) => this.GetHashCode((T)obj);
     }
 }

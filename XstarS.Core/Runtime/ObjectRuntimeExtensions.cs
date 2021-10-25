@@ -17,9 +17,8 @@ namespace XstarS.Runtime
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要创建浅表副本的对象。</param>
         /// <returns><paramref name="value"/> 的浅表副本。</returns>
-        [return: MaybeNull]
         [return: NotNullIfNotNull("value")]
-        public static T DirectClone<T>([AllowNull] this T value) =>
+        public static T? DirectClone<T>(this T? value) =>
             (T?)ObjectValues.Clone(value);
 
         /// <summary>
@@ -29,9 +28,8 @@ namespace XstarS.Runtime
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要创建深度副本的对象。</param>
         /// <returns><paramref name="value"/> 的深度副本。</returns>
-        [return: MaybeNull]
         [return: NotNullIfNotNull("value")]
-        public static T RecurseClone<T>([AllowNull] this T value) =>
+        public static T? RecurseClone<T>(this T? value) =>
             (T?)ObjectValues.RecursiveClone(value);
 
         /// <summary>
@@ -44,9 +42,8 @@ namespace XstarS.Runtime
         /// <exception cref="SerializationException">
         /// <paramref name="value"/> 中的某个对象未标记为可序列化。</exception>
         /// <exception cref="SecurityException">调用方没有所要求的权限。</exception>
-        [return: MaybeNull]
         [return: NotNullIfNotNull("value")]
-        public static T SerializationClone<T>([AllowNull] this T value) =>
+        public static T? SerializationClone<T>(this T? value) =>
             (T?)ObjectValues.SerializationClone(value);
 
         /// <summary>
@@ -57,7 +54,7 @@ namespace XstarS.Runtime
         /// <param name="other">要与当前对象进行比较的对象。</param>
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的引用相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool ReferenceEquals<T>([AllowNull] this T value, [AllowNull] T other) =>
+        public static bool ReferenceEquals<T>(this T? value, T? other) =>
             object.ReferenceEquals(value, other);
 
         /// <summary>
@@ -71,7 +68,7 @@ namespace XstarS.Runtime
         /// <param name="other">要与当前对象进行比较的对象。</param>
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool ValueEquals<T>([AllowNull] this T value, [AllowNull] T other) =>
+        public static bool ValueEquals<T>(this T? value, T? other) =>
             ObjectValues.RecursiveEquals(value, other);
 
         /// <summary>
@@ -82,7 +79,7 @@ namespace XstarS.Runtime
         /// <param name="other">要与当前对象进行比较的对象。</param>
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的直接值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool DirectValueEquals<T>([AllowNull] this T value, [AllowNull] T other) =>
+        public static bool DirectValueEquals<T>(this T? value, T? other) =>
             ObjectDirectValue.Equals(value, other);
 
         /// <summary>
@@ -91,7 +88,7 @@ namespace XstarS.Runtime
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要获取基于引用的哈希代码的对象。</param>
         /// <returns><paramref name="value"/> 基于引用的哈希代码。</returns>
-        public static int GetReferenceHashCode<T>([AllowNull] this T value) =>
+        public static int GetReferenceHashCode<T>(this T? value) =>
             RuntimeHelpers.GetHashCode(value!);
 
         /// <summary>
@@ -103,7 +100,7 @@ namespace XstarS.Runtime
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要获取基于值的哈希代码的对象。</param>
         /// <returns>由 <paramref name="value"/> 基于值的哈希代码。</returns>
-        public static int GetValueHashCode<T>([AllowNull] this T value) =>
+        public static int GetValueHashCode<T>(this T? value) =>
             ObjectValues.GetRecursiveHashCode(value);
 
         /// <summary>
@@ -112,7 +109,7 @@ namespace XstarS.Runtime
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要获取基于直接值哈希代码的对象。</param>
         /// <returns><paramref name="value"/> 基于的直接值的哈希代码。</returns>
-        public static int GetDirectValueHashCode<T>([AllowNull] this T value) =>
+        public static int GetDirectValueHashCode<T>(this T? value) =>
             ObjectDirectValue.GetHashCode(value);
 
         /// <summary>
@@ -121,7 +118,7 @@ namespace XstarS.Runtime
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要将直接值填充到字节数组的对象。</param>
         /// <returns>以 <paramref name="value"/> 的直接值填充的字节数组。</returns>
-        public static byte[] DirectValueToByteArray<T>([AllowNull] this T value) =>
+        public static byte[] DirectValueToByteArray<T>(this T? value) =>
             ObjectDirectValue.ToByteArray(value);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Collections.Generic
 {
@@ -19,7 +18,7 @@ namespace XstarS.Collections.Generic
         /// <param name="compared">已经比较过的对象。</param>
         /// <returns>若 <paramref name="x"/> 和 <paramref name="y"/> 相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        bool Equals([AllowNull] T x, [AllowNull] T y, ISet<ObjectPair> compared);
+        bool Equals(T? x, T? y, ISet<ObjectPair> compared);
 
         /// <summary>
         /// 无环地获取指定对象的哈希代码。
@@ -27,6 +26,6 @@ namespace XstarS.Collections.Generic
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <param name="computed">已经计算过哈希代码的对象。</param>
         /// <returns><paramref name="obj"/> 的哈希代码。</returns>
-        int GetHashCode([AllowNull] T obj, ISet<object> computed);
+        int GetHashCode(T? obj, ISet<object> computed);
     }
 }

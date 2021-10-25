@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Diagnostics
 {
@@ -28,7 +27,7 @@ namespace XstarS.Diagnostics
         /// </summary>
         /// <param name="value">要表示为字符串的结构化对象。</param>
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
-        public override string Represent([AllowNull] T value) => StructuralRepresenter.Represent(value);
+        public override string Represent(T? value) => StructuralRepresenter.Represent(value);
     }
 
     /// <summary>

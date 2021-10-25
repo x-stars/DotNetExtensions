@@ -28,7 +28,7 @@ namespace XstarS.Collections.Generic
         /// <param name="y">要比较的第二个对象。</param>
         /// <returns>若 <paramref name="x"/> 和 <paramref name="y"/> 相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public sealed override bool Equals([AllowNull] T x, [AllowNull] T y)
+        public sealed override bool Equals(T? x, T? y)
         {
             var comparer = PairReferenceEqualityComparer.Default;
             var compared = new HashSet<ObjectPair>(comparer);
@@ -40,7 +40,7 @@ namespace XstarS.Collections.Generic
         /// </summary>
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <returns><paramref name="obj"/> 的哈希代码。</returns>
-        public sealed override int GetHashCode([AllowNull] T obj)
+        public sealed override int GetHashCode(T? obj)
         {
             var comparer = ReferenceEqualityComparer.Default;
             var computed = new HashSet<object>(comparer);
@@ -55,7 +55,7 @@ namespace XstarS.Collections.Generic
         /// <param name="compared">已经比较过的对象。</param>
         /// <returns>若 <paramref name="x"/> 和 <paramref name="y"/> 相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        protected bool Equals([AllowNull] T x, [AllowNull] T y, ISet<ObjectPair> compared)
+        protected bool Equals(T? x, T? y, ISet<ObjectPair> compared)
         {
             if (RuntimeHelpers.Equals(x, y)) { return true; }
             if ((x is null) || (y is null)) { return false; }
@@ -73,7 +73,7 @@ namespace XstarS.Collections.Generic
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <param name="computed">已经计算过哈希代码的对象。</param>
         /// <returns><paramref name="obj"/> 的哈希代码。</returns>
-        protected int GetHashCode([AllowNull] T obj, ISet<object> computed)
+        protected int GetHashCode(T? obj, ISet<object> computed)
         {
             if (obj is null) { return 0; }
 
@@ -109,8 +109,7 @@ namespace XstarS.Collections.Generic
         /// <param name="compared">已经比较过的对象。</param>
         /// <returns>若 <paramref name="x"/> 和 <paramref name="y"/> 相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        bool IAcyclicEqualityComparer<T>.Equals(
-            [AllowNull] T x, [AllowNull] T y, ISet<ObjectPair> compared)
+        bool IAcyclicEqualityComparer<T>.Equals(T? x, T? y, ISet<ObjectPair> compared)
         {
             return this.Equals(x, y, compared);
         }
@@ -121,7 +120,7 @@ namespace XstarS.Collections.Generic
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <param name="computed">已经计算过哈希代码的对象。</param>
         /// <returns><paramref name="obj"/> 的哈希代码。</returns>
-        int IAcyclicEqualityComparer<T>.GetHashCode([AllowNull] T obj, ISet<object> computed)
+        int IAcyclicEqualityComparer<T>.GetHashCode(T? obj, ISet<object> computed)
         {
             return this.GetHashCode(obj, computed);
         }
