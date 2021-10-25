@@ -19,14 +19,14 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 表示所有属性的验证错误。
         /// </summary>
-        private readonly ConcurrentDictionary<string, IEnumerable?> PropertiesErrors;
+        private readonly ConcurrentDictionary<string, IEnumerable> PropertiesErrors;
 
         /// <summary>
         /// 初始化 <see cref="ObservableValidDataObject"/> 类的新实例。
         /// </summary>
         protected ObservableValidDataObject()
         {
-            this.PropertiesErrors = new ConcurrentDictionary<string, IEnumerable?>();
+            this.PropertiesErrors = new ConcurrentDictionary<string, IEnumerable>();
         }
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace XstarS.ComponentModel
         /// <returns>如果指定属性当前具有验证错误，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public bool ContainsErrors(
-            [CallerMemberName] string propertyName = null)
+            [CallerMemberName] string? propertyName = null)
         {
             propertyName = propertyName ?? string.Empty;
             return this.PropertiesErrors.ContainsKey(propertyName);
@@ -60,7 +60,6 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="propertyName">要获取验证错误的属性的名称。</param>
         /// <returns>指定属性的验证错误。</returns>
-        [return: MaybeNull]
         public IEnumerable GetErrors(
             [CallerMemberName] string? propertyName = null)
         {
@@ -82,7 +81,7 @@ namespace XstarS.ComponentModel
             var thisHadErrors = !this.PropertiesErrors.IsEmpty;
             var hadErrors = this.PropertiesErrors.ContainsKey(propertyName);
             var hasErrors = !(errors is null) && errors.GetEnumerator().MoveNext();
-            if (hasErrors) { this.PropertiesErrors[propertyName] = errors; }
+            if (hasErrors) { this.PropertiesErrors[propertyName] = errors!; }
             else { this.PropertiesErrors.TryRemove(propertyName, out errors!); }
             var errorsChanged = hadErrors || hasErrors;
             if (errorsChanged) { this.NotifyErrorsChanged(propertyName); }
