@@ -10,7 +10,8 @@
 | Framework | 4.6.1, 4.7.2 |
 | Standard  | 2.0, 2.1     |
 
-> C# 版本 >= 8.0
+> * C# 语言版本 >= 8.0
+> * `nullable` 分支需要 C# 语言版本 >= 9.0
 
 ## 程序集 XstarS.Core
 
