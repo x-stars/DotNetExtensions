@@ -97,13 +97,13 @@ namespace XstarS.Unions
         /// <summary>
         /// 将十六进制数字的字符串表示形式转换为它的等效 <see cref="HandleUnion"/> 表示形式。
         /// </summary>
-        /// <param name="text">包含要转换的非负整数的字符串。</param>
-        /// <returns>与 <paramref name="text"/> 中包含的整数等效的 <see cref="HandleUnion"/>。</returns>
+        /// <param name="text">包含要转换的十六进制数字的字符串。</param>
+        /// <returns>与 <paramref name="text"/> 中十六进制数字等效的 <see cref="HandleUnion"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="FormatException"><paramref name="text"/> 的格式不正确。</exception>
         /// <exception cref="OverflowException">
-        /// <paramref name="text"/> 表示一个负数或大于 <see cref="nuint"/> 能表示的最大值的整数。</exception>
+        /// <paramref name="text"/> 表示一个大于 <see cref="nuint"/> 能表示的最大值的十六进制数字。</exception>
         public static HandleUnion Parse(string text)
         {
             if (text is null) { throw new ArgumentNullException(nameof(text)); }
@@ -166,9 +166,9 @@ namespace XstarS.Unions
         public byte[] ToByteArray() { byte[] bytes = new byte[Size]; this.CopyTo(bytes); return bytes; }
 
         /// <summary>
-        /// 将当前 <see cref="HandleUnion"/> 转换为其等效的字符串表达形式。
+        /// 将当前 <see cref="HandleUnion"/> 转换为其等效的十六进制数字的字符串表达形式。
         /// </summary>
-        /// <returns>当前 <see cref="HandleUnion"/> 的字符串表达形式。</returns>
+        /// <returns>表示当前 <see cref="HandleUnion"/> 的十六进制数字的字符串。</returns>
         public override string ToString() => "0x" + ((ulong)this.Pointer).ToString("X" + (2 * Size));
 
         /// <summary>
