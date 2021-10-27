@@ -35,6 +35,7 @@ namespace XstarS.Unions
         /// <summary>
         /// 表示当前 <see cref="ByteUnion"/> 的布尔值。
         /// </summary>
+        [MarshalAs(UnmanagedType.I1)]
         [FieldOffset(0)] public bool Boolean;
 
         /// <summary>
