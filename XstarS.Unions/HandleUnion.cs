@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
-using nint = System.IntPtr;
-using nuint = System.UIntPtr;
 
 namespace XstarS.Unions
 {
@@ -103,7 +101,7 @@ namespace XstarS.Unions
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="FormatException"><paramref name="text"/> 的格式不正确。</exception>
         /// <exception cref="OverflowException">
-        /// <paramref name="text"/> 表示一个大于 <see cref="nuint"/> 能表示的最大值的十六进制数字。</exception>
+        /// <paramref name="text"/> 表示一个大于本机无符号整数的最大值的十六进制数字。</exception>
         public static HandleUnion Parse(string text)
         {
             if (text is null) { throw new ArgumentNullException(nameof(text)); }
