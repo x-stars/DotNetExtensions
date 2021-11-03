@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace XstarS.Collections
 {
@@ -9,6 +10,7 @@ namespace XstarS.Collections
     /// </summary>
     /// <typeparam name="T">集合中元素的类型。</typeparam>
     [Serializable]
+    [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
     public sealed class GenericCollection<T> : IList, IList<T?>, IReadOnlyList<T?>
     {
         /// <summary>
@@ -72,9 +74,12 @@ namespace XstarS.Collections
         /// <inheritdoc/>
         public void CopyTo(T?[] array, int index) => this.Collection.CopyTo(array, index);
 
-        /// <inheritdoc/>
-        public IEnumerator<T?> GetEnumerator() =>
-            new GenericEnumerator<T?>(this.Collection.GetEnumerator());
+        /// <summary>
+        /// 返回一个循环访问集合的枚举器。
+        /// </summary>
+        /// <returns>用于循环访问集合的 <see cref="GenericEnumerator{T}"/>。</returns>
+        public GenericEnumerator<T> GetEnumerator() =>
+            new GenericEnumerator<T>(this.Collection.GetEnumerator());
 
         /// <inheritdoc/>
         public int IndexOf(T? item) => this.Collection.IndexOf(item);
