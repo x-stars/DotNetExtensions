@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace XstarS.Collections
 {
@@ -10,6 +11,7 @@ namespace XstarS.Collections
     /// <typeparam name="TKey">字典中键的类型。</typeparam>
     /// <typeparam name="TValue">字典中值的类型。</typeparam>
     [Serializable]
+    [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
     public sealed class GenericDictionary<TKey, TValue>
         : IDictionary, IDictionary<TKey, TValue>, IReadOnlyDictionary<TKey, TValue>
     {
@@ -59,10 +61,16 @@ namespace XstarS.Collections
         /// <inheritdoc/>
         public int Count => this.Dictionary.Count;
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// 获取包含字典的键的集合。
+        /// </summary>
+        /// <returns>包含字典的键的 <see cref="KeyCollection"/>。</returns>
         public KeyCollection Keys => this.DictionaryGenericKeys;
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// 获取包含字典的值的集合。
+        /// </summary>
+        /// <returns>包含字典的值的 <see cref="ValueCollection"/>。</returns>
         public ValueCollection Values => this.DictionaryGenericValues;
 
         /// <inheritdoc/>
@@ -127,7 +135,10 @@ namespace XstarS.Collections
             }
         }
 
-        /// <inheritdoc/>
+        /// <summary>
+        /// 返回一个循环访问集合的枚举器。
+        /// </summary>
+        /// <returns>用于循环访问集合的 <see cref="GenericDictionaryEnumerator{TKey, TValue}"/>。</returns>
         public GenericDictionaryEnumerator<TKey, TValue> GetEnumerator() =>
             new GenericDictionaryEnumerator<TKey, TValue>(this.Dictionary.GetEnumerator());
 
@@ -180,6 +191,7 @@ namespace XstarS.Collections
         /// 提供非泛型字典的键的集合的泛型包装。
         /// </summary>
         [Serializable]
+        [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public sealed class KeyCollection : ICollection, ICollection<TKey>, IReadOnlyCollection<TKey>
@@ -225,8 +237,11 @@ namespace XstarS.Collections
             /// <inheritdoc/>
             public void CopyTo(TKey[] array, int index) => this.DictionaryKeys.CopyTo(array, index);
 
-            /// <inheritdoc/>
-            public IEnumerator<TKey> GetEnumerator() =>
+            /// <summary>
+            /// 返回循环访问字典的键的集合的枚举数。
+            /// </summary>
+            /// <returns>用于循环访问字典的键的集合的 <see cref="GenericEnumerator{T}"/>。</returns>
+            public GenericEnumerator<TKey> GetEnumerator() =>
                 new GenericEnumerator<TKey>(this.DictionaryKeys.GetEnumerator());
 
             /// <inheritdoc/>
@@ -245,6 +260,9 @@ namespace XstarS.Collections
             void ICollection.CopyTo(Array array, int index) => this.DictionaryKeys.CopyTo(array, index);
 
             /// <inheritdoc/>
+            IEnumerator<TKey> IEnumerable<TKey>.GetEnumerator() => this.GetEnumerator();
+
+            /// <inheritdoc/>
             IEnumerator IEnumerable.GetEnumerator() => this.DictionaryKeys.GetEnumerator();
         }
 
@@ -252,6 +270,7 @@ namespace XstarS.Collections
         /// 提供非泛型字典的值的集合的泛型包装。
         /// </summary>
         [Serializable]
+        [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public sealed class ValueCollection : ICollection, ICollection<TValue>, IReadOnlyCollection<TValue>
@@ -300,8 +319,11 @@ namespace XstarS.Collections
             /// <inheritdoc/>
             public void CopyTo(TValue[] array, int index) => this.DictionaryValues.CopyTo(array, index);
 
-            /// <inheritdoc/>
-            public IEnumerator<TValue> GetEnumerator() =>
+            /// <summary>
+            /// 返回循环访问字典的值的集合的枚举数。
+            /// </summary>
+            /// <returns>用于循环访问字典的值的集合的 <see cref="GenericEnumerator{T}"/>。</returns>
+            public GenericEnumerator<TValue> GetEnumerator() =>
                 new GenericEnumerator<TValue>(this.DictionaryValues.GetEnumerator());
 
             /// <inheritdoc/>
@@ -329,6 +351,9 @@ namespace XstarS.Collections
 
             /// <inheritdoc/>
             void ICollection.CopyTo(Array array, int index) => this.DictionaryValues.CopyTo(array, index);
+
+            /// <inheritdoc/>
+            IEnumerator<TValue> IEnumerable<TValue>.GetEnumerator() => this.GetEnumerator();
 
             /// <inheritdoc/>
             IEnumerator IEnumerable.GetEnumerator() => this.DictionaryValues.GetEnumerator();
