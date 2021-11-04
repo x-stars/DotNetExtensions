@@ -6,7 +6,7 @@ namespace XstarS.Collections.Generic
     partial class CollectionExtensions
     {
         /// <summary>
-        /// 顺序连接当前 <see cref="IEnumerable{T}"/> 中包含的序列。
+        /// 顺序连接 <see cref="IEnumerable{T}"/> 中包含的序列。
         /// </summary>
         /// <typeparam name="T"><paramref name="enumerables"/> 包含的
         /// <see cref="IEnumerable{T}"/> 中元素的类型。</typeparam>
@@ -34,7 +34,7 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
-        /// 获取当前 <see cref="IEnumerable{T}"/> 对象中指定对象的数量。
+        /// 获取 <see cref="IEnumerable{T}"/> 对象中指定对象的数量。
         /// </summary>
         /// <typeparam name="T"><see cref="IEnumerable{T}"/> 中的元素的类型。</typeparam>
         /// <param name="enumerable">要进行计数的 <see cref="IEnumerable{T}"/> 对象。</param>
@@ -66,7 +66,7 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
-        /// 获取当前 <see cref="IEnumerable{T}"/> 对象中满足指定条件的对象的数量。
+        /// 获取 <see cref="IEnumerable{T}"/> 对象中满足指定条件的对象的数量。
         /// </summary>
         /// <typeparam name="T"><see cref="IEnumerable{T}"/> 中的元素的类型。</typeparam>
         /// <param name="enumerable">要进行计数的 <see cref="IEnumerable{T}"/> 对象。</param>
@@ -98,7 +98,7 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
-        /// 对当前 <see cref="IEnumerable{T}"/> 对象中的每个元素执行指定操作。
+        /// 对 <see cref="IEnumerable{T}"/> 对象中的每个元素执行指定操作。
         /// </summary>
         /// <typeparam name="T"><see cref="IEnumerable{T}"/> 中的元素的类型。</typeparam>
         /// <param name="enumerable">要对元素执行操作的 <see cref="IEnumerable{T}"/> 对象。</param>
@@ -123,7 +123,7 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
-        /// 对当前 <see cref="IEnumerable{T}"/> 对象中的每个带索引的元素执行指定操作。
+        /// 对 <see cref="IEnumerable{T}"/> 对象中的每个带索引的元素执行指定操作。
         /// </summary>
         /// <typeparam name="T"><see cref="IEnumerable{T}"/> 中的元素的类型。</typeparam>
         /// <param name="enumerable">要对元素执行操作的 <see cref="IEnumerable{T}"/> 对象。</param>
@@ -145,6 +145,31 @@ namespace XstarS.Collections.Generic
             foreach (var item in enumerable)
             {
                 action.Invoke(item, index);
+                index++;
+            }
+        }
+
+        /// <summary>
+        /// 将 <see cref="IEnumerable{T}"/> 对象中的每个元素顺序标记索引值并返回索引和元素的元组序列。
+        /// </summary>
+        /// <typeparam name="T"><see cref="IEnumerable{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="enumerable">要标记元素顺序的 <see cref="IEnumerable{T}"/> 对象。</param>
+        /// <returns>将 <paramref name="enumerable"/>
+        /// 中的每个元素顺序标记索引值得到的索引和元素的元组序列。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="enumerable"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<(int Index, T Item)> Indexed<T>(this IEnumerable<T> enumerable)
+        {
+
+            if (enumerable is null)
+            {
+                throw new ArgumentNullException(nameof(enumerable));
+            }
+
+            var index = 0;
+            foreach (var item in enumerable)
+            {
+                yield return (index, item);
                 index++;
             }
         }
