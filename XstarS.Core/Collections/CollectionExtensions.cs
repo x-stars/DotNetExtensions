@@ -74,16 +74,10 @@ namespace XstarS.Collections
                 throw new ArgumentNullException(nameof(dictionary));
             }
 
-            var entryEtor = dictionary.GetEnumerator();
-            using ((IDisposable)entryEtor)
+            foreach (var item in dictionary)
             {
-                while (entryEtor.MoveNext())
-                {
-                    var key = (TKey)entryEtor.Key;
-                    var value = (TValue?)entryEtor.Value;
-                    var pair = new KeyValuePair<TKey, TValue?>(key, value);
-                    yield return pair;
-                }
+                var entry = (DictionaryEntry)item!;
+                yield return new KeyValuePair<TKey, TValue?>((TKey)entry.Key, (TValue?)entry.Value);
             }
         }
 
@@ -94,7 +88,7 @@ namespace XstarS.Collections
         /// <param name="key">当前 <see cref="DictionaryEntry"/> 的键。</param>
         /// <param name="value">当前 <see cref="DictionaryEntry"/> 的值。</param>
         public static void Deconstruct(
-            this DictionaryEntry entry, out object key, out object value)
+            this DictionaryEntry entry, out object key, out object? value)
         {
             key = entry.Key;
             value = entry.Value;
@@ -114,9 +108,9 @@ namespace XstarS.Collections
                 throw new ArgumentNullException(nameof(dictionary));
             }
 
-            foreach (DictionaryEntry entry in dictionary)
+            foreach (var item in dictionary)
             {
-                yield return entry;
+                yield return (DictionaryEntry)item!;
             }
         }
     }
