@@ -10,7 +10,7 @@ namespace XstarS.Collections
     public static class CollectionExtensions
     {
         /// <summary>
-        /// 将当前 <see cref="IList"/> 强制转换为指定元素类型的泛型集合。
+        /// 将 <see cref="IList"/> 强制转换为指定元素类型的泛型集合。
         /// </summary>
         /// <typeparam name="T"><see cref="IList"/> 中的元素要转换为的类型。</typeparam>
         /// <param name="collection">要转换为指定元素类型的 <see cref="IList"/> 对象。</param>
@@ -21,7 +21,7 @@ namespace XstarS.Collections
             new GenericCollection<T>(collection);
 
         /// <summary>
-        /// 将当前 <see cref="IDictionary"/> 强制转换为指定键值类型的泛型键值对集合。
+        /// 将 <see cref="IDictionary"/> 强制转换为指定键值类型的泛型键值对集合。
         /// </summary>
         /// <typeparam name="TKey"><see cref="IDictionary"/> 中的键要转换为的类型。</typeparam>
         /// <typeparam name="TValue"><see cref="IDictionary"/> 中的值要转换为的类型。</typeparam>
@@ -34,7 +34,7 @@ namespace XstarS.Collections
             new GenericDictionary<TKey, TValue>(dictionary);
 
         /// <summary>
-        /// 将当前 <see cref="IEnumerator"/> 强制转换为指定元素类型的泛型集合的枚举数。
+        /// 将 <see cref="IEnumerator"/> 强制转换为指定元素类型的泛型集合的枚举数。
         /// </summary>
         /// <typeparam name="T"><see cref="IEnumerator"/> 中的元素要转换为的类型。</typeparam>
         /// <param name="enumerator">要转换为指定元素类型的 <see cref="IEnumerator"/> 对象。</param>
@@ -45,7 +45,7 @@ namespace XstarS.Collections
             new GenericEnumerator<T>(enumerator);
 
         /// <summary>
-        /// 将当前 <see cref="IDictionaryEnumerator"/> 强制转换为指定键值类型的泛型字典的枚举数。
+        /// 将 <see cref="IDictionaryEnumerator"/> 强制转换为指定键值类型的泛型字典的枚举数。
         /// </summary>
         /// <typeparam name="TKey"><see cref="IDictionaryEnumerator"/> 中的键要转换为的类型。</typeparam>
         /// <typeparam name="TValue"><see cref="IDictionaryEnumerator"/> 中的值要转换为的类型。</typeparam>
@@ -58,7 +58,7 @@ namespace XstarS.Collections
             new GenericDictionaryEnumerator<TKey, TValue>(enumerator);
 
         /// <summary>
-        /// 将当前 <see cref="IDictionary"/> 中的键值对强制转换为指定类型。
+        /// 将 <see cref="IDictionary"/> 中的键值对强制转换为指定类型。
         /// </summary>
         /// <typeparam name="TKey"><see cref="IDictionary"/> 中键要转换到的类型。</typeparam>
         /// <typeparam name="TValue"><see cref="IDictionary"/> 中值要转换到的类型。</typeparam>
@@ -77,6 +77,39 @@ namespace XstarS.Collections
             foreach (DictionaryEntry entry in dictionary)
             {
                 yield return new KeyValuePair<TKey, TValue>((TKey)entry.Key, (TValue)entry.Value);
+            }
+        }
+
+        /// <summary>
+        /// 解构当前 <see cref="DictionaryEntry"/>。
+        /// </summary>
+        /// <param name="entry">要解构的 <see cref="DictionaryEntry"/>。</param>
+        /// <param name="key">当前 <see cref="DictionaryEntry"/> 的键。</param>
+        /// <param name="value">当前 <see cref="DictionaryEntry"/> 的值。</param>
+        public static void Deconstruct(
+            this DictionaryEntry entry, out object key, out object value)
+        {
+            key = entry.Key;
+            value = entry.Value;
+        }
+
+        /// <summary>
+        /// 枚举 <see cref="IDictionary"/> 中的键值对。
+        /// </summary>
+        /// <param name="dictionary">要枚举键值对的 <see cref="IDictionary"/> 对象。</param>
+        /// <returns><paramref name="dictionary"/> 中的键值对的泛型枚举数。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<DictionaryEntry> EnumerateEntries(this IDictionary dictionary)
+        {
+            if (dictionary is null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+
+            foreach (DictionaryEntry entry in dictionary)
+            {
+                yield return entry;
             }
         }
     }

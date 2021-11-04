@@ -8,7 +8,7 @@ namespace XstarS.Collections.Generic
     partial class CollectionExtensions
     {
         /// <summary>
-        /// 返回指定 <see cref="IDictionary{TKey, TValue}"/> 的只读包装。
+        /// 返回 <see cref="IDictionary{TKey, TValue}"/> 的只读包装。
         /// </summary>
         /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
         /// <typeparam name="TValue"><see cref="IDictionary{TKey, TValue}"/> 中的值的类型。</typeparam>
@@ -24,7 +24,7 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
-        /// 对当前 <see cref="IDictionary{TKey, TValue}"/> 对象中的每对键值执行指定操作。
+        /// 对 <see cref="IDictionary{TKey, TValue}"/> 对象中的每对键值执行指定操作。
         /// </summary>
         /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
         /// <typeparam name="TValue"><see cref="IDictionary{TKey, TValue}"/> 中的值的类型。</typeparam>
@@ -140,43 +140,6 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
-        /// 根据指定的值获取 <see cref="IDictionary{TKey, TValue}"/> 中对应的所有键。
-        /// </summary>
-        /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
-        /// <typeparam name="TValue"><see cref="IDictionary{TKey, TValue}"/> 中的值的类型。</typeparam>
-        /// <param name="dictionary">要获取键的 <see cref="IDictionary{TKey, TValue}"/> 对象。</param>
-        /// <param name="value">要从 <see cref="IDictionary{TKey, TValue}"/> 中获取对应键的值。</param>
-        /// <param name="keyComparer">用于比较键的 <see cref="IEqualityComparer{T}"/> 实现。</param>
-        /// <param name="valueComparer">用于比较值的 <see cref="IEqualityComparer{T}"/> 实现。</param>
-        /// <returns><paramref name="dictionary"/> 中值为 <paramref name="value"/> 的键的集合。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
-        public static ICollection<TKey> KeysOf<TKey, TValue>(
-            this IDictionary<TKey, TValue> dictionary, TValue value,
-            IEqualityComparer<TKey> keyComparer = null,
-            IEqualityComparer<TValue> valueComparer = null)
-        {
-            if (dictionary is null)
-            {
-                throw new ArgumentNullException(nameof(dictionary));
-            }
-
-            keyComparer = keyComparer ?? EqualityComparer<TKey>.Default;
-            valueComparer = valueComparer ?? EqualityComparer<TValue>.Default;
-
-            var keys = new HashSet<TKey>(keyComparer);
-            foreach (var item in dictionary)
-            {
-                if (valueComparer.Equals(item.Value, value))
-                {
-                    keys.Add(item.Key);
-                }
-            }
-            keys.TrimExcess();
-            return keys;
-        }
-
-        /// <summary>
         /// 从 <see cref="IDictionary{TKey, TValue}"/> 中移除所有键在指定集合中的元素。
         /// </summary>
         /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
@@ -210,7 +173,7 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
-        /// 返回包含指定 <see cref="IDictionary{TKey, TValue}"/> 中键值的线程安全集合。
+        /// 返回包含 <see cref="IDictionary{TKey, TValue}"/> 中键值的线程安全集合。
         /// </summary>
         /// <typeparam name="TKey"><see cref="IDictionary{TKey, TValue}"/> 中的键的类型。</typeparam>
         /// <typeparam name="TValue"><see cref="IDictionary{TKey, TValue}"/> 中的值的类型。</typeparam>
@@ -229,7 +192,7 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
-        /// 从指定的的 <see cref="KeyValuePair{TKey, TValue}"/> 的集合创建 <see cref="Dictionary{TKey, TValue}"/>。
+        /// 从 <see cref="KeyValuePair{TKey, TValue}"/> 的集合创建 <see cref="Dictionary{TKey, TValue}"/>。
         /// </summary>
         /// <typeparam name="TKey"><see cref="KeyValuePair{TKey, TValue}"/> 中的键的类型。</typeparam>
         /// <typeparam name="TValue"><see cref="KeyValuePair{TKey, TValue}"/> 中的值的类型。</typeparam>
