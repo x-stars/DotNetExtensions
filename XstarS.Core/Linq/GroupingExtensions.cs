@@ -18,11 +18,11 @@ namespace XstarS.Linq
         /// <returns>将 <paramref name="groupings"/> 按组计数的结果的键值对的序列。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="groupings"/>
         /// 或 <paramref name="groupings"/> 中的分组为 <see langword="null"/>。</exception>
-        public static IEnumerable<KeyValuePair<TKey, int>> Count<TKey, TElement>(
+        public static IEnumerable<KeyValuePair<TKey, int>> Counting<TKey, TElement>(
             this IEnumerable<IGrouping<TKey, TElement>> groupings)
         {
             if (groupings is null) { throw new ArgumentNullException(nameof(groupings)); }
-            return groupings.Select(GroupingExtensions.ToCount);
+            return groupings.Select(GroupingExtensions.ToCounting);
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace XstarS.Linq
         /// <returns>将 <paramref name="grouping"/> 进行计数得到的键值对。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="grouping"/> 为 <see langword="null"/>。</exception>
-        public static KeyValuePair<TKey, int> ToCount<TKey, TElement>(
+        public static KeyValuePair<TKey, int> ToCounting<TKey, TElement>(
             this IGrouping<TKey, TElement> grouping)
         {
             if (grouping is null) { throw new ArgumentNullException(nameof(grouping)); }

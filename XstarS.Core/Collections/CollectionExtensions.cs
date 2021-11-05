@@ -74,10 +74,15 @@ namespace XstarS.Collections
                 throw new ArgumentNullException(nameof(dictionary));
             }
 
-            foreach (var item in dictionary)
+            var entryEnum = dictionary.GetEnumerator();
+            using (entryEnum as IDisposable)
             {
-                var entry = (DictionaryEntry)item!;
-                yield return new KeyValuePair<TKey, TValue?>((TKey)entry.Key, (TValue?)entry.Value);
+                while (entryEnum.MoveNext())
+                {
+                    var key = (TKey)entryEnum.Key;
+                    var value = (TValue?)entryEnum.Value;
+                    yield return new KeyValuePair<TKey, TValue?>(key, value);
+                }
             }
         }
 
@@ -108,9 +113,13 @@ namespace XstarS.Collections
                 throw new ArgumentNullException(nameof(dictionary));
             }
 
-            foreach (var item in dictionary)
+            var entryEnum = dictionary.GetEnumerator();
+            using (entryEnum as IDisposable)
             {
-                yield return (DictionaryEntry)item!;
+                while (entryEnum.MoveNext())
+                {
+                    yield return entryEnum.Entry;
+                }
             }
         }
     }

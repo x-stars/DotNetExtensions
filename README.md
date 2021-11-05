@@ -22,6 +22,7 @@
 * `XstarS.Collections.Specialized`
 * `XstarS.Diagnostics`
 * `XstarS.IO`
+* `XstarS.Linq`
 * `XstarS.Reflection`
 * `XstarS.Reflection.Emit`
 * `XstarS.Runtime`
@@ -128,7 +129,6 @@ WPF 相关，目前包含的命名空间：
 
 * `XstarS.Windows.Controls`
 * `XstarS.Windows.Data`
-* `XstarS.Windows.Media`
 
 XAML 命名空间：
 
