@@ -9,6 +9,72 @@ namespace XstarS.Linq
     /// </summary>
     public static class LinqExtensions
     {
+#if NET461
+        /// <summary>
+        /// 将一个值插入到序列末尾。
+        /// </summary>
+        /// <typeparam name="TSource"><paramref name="source"/> 中的元素的类型。</typeparam>
+        /// <param name="source">要在末尾插入值的序列。</param>
+        /// <param name="element">要插入到 <paramref name="source"/> 末尾的值。</param>
+        /// <returns>以 <paramref name="element"/> 结尾的新序列。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<TSource> Append<TSource>(
+            this IEnumerable<TSource> source, TSource element)
+        {
+            return source.Concat(new[] { element });
+        }
+#endif
+
+        /// <summary>
+        /// 将另一个值插入到序列的指定位置。
+        /// </summary>
+        /// <typeparam name="TSource">输入序列中的元素的类型。</typeparam>
+        /// <param name="source">要插入值的序列。</param>
+        /// <param name="index">要在 <paramref name="source"/> 中插入值的位置。</param>
+        /// <param name="element">要插入到 <paramref name="source"/> 的值。</param>
+        /// <returns>在 <paramref name="source"/> 的 <paramref name="index"/>
+        /// 处插入 <paramref name="element"/> 得到的新序列。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<TSource> Insert<TSource>(
+            this IEnumerable<TSource> source, int index, TSource element)
+        {
+            return source.Take(index).Append(element).Concat(source.Skip(index));
+        }
+
+        /// <summary>
+        /// 将一个值插入到序列开头。
+        /// </summary>
+        /// <typeparam name="TSource"><paramref name="source"/> 中的元素的类型。</typeparam>
+        /// <param name="source">要在开头插入值的序列。</param>
+        /// <param name="element">要插入到 <paramref name="source"/> 开头的值。</param>
+        /// <returns>以 <paramref name="element"/> 开头的新序列。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<TSource> InsertHead<TSource>(
+            this IEnumerable<TSource> source, TSource element)
+        {
+            return (new[] { element }).Concat(source);
+        }
+
+        /// <summary>
+        /// 将另一个序列插入到序列的指定位置。
+        /// </summary>
+        /// <typeparam name="TSource">输入序列中的元素的类型。</typeparam>
+        /// <param name="source">要插入另一序列的序列。</param>
+        /// <param name="index">要在 <paramref name="source"/> 中插入序列的位置。</param>
+        /// <param name="other">要插入到 <paramref name="source"/> 的序列。</param>
+        /// <returns>在 <paramref name="source"/> 的 <paramref name="index"/>
+        /// 处插入 <paramref name="other"/> 得到的新序列。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>
+        /// 或 <paramref name="other"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<TSource> InsertRange<TSource>(
+            this IEnumerable<TSource> source, int index, IEnumerable<TSource> other)
+        {
+            return source.Take(index).Concat(other).Concat(source.Skip(index));
+        }
+
         /// <summary>
         /// 将当前序列与另一序列的元素对应连接，得到 2 元组的结果序列。
         /// </summary>
