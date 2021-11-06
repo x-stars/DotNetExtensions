@@ -45,7 +45,7 @@ namespace XstarS.Linq
         /// <exception cref="ArgumentNullException">
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
         public static IEnumerable<IGrouping<TSource, TSource>> Group<TSource>(
-            this IEnumerable<TSource> source, IEqualityComparer<TSource> comparer = null)
+            this IEnumerable<TSource> source, IEqualityComparer<TSource>? comparer = null)
         {
             comparer = comparer ?? EqualityComparer<TSource>.Default;
             return source.GroupBy(LinqExtensions.Self, comparer);
@@ -62,7 +62,7 @@ namespace XstarS.Linq
         /// <exception cref="ArgumentNullException">
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
         public static IEnumerable<KeyValuePair<TSource, int>> GroupCount<TSource>(
-            this IEnumerable<TSource> source, IEqualityComparer<TSource> comparer = null)
+            this IEnumerable<TSource> source, IEqualityComparer<TSource>? comparer = null)
         {
             comparer = comparer ?? EqualityComparer<TSource>.Default;
             return source.GroupBy(LinqExtensions.Self, GroupingExtensions.ToCounting, comparer);
@@ -82,7 +82,7 @@ namespace XstarS.Linq
         /// 或 <paramref name="keySelector"/> 为 <see langword="null"/>。</exception>
         public static IEnumerable<KeyValuePair<TKey, int>> GroupCountBy<TSource, TKey>(
             this IEnumerable<TSource> source, Func<TSource, TKey> keySelector,
-            IEqualityComparer<TKey> comparer = null)
+            IEqualityComparer<TKey>? comparer = null)
         {
             comparer = comparer ?? EqualityComparer<TKey>.Default;
             return source.GroupBy(keySelector, GroupingExtensions.ToCounting, comparer);
@@ -133,7 +133,7 @@ namespace XstarS.Linq
         /// <exception cref="ArgumentNullException">
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
         public static IOrderedEnumerable<TSource> Order<TSource>(
-            this IEnumerable<TSource> source, IComparer<TSource> comparer = null)
+            this IEnumerable<TSource> source, IComparer<TSource>? comparer = null)
         {
             comparer = comparer ?? Comparer<TSource>.Default;
             return source.OrderBy(LinqExtensions.Self, comparer);
@@ -150,7 +150,7 @@ namespace XstarS.Linq
         /// <exception cref="ArgumentNullException">
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
         public static IOrderedEnumerable<TSource> OrderDescending<TSource>(
-            this IEnumerable<TSource> source, IComparer<TSource> comparer = null)
+            this IEnumerable<TSource> source, IComparer<TSource>? comparer = null)
         {
             comparer = comparer ?? Comparer<TSource>.Default;
             return source.OrderByDescending(LinqExtensions.Self, comparer);
