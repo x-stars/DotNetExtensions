@@ -19,11 +19,11 @@ namespace XstarS.Linq
 
 #if NET461
         /// <summary>
-        /// 将一个值插入到序列末尾。
+        /// 将一个值追加到序列末尾。
         /// </summary>
         /// <typeparam name="TSource"><paramref name="source"/> 中的元素的类型。</typeparam>
-        /// <param name="source">要在末尾插入值的序列。</param>
-        /// <param name="element">要插入到 <paramref name="source"/> 末尾的值。</param>
+        /// <param name="source">要在末尾追加值的序列。</param>
+        /// <param name="element">要追加到 <paramref name="source"/> 的值。</param>
         /// <returns>以 <paramref name="element"/> 结尾的新序列。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
@@ -106,21 +106,6 @@ namespace XstarS.Linq
         }
 
         /// <summary>
-        /// 将一个值插入到序列开头。
-        /// </summary>
-        /// <typeparam name="TSource"><paramref name="source"/> 中的元素的类型。</typeparam>
-        /// <param name="source">要在开头插入值的序列。</param>
-        /// <param name="element">要插入到 <paramref name="source"/> 开头的值。</param>
-        /// <returns>以 <paramref name="element"/> 开头的新序列。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<TSource> InsertHead<TSource>(
-            this IEnumerable<TSource> source, TSource element)
-        {
-            return (new[] { element }).Concat(source);
-        }
-
-        /// <summary>
         /// 将另一个序列插入到序列的指定位置。
         /// </summary>
         /// <typeparam name="TSource">输入序列中的元素的类型。</typeparam>
@@ -170,5 +155,22 @@ namespace XstarS.Linq
             comparer = comparer ?? Comparer<TSource>.Default;
             return source.OrderByDescending(LinqExtensions.Self, comparer);
         }
+
+#if NET461
+        /// <summary>
+        /// 向序列的开头添加值。
+        /// </summary>
+        /// <typeparam name="TSource"><paramref name="source"/> 中的元素的类型。</typeparam>
+        /// <param name="source">要在开头添加值的序列。</param>
+        /// <param name="element">要放置在 <paramref name="source"/> 前面的值。</param>
+        /// <returns>以 <paramref name="element"/> 开头的新序列。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<TSource> Prepend<TSource>(
+            this IEnumerable<TSource> source, TSource element)
+        {
+            return (new[] { element }).Concat(source);
+        }
+#endif
     }
 }
