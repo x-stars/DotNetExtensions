@@ -12,6 +12,14 @@ namespace XstarS
     public static class Operators
     {
         /// <summary>
+        /// 原样返回当前对象。
+        /// </summary>
+        /// <typeparam name="T">当前对象的类型。</typeparam>
+        /// <param name="self">要原样返回的对象。</param>
+        /// <returns><paramref name="self"/> 本身。</returns>
+        public static T Self<T>(T self) => self;
+
+        /// <summary>
         /// 创建一个包含指定元素的数组。
         /// </summary>
         /// <typeparam name="T">数组中元素的类型。</typeparam>

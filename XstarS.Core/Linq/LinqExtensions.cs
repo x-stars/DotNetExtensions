@@ -1,24 +1,32 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace XstarS.Linq
 {
     /// <summary>
-    /// Ìá¹© LINQ ²éÑ¯·½·¨µÄÀ©Õ¹¡£
+    /// æä¾› LINQ æŸ¥è¯¢æ–¹æ³•çš„æ‰©å±•ã€‚
     /// </summary>
-    public static class LinqExtensions
+    public static partial class LinqExtensions
     {
+        /// <summary>
+        /// åŸæ ·è¿”å›å½“å‰å¯¹è±¡ã€‚
+        /// </summary>
+        /// <typeparam name="TSource">å½“å‰å¯¹è±¡çš„ç±»å‹ã€‚</typeparam>
+        /// <param name="source">è¦åŸæ ·è¿”å›çš„å¯¹è±¡ã€‚</param>
+        /// <returns><paramref name="source"/> æœ¬èº«ã€‚</returns>
+        internal static TSource Self<TSource>(TSource source) => source;
+
 #if NET461
         /// <summary>
-        /// ½«Ò»¸öÖµ²åÈëµ½ĞòÁĞÄ©Î²¡£
+        /// å°†ä¸€ä¸ªå€¼æ’å…¥åˆ°åºåˆ—æœ«å°¾ã€‚
         /// </summary>
-        /// <typeparam name="TSource"><paramref name="source"/> ÖĞµÄÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <param name="source">ÒªÔÚÄ©Î²²åÈëÖµµÄĞòÁĞ¡£</param>
-        /// <param name="element">Òª²åÈëµ½ <paramref name="source"/> Ä©Î²µÄÖµ¡£</param>
-        /// <returns>ÒÔ <paramref name="element"/> ½áÎ²µÄĞÂĞòÁĞ¡£</returns>
+        /// <typeparam name="TSource"><paramref name="source"/> ä¸­çš„å…ƒç´ çš„ç±»å‹ã€‚</typeparam>
+        /// <param name="source">è¦åœ¨æœ«å°¾æ’å…¥å€¼çš„åºåˆ—ã€‚</param>
+        /// <param name="element">è¦æ’å…¥åˆ° <paramref name="source"/> æœ«å°¾çš„å€¼ã€‚</param>
+        /// <returns>ä»¥ <paramref name="element"/> ç»“å°¾çš„æ–°åºåˆ—ã€‚</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> Îª <see langword="null"/>¡£</exception>
+        /// <paramref name="source"/> ä¸º <see langword="null"/>ã€‚</exception>
         public static IEnumerable<TSource> Append<TSource>(
             this IEnumerable<TSource> source, TSource element)
         {
@@ -27,16 +35,70 @@ namespace XstarS.Linq
 #endif
 
         /// <summary>
-        /// ½«ÁíÒ»¸öÖµ²åÈëµ½ĞòÁĞµÄÖ¸¶¨Î»ÖÃ¡£
+        /// ä½¿ç”¨æŒ‡å®šçš„æ¯”è¾ƒå™¨å¯¹åºåˆ—çš„å…ƒç´ è¿›è¡Œåˆ†ç»„ã€‚
         /// </summary>
-        /// <typeparam name="TSource">ÊäÈëĞòÁĞÖĞµÄÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <param name="source">Òª²åÈëÖµµÄĞòÁĞ¡£</param>
-        /// <param name="index">ÒªÔÚ <paramref name="source"/> ÖĞ²åÈëÖµµÄÎ»ÖÃ¡£</param>
-        /// <param name="element">Òª²åÈëµ½ <paramref name="source"/> µÄÖµ¡£</param>
-        /// <returns>ÔÚ <paramref name="source"/> µÄ <paramref name="index"/>
-        /// ´¦²åÈë <paramref name="element"/> µÃµ½µÄĞÂĞòÁĞ¡£</returns>
+        /// <typeparam name="TSource"><paramref name="source"/> ä¸­çš„å…ƒç´ çš„ç±»å‹ã€‚</typeparam>
+        /// <param name="source">è¦å¯¹å…¶å…ƒç´ è¿›è¡Œåˆ†ç»„çš„ <see cref="IEnumerable{T}"/>ã€‚</param>
+        /// <param name="comparer">å¯¹å…ƒç´ è¿›è¡Œæ¯”è¾ƒçš„ <see cref="IEqualityComparer{T}"/>ã€‚</param>
+        /// <returns><paramref name="source"/> ä¸­å…ƒç´ åˆ†ç»„çš„
+        /// <see cref="IGrouping{TKey, TElement}"/> çš„é›†åˆã€‚</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> Îª <see langword="null"/>¡£</exception>
+        /// <paramref name="source"/> ä¸º <see langword="null"/>ã€‚</exception>
+        public static IEnumerable<IGrouping<TSource, TSource>> Group<TSource>(
+            this IEnumerable<TSource> source, IEqualityComparer<TSource> comparer = null)
+        {
+            comparer = comparer ?? EqualityComparer<TSource>.Default;
+            return source.GroupBy(LinqExtensions.Self, comparer);
+        }
+
+        /// <summary>
+        /// ä½¿ç”¨æŒ‡å®šçš„æ¯”è¾ƒå™¨å¯¹åºåˆ—çš„å…ƒç´ è¿›è¡Œåˆ†ç»„è®¡æ•°ã€‚
+        /// </summary>
+        /// <typeparam name="TSource"><paramref name="source"/> ä¸­çš„å…ƒç´ çš„ç±»å‹ã€‚</typeparam>
+        /// <param name="source">è¦å¯¹å…¶å…ƒç´ è¿›è¡Œåˆ†ç»„è®¡æ•°çš„ <see cref="IEnumerable{T}"/>ã€‚</param>
+        /// <param name="comparer">å¯¹å…ƒç´ è¿›è¡Œæ¯”è¾ƒçš„ <see cref="IEqualityComparer{T}"/>ã€‚</param>
+        /// <returns><paramref name="source"/> ä¸­å…ƒç´ åˆ†ç»„è®¡æ•°çš„
+        /// <see cref="KeyValuePair{TKey, TValue}"/> çš„é›†åˆã€‚</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> ä¸º <see langword="null"/>ã€‚</exception>
+        public static IEnumerable<KeyValuePair<TSource, int>> GroupCount<TSource>(
+            this IEnumerable<TSource> source, IEqualityComparer<TSource> comparer = null)
+        {
+            comparer = comparer ?? EqualityComparer<TSource>.Default;
+            return source.GroupBy(LinqExtensions.Self, GroupingExtensions.ToCounting, comparer);
+        }
+
+        /// <summary>
+        /// æ ¹æ®æŒ‡å®šçš„é”®é€‰æ‹©å™¨å‡½æ•°å¹¶å°†è¿›è¡Œæ¯”è¾ƒçš„é”®ä½¿ç”¨æŒ‡å®šçš„æ¯”è¾ƒå™¨å¯¹åºåˆ—çš„å…ƒç´ è¿›è¡Œåˆ†ç»„ã€‚
+        /// </summary>
+        /// <typeparam name="TSource"><paramref name="source"/> ä¸­çš„å…ƒç´ çš„ç±»å‹ã€‚</typeparam>
+        /// <typeparam name="TKey"><paramref name="keySelector"/> è¿”å›çš„é”®çš„ç±»å‹ã€‚</typeparam>
+        /// <param name="source">è¦å¯¹å…¶å…ƒç´ è¿›è¡ŒæŒ‰é”®åˆ†ç»„è®¡æ•°çš„ <see cref="IEnumerable{T}"/>ã€‚</param>
+        /// <param name="keySelector">ç”¨äºæå–æ¯ä¸ªå…ƒç´ çš„é”®çš„å‡½æ•°ã€‚</param>
+        /// <param name="comparer">å¯¹é”®è¿›è¡Œæ¯”è¾ƒçš„ <see cref="IEqualityComparer{T}"/>ã€‚</param>
+        /// <returns><paramref name="source"/> ä¸­å…ƒç´ æŒ‰æ˜ å°„çš„é”®åˆ†ç»„è®¡æ•°çš„
+        /// <see cref="KeyValuePair{TKey, TValue}"/> çš„é›†åˆã€‚</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>
+        /// æˆ– <paramref name="keySelector"/> ä¸º <see langword="null"/>ã€‚</exception>
+        public static IEnumerable<KeyValuePair<TKey, int>> GroupCountBy<TSource, TKey>(
+            this IEnumerable<TSource> source, Func<TSource, TKey> keySelector,
+            IEqualityComparer<TKey> comparer = null)
+        {
+            comparer = comparer ?? EqualityComparer<TKey>.Default;
+            return source.GroupBy(keySelector, GroupingExtensions.ToCounting, comparer);
+        }
+
+        /// <summary>
+        /// å°†å¦ä¸€ä¸ªå€¼æ’å…¥åˆ°åºåˆ—çš„æŒ‡å®šä½ç½®ã€‚
+        /// </summary>
+        /// <typeparam name="TSource">è¾“å…¥åºåˆ—ä¸­çš„å…ƒç´ çš„ç±»å‹ã€‚</typeparam>
+        /// <param name="source">è¦æ’å…¥å€¼çš„åºåˆ—ã€‚</param>
+        /// <param name="index">è¦åœ¨ <paramref name="source"/> ä¸­æ’å…¥å€¼çš„ä½ç½®ã€‚</param>
+        /// <param name="element">è¦æ’å…¥åˆ° <paramref name="source"/> çš„å€¼ã€‚</param>
+        /// <returns>åœ¨ <paramref name="source"/> çš„ <paramref name="index"/>
+        /// å¤„æ’å…¥ <paramref name="element"/> å¾—åˆ°çš„æ–°åºåˆ—ã€‚</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> ä¸º <see langword="null"/>ã€‚</exception>
         public static IEnumerable<TSource> Insert<TSource>(
             this IEnumerable<TSource> source, int index, TSource element)
         {
@@ -44,14 +106,14 @@ namespace XstarS.Linq
         }
 
         /// <summary>
-        /// ½«Ò»¸öÖµ²åÈëµ½ĞòÁĞ¿ªÍ·¡£
+        /// å°†ä¸€ä¸ªå€¼æ’å…¥åˆ°åºåˆ—å¼€å¤´ã€‚
         /// </summary>
-        /// <typeparam name="TSource"><paramref name="source"/> ÖĞµÄÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <param name="source">ÒªÔÚ¿ªÍ·²åÈëÖµµÄĞòÁĞ¡£</param>
-        /// <param name="element">Òª²åÈëµ½ <paramref name="source"/> ¿ªÍ·µÄÖµ¡£</param>
-        /// <returns>ÒÔ <paramref name="element"/> ¿ªÍ·µÄĞÂĞòÁĞ¡£</returns>
+        /// <typeparam name="TSource"><paramref name="source"/> ä¸­çš„å…ƒç´ çš„ç±»å‹ã€‚</typeparam>
+        /// <param name="source">è¦åœ¨å¼€å¤´æ’å…¥å€¼çš„åºåˆ—ã€‚</param>
+        /// <param name="element">è¦æ’å…¥åˆ° <paramref name="source"/> å¼€å¤´çš„å€¼ã€‚</param>
+        /// <returns>ä»¥ <paramref name="element"/> å¼€å¤´çš„æ–°åºåˆ—ã€‚</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> Îª <see langword="null"/>¡£</exception>
+        /// <paramref name="source"/> ä¸º <see langword="null"/>ã€‚</exception>
         public static IEnumerable<TSource> InsertHead<TSource>(
             this IEnumerable<TSource> source, TSource element)
         {
@@ -59,16 +121,16 @@ namespace XstarS.Linq
         }
 
         /// <summary>
-        /// ½«ÁíÒ»¸öĞòÁĞ²åÈëµ½ĞòÁĞµÄÖ¸¶¨Î»ÖÃ¡£
+        /// å°†å¦ä¸€ä¸ªåºåˆ—æ’å…¥åˆ°åºåˆ—çš„æŒ‡å®šä½ç½®ã€‚
         /// </summary>
-        /// <typeparam name="TSource">ÊäÈëĞòÁĞÖĞµÄÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <param name="source">Òª²åÈëÁíÒ»ĞòÁĞµÄĞòÁĞ¡£</param>
-        /// <param name="index">ÒªÔÚ <paramref name="source"/> ÖĞ²åÈëĞòÁĞµÄÎ»ÖÃ¡£</param>
-        /// <param name="other">Òª²åÈëµ½ <paramref name="source"/> µÄĞòÁĞ¡£</param>
-        /// <returns>ÔÚ <paramref name="source"/> µÄ <paramref name="index"/>
-        /// ´¦²åÈë <paramref name="other"/> µÃµ½µÄĞÂĞòÁĞ¡£</returns>
+        /// <typeparam name="TSource">è¾“å…¥åºåˆ—ä¸­çš„å…ƒç´ çš„ç±»å‹ã€‚</typeparam>
+        /// <param name="source">è¦æ’å…¥å¦ä¸€åºåˆ—çš„åºåˆ—ã€‚</param>
+        /// <param name="index">è¦åœ¨ <paramref name="source"/> ä¸­æ’å…¥åºåˆ—çš„ä½ç½®ã€‚</param>
+        /// <param name="other">è¦æ’å…¥åˆ° <paramref name="source"/> çš„åºåˆ—ã€‚</param>
+        /// <returns>åœ¨ <paramref name="source"/> çš„ <paramref name="index"/>
+        /// å¤„æ’å…¥ <paramref name="other"/> å¾—åˆ°çš„æ–°åºåˆ—ã€‚</returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/>
-        /// »ò <paramref name="other"/> Îª <see langword="null"/>¡£</exception>
+        /// æˆ– <paramref name="other"/> ä¸º <see langword="null"/>ã€‚</exception>
         public static IEnumerable<TSource> InsertRange<TSource>(
             this IEnumerable<TSource> source, int index, IEnumerable<TSource> other)
         {
@@ -76,166 +138,37 @@ namespace XstarS.Linq
         }
 
         /// <summary>
-        /// ½«µ±Ç°ĞòÁĞÓëÁíÒ»ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½Ó£¬µÃµ½ 2 Ôª×éµÄ½á¹ûĞòÁĞ¡£
+        /// æŒ‰ä½¿ç”¨æŒ‡å®šçš„æ¯”è¾ƒå™¨æŒ‰å‡åºå¯¹åºåˆ—çš„å…ƒç´ è¿›è¡Œæ’åºã€‚
         /// </summary>
-        /// <typeparam name="T1">µ±Ç°ĞòÁĞµÄÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T2">ÁíÒ»ĞòÁĞµÄÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <param name="source">ÒªÓëÁíÒ»ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄĞòÁĞ¡£</param>
-        /// <param name="other">ÒªÓëµ±Ç°ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄĞòÁĞ¡£</param>
-        /// <returns>Ò»¸ö°üº¬ <paramref name="source"/> ºÍ
-        /// <paramref name="other"/> ÖĞ¶ÔÓ¦ÔªËØ×é³ÉµÄ 2 Ôª×éµÄĞòÁĞ¡£</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="source"/>
-        /// »ò <paramref name="other"/> Îª <see langword="null"/>¡£</exception>
-        public static IEnumerable<(T1, T2)> Zip<T1, T2>(
-            this IEnumerable<T1> source, IEnumerable<T2> other)
+        /// <typeparam name="TSource"><paramref name="source"/> ä¸­çš„å…ƒç´ çš„ç±»å‹ã€‚</typeparam>
+        /// <param name="source">ä¸€ä¸ªè¦æ’åºçš„å€¼åºåˆ—ã€‚</param>
+        /// <param name="comparer">å¯¹å…ƒç´ è¿›è¡Œæ¯”è¾ƒçš„ <see cref="IComparer{T}"/>ã€‚</param>
+        /// <returns>å¯¹ <paramref name="source"/>
+        /// çš„å…ƒç´ è¿›è¡Œæ’åºçš„ <see cref="IOrderedEnumerable{TElement}"/>ã€‚</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> ä¸º <see langword="null"/>ã€‚</exception>
+        public static IOrderedEnumerable<TSource> Order<TSource>(
+            this IEnumerable<TSource> source, IComparer<TSource> comparer = null)
         {
-            return Enumerable.Zip(source, other, ValueTuple.Create);
+            comparer = comparer ?? Comparer<TSource>.Default;
+            return source.OrderBy(LinqExtensions.Self, comparer);
         }
 
         /// <summary>
-        /// ½«µ±Ç° 2 Ôª×éĞòÁĞÓëÁíÒ»ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½Ó£¬µÃµ½ 3 Ôª×éµÄ½á¹ûĞòÁĞ¡£
+        /// æŒ‰ä½¿ç”¨æŒ‡å®šçš„æ¯”è¾ƒå™¨æŒ‰é™åºå¯¹åºåˆ—çš„å…ƒç´ è¿›è¡Œæ’åºã€‚
         /// </summary>
-        /// <typeparam name="T1">µ±Ç°ĞòÁĞµÄµÚ 1 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T2">µ±Ç°ĞòÁĞµÄµÚ 2 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T3">ÁíÒ»ĞòÁĞµÄÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <param name="source">ÒªÓëÁíÒ»ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄ 2 Ôª×éĞòÁĞ¡£</param>
-        /// <param name="other">ÒªÓëµ±Ç° 2 Ôª×éĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄĞòÁĞ¡£</param>
-        /// <returns>Ò»¸ö°üº¬ <paramref name="source"/> ºÍ
-        /// <paramref name="other"/> ÖĞ¶ÔÓ¦ÔªËØ×é³ÉµÄ 3 Ôª×éµÄĞòÁĞ¡£</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="source"/>
-        /// »ò <paramref name="other"/> Îª <see langword="null"/>¡£</exception>
-        public static IEnumerable<(T1, T2, T3)> Zip<T1, T2, T3>(
-            this IEnumerable<(T1, T2)> source, IEnumerable<T3> other)
+        /// <typeparam name="TSource"><paramref name="source"/> ä¸­çš„å…ƒç´ çš„ç±»å‹ã€‚</typeparam>
+        /// <param name="source">ä¸€ä¸ªè¦æ’åºçš„å€¼åºåˆ—ã€‚</param>
+        /// <param name="comparer">å¯¹å…ƒç´ è¿›è¡Œæ¯”è¾ƒçš„ <see cref="IComparer{T}"/>ã€‚</param>
+        /// <returns>å¯¹ <paramref name="source"/>
+        /// çš„å…ƒç´ è¿›è¡Œé™åºæ’åºçš„ <see cref="IOrderedEnumerable{TElement}"/>ã€‚</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="source"/> ä¸º <see langword="null"/>ã€‚</exception>
+        public static IOrderedEnumerable<TSource> OrderDescending<TSource>(
+            this IEnumerable<TSource> source, IComparer<TSource> comparer = null)
         {
-            return Enumerable.Zip(source, other, TupleOperators.Append);
-        }
-
-        /// <summary>
-        /// ½«µ±Ç° 3 Ôª×éĞòÁĞÓëÁíÒ»ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½Ó£¬µÃµ½ 4 Ôª×éµÄ½á¹ûĞòÁĞ¡£
-        /// </summary>
-        /// <typeparam name="T1">µ±Ç°ĞòÁĞµÄµÚ 1 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T2">µ±Ç°ĞòÁĞµÄµÚ 2 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T3">µ±Ç°ĞòÁĞµÄµÚ 3 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T4">ÁíÒ»ĞòÁĞµÄÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <param name="source">ÒªÓëÁíÒ»ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄ 3 Ôª×éĞòÁĞ¡£</param>
-        /// <param name="other">ÒªÓëµ±Ç° 3 Ôª×éĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄĞòÁĞ¡£</param>
-        /// <returns>Ò»¸ö°üº¬ <paramref name="source"/> ºÍ
-        /// <paramref name="other"/> ÖĞ¶ÔÓ¦ÔªËØ×é³ÉµÄ 4 Ôª×éµÄĞòÁĞ¡£</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="source"/>
-        /// »ò <paramref name="other"/> Îª <see langword="null"/>¡£</exception>
-        public static IEnumerable<(T1, T2, T3, T4)> Zip<T1, T2, T3, T4>(
-            this IEnumerable<(T1, T2, T3)> source, IEnumerable<T4> other)
-        {
-            return Enumerable.Zip(source, other, TupleOperators.Append);
-        }
-
-        /// <summary>
-        /// ½«µ±Ç° 4 Ôª×éĞòÁĞÓëÁíÒ»ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½Ó£¬µÃµ½ 5 Ôª×éµÄ½á¹ûĞòÁĞ¡£
-        /// </summary>
-        /// <typeparam name="T1">µ±Ç°ĞòÁĞµÄµÚ 1 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T2">µ±Ç°ĞòÁĞµÄµÚ 2 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T3">µ±Ç°ĞòÁĞµÄµÚ 3 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T4">µ±Ç°ĞòÁĞµÄµÚ 4 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T5">ÁíÒ»ĞòÁĞµÄÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <param name="source">ÒªÓëÁíÒ»ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄ 4 Ôª×éĞòÁĞ¡£</param>
-        /// <param name="other">ÒªÓëµ±Ç° 4 Ôª×éĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄĞòÁĞ¡£</param>
-        /// <returns>Ò»¸ö°üº¬ <paramref name="source"/> ºÍ
-        /// <paramref name="other"/> ÖĞ¶ÔÓ¦ÔªËØ×é³ÉµÄ 5 Ôª×éµÄĞòÁĞ¡£</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="source"/>
-        /// »ò <paramref name="other"/> Îª <see langword="null"/>¡£</exception>
-        public static IEnumerable<(T1, T2, T3, T4, T5)> Zip<T1, T2, T3, T4, T5>(
-            this IEnumerable<(T1, T2, T3, T4)> source, IEnumerable<T5> other)
-        {
-            return Enumerable.Zip(source, other, TupleOperators.Append);
-        }
-
-        /// <summary>
-        /// ½«µ±Ç° 5 Ôª×éĞòÁĞÓëÁíÒ»ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½Ó£¬µÃµ½ 6 Ôª×éµÄ½á¹ûĞòÁĞ¡£
-        /// </summary>
-        /// <typeparam name="T1">µ±Ç°ĞòÁĞµÄµÚ 1 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T2">µ±Ç°ĞòÁĞµÄµÚ 2 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T3">µ±Ç°ĞòÁĞµÄµÚ 3 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T4">µ±Ç°ĞòÁĞµÄµÚ 4 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T5">µ±Ç°ĞòÁĞµÄµÚ 5 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T6">ÁíÒ»ĞòÁĞµÄÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <param name="source">ÒªÓëÁíÒ»ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄ 5 Ôª×éĞòÁĞ¡£</param>
-        /// <param name="other">ÒªÓëµ±Ç° 5 Ôª×éĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄĞòÁĞ¡£</param>
-        /// <returns>Ò»¸ö°üº¬ <paramref name="source"/> ºÍ
-        /// <paramref name="other"/> ÖĞ¶ÔÓ¦ÔªËØ×é³ÉµÄ 6 Ôª×éµÄĞòÁĞ¡£</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="source"/>
-        /// »ò <paramref name="other"/> Îª <see langword="null"/>¡£</exception>
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6)> Zip<T1, T2, T3, T4, T5, T6>(
-            this IEnumerable<(T1, T2, T3, T4, T5)> source, IEnumerable<T6> other)
-        {
-            return Enumerable.Zip(source, other, TupleOperators.Append);
-        }
-
-        /// <summary>
-        /// ½«µ±Ç° 6 Ôª×éĞòÁĞÓëÁíÒ»ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½Ó£¬µÃµ½ 7 Ôª×éµÄ½á¹ûĞòÁĞ¡£
-        /// </summary>
-        /// <typeparam name="T1">µ±Ç°ĞòÁĞµÄµÚ 1 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T2">µ±Ç°ĞòÁĞµÄµÚ 2 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T3">µ±Ç°ĞòÁĞµÄµÚ 3 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T4">µ±Ç°ĞòÁĞµÄµÚ 4 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T5">µ±Ç°ĞòÁĞµÄµÚ 5 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T6">µ±Ç°ĞòÁĞµÄµÚ 6 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T7">ÁíÒ»ĞòÁĞµÄÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <param name="source">ÒªÓëÁíÒ»ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄ 6 Ôª×éĞòÁĞ¡£</param>
-        /// <param name="other">ÒªÓëµ±Ç° 6 Ôª×éĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄĞòÁĞ¡£</param>
-        /// <returns>Ò»¸ö°üº¬ <paramref name="source"/> ºÍ
-        /// <paramref name="other"/> ÖĞ¶ÔÓ¦ÔªËØ×é³ÉµÄ 7 Ôª×éµÄĞòÁĞ¡£</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="source"/>
-        /// »ò <paramref name="other"/> Îª <see langword="null"/>¡£</exception>
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> Zip<T1, T2, T3, T4, T5, T6, T7>(
-            this IEnumerable<(T1, T2, T3, T4, T5, T6)> source, IEnumerable<T7> other)
-        {
-            return Enumerable.Zip(source, other, TupleOperators.Append);
-        }
-
-        /// <summary>
-        /// ½«µ±Ç° 7 Ôª×éĞòÁĞÓëÁíÒ»ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½Ó£¬µÃµ½ 8 Ôª×éµÄ½á¹ûĞòÁĞ¡£
-        /// </summary>
-        /// <typeparam name="T1">µ±Ç°ĞòÁĞµÄµÚ 1 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T2">µ±Ç°ĞòÁĞµÄµÚ 2 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T3">µ±Ç°ĞòÁĞµÄµÚ 3 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T4">µ±Ç°ĞòÁĞµÄµÚ 4 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T5">µ±Ç°ĞòÁĞµÄµÚ 5 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T6">µ±Ç°ĞòÁĞµÄµÚ 6 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T7">µ±Ç°ĞòÁĞµÄµÚ 7 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T8">ÁíÒ»ĞòÁĞµÄÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <param name="source">ÒªÓëÁíÒ»ĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄ 7 Ôª×éĞòÁĞ¡£</param>
-        /// <param name="other">ÒªÓëµ±Ç° 7 Ôª×éĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄĞòÁĞ¡£</param>
-        /// <returns>Ò»¸ö°üº¬ <paramref name="source"/> ºÍ
-        /// <paramref name="other"/> ÖĞ¶ÔÓ¦ÔªËØ×é³ÉµÄ 8 Ôª×éµÄĞòÁĞ¡£</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="source"/>
-        /// »ò <paramref name="other"/> Îª <see langword="null"/>¡£</exception>
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> Zip<T1, T2, T3, T4, T5, T6, T7, T8>(
-            this IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> source, IEnumerable<T8> other)
-        {
-            return Enumerable.Zip(source, other, TupleOperators.Append);
-        }
-
-        /// <summary>
-        /// ½«µ±Ç° 7 Ôª×éĞòÁĞÓëÁíÒ»Ôª×éĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½Ó£¬µÃµ½ n Ôª×éµÄ½á¹ûĞòÁĞ¡£
-        /// </summary>
-        /// <typeparam name="T1">µ±Ç°ĞòÁĞµÄµÚ 1 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T2">µ±Ç°ĞòÁĞµÄµÚ 2 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T3">µ±Ç°ĞòÁĞµÄµÚ 3 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T4">µ±Ç°ĞòÁĞµÄµÚ 4 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T5">µ±Ç°ĞòÁĞµÄµÚ 5 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T6">µ±Ç°ĞòÁĞµÄµÚ 6 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="T7">µ±Ç°ĞòÁĞµÄµÚ 7 ¸öÔªËØµÄÀàĞÍ¡£</typeparam>
-        /// <typeparam name="TRest">ÁíÒ»Ôª×éĞòÁĞµÄÔª×éµÄÀàĞÍ¡£</typeparam>
-        /// <param name="source">ÒªÓëÁíÒ»Ôª×éĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄ 7 Ôª×éĞòÁĞ¡£</param>
-        /// <param name="other">ÒªÓëµ±Ç° 7 Ôª×éĞòÁĞµÄÔªËØ¶ÔÓ¦Á¬½ÓµÄÔª×éĞòÁĞ¡£</param>
-        /// <returns>Ò»¸ö°üº¬ <paramref name="source"/> ºÍ
-        /// <paramref name="other"/> ÖĞ¶ÔÓ¦ÔªËØ×é³ÉµÄ n Ôª×éµÄĞòÁĞ¡£</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="source"/>
-        /// »ò <paramref name="other"/> Îª <see langword="null"/>¡£</exception>
-        public static IEnumerable<ValueTuple<T1, T2, T3, T4, T5, T6, T7, TRest>> ZipChain<T1, T2, T3, T4, T5, T6, T7, TRest>(
-            this IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> source, IEnumerable<TRest> other) where TRest : struct
-        {
-            return Enumerable.Zip(source, other, TupleOperators.Concat);
+            comparer = comparer ?? Comparer<TSource>.Default;
+            return source.OrderByDescending(LinqExtensions.Self, comparer);
         }
     }
 }
