@@ -18,7 +18,7 @@ namespace XstarS.Win32.Profiles
         {
             get
             {
-                using var regKeyIE = Registry.LocalMachine.OpenSubKey(
+                using var regKeyIE = Registry.LocalMachine.CreateSubKey(
                     @"SOFTWARE\Microsoft\Internet Explorer");
                 var versionSz = (regKeyIE.GetValue("svcVersion") ??
                     regKeyIE.GetValue("Version")) as string;

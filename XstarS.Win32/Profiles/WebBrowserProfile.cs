@@ -49,7 +49,7 @@ namespace XstarS.Win32.Profiles
             {
                 get
                 {
-                    using var regKeyBrowser = Registry.CurrentUser.OpenSubKey(
+                    using var regKeyBrowser = Registry.CurrentUser.CreateSubKey(
                         @"SOFTWARE\Microsoft\Internet Explorer\" +
                         @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", false);
                     var appName = AppDomain.CurrentDomain.FriendlyName;
@@ -64,7 +64,7 @@ namespace XstarS.Win32.Profiles
                         throw new ArgumentOutOfRangeException(nameof(value));
                     }
 
-                    using var regKeyBrowser = Registry.CurrentUser.OpenSubKey(
+                    using var regKeyBrowser = Registry.CurrentUser.CreateSubKey(
                         @"SOFTWARE\Microsoft\Internet Explorer\" +
                         @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", true);
                     var appName = AppDomain.CurrentDomain.FriendlyName;
@@ -115,7 +115,7 @@ namespace XstarS.Win32.Profiles
             {
                 get
                 {
-                    using var regKeyBrowser = Registry.LocalMachine.OpenSubKey(
+                    using var regKeyBrowser = Registry.LocalMachine.CreateSubKey(
                         @"SOFTWARE\Microsoft\Internet Explorer\" +
                         @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", false);
                     var appName = AppDomain.CurrentDomain.FriendlyName;
@@ -130,7 +130,7 @@ namespace XstarS.Win32.Profiles
                         throw new ArgumentOutOfRangeException(nameof(value));
                     }
 
-                    using var regKeyBrowser = Registry.LocalMachine.OpenSubKey(
+                    using var regKeyBrowser = Registry.LocalMachine.CreateSubKey(
                         @"SOFTWARE\Microsoft\Internet Explorer\" +
                         @"MAIN\FeatureControl\FEATURE_BROWSER_EMULATION", true);
                     var appName = AppDomain.CurrentDomain.FriendlyName;

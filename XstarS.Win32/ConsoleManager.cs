@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.IO;
-using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace XstarS.Win32
@@ -67,7 +65,6 @@ namespace XstarS.Win32
                     var error = NativeMethods.GetLastError();
                     if (error != 0) { throw new Win32Exception(error); }
                 }
-                ConsoleManager.InitializeStdOutError();
             }
         }
 
@@ -79,57 +76,11 @@ namespace XstarS.Win32
         {
             if (ConsoleManager.HasWindow)
             {
-                ConsoleManager.RealeaseStdOutError();
                 if (!NativeMethods.FreeConsole())
                 {
                     var error = NativeMethods.GetLastError();
                     if (error != 0) { throw new Win32Exception(error); }
                 }
-            }
-        }
-
-        /// <summary>
-        /// 重新初始化 <see cref="Console"/> 的标准输出流和错误流。
-        /// </summary>
-        /// <exception cref="NotSupportedException">不支持当前操作。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private static void InitializeStdOutError()
-        {
-            try
-            {
-                var fieldStdOut = typeof(Console).GetField(
-                    "_out", BindingFlags.Static | BindingFlags.NonPublic);
-                var fieldStdError = typeof(Console).GetField(
-                    "_error", BindingFlags.Static | BindingFlags.NonPublic);
-                var methodInitializeStdOutError = typeof(Console).GetMethod(
-                    "InitializeStdOutError", BindingFlags.Static | BindingFlags.NonPublic);
-                fieldStdOut.SetValue(null, null);
-                fieldStdError.SetValue(null, null);
-                methodInitializeStdOutError.Invoke(null, new object[] { true });
-            }
-            catch (Exception e)
-            {
-                throw new NotSupportedException(e.Message, e);
-            }
-        }
-
-        /// <summary>
-        /// 释放 <see cref="Console"/> 的标准输出流和错误流。
-        /// </summary>
-        /// <exception cref="NotSupportedException">不支持当前操作。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        private static void RealeaseStdOutError()
-        {
-            try
-            {
-                Console.SetOut(TextWriter.Null);
-                Console.SetError(TextWriter.Null);
-            }
-            catch (Exception e)
-            {
-                throw new NotSupportedException(e.Message, e);
             }
         }
     }
