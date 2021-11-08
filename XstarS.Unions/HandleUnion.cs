@@ -14,7 +14,7 @@ namespace XstarS.Unions
         /// <summary>
         /// 表示 <see cref="HandleUnion"/> 实例的大小。
         /// </summary>
-        public static readonly int Size = sizeof(void*);
+        public static readonly int Size = sizeof(nuint);
 
         /// <summary>
         /// 表示已经初始化为零的 <see cref="HandleUnion"/>。
@@ -89,7 +89,7 @@ namespace XstarS.Unions
         private HandleUnion(SerializationInfo info, StreamingContext context) : this()
         {
             if (info is null) { throw new ArgumentNullException(nameof(info)); }
-            this.Pointer = checked((void*)info.GetUInt64("Value"));
+            this.UIntPtr = checked((nuint)info.GetUInt64("Value"));
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace XstarS.Unions
         public static HandleUnion Parse(string text)
         {
             if (text is null) { throw new ArgumentNullException(nameof(text)); }
-            return new HandleUnion(checked((void*)Convert.ToUInt64(text, 16)));
+            return new HandleUnion(checked((nuint)Convert.ToUInt64(text, 16)));
         }
 
         /// <summary>
@@ -118,7 +118,7 @@ namespace XstarS.Unions
         public void CopyTo(byte[] bytes, int offset = 0)
         {
             if (bytes is null) { throw new ArgumentNullException(nameof(bytes)); }
-            fixed (byte* pBytes = bytes) { *(void**)(pBytes + offset) = this.Pointer; }
+            fixed (byte* pBytes = bytes) { *(nuint*)(pBytes + offset) = this.UIntPtr; }
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace XstarS.Unions
         /// <param name="other">要与当前实例进行比较的 <see cref="HandleUnion"/>。</param>
         /// <returns>若当前 <see cref="HandleUnion"/> 的值与 <paramref name="other"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public bool Equals(HandleUnion other) => this.Pointer == other.Pointer;
+        public bool Equals(HandleUnion other) => this.UIntPtr == other.UIntPtr;
 
         /// <summary>
         /// 确定当前 <see cref="HandleUnion"/> 与指定的对象是否相等。
@@ -154,7 +154,7 @@ namespace XstarS.Unions
         public void LoadFrom(byte[] bytes, int offset = 0)
         {
             if (bytes is null) { throw new ArgumentNullException(nameof(bytes)); }
-            fixed (byte* pBytes = bytes) { this.Pointer = *(void**)(pBytes + offset); }
+            fixed (byte* pBytes = bytes) { this.UIntPtr = *(nuint*)(pBytes + offset); }
         }
 
         /// <summary>
@@ -167,7 +167,7 @@ namespace XstarS.Unions
         /// 将当前 <see cref="HandleUnion"/> 转换为其等效的十六进制数字的字符串表达形式。
         /// </summary>
         /// <returns>表示当前 <see cref="HandleUnion"/> 的十六进制数字的字符串。</returns>
-        public override string ToString() => "0x" + ((ulong)this.Pointer).ToString("X" + (2 * Size));
+        public override string ToString() => "0x" + ((ulong)this.UIntPtr).ToString("X" + (2 * Size));
 
         /// <summary>
         /// 获取序列化当前 <see cref="HandleUnion"/> 所需的数据。
@@ -179,7 +179,7 @@ namespace XstarS.Unions
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             if (info is null) { throw new ArgumentNullException(nameof(info)); }
-            info.AddValue("Value", (ulong)this.Pointer);
+            info.AddValue("Value", (ulong)this.UIntPtr);
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace XstarS.Unions
         /// <param name="right">要比较的第二个 <see cref="HandleUnion"/>。</param>
         /// <returns>若 <paramref name="left"/> 的值与 <paramref name="right"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool operator ==(HandleUnion left, HandleUnion right) => left.Pointer == right.Pointer;
+        public static bool operator ==(HandleUnion left, HandleUnion right) => left.UIntPtr == right.UIntPtr;
 
         /// <summary>
         /// 确定两个指定的 <see cref="HandleUnion"/> 是否不等。
@@ -198,7 +198,7 @@ namespace XstarS.Unions
         /// <param name="right">要比较的第二个 <see cref="HandleUnion"/>。</param>
         /// <returns>若 <paramref name="left"/> 的值与 <paramref name="right"/> 的值不等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool operator !=(HandleUnion left, HandleUnion right) => left.Pointer != right.Pointer;
+        public static bool operator !=(HandleUnion left, HandleUnion right) => left.UIntPtr != right.UIntPtr;
 
         /// <summary>
         /// 将指定的有符号指针或句柄隐式转换为 <see cref="HandleUnion"/>。
@@ -251,27 +251,27 @@ namespace XstarS.Unions
         /// </summary>
         /// <param name="union">要转换的 <see cref="ByteUnion"/>。</param>
         /// <returns>转换得到的 <see cref="HandleUnion"/>。</returns>
-        public static explicit operator HandleUnion(ByteUnion union) => new HandleUnion((void*)union.Byte);
+        public static explicit operator HandleUnion(ByteUnion union) => new HandleUnion((nuint)union.Byte);
 
         /// <summary>
         /// 将指定的 <see cref="WordUnion"/> 显式转换为 <see cref="HandleUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="WordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="HandleUnion"/>。</returns>
-        public static explicit operator HandleUnion(WordUnion union) => new HandleUnion((void*)union.UInt16);
+        public static explicit operator HandleUnion(WordUnion union) => new HandleUnion((nuint)union.UInt16);
 
         /// <summary>
         /// 将指定的 <see cref="DWordUnion"/> 显式转换为 <see cref="HandleUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="DWordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="HandleUnion"/>。</returns>
-        public static explicit operator HandleUnion(DWordUnion union) => new HandleUnion((void*)union.UInt32);
+        public static explicit operator HandleUnion(DWordUnion union) => new HandleUnion((nuint)union.UInt32);
 
         /// <summary>
         /// 将指定的 <see cref="QWordUnion"/> 显式转换为 <see cref="HandleUnion"/>。
         /// </summary>
         /// <param name="union">要转换的 <see cref="QWordUnion"/>。</param>
         /// <returns>转换得到的 <see cref="HandleUnion"/>。</returns>
-        public static explicit operator HandleUnion(QWordUnion union) => new HandleUnion((void*)union.UInt64);
+        public static explicit operator HandleUnion(QWordUnion union) => new HandleUnion((nuint)union.UInt64);
     }
 }

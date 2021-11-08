@@ -267,6 +267,6 @@ namespace XstarS.Unions
         /// </summary>
         /// <param name="union">要转换的 <see cref="HandleUnion"/>。</param>
         /// <returns>转换得到的 <see cref="ByteUnion"/>。</returns>
-        public static explicit operator ByteUnion(HandleUnion union) => new ByteUnion((byte)union.Pointer);
+        public static explicit operator ByteUnion(HandleUnion union) => new ByteUnion((byte)union.UIntPtr);
     }
 }
