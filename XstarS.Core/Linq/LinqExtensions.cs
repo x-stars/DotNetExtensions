@@ -35,23 +35,6 @@ namespace XstarS.Linq
 #endif
 
         /// <summary>
-        /// 使用指定的比较器对序列的元素进行分组。
-        /// </summary>
-        /// <typeparam name="TSource"><paramref name="source"/> 中的元素的类型。</typeparam>
-        /// <param name="source">要对其元素进行分组的 <see cref="IEnumerable{T}"/>。</param>
-        /// <param name="comparer">对元素进行比较的 <see cref="IEqualityComparer{T}"/>。</param>
-        /// <returns><paramref name="source"/> 中元素分组的
-        /// <see cref="IGrouping{TKey, TElement}"/> 的集合。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<IGrouping<TSource, TSource>> Group<TSource>(
-            this IEnumerable<TSource> source, IEqualityComparer<TSource> comparer = null)
-        {
-            comparer = comparer ?? EqualityComparer<TSource>.Default;
-            return source.GroupBy(LinqExtensions.Self, comparer);
-        }
-
-        /// <summary>
         /// 使用指定的比较器对序列的元素进行分组计数。
         /// </summary>
         /// <typeparam name="TSource"><paramref name="source"/> 中的元素的类型。</typeparam>
@@ -65,7 +48,7 @@ namespace XstarS.Linq
             this IEnumerable<TSource> source, IEqualityComparer<TSource> comparer = null)
         {
             comparer = comparer ?? EqualityComparer<TSource>.Default;
-            return source.GroupBy(LinqExtensions.Self, GroupingExtensions.ToCounting, comparer);
+            return source.GroupBy(Self, GroupingExtensions.ToCount, comparer);
         }
 
         /// <summary>
@@ -85,7 +68,7 @@ namespace XstarS.Linq
             IEqualityComparer<TKey> comparer = null)
         {
             comparer = comparer ?? EqualityComparer<TKey>.Default;
-            return source.GroupBy(keySelector, GroupingExtensions.ToCounting, comparer);
+            return source.GroupBy(keySelector, GroupingExtensions.ToCount, comparer);
         }
 
         /// <summary>
