@@ -1,4 +1,6 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using mstring = System.Text.StringBuilder;
 
@@ -7,6 +9,7 @@ namespace XstarS.Win32
     /// <summary>
     /// 提供 INI 配置文件的读写方法。
     /// </summary>
+    [Serializable]
     public class IniFile
     {
         /// <summary>
@@ -24,7 +27,7 @@ namespace XstarS.Win32
             /// <param name="nSize">结果缓冲区的大小。</param>
             /// <param name="lpFileName">INI 配置文件的路径。</param>
             /// <returns>结果字符串的长度。</returns>
-            [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+            [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
             internal static extern int GetPrivateProfileString(
                 string lpAppName, string lpKeyName, string lpDefault,
                 mstring lpReturnedString, int nSize, string lpFileName);
@@ -38,9 +41,17 @@ namespace XstarS.Win32
             /// <param name="lpFileName">INI 配置文件的路径。</param>
             /// <returns>若写入成功，则为 <see langword="true"/>；
             /// 否则为 <see langword="false"/>。</returns>
-            [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+            [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
             internal static extern bool WritePrivateProfileString(
                 string lpAppName, string lpKeyName, string lpString, string lpFileName);
+
+            /// <summary>
+            /// 获取当前线程上次 P/Invoke 调用产生的错误码。
+            /// </summary>
+            /// <returns>当前线程上次 P/Invoke 调用产生的错误码。
+            /// 若 P/Invoke 调用没有发生错误，则错误码为 0。</returns>
+            [DllImport("kernel32.dll")]
+            internal static extern int GetLastError();
         }
 
         /// <summary>
@@ -58,6 +69,7 @@ namespace XstarS.Win32
         /// <param name="app">区块名称。</param>
         /// <param name="key">键名称。</param>
         /// <returns>当前 INI 配置文件中指定区块的指定键对应的值。</returns>
+        /// <exception cref="Win32Exception">对当前 INI 配置文件的读写失败。</exception>
         [IndexerName("Profile")]
         public string this[string app, string key]
         {
@@ -77,11 +89,18 @@ namespace XstarS.Win32
         /// <param name="app">区块名称。</param>
         /// <param name="key">键名称。</param>
         /// <returns>当前 INI 配置文件中指定区块的指定键对应的值。</returns>
+        /// <exception cref="Win32Exception">从当前 INI 配置文件读取值失败。</exception>
         public string ReadProfile(string app, string key)
         {
             var result = new mstring(ushort.MaxValue);
-            IniFile.NativeMethods.GetPrivateProfileString(
-                app, key, string.Empty, result, ushort.MaxValue, this.FilePath);
+            var length = NativeMethods.GetPrivateProfileString(
+                app, key, string.Empty, result, result.Capacity, this.FilePath);
+            if (length == 0)
+            {
+                var error = NativeMethods.GetLastError();
+                if (error != 0) { throw new Win32Exception(error); }
+            }
+            result.Length = length;
             return result.ToString();
         }
 
@@ -91,12 +110,16 @@ namespace XstarS.Win32
         /// <param name="app">区块名称。</param>
         /// <param name="key">键名称。</param>
         /// <param name="value">要写入的值。</param>
-        /// <returns>若写入成功，则为 <see langword="true"/>；
-        /// 否则为 <see langword="false"/>。</returns>
+        /// <exception cref="Win32Exception">向当前 INI 配置文件写入值失败。</exception>
         public void WriteProfile(string app, string key, string value)
         {
-            IniFile.NativeMethods.WritePrivateProfileString(
+            var status = NativeMethods.WritePrivateProfileString(
                 app, key, value, this.FilePath);
+            if (!status)
+            {
+                var error = NativeMethods.GetLastError();
+                if (error != 0) { throw new Win32Exception(error); }
+            }
         }
     }
 }

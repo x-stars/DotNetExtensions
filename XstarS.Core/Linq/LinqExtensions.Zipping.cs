@@ -35,7 +35,7 @@ namespace XstarS.Linq
         /// <paramref name="other"/> 中对应元素组成的 3 元组的序列。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/>
         /// 或 <paramref name="other"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<(T1, T2, T3)> Zip<T1, T2, T3>(
+        public static IEnumerable<(T1, T2, T3)> ThenZip<T1, T2, T3>(
             this IEnumerable<(T1, T2)> source, IEnumerable<T3> other)
         {
             return Enumerable.Zip(source, other, TupleOperators.Append);
@@ -54,7 +54,7 @@ namespace XstarS.Linq
         /// <paramref name="other"/> 中对应元素组成的 4 元组的序列。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/>
         /// 或 <paramref name="other"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<(T1, T2, T3, T4)> Zip<T1, T2, T3, T4>(
+        public static IEnumerable<(T1, T2, T3, T4)> ThenZip<T1, T2, T3, T4>(
             this IEnumerable<(T1, T2, T3)> source, IEnumerable<T4> other)
         {
             return Enumerable.Zip(source, other, TupleOperators.Append);
@@ -74,7 +74,7 @@ namespace XstarS.Linq
         /// <paramref name="other"/> 中对应元素组成的 5 元组的序列。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/>
         /// 或 <paramref name="other"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<(T1, T2, T3, T4, T5)> Zip<T1, T2, T3, T4, T5>(
+        public static IEnumerable<(T1, T2, T3, T4, T5)> ThenZip<T1, T2, T3, T4, T5>(
             this IEnumerable<(T1, T2, T3, T4)> source, IEnumerable<T5> other)
         {
             return Enumerable.Zip(source, other, TupleOperators.Append);
@@ -95,7 +95,7 @@ namespace XstarS.Linq
         /// <paramref name="other"/> 中对应元素组成的 6 元组的序列。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/>
         /// 或 <paramref name="other"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6)> Zip<T1, T2, T3, T4, T5, T6>(
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6)> ThenZip<T1, T2, T3, T4, T5, T6>(
             this IEnumerable<(T1, T2, T3, T4, T5)> source, IEnumerable<T6> other)
         {
             return Enumerable.Zip(source, other, TupleOperators.Append);
@@ -117,7 +117,7 @@ namespace XstarS.Linq
         /// <paramref name="other"/> 中对应元素组成的 7 元组的序列。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/>
         /// 或 <paramref name="other"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> Zip<T1, T2, T3, T4, T5, T6, T7>(
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> ThenZip<T1, T2, T3, T4, T5, T6, T7>(
             this IEnumerable<(T1, T2, T3, T4, T5, T6)> source, IEnumerable<T7> other)
         {
             return Enumerable.Zip(source, other, TupleOperators.Append);
@@ -140,7 +140,7 @@ namespace XstarS.Linq
         /// <paramref name="other"/> 中对应元素组成的 8 元组的序列。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/>
         /// 或 <paramref name="other"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> Zip<T1, T2, T3, T4, T5, T6, T7, T8>(
+        public static IEnumerable<(T1, T2, T3, T4, T5, T6, T7, T8)> ThenZip<T1, T2, T3, T4, T5, T6, T7, T8>(
             this IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> source, IEnumerable<T8> other)
         {
             return Enumerable.Zip(source, other, TupleOperators.Append);
@@ -163,7 +163,7 @@ namespace XstarS.Linq
         /// <paramref name="other"/> 中对应元素组成的 n 元组的序列。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/>
         /// 或 <paramref name="other"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<ValueTuple<T1, T2, T3, T4, T5, T6, T7, TRest>> ZipChain<T1, T2, T3, T4, T5, T6, T7, TRest>(
+        public static IEnumerable<ValueTuple<T1, T2, T3, T4, T5, T6, T7, TRest>> ThenZipChain<T1, T2, T3, T4, T5, T6, T7, TRest>(
             this IEnumerable<(T1, T2, T3, T4, T5, T6, T7)> source, IEnumerable<TRest> other) where TRest : struct
         {
             return Enumerable.Zip(source, other, TupleOperators.Concat);

@@ -122,6 +122,7 @@
 Win32 相关，目前包含的命名空间：
 
 * `XstarS.Win32`
+* `XstarS.Win32.Profiles`
 
 ## 程序集 XstarS.Windows
 

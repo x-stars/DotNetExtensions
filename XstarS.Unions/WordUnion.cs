@@ -276,6 +276,6 @@ namespace XstarS.Unions
         /// </summary>
         /// <param name="union">要转换的 <see cref="HandleUnion"/>。</param>
         /// <returns>转换得到的 <see cref="WordUnion"/>。</returns>
-        public static explicit operator WordUnion(HandleUnion union) => new WordUnion((ushort)union.Pointer);
+        public static explicit operator WordUnion(HandleUnion union) => new WordUnion((ushort)union.UIntPtr);
     }
 }
