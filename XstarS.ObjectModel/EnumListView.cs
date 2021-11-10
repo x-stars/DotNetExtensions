@@ -70,6 +70,7 @@ namespace XstarS.ComponentModel
             {
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
+
             if (this.ItemIndex != index)
             {
                 this.ItemIndex = index;
