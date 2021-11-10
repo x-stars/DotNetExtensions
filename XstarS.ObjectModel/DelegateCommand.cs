@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Input;
+using XstarS.ComponentModel;
 
 namespace XstarS.Windows.Input
 {
@@ -91,49 +92,19 @@ namespace XstarS.Windows.Input
             INotifyPropertyChanged source, string propertyName)
         {
             if (source is null) { throw new ArgumentNullException(nameof(source)); }
-            var observer = new CanExecuteObserver(this, propertyName);
-            source.PropertyChanged += observer.OnPropertyChanged;
+            var observer = new SimplePropertyObserver(source, propertyName);
+            observer.ObservingPropertyChanged += this.OnObservingCanExecuteChanged;
             return this;
         }
 
         /// <summary>
-        /// 提供在属性发生更改时，通知命令的可执行状态发生更改的方法。
+        /// 当指定属性发生更改时，通知命令的可执行状态发生更改。
         /// </summary>
-        private sealed class CanExecuteObserver
+        /// <param name="sender">属性更改通知的事件源。</param>
+        /// <param name="e">提供属性更改通知的事件数据。</param>
+        private void OnObservingCanExecuteChanged(object sender, EventArgs e)
         {
-            /// <summary>
-            /// 表示要通知的可执行状态已更改的命令。
-            /// </summary>
-            private readonly DelegateCommand Command;
-
-            /// <summary>
-            /// 表示要接收更改通知的属性的名称。
-            /// </summary>
-            private readonly string PropertyName;
-
-            /// <summary>
-            /// 使用命令和属性的名称初始化 <see cref="CanExecuteObserver"/> 类的新实例。
-            /// </summary>
-            /// <param name="command">要通知的可执行状态已更改的命令。</param>
-            /// <param name="propertyName">要接收更改通知的属性的名称。</param>
-            public CanExecuteObserver(DelegateCommand command, string propertyName)
-            {
-                this.Command = command;
-                this.PropertyName = propertyName;
-            }
-
-            /// <summary>
-            /// 当指定名称的属性发生更改时，通知命令的可执行状态发生更改。
-            /// </summary>
-            /// <param name="sender">属性更改通知的事件源。</param>
-            /// <param name="e">提供属性更改通知的事件数据。</param>
-            public void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-            {
-                if (this.PropertyName == e.PropertyName)
-                {
-                    this.Command.NotifyCanExecuteChanged();
-                }
-            }
+            this.NotifyCanExecuteChanged();
         }
     }
 }

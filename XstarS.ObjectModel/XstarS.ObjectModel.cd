@@ -13,15 +13,8 @@
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
-    <NestedTypes>
-      <Class Name="XstarS.Windows.Input.DelegateCommand.CanExecuteObserver">
-        <TypeIdentifier>
-          <NewMemberFileName>DelegateCommand.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Class>
-    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAQAFEAAAAAACAAAAAAAAAAAAAAQAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAQAFEAAAAAACAAAAAAAAAAEAAAQAAA=</HashCode>
       <FileName>DelegateCommand.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -64,7 +57,7 @@
   <Class Name="XstarS.ComponentModel.ObservableValidDataObject">
     <Position X="9.25" Y="4" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAEAAAAAAAAQAAABAAAAAAAAAAEAAAEIAAAAAAABIAA=</HashCode>
+      <HashCode>gAEAAAAAAAAQAAABAAAAAAAAAAEAAAEIAAAAAAABIAA=</HashCode>
       <FileName>ObservableValidDataObject.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
