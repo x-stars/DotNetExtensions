@@ -35,7 +35,7 @@ namespace XstarS.ComponentModel.TestTypes
 
         public int Size => this.Height * this.Width;
 
-        public abstract event PropertyChangedEventHandler PropertyChanged;
+        public abstract event PropertyChangedEventHandler? PropertyChanged;
 
         public abstract void Deconstruct(out int height, out int width);
     }

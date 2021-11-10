@@ -49,8 +49,8 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
-  <ItemGroup Condition="('$(TargetFramework.TrimEnd(`.01234567890`))'=='net' And
-                         '$(TargetFramework.CompareTo(`net5.0`))'&gt;='0') Or
+  <ItemGroup Condition="('$(TargetFramework.Split(`-`)[0].TrimEnd(`.01234567890`))'=='net' And
+                         '$(TargetFramework.Split(`-`)[0].CompareTo(`net5.0`))'&gt;='0') Or
                         ('$(TargetFramework.TrimEnd(`.01234567890`))'=='netcoreapp' And
                          '$(TargetFramework.CompareTo(`netcoreapp3.0`))'&gt;='0') Or
                         ('$(TargetFramework.TrimEnd(`.01234567890`))'=='netstandard' And

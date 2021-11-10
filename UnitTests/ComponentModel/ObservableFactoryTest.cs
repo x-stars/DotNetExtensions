@@ -76,7 +76,7 @@ namespace XstarS.ComponentModel
                 [nameof(rectangle.Width)] = 0,
                 [nameof(rectangle.Size)] = 0
             };
-            rectangle.PropertyChanged += (sender, e) => changedCounts[e.PropertyName]++;
+            rectangle.PropertyChanged += (sender, e) => changedCounts[e.PropertyName!]++;
             Assert.AreEqual(rectangle.Height * rectangle.Width, rectangle.Size);
             rectangle.Height *= 10; rectangle.Width *= 10;
             Assert.AreEqual(rectangle.Height * rectangle.Width, rectangle.Size);
@@ -95,7 +95,7 @@ namespace XstarS.ComponentModel
                 [nameof(rectangle.Width)] = 0,
                 [nameof(rectangle.Size)] = 0
             };
-            rectangle.PropertyChanged += (sender, e) => changedCounts[e.PropertyName]++;
+            rectangle.PropertyChanged += (sender, e) => changedCounts[e.PropertyName!]++;
             Assert.AreEqual(rectangle.Height * rectangle.Width, rectangle.Size);
             rectangle.Height *= 10; rectangle.Width *= 10;
             Assert.AreEqual(rectangle.Height * rectangle.Width, rectangle.Size);

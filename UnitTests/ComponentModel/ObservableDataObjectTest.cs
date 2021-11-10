@@ -23,7 +23,7 @@ namespace XstarS.ComponentModel
                 [nameof(personName.IsEasternStyle)] = 0,
                 [nameof(personName.FullName)] = 0
             };
-            personName.PropertyChanged += (sender, e) => changedCounts[e.PropertyName]++;
+            personName.PropertyChanged += (sender, e) => changedCounts[e.PropertyName!]++;
             Assert.AreEqual($"{personName.GivenName} {personName.FamilyName}", personName.FullName);
             personName.IsEasternStyle = true;
             Assert.AreEqual($"{personName.FamilyName}{personName.GivenName}", personName.FullName);
@@ -45,7 +45,7 @@ namespace XstarS.ComponentModel
                 [nameof(box.Size)] = 0,
                 [nameof(box.HasErrors)] = 0
             };
-            box.PropertyChanged += (sender, e) => changedCounts[e.PropertyName]++;
+            box.PropertyChanged += (sender, e) => changedCounts[e.PropertyName!]++;
             Assert.AreEqual(box.Length * box.Width * box.Height, box.Size);
             box.Length *= 10; box.Width *= 10; box.Height *= 10;
             Assert.AreEqual(box.Length * box.Width * box.Height, box.Size);
@@ -60,7 +60,7 @@ namespace XstarS.ComponentModel
                 [nameof(box.Width)] = 0,
                 [nameof(box.Height)] = 0
             };
-            box.ErrorsChanged += (sender, e) => errorsCounts[e.PropertyName]++;
+            box.ErrorsChanged += (sender, e) => errorsCounts[e.PropertyName!]++;
             box.Length *= -1; box.Width *= -1; box.Height *= -1;
             Assert.AreEqual(1, errorsCounts[nameof(box.Length)]);
             Assert.AreEqual(1, errorsCounts[nameof(box.Width)]);

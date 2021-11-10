@@ -118,7 +118,7 @@ namespace XstarS.ComponentModel
             var results = new List<ValidationResult>();
             try { Validator.TryValidateProperty(value, context, results); }
             catch (ArgumentException) { }
-            var errors = new List<string>(results.Count);
+            var errors = new List<string?>(results.Count);
             foreach (var result in results) { errors.Add(result.ErrorMessage); }
             this.SetErrors(errors, propertyName);
         }
