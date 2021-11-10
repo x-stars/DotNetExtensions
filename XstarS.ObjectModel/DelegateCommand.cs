@@ -89,7 +89,7 @@ namespace XstarS.Windows.Input
         /// <exception cref="ArgumentNullException">
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
         public DelegateCommand ObserveCanExecute(
-            INotifyPropertyChanged source, string propertyName)
+            INotifyPropertyChanged source, string? propertyName)
         {
             if (source is null) { throw new ArgumentNullException(nameof(source)); }
             var observer = new SimplePropertyObserver(source, propertyName);
@@ -102,7 +102,7 @@ namespace XstarS.Windows.Input
         /// </summary>
         /// <param name="sender">属性更改通知的事件源。</param>
         /// <param name="e">提供属性更改通知的事件数据。</param>
-        private void OnObservingCanExecuteChanged(object sender, EventArgs e)
+        private void OnObservingCanExecuteChanged(object? sender, EventArgs e)
         {
             this.NotifyCanExecuteChanged();
         }

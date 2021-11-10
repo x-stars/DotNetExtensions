@@ -16,7 +16,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 表示要接收更改通知的属性的名称。
         /// </summary>
-        private readonly string PropertyName;
+        private readonly string? PropertyName;
 
         /// <summary>
         /// 使用要观察的对象和属性的名称初始化 <see cref="SimplePropertyObserver"/> 类的新实例。
@@ -25,7 +25,7 @@ namespace XstarS.ComponentModel
         /// <param name="propertyName">要接收更改通知的属性的名称。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="source"/> 为 <see langword="null"/>。</exception>
-        public SimplePropertyObserver(INotifyPropertyChanged source, string propertyName)
+        public SimplePropertyObserver(INotifyPropertyChanged source, string? propertyName)
         {
             this.Source = source ??
                 throw new ArgumentNullException(nameof(source));
@@ -36,7 +36,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 在当前正在观察的属性更改时发生。
         /// </summary>
-        public event EventHandler ObservingPropertyChanged;
+        public event EventHandler? ObservingPropertyChanged;
 
         /// <summary>
         /// 释放当前对象占用的资源。
@@ -60,7 +60,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="sender">属性更改通知的事件源。</param>
         /// <param name="e">提供属性更改通知的事件数据。</param>
-        private void OnSourcePropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void OnSourcePropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
             if (this.PropertyName == e.PropertyName)
             {
