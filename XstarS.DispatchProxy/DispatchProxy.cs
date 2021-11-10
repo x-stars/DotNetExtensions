@@ -50,7 +50,8 @@ namespace XstarS.Reflection
         /// <returns>方法的返回值。若无返回值，应为 <see langword="null"/>。</returns>
         protected override object Invoke(MethodInfo method, object[] arguments)
         {
-            return this.Handler.Invoke(this.Instance, method, arguments);
+            return (method is null) ? null :
+                this.Handler!.Invoke(this.Instance!, method, arguments);
         }
 
         /// <summary>
