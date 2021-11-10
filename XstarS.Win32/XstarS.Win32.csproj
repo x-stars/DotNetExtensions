@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <RootNamespace>XstarS.Win32</RootNamespace>
-    <TargetFrameworks>net461;net472;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net461;net472;netcoreapp3.1;net6.0-windows</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -57,8 +57,8 @@
   </ItemGroup>
 
   <ItemGroup Condition="('$(TargetFramework.TrimEnd(`.0123456789`))'=='netcoreapp') Or
-                        ('$(TargetFramework.TrimEnd(`.0123456789`))'=='net' And
-                         '$(TargetFramework.CompareTo(`net5.0`))'&gt;='0')">
+                        ('$(TargetFramework.Split(`-`)[0].TrimEnd(`.0123456789`))'=='net' And
+                         '$(TargetFramework.Split(`-`)[0].CompareTo(`net5.0`))'&gt;='0')">
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
   </ItemGroup>
 

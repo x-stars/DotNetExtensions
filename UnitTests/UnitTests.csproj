@@ -3,7 +3,7 @@
   <PropertyGroup>
     <AssemblyName>XstarS.UnitTests</AssemblyName>
     <RootNamespace>XstarS</RootNamespace>
-    <TargetFrameworks>net461;net472;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net461;net472;netcoreapp3.1;net6.0</TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -49,7 +49,8 @@
     <ProjectReference Include="..\XstarS.Win32\XstarS.Win32.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='net'">
+  <ItemGroup Condition="'$(TargetFramework.Split(`-`)[0].TrimEnd(`.0123456789`))'=='net' And
+                        '$(TargetFramework.Split(`-`)[0].CompareTo(`net5.0`))'&lt;'0'">
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using XstarS.Collections.Specialized;
+using ReferenceEqualityComparer =
+    XstarS.Collections.Specialized.ReferenceEqualityComparer;
 
 namespace XstarS.Collections.Generic
 {
