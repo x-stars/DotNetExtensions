@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using XstarS.Collections.Specialized;
+using ReferenceEqualityComparer =
+    XstarS.Collections.Specialized.ReferenceEqualityComparer;
 
 namespace XstarS.Runtime
 {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using XstarS.Collections.Specialized;
+using ReferenceEqualityComparer =
+    XstarS.Collections.Specialized.ReferenceEqualityComparer;
 
 namespace XstarS.Diagnostics
 {

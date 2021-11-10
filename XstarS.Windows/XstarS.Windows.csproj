@@ -3,7 +3,7 @@
   <PropertyGroup>
     <UseWPF>true</UseWPF>
     <RootNamespace>XstarS.Windows</RootNamespace>
-    <TargetFrameworks>net461;net472;netcoreapp3.1</TargetFrameworks>
+    <TargetFrameworks>net461;net472;netcoreapp3.1;net6.0-windows</TargetFrameworks>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
 

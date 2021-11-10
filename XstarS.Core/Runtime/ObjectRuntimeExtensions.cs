@@ -39,6 +39,9 @@ namespace XstarS.Runtime
         /// <exception cref="SerializationException">
         /// <paramref name="value"/> 中的某个对象未标记为可序列化。</exception>
         /// <exception cref="SecurityException">调用方没有所要求的权限。</exception>
+#if NET5_0_OR_GREATER
+        [Obsolete("BinaryFormatter serialization is obsolete and should not be used.")]
+#endif
         public static T SerializationClone<T>(this T value) =>
             (T)ObjectValues.SerializationClone(value);
 

@@ -5,7 +5,8 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Security;
-using XstarS.Collections.Specialized;
+using ReferenceEqualityComparer =
+    XstarS.Collections.Specialized.ReferenceEqualityComparer;
 
 namespace XstarS.Runtime
 {
@@ -22,6 +23,9 @@ namespace XstarS.Runtime
         /// <summary>
         /// 表示用于二进制序列化和反序列化对象的 <see cref="BinaryFormatter"/> 对象。
         /// </summary>
+#if NET5_0_OR_GREATER
+        [Obsolete("BinaryFormatter serialization is obsolete and should not be used.")]
+#endif
         private static readonly BinaryFormatter Serializer = new BinaryFormatter();
 
         /// <summary>
@@ -59,6 +63,9 @@ namespace XstarS.Runtime
         /// <exception cref="SerializationException">
         /// <paramref name="value"/> 中的某个对象未标记为可序列化。</exception>
         /// <exception cref="SecurityException">调用方没有所要求的权限。</exception>
+#if NET5_0_OR_GREATER
+        [Obsolete("BinaryFormatter serialization is obsolete and should not be used.")]
+#endif
         public static object SerializationClone(object value)
         {
             if (value is null) { return null; }
