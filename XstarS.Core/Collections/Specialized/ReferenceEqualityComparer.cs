@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Runtime.CompilerServices;
 using XstarS.Collections.Generic;
 
@@ -8,7 +9,7 @@ namespace XstarS.Collections.Specialized
     /// 提供用于比较对象的引用是否相等的方法。
     /// </summary>
     [Serializable]
-    public sealed class ReferenceEqualityComparer : SimpleEqualityComparer<object>
+    public sealed class ReferenceEqualityComparer : SimpleEqualityComparer<object>, IEqualityComparer
     {
         /// <summary>
         /// 初始化 <see cref="ReferenceEqualityComparer"/> 类的新实例。
