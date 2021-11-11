@@ -44,6 +44,8 @@ namespace XstarS.CommandLine.Specialized
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="name"/> 不带参数提示符 "-" 或长度过短。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public override string GetArgument(string name)
         {
             if (name is null)
@@ -134,6 +136,8 @@ namespace XstarS.CommandLine.Specialized
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="name"/> 不带参数提示符 "-" 或长度过短。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public override bool GetOption(string name)
         {
             if (name is null)
@@ -198,6 +202,8 @@ namespace XstarS.CommandLine.Specialized
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="name"/> 不带参数提示符 "-" 或长度过短。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public virtual string[] GetArguments(string name)
         {
             if (name is null)

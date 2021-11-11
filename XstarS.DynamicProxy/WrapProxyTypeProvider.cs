@@ -77,6 +77,8 @@ namespace XstarS.Reflection
         /// <paramref name="baseType"/> 不是公共接口。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="baseType"/> 为 <see langword="null"/>。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         private WrapProxyTypeProvider(Type baseType)
         {
             if (baseType is null)
@@ -308,6 +310,7 @@ namespace XstarS.Reflection
             this.BaseMethodInfoFields = infoFields;
             this.BaseMethodDelegateFields = delegateFields;
         }
+
 
         /// <summary>
         /// 定义所有代理方法，并重写原型类型中的对应方法。

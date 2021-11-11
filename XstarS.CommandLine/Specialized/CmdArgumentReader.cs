@@ -47,10 +47,10 @@ namespace XstarS.CommandLine.Specialized
 
             foreach (string argument in this.Arguments)
             {
-                if (argument.Contains(":") && this.NameComparer.Equals(
-                    argument.Remove(argument.IndexOf(":")), name))
+                if (argument.Contains(':') && this.NameComparer.Equals(
+                    argument.Remove(argument.IndexOf(':')), name))
                 {
-                    return argument.Substring(argument.IndexOf(":") + ":".Length);
+                    return argument.Substring(argument.IndexOf(':') + 1);
                 }
             }
 
@@ -78,8 +78,8 @@ namespace XstarS.CommandLine.Specialized
                 if (this.OptionNames.Contains(argument, this.NameComparer))
                 {
                 }
-                else if (argument.Contains(":") && this.ArgumentNames.Contains(
-                    argument.Remove(argument.IndexOf(":")), this.NameComparer))
+                else if (argument.Contains(':') && this.ArgumentNames.Contains(
+                    argument.Remove(argument.IndexOf(':')), this.NameComparer))
                 {
                 }
                 else if (positionNow == position)
@@ -113,10 +113,10 @@ namespace XstarS.CommandLine.Specialized
             var values = new List<string>();
             foreach (string argument in this.Arguments)
             {
-                if (argument.Contains(":") && this.NameComparer.Equals(
-                    argument.Remove(argument.IndexOf(":")), name))
+                if (argument.Contains(':') && this.NameComparer.Equals(
+                    argument.Remove(argument.IndexOf(':')), name))
                 {
-                    values.Add(argument.Substring(argument.IndexOf(":") + ":".Length));
+                    values.Add(argument.Substring(argument.IndexOf(':') + 1));
                 }
             }
 
