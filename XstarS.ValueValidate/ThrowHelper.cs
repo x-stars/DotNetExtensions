@@ -17,6 +17,8 @@ namespace XstarS
         /// <param name="innerException">引发当前异常的异常。</param>
         /// <exception cref="ArgumentException">
         /// 总是抛出 <see cref="ArgumentException"/> 类型的异常。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static void ThrowArgumentException(string? paramName = null,
             string? message = null, Exception? innerException = null)
         {
@@ -31,6 +33,8 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <exception cref="ArgumentNullException">
         /// 总是抛出 <see cref="ArgumentNullException"/> 类型的异常。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static void ThrowArgumentNullException(string? paramName = null,
             string? message = null)
         {
@@ -46,6 +50,8 @@ namespace XstarS
         /// <param name="message">自定义抛出异常的消息。</param>
         /// <exception cref="ArgumentOutOfRangeException">
         /// 总是抛出 <see cref="ArgumentOutOfRangeException"/> 类型的异常。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static void ThrowArgumentOutOfRangeException(string? paramName = null,
             object? actualValue = null, string? message = null)
         {

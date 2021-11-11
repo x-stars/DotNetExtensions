@@ -58,6 +58,8 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseConstructor"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static ConstructorBuilder DefineConstructorLike(
             this TypeBuilder type, ConstructorInfo baseConstructor)
         {
@@ -98,6 +100,8 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseConstructor"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static ConstructorBuilder DefineBaseInvokeConstructorLike(
             this TypeBuilder type, ConstructorInfo baseConstructor)
         {
@@ -138,6 +142,8 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static MethodBuilder DefineMethodOverride(
             this TypeBuilder type, MethodInfo baseMethod, bool explicitOverride = false)
         {
@@ -212,6 +218,8 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static MethodBuilder DefineNotImplementedMethodOverride(
             this TypeBuilder type, MethodInfo baseMethod, bool explicitOverride = false)
         {
@@ -248,6 +256,8 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static PropertyBuilder DefineNotImplementedPropertyOverride(
             this TypeBuilder type, PropertyInfo baseProperty, bool explicitOverride = false)
         {
@@ -300,6 +310,8 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 是索引属性或无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static KeyValuePair<PropertyBuilder, FieldBuilder> DefineAutoPropertyOverride(
             this TypeBuilder type, PropertyInfo baseProperty, bool explicitOverride = false)
         {
@@ -376,6 +388,8 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseEvent"/> 的方法无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static EventBuilder DefineNotImplementedEventOverride(
             this TypeBuilder type, EventInfo baseEvent, bool explicitOverride = false)
         {
@@ -427,6 +441,8 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseEvent"/> 的方法无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static KeyValuePair<EventBuilder, FieldBuilder> DefineDefaultEventOverride(
             this TypeBuilder type, EventInfo baseEvent, bool explicitOverride = false)
         {

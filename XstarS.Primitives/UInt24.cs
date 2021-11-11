@@ -161,6 +161,8 @@ namespace XstarS
         /// <paramref name="obj"/>，则大于零；若此实例等于 <paramref name="obj"/>，则为零。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="obj"/> 不为 <see cref="UInt24"/>。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public int CompareTo(object? obj) => (obj is null) ? this.CompareTo(default(UInt24)) :
             (obj is UInt24 other) ? this.CompareTo(other) : throw new ArgumentException();
 

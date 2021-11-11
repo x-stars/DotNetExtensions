@@ -67,6 +67,8 @@ namespace XstarS.Reflection
         /// <paramref name="baseType"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="baseType"/> 为 <see langword="null"/>。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         private ProxyTypeProvider(Type baseType)
         {
             if (baseType is null)

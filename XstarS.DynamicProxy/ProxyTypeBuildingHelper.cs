@@ -61,6 +61,8 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException"><paramref name="baseGenericParams"/>
         /// 不为泛型参数列表，或与 <paramref name="genericParams"/> 的长度不等。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static void SetGenericConstraintsLike(
             this GenericTypeParameterBuilder[] genericParams, Type[] baseGenericParams,
             Type[] baseTypeGenericArgs)
@@ -149,6 +151,8 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static MethodBuilder DefineMethodLike(
             this TypeBuilder type, MethodInfo baseMethod, Type baseType)
         {
@@ -207,6 +211,8 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static MethodBuilder DefineBaseInvokeMethodLike(
             this TypeBuilder type, MethodInfo baseMethod, Type baseType)
         {
@@ -264,6 +270,8 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static KeyValuePair<FieldBuilder, FieldBuilder> DefineMethodInfoAndDelegateField(
             this TypeBuilder type, MethodInfo baseMethod, Type baseType, MethodInfo baseInvokeMethod)
         {
@@ -387,6 +395,8 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static MethodBuilder DefineProxyMethodOverride(
             this TypeBuilder type, MethodInfo baseMethod,
             FieldInfo baseMethodInfoField, FieldInfo baseMethodDelegateField,

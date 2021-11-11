@@ -216,6 +216,7 @@ namespace XstarS
             catch (Exception) { result = default(Half); return false; }
         }
 
+
         /// <summary>
         /// 将此实例与指定对象进行比较并返回一个对二者的相对值的指示。
         /// </summary>
@@ -224,6 +225,8 @@ namespace XstarS
         /// <paramref name="obj"/>，则大于零；若此实例等于 <paramref name="obj"/>，则为零。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="obj"/> 不为 <see cref="Half"/>。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public int CompareTo(object? obj) => (obj is null) ? this.CompareTo(default(Half)) :
             (obj is Half other) ? this.CompareTo(other) : throw new ArgumentException();
 

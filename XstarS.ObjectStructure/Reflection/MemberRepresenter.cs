@@ -60,6 +60,8 @@ namespace XstarS.Reflection
         /// <returns><paramref name="value"/> 的所有公共实例成员的名称和对应的值。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="value"/> 为 <see langword="null"/>。</exception>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Performance", "CA1822: MarkMembersAsStatic")]
         private NamedValues GetPublicValues([DisallowNull] T value)
         {
             if (value is null) { throw new ArgumentNullException(nameof(value)); }

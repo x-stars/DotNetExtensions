@@ -29,6 +29,8 @@ namespace XstarS.Reflection
         /// <param name="y">要比较的第二个 <see cref="MethodInfo"/>。</param>
         /// <returns>若 <paramref name="x"/> 与 <paramref name="y"/> 的方法签名相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Style", "IDE0062:MakeLocalFunctionStatic")]
         public override bool Equals(MethodInfo? x, MethodInfo? y)
         {
             if (object.ReferenceEquals(x, y)) { return true; }
@@ -145,6 +147,7 @@ namespace XstarS.Reflection
             return hashCode;
         }
 
+
         /// <summary>
         /// 组合当前哈希代码和新的哈希代码。
         /// </summary>
@@ -152,6 +155,8 @@ namespace XstarS.Reflection
         /// <param name="nextHashCode">新的哈希代码。</param>
         /// <returns><paramref name="hashCode"/> 与
         /// <paramref name="nextHashCode"/> 组合得到的哈希代码。</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Performance", "CA1822: MarkMembersAsStatic")]
         private int CombineHasCode(int hashCode, int nextHashCode)
         {
             return hashCode * -1521134295 + nextHashCode;
