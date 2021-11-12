@@ -25,10 +25,15 @@ namespace XstarS.IO
             }
 
             var size = sizeof(T);
-            var bytes = reader.ReadBytes(size);
-            fixed (byte* pBytes = bytes)
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            var buffer = (stackalloc byte[size]);
+            var length = reader.Read(buffer);
+#else
+            var buffer = reader.ReadBytes(size);
+#endif
+            fixed (byte* pBuffer = buffer)
             {
-                var value = *(T*)pBytes;
+                var value = *(T*)pBuffer;
                 return value;
             }
         }
