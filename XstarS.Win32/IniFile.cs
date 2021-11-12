@@ -49,10 +49,10 @@ namespace XstarS.Win32
         /// <summary>
         /// 以指定 INI 配置文件的路径初始化 <see cref="IniFile"/> 类的新实例。
         /// </summary>
-        /// <param name="filePath">INI 配置文件的路径。</param>
-        public IniFile(string filePath)
+        /// <param name="fileName">INI 配置文件的路径。</param>
+        public IniFile(string fileName)
         {
-            this.FilePath = filePath;
+            this.FileName = fileName;
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace XstarS.Win32
         /// <param name="key">键名称。</param>
         /// <returns>当前 INI 配置文件中指定区块的指定键对应的值。</returns>
         /// <exception cref="Win32Exception">对当前 INI 配置文件的读写失败。</exception>
-        [IndexerName("Profile")]
+        [IndexerName("Profiles")]
         public string this[string app, string key]
         {
             get => this.ReadProfile(app, key);
@@ -73,7 +73,7 @@ namespace XstarS.Win32
         /// 获取 INI 配置文件的路径。
         /// </summary>
         /// <returns>INI 配置文件的路径。</returns>
-        public string FilePath { get; }
+        public string FileName { get; }
 
         /// <summary>
         /// 读取当前 INI 配置文件中指定区块的指定键对应的值。
@@ -86,7 +86,7 @@ namespace XstarS.Win32
         {
             var result = new mstring(ushort.MaxValue);
             var length = NativeMethods.GetPrivateProfileString(
-                app, key, string.Empty, result, result.Capacity, this.FilePath);
+                app, key, string.Empty, result, result.Capacity, this.FileName);
             if (length == 0)
             {
                 var error = Marshal.GetLastWin32Error();
@@ -106,7 +106,7 @@ namespace XstarS.Win32
         public void WriteProfile(string app, string key, string value)
         {
             var status = NativeMethods.WritePrivateProfileString(
-                app, key, value, this.FilePath);
+                app, key, value, this.FileName);
             if (!status)
             {
                 var error = Marshal.GetLastWin32Error();
