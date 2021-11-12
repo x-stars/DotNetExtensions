@@ -44,14 +44,6 @@ namespace XstarS.Win32
             [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
             internal static extern bool WritePrivateProfileString(
                 string lpAppName, string lpKeyName, string lpString, string lpFileName);
-
-            /// <summary>
-            /// 获取当前线程上次 P/Invoke 调用产生的错误码。
-            /// </summary>
-            /// <returns>当前线程上次 P/Invoke 调用产生的错误码。
-            /// 若 P/Invoke 调用没有发生错误，则错误码为 0。</returns>
-            [DllImport("kernel32.dll")]
-            internal static extern int GetLastError();
         }
 
         /// <summary>
@@ -97,7 +89,7 @@ namespace XstarS.Win32
                 app, key, string.Empty, result, result.Capacity, this.FilePath);
             if (length == 0)
             {
-                var error = NativeMethods.GetLastError();
+                var error = Marshal.GetLastWin32Error();
                 if (error != 0) { throw new Win32Exception(error); }
             }
             result.Length = length;
@@ -117,7 +109,7 @@ namespace XstarS.Win32
                 app, key, value, this.FilePath);
             if (!status)
             {
-                var error = NativeMethods.GetLastError();
+                var error = Marshal.GetLastWin32Error();
                 if (error != 0) { throw new Win32Exception(error); }
             }
         }

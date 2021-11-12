@@ -35,14 +35,6 @@ namespace XstarS.Win32
             /// 若并未分配控制台窗口，则返回 <see cref="IntPtr.Zero"/>。</returns>
             [DllImport("kernel32.dll")]
             internal static extern nint GetConsoleWindow();
-
-            /// <summary>
-            /// 获取当前线程上次 P/Invoke 调用产生的错误码。
-            /// </summary>
-            /// <returns>当前线程上次 P/Invoke 调用产生的错误码。
-            /// 若 P/Invoke 调用没有发生错误，则错误码为 0。</returns>
-            [DllImport("kernel32.dll")]
-            internal static extern int GetLastError();
         }
 
         /// <summary>
@@ -62,7 +54,7 @@ namespace XstarS.Win32
             {
                 if (!NativeMethods.AllocConsole())
                 {
-                    var error = NativeMethods.GetLastError();
+                    var error = Marshal.GetLastWin32Error();
                     if (error != 0) { throw new Win32Exception(error); }
                 }
             }
@@ -78,7 +70,7 @@ namespace XstarS.Win32
             {
                 if (!NativeMethods.FreeConsole())
                 {
-                    var error = NativeMethods.GetLastError();
+                    var error = Marshal.GetLastWin32Error();
                     if (error != 0) { throw new Win32Exception(error); }
                 }
             }
