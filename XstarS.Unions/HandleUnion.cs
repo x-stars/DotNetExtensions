@@ -14,7 +14,7 @@ namespace XstarS.Unions
         /// <summary>
         /// 表示 <see cref="HandleUnion"/> 实例的大小。
         /// </summary>
-        public static readonly int Size = sizeof(nuint);
+        public static readonly int Size = sizeof(void*);
 
         /// <summary>
         /// 表示已经初始化为零的 <see cref="HandleUnion"/>。
