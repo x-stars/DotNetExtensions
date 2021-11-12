@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 using XstarS.IO;
@@ -46,7 +47,7 @@ namespace XstarS
                         }
                     }
                 }
-                return StandardStreams.Input!;
+                return StandardStreams.Input;
             }
 
             /// <summary>
@@ -65,7 +66,7 @@ namespace XstarS
                         }
                     }
                 }
-                return StandardStreams.Output!;
+                return StandardStreams.Output;
             }
 
             /// <summary>
@@ -84,7 +85,7 @@ namespace XstarS
                         }
                     }
                 }
-                return StandardStreams.Error!;
+                return StandardStreams.Error;
             }
 
             /// <summary>
@@ -93,7 +94,7 @@ namespace XstarS
             /// <param name="stream">要确定状态的流。</param>
             /// <returns>若流为 <see langword="null"/> 或已经被释放，
             /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-            private static bool IsNullOrDisposed(Stream? stream) =>
+            private static bool IsNullOrDisposed([NotNullWhen(false)] Stream? stream) =>
                 (stream is null) || (!stream.CanRead && !stream.CanWrite);
         }
 
