@@ -286,7 +286,7 @@ namespace XstarS
         /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteLines(params string[] values) => Console.Out.WriteLines(values);
+        public static void WriteLines(params string?[] values) => Console.Out.WriteLines(values);
 
         /// <summary>
         /// 将指定的多个对象的文本表示形式逐行（后跟当前行终止符）写入标准输出流。
@@ -296,7 +296,7 @@ namespace XstarS
         /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteLines(params object[] values) => Console.Out.WriteLines(values);
+        public static void WriteLines(params object?[] values) => Console.Out.WriteLines(values);
 
         /// <summary>
         /// 将指定的多个字符串值逐个（后跟当前行终止符）写入标准输出流。
@@ -306,7 +306,7 @@ namespace XstarS
         /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteTokensLine(params string[] values) => Console.Out.WriteTokensLine(values);
+        public static void WriteTokensLine(params string?[] values) => Console.Out.WriteTokensLine(values);
 
         /// <summary>
         /// 将指定的多个对象的文本表示形式逐个（后跟当前行终止符）写入标准输出流。
@@ -316,7 +316,7 @@ namespace XstarS
         /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteTokensLine(params object[] values) => Console.Out.WriteTokensLine(values);
+        public static void WriteTokensLine(params object?[] values) => Console.Out.WriteTokensLine(values);
 
         /// <summary>
         /// 将指定的字符串值写入标准错误输出流。
@@ -324,7 +324,7 @@ namespace XstarS
         /// <param name="value">要写入的值。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteError(string value) => Console.Error.Write(value);
+        public static void WriteError(string? value) => Console.Error.Write(value);
 
         /// <summary>
         /// 将指定对象的文本表示形式写入标准错误输出流。
@@ -332,7 +332,7 @@ namespace XstarS
         /// <param name="value">要写入的值。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteError(object value) => Console.Error.Write(value);
+        public static void WriteError(object? value) => Console.Error.Write(value);
 
         /// <summary>
         /// 将指定的 Unicode 字符数组写入标准错误输出流。
@@ -370,7 +370,7 @@ namespace XstarS
         /// <exception cref="FormatException"><paramref name="format"/> 中的格式规范无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteError(string format, params object[] arg) =>
+        public static void WriteError(string format, params object?[] arg) =>
             Console.Error.Write(format, arg);
 
         /// <summary>
@@ -386,7 +386,7 @@ namespace XstarS
         /// <param name="value">要写入的值。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteErrorLine(string value) => Console.Error.WriteLine(value);
+        public static void WriteErrorLine(string? value) => Console.Error.WriteLine(value);
 
         /// <summary>
         /// 将指定对象的文本表示形式（后跟当前行终止符）写入标准错误输出流。
@@ -394,7 +394,7 @@ namespace XstarS
         /// <param name="value">要写入的值。</param>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteErrorLine(object value) => Console.Error.WriteLine(value);
+        public static void WriteErrorLine(object? value) => Console.Error.WriteLine(value);
 
         /// <summary>
         /// 将指定的 Unicode 字符数组（后跟当前行终止符）写入标准错误输出流。
@@ -432,7 +432,7 @@ namespace XstarS
         /// <exception cref="FormatException"><paramref name="format"/> 中的格式规范无效。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteErrorLine(string format, params object[] arg) =>
+        public static void WriteErrorLine(string format, params object?[] arg) =>
             Console.Error.WriteLine(format, arg);
 
         /// <summary>
@@ -443,7 +443,7 @@ namespace XstarS
         /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteErrorLines(params string[] values) => Console.Error.WriteLines(values);
+        public static void WriteErrorLines(params string?[] values) => Console.Error.WriteLines(values);
 
         /// <summary>
         /// 将指定的多个对象的文本表示形式逐行（后跟当前行终止符）写入标准错误输出流。
@@ -453,7 +453,7 @@ namespace XstarS
         /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteErrorLines(params object[] values) => Console.Error.WriteLines(values);
+        public static void WriteErrorLines(params object?[] values) => Console.Error.WriteLines(values);
 
         /// <summary>
         /// 将指定的多个字符串值逐个（后跟当前行终止符）写入标准错误输出流。
@@ -463,7 +463,7 @@ namespace XstarS
         /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteErrorTokensLine(params string[] values) => Console.Error.WriteTokensLine(values);
+        public static void WriteErrorTokensLine(params string?[] values) => Console.Error.WriteTokensLine(values);
 
         /// <summary>
         /// 将指定的多个对象的文本表示形式逐个（后跟当前行终止符）写入标准错误输出流。
@@ -473,6 +473,6 @@ namespace XstarS
         /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteErrorTokensLine(params object[] values) => Console.Error.WriteTokensLine(values);
+        public static void WriteErrorTokensLine(params object?[] values) => Console.Error.WriteTokensLine(values);
     }
 }

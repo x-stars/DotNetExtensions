@@ -15,7 +15,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteInColor(string value, ConsoleColor foreground)
+        public static void WriteInColor(string? value, ConsoleColor foreground)
         {
             lock (Console.Out)
             {
@@ -36,7 +36,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteInColor(string value, ConsoleColor foreground, ConsoleColor background)
+        public static void WriteInColor(string? value, ConsoleColor foreground, ConsoleColor background)
         {
             lock (Console.Out)
             {
@@ -56,7 +56,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteInColor(object value, ConsoleColor foreground)
+        public static void WriteInColor(object? value, ConsoleColor foreground)
         {
             lock (Console.Out)
             {
@@ -77,7 +77,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteInColor(object value, ConsoleColor foreground, ConsoleColor background)
+        public static void WriteInColor(object? value, ConsoleColor foreground, ConsoleColor background)
         {
             lock (Console.Out)
             {
@@ -97,7 +97,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteLineInColor(string value, ConsoleColor foreground)
+        public static void WriteLineInColor(string? value, ConsoleColor foreground)
         {
             lock (Console.Out)
             {
@@ -118,7 +118,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteLineInColor(string value, ConsoleColor foreground, ConsoleColor background)
+        public static void WriteLineInColor(string? value, ConsoleColor foreground, ConsoleColor background)
         {
             lock (Console.Out)
             {
@@ -138,7 +138,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteLineInColor(object value, ConsoleColor foreground)
+        public static void WriteLineInColor(object? value, ConsoleColor foreground)
         {
             lock (Console.Out)
             {
@@ -159,7 +159,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteLineInColor(object value, ConsoleColor foreground, ConsoleColor background)
+        public static void WriteLineInColor(object? value, ConsoleColor foreground, ConsoleColor background)
         {
             lock (Console.Out)
             {
@@ -179,7 +179,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorInColor(string value, ConsoleColor foreground)
+        public static void WriteErrorInColor(string? value, ConsoleColor foreground)
         {
             lock (Console.Out)
             {
@@ -200,7 +200,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorInColor(string value, ConsoleColor foreground, ConsoleColor background)
+        public static void WriteErrorInColor(string? value, ConsoleColor foreground, ConsoleColor background)
         {
             lock (Console.Out)
             {
@@ -220,7 +220,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorInColor(object value, ConsoleColor foreground)
+        public static void WriteErrorInColor(object? value, ConsoleColor foreground)
         {
             lock (Console.Out)
             {
@@ -241,7 +241,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorInColor(object value, ConsoleColor foreground, ConsoleColor background)
+        public static void WriteErrorInColor(object? value, ConsoleColor foreground, ConsoleColor background)
         {
             lock (Console.Out)
             {
@@ -261,7 +261,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorLineInColor(string value, ConsoleColor foreground)
+        public static void WriteErrorLineInColor(string? value, ConsoleColor foreground)
         {
             lock (Console.Out)
             {
@@ -282,7 +282,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorLineInColor(string value, ConsoleColor foreground, ConsoleColor background)
+        public static void WriteErrorLineInColor(string? value, ConsoleColor foreground, ConsoleColor background)
         {
             lock (Console.Out)
             {
@@ -302,7 +302,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorLineInColor(object value, ConsoleColor foreground)
+        public static void WriteErrorLineInColor(object? value, ConsoleColor foreground)
         {
             lock (Console.Out)
             {
@@ -323,7 +323,7 @@ namespace XstarS
         /// 指定的颜色不是 <see cref="ConsoleColor"/> 的有效成员。</exception>
         /// <exception cref="SecurityException">用户没有设置控制台颜色的权限。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static void WriteErrorLineInColor(object value, ConsoleColor foreground, ConsoleColor background)
+        public static void WriteErrorLineInColor(object? value, ConsoleColor foreground, ConsoleColor background)
         {
             lock (Console.Out)
             {
