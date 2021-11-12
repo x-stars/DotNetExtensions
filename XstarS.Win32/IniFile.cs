@@ -44,23 +44,15 @@ namespace XstarS.Win32
             [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
             internal static extern bool WritePrivateProfileString(
                 string lpAppName, string lpKeyName, string lpString, string lpFileName);
-
-            /// <summary>
-            /// 获取当前线程上次 P/Invoke 调用产生的错误码。
-            /// </summary>
-            /// <returns>当前线程上次 P/Invoke 调用产生的错误码。
-            /// 若 P/Invoke 调用没有发生错误，则错误码为 0。</returns>
-            [DllImport("kernel32.dll")]
-            internal static extern int GetLastError();
         }
 
         /// <summary>
         /// 以指定 INI 配置文件的路径初始化 <see cref="IniFile"/> 类的新实例。
         /// </summary>
-        /// <param name="filePath">INI 配置文件的路径。</param>
-        public IniFile(string filePath)
+        /// <param name="fileName">INI 配置文件的路径。</param>
+        public IniFile(string fileName)
         {
-            this.FilePath = filePath;
+            this.FileName = fileName;
         }
 
         /// <summary>
@@ -70,7 +62,7 @@ namespace XstarS.Win32
         /// <param name="key">键名称。</param>
         /// <returns>当前 INI 配置文件中指定区块的指定键对应的值。</returns>
         /// <exception cref="Win32Exception">对当前 INI 配置文件的读写失败。</exception>
-        [IndexerName("Profile")]
+        [IndexerName("Profiles")]
         public string this[string app, string key]
         {
             get => this.ReadProfile(app, key);
@@ -81,7 +73,7 @@ namespace XstarS.Win32
         /// 获取 INI 配置文件的路径。
         /// </summary>
         /// <returns>INI 配置文件的路径。</returns>
-        public string FilePath { get; }
+        public string FileName { get; }
 
         /// <summary>
         /// 读取当前 INI 配置文件中指定区块的指定键对应的值。
@@ -94,10 +86,10 @@ namespace XstarS.Win32
         {
             var result = new mstring(ushort.MaxValue);
             var length = NativeMethods.GetPrivateProfileString(
-                app, key, string.Empty, result, result.Capacity, this.FilePath);
+                app, key, string.Empty, result, result.Capacity, this.FileName);
             if (length == 0)
             {
-                var error = NativeMethods.GetLastError();
+                var error = Marshal.GetLastWin32Error();
                 if (error != 0) { throw new Win32Exception(error); }
             }
             result.Length = length;
@@ -114,10 +106,10 @@ namespace XstarS.Win32
         public void WriteProfile(string app, string key, string value)
         {
             var status = NativeMethods.WritePrivateProfileString(
-                app, key, value, this.FilePath);
+                app, key, value, this.FileName);
             if (!status)
             {
-                var error = NativeMethods.GetLastError();
+                var error = Marshal.GetLastWin32Error();
                 if (error != 0) { throw new Win32Exception(error); }
             }
         }
