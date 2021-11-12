@@ -48,11 +48,15 @@ namespace XstarS.IO
             }
 
             var size = sizeof(T);
-            var bytes = new byte[size];
-            var length = stream.Read(bytes);
-            fixed (byte* pBytes = bytes)
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            var buffer = (stackalloc byte[size]);
+#else
+            var buffer = (new byte[size]);
+#endif
+            var length = stream.Read(buffer);
+            fixed (byte* pBuffer = buffer)
             {
-                value = *(T*)pBytes;
+                value = *(T*)pBuffer;
             }
             return length == size;
         }
@@ -95,12 +99,16 @@ namespace XstarS.IO
             }
 
             var size = sizeof(T);
-            var bytes = new byte[size];
-            fixed (byte* pBytes = bytes)
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            var buffer = (stackalloc byte[size]);
+#else
+            var buffer = (new byte[size]);
+#endif
+            fixed (byte* pBuffer = buffer)
             {
-                *(T*)pBytes = value;
+                *(T*)pBuffer = value;
             }
-            stream.Write(bytes);
+            stream.Write(buffer);
         }
     }
 }

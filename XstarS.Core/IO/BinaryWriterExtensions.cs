@@ -25,12 +25,16 @@ namespace XstarS.IO
             }
 
             var size = sizeof(T);
-            var bytes = new byte[size];
-            fixed (byte* pBytes = bytes)
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+            var buffer = (stackalloc byte[size]);
+#else
+            var buffer = (new byte[size]);
+#endif
+            fixed (byte* pBuffer = buffer)
             {
-                *(T*)pBytes = value;
+                *(T*)pBuffer = value;
             }
-            writer.Write(bytes);
+            writer.Write(buffer);
         }
     }
 }
