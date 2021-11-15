@@ -1,4 +1,4 @@
-﻿namespace XstarS.Runtime
+﻿namespace XstarS.Runtime.CompilerServices
 {
     /// <summary>
     /// 提供对象的直接值相关的帮助方法。

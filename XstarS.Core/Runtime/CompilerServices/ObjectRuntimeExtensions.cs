@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Security;
 
-namespace XstarS.Runtime
+namespace XstarS.Runtime.CompilerServices
 {
     /// <summary>
     /// 提供对象运行时相关的扩展方法。
@@ -17,7 +17,7 @@ namespace XstarS.Runtime
         /// <param name="value">要创建浅表副本的对象。</param>
         /// <returns><paramref name="value"/> 的浅表副本。</returns>
         public static T DirectClone<T>(this T value) =>
-            (T)ObjectValues.Clone(value);
+            (T)ObjectRuntimeValue.Clone(value);
 
         /// <summary>
         /// 创建当前对象的深度副本。
@@ -27,7 +27,7 @@ namespace XstarS.Runtime
         /// <param name="value">要创建深度副本的对象。</param>
         /// <returns><paramref name="value"/> 的深度副本。</returns>
         public static T RecurseClone<T>(this T value) =>
-            (T)ObjectValues.RecursiveClone(value);
+            (T)ObjectRuntimeValue.RecursiveClone(value);
 
         /// <summary>
         /// 创建当前对象的序列化副本。
@@ -43,7 +43,7 @@ namespace XstarS.Runtime
         [Obsolete("BinaryFormatter serialization is obsolete and should not be used.")]
 #endif
         public static T SerializationClone<T>(this T value) =>
-            (T)ObjectValues.SerializationClone(value);
+            (T)ObjectRuntimeValue.SerializationClone(value);
 
         /// <summary>
         /// 确定当前对象与指定对象的引用是否相等。
@@ -68,7 +68,7 @@ namespace XstarS.Runtime
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public static bool ValueEquals<T>(this T value, T other) =>
-            ObjectValues.RecursiveEquals(value, other);
+            ObjectRuntimeValue.RecursiveEquals(value, other);
 
         /// <summary>
         /// 确定当前对象与指定对象的直接值是否相等。
@@ -100,7 +100,7 @@ namespace XstarS.Runtime
         /// <param name="value">要获取基于值的哈希代码的对象。</param>
         /// <returns>由 <paramref name="value"/> 基于值的哈希代码。</returns>
         public static int GetValueHashCode<T>(this T value) =>
-            ObjectValues.GetRecursiveHashCode(value);
+            ObjectRuntimeValue.GetRecursiveHashCode(value);
 
         /// <summary>
         /// 获取当前对象的基于直接值的哈希代码。

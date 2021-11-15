@@ -1,5 +1,5 @@
 ﻿using System;
-using XstarS.Runtime;
+using XstarS.Runtime.CompilerServices;
 
 namespace XstarS.Reflection
 {

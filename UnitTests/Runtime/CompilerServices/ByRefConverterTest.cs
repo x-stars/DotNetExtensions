@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XstarS.Runtime
+namespace XstarS.Runtime.CompilerServices
 {
     [TestClass]
     public class ByRefConverterTest

@@ -4,9 +4,9 @@ using System.Reflection;
 using ReferenceEqualityComparer =
     XstarS.Collections.Specialized.ReferenceEqualityComparer;
 
-namespace XstarS.Runtime
+namespace XstarS.Runtime.CompilerServices
 {
-    partial class ObjectValues
+    partial class ObjectRuntimeValue
     {
         /// <summary>
         /// 获取指定对象递归包含的值的哈希代码。
@@ -19,7 +19,7 @@ namespace XstarS.Runtime
         {
             var comparer = ReferenceEqualityComparer.Default;
             var computed = new HashSet<object>(comparer);
-            return ObjectValues.GetRecursiveHashCode(value, computed);
+            return ObjectRuntimeValue.GetRecursiveHashCode(value, computed);
         }
 
         /// <summary>
@@ -50,19 +50,19 @@ namespace XstarS.Runtime
             var type = value.GetType();
             if (type.IsPrimitive)
             {
-                return ObjectValues.GetPrimitiveHashCode(value);
+                return ObjectRuntimeValue.GetPrimitiveHashCode(value);
             }
             if (type == typeof(string))
             {
-                return ObjectValues.GetPrimitiveHashCode(value);
+                return ObjectRuntimeValue.GetPrimitiveHashCode(value);
             }
             else if (type.IsArray)
             {
-                return ObjectValues.GetArrayRecursiveHashCode((Array)value, computed);
+                return ObjectRuntimeValue.GetArrayRecursiveHashCode((Array)value, computed);
             }
             else
             {
-                return ObjectValues.GetObjectRecursiveHashCode(value, computed);
+                return ObjectRuntimeValue.GetObjectRecursiveHashCode(value, computed);
             }
         }
 
@@ -104,8 +104,8 @@ namespace XstarS.Runtime
                 for (int index = 0; index < value.Length; index++)
                 {
                     var item = methodGet.Invoke(value, value.OffsetToIndices(index).Box());
-                    hashCode = ObjectValues.CombineHashCode(
-                        hashCode, ObjectValues.GetBoxedPointerHashCode(item));
+                    hashCode = ObjectRuntimeValue.CombineHashCode(
+                        hashCode, ObjectRuntimeValue.GetBoxedPointerHashCode(item));
                 }
             }
             else
@@ -115,8 +115,8 @@ namespace XstarS.Runtime
                 {
                     var item = isSZArray ?
                         value.GetValue(index) : value.GetValue(value.OffsetToIndices(index));
-                    hashCode = ObjectValues.CombineHashCode(
-                        hashCode, ObjectValues.GetRecursiveHashCode(item, computed));
+                    hashCode = ObjectRuntimeValue.CombineHashCode(
+                        hashCode, ObjectRuntimeValue.GetRecursiveHashCode(item, computed));
                 }
             }
 
@@ -143,13 +143,13 @@ namespace XstarS.Runtime
                     var member = field.GetValue(value);
                     if (field.FieldType.IsPointer)
                     {
-                        hashCode = ObjectValues.CombineHashCode(
-                            hashCode, ObjectValues.GetBoxedPointerHashCode(member));
+                        hashCode = ObjectRuntimeValue.CombineHashCode(
+                            hashCode, ObjectRuntimeValue.GetBoxedPointerHashCode(member));
                     }
                     else
                     {
-                        hashCode = ObjectValues.CombineHashCode(
-                            hashCode, ObjectValues.GetRecursiveHashCode(member, computed));
+                        hashCode = ObjectRuntimeValue.CombineHashCode(
+                            hashCode, ObjectRuntimeValue.GetRecursiveHashCode(member, computed));
                     }
                 }
             }

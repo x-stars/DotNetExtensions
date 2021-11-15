@@ -8,15 +8,15 @@ using System.Security;
 using ReferenceEqualityComparer =
     XstarS.Collections.Specialized.ReferenceEqualityComparer;
 
-namespace XstarS.Runtime
+namespace XstarS.Runtime.CompilerServices
 {
-    partial class ObjectValues
+    partial class ObjectRuntimeValue
     {
         /// <summary>
         /// 表示 <see cref="object.MemberwiseClone()"/> 方法的静态调用委托。
         /// </summary>
         private static readonly Converter<object, object> CloneDelegate =
-            typeof(object).GetMethod(nameof(ObjectValues.MemberwiseClone),
+            typeof(object).GetMethod(nameof(ObjectRuntimeValue.MemberwiseClone),
                 BindingFlags.Instance | BindingFlags.NonPublic).CreateDelegate(
                     typeof(Converter<object, object>)) as Converter<object, object>;
 
@@ -36,7 +36,7 @@ namespace XstarS.Runtime
         public static object Clone(object value)
         {
             return (value is null) ? null :
-                ObjectValues.CloneDelegate.Invoke(value);
+                ObjectRuntimeValue.CloneDelegate.Invoke(value);
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace XstarS.Runtime
             if (value is null) { return null; }
             var comparer = ReferenceEqualityComparer.Default;
             var cloned = new Dictionary<object, object>(comparer);
-            return ObjectValues.RecursiveClone(value, cloned);
+            return ObjectRuntimeValue.RecursiveClone(value, cloned);
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace XstarS.Runtime
         {
             if (value is null) { return null; }
             using var stream = new MemoryStream();
-            var serializer = ObjectValues.Serializer;
+            var serializer = ObjectRuntimeValue.Serializer;
             serializer.Serialize(stream, value);
             stream.Position = 0L;
             return serializer.Deserialize(stream);
@@ -87,17 +87,17 @@ namespace XstarS.Runtime
             if (value is null) { return null; }
             if (cloned.ContainsKey(value)) { return cloned[value]; }
 
-            var clone = ObjectValues.Clone(value);
+            var clone = ObjectRuntimeValue.Clone(value);
             cloned[value] = clone;
 
             var type = clone.GetType();
             if (type.IsArray)
             {
-                ObjectValues.ArrayRecursiveClone((Array)clone, cloned);
+                ObjectRuntimeValue.ArrayRecursiveClone((Array)clone, cloned);
             }
             else if (!type.IsPrimitive)
             {
-                ObjectValues.ObjectRecursiveClone(clone, cloned);
+                ObjectRuntimeValue.ObjectRecursiveClone(clone, cloned);
             }
 
             return clone;
@@ -117,7 +117,7 @@ namespace XstarS.Runtime
                     for (int index = 0; index < value.Length; index++)
                     {
                         var item = value.GetValue(index);
-                        var clone = ObjectValues.RecursiveClone(item, cloned);
+                        var clone = ObjectRuntimeValue.RecursiveClone(item, cloned);
                         value.SetValue(clone, index);
                     }
                 }
@@ -127,7 +127,7 @@ namespace XstarS.Runtime
                     {
                         var indices = value.OffsetToIndices(index);
                         var item = value.GetValue(indices);
-                        var clone = ObjectValues.RecursiveClone(item, cloned);
+                        var clone = ObjectRuntimeValue.RecursiveClone(item, cloned);
                         value.SetValue(clone, indices);
                     }
                 }
@@ -151,7 +151,7 @@ namespace XstarS.Runtime
                     if (!field.FieldType.IsPointer)
                     {
                         var member = field.GetValue(value);
-                        var clone = ObjectValues.RecursiveClone(member, cloned);
+                        var clone = ObjectRuntimeValue.RecursiveClone(member, cloned);
                         field.SetValue(value, clone);
                     }
                 }

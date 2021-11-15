@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using XstarS.Reflection.Emit;
 
-namespace XstarS.Runtime
+namespace XstarS.Runtime.CompilerServices
 {
     /// <summary>
     /// 提供转换引用传递 <see langword="ref"/> 类型的方法。

@@ -1,6 +1,6 @@
 ﻿using System;
 using XstarS.Collections.Generic;
-using XstarS.Runtime;
+using XstarS.Runtime.CompilerServices;
 
 namespace XstarS.Collections.Specialized
 {
