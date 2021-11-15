@@ -3,7 +3,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using XstarS.Reflection.Emit;
 
-namespace XstarS.Runtime.CompilerServices
+namespace XstarS.Reflection
 {
     /// <summary>
     /// 提供转换引用传递 <see langword="ref"/> 类型的方法。
@@ -35,18 +35,8 @@ namespace XstarS.Runtime.CompilerServices
         /// <typeparam name="T">按引用转递的值的类型。</typeparam>
         /// <param name="pointer">引用值的 <see cref="IntPtr"/>。</param>
         /// <returns><paramref name="pointer"/> 对应的引用转递 <see langword="ref"/>。</returns>
-        public static ref T FromIntPtr<T>(IntPtr pointer) =>
-            ref ByRefConverter.Implementation.ConvertFromIntPtr<T>(pointer);
-
-        /// <summary>
-        /// 将指定的指针转换为对应类型的引用传递 <see langword="ref"/>。
-        /// </summary>
-        /// <typeparam name="T">指针指向的值的类型。</typeparam>
-        /// <param name="pointer">指向指定类型值的指针。</param>
-        /// <returns><paramref name="pointer"/> 对应的引用转递 <see langword="ref"/>。</returns>
-        [CLSCompliant(false)]
-        public static ref T FromPointer<T>(T* pointer) where T : unmanaged =>
-            ref ByRefConverter.FromIntPtr<T>((IntPtr)pointer);
+        public static ref T ToByRef<T>(nint pointer) =>
+            ref ByRefConverter.Implementation.ConvertToByRef<T>(pointer);
 
         /// <summary>
         /// 将指定的引用传递 <see langword="ref"/> 转换为等效的 <see cref="IntPtr"/>。
@@ -54,18 +44,8 @@ namespace XstarS.Runtime.CompilerServices
         /// <typeparam name="T">按引用传递的值的类型。</typeparam>
         /// <param name="reference">要进行转换的引用传递 <see langword="ref"/>。</param>
         /// <returns><paramref name="reference"/> 转换得到的 <see cref="IntPtr"/>。</returns>
-        public static IntPtr ToIntPtr<T>(ref T reference) =>
+        public static nint ToIntPtr<T>(ref T reference) =>
             ByRefConverter.Implementation.ConvertToIntPtr<T>(ref reference);
-
-        /// <summary>
-        /// 将指定的引用传递 <see langword="ref"/> 转换为对应类型的指针。
-        /// </summary>
-        /// <typeparam name="T">按引用传递的值的类型。</typeparam>
-        /// <param name="reference">要进行转换的引用传递 <see langword="ref"/>。</param>
-        /// <returns><paramref name="reference"/> 转换得到的对应类型的指针。</returns>
-        [CLSCompliant(false)]
-        public static T* ToPointer<T>(ref T reference) where T : unmanaged =>
-            (T*)ByRefConverter.ToIntPtr<T>(ref reference);
 
         /// <summary>
         /// 将指定的引用传递 <see langword="ref"/> 转换为指定的另一类型的引用传递。
@@ -83,7 +63,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <typeparam name="T">按引用转递的值的类型。</typeparam>
         /// <param name="pointer">引用值的 <see cref="IntPtr"/>。</param>
         /// <returns><paramref name="pointer"/> 对应的引用转递 <see langword="ref"/>。</returns>
-        public abstract ref T ConvertFromIntPtr<T>(IntPtr pointer);
+        public abstract ref T ConvertToByRef<T>(nint pointer);
 
         /// <summary>
         /// 将指定的引用传递 <see langword="ref"/> 转换为等效的 <see cref="IntPtr"/>。
@@ -91,7 +71,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <typeparam name="T">按引用传递的值的类型。</typeparam>
         /// <param name="reference">要进行转换的引用传递 <see langword="ref"/>。</param>
         /// <returns><paramref name="reference"/> 转换得到的 <see cref="IntPtr"/>。</returns>
-        public abstract IntPtr ConvertToIntPtr<T>(ref T reference);
+        public abstract nint ConvertToIntPtr<T>(ref T reference);
 
         /// <summary>
         /// 将指定的引用传递 <see langword="ref"/> 转换为指定的另一类型的引用传递。
