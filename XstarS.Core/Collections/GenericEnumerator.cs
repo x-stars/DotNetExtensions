@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace XstarS.Collections
 {
@@ -14,6 +15,7 @@ namespace XstarS.Collections
         /// <summary>
         /// 表示当前实例包装的枚举数。
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IEnumerator Enumerator;
 
         /// <summary>

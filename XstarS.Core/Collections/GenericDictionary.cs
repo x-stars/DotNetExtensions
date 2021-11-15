@@ -18,6 +18,7 @@ namespace XstarS.Collections
         /// <summary>
         /// 表示当前实例包装的字典。
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         private readonly IDictionary Dictionary;
 
         /// <summary>
@@ -207,6 +208,7 @@ namespace XstarS.Collections
             /// <summary>
             /// 表示当前实例包装的字典的键的集合。
             /// </summary>
+            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
             private readonly ICollection DictionaryKeys;
 
             /// <summary>
@@ -293,6 +295,7 @@ namespace XstarS.Collections
             /// <summary>
             /// 表示当前实例包装的字典的值的集合。
             /// </summary>
+            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
             private readonly ICollection DictionaryValues;
 
             /// <summary>
