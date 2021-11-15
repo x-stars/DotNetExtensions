@@ -33,7 +33,7 @@ namespace XstarS.Runtime.CompilerServices
         /// </summary>
         /// <param name="value">要获取浅表副本的对象。</param>
         /// <returns><paramref name="value"/> 的浅表副本。</returns>
-        public static object Clone(object value)
+        public static object DirectClone(object value)
         {
             return (value is null) ? null :
                 ObjectRuntimeValue.CloneDelegate.Invoke(value);
@@ -87,7 +87,7 @@ namespace XstarS.Runtime.CompilerServices
             if (value is null) { return null; }
             if (cloned.ContainsKey(value)) { return cloned[value]; }
 
-            var clone = ObjectRuntimeValue.Clone(value);
+            var clone = ObjectRuntimeValue.DirectClone(value);
             cloned[value] = clone;
 
             var type = clone.GetType();

@@ -17,7 +17,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <param name="value">要创建浅表副本的对象。</param>
         /// <returns><paramref name="value"/> 的浅表副本。</returns>
         public static T DirectClone<T>(this T value) =>
-            (T)ObjectRuntimeValue.Clone(value);
+            (T)ObjectRuntimeValue.DirectClone(value);
 
         /// <summary>
         /// 创建当前对象的深度副本。
@@ -26,7 +26,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要创建深度副本的对象。</param>
         /// <returns><paramref name="value"/> 的深度副本。</returns>
-        public static T RecurseClone<T>(this T value) =>
+        public static T RecursiveClone<T>(this T value) =>
             (T)ObjectRuntimeValue.RecursiveClone(value);
 
         /// <summary>
