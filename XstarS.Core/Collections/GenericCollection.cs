@@ -16,6 +16,7 @@ namespace XstarS.Collections
         /// <summary>
         /// 表示当前实例包装的列表。
         /// </summary>
+        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
         private readonly IList Collection;
 
         /// <summary>
