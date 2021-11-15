@@ -77,8 +77,6 @@ namespace XstarS.Reflection
         /// <paramref name="baseType"/> 不是公共接口。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="baseType"/> 为 <see langword="null"/>。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         private WrapProxyTypeProvider(Type baseType)
         {
             if (baseType is null)
@@ -87,7 +85,8 @@ namespace XstarS.Reflection
             }
             if (!(baseType.IsVisible && baseType.IsInterface && !baseType.ContainsGenericParameters))
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseType));
+                var inner = new TypeAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseType), inner);
             }
 
             this.BaseType = baseType;

@@ -42,10 +42,8 @@ namespace XstarS.CommandLine.Specialized
         /// 不存在则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
+        /// <exception cref="FormatException">
         /// <paramref name="name"/> 不带参数提示符 "-" 或长度过短。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public override string GetArgument(string name)
         {
             if (name is null)
@@ -53,7 +51,6 @@ namespace XstarS.CommandLine.Specialized
                 throw new ArgumentNullException(nameof(name));
             }
 
-            var message = new ArgumentException().Message;
             var alterNames = name.Split(',');
             foreach (string alterName in alterNames)
             {
@@ -61,23 +58,19 @@ namespace XstarS.CommandLine.Specialized
                 {
                     if (alterName.Length < 3)
                     {
-                        throw new ArgumentException(message, nameof(name));
+                        throw new FormatException();
                     }
                 }
                 else if (alterName.StartsWith("-"))
                 {
-                    if (alterName.Length < 2)
+                    if (alterName.Length != 2)
                     {
-                        throw new ArgumentException(message, nameof(name));
-                    }
-                    else if (alterName.Length > 2)
-                    {
-                        throw new ArgumentException(message, nameof(name));
+                        throw new FormatException();
                     }
                 }
                 else
                 {
-                    throw new ArgumentException(message, nameof(name));
+                    throw new FormatException();
                 }
 
                 if (base.GetArgument(alterName) is string value)
@@ -134,10 +127,8 @@ namespace XstarS.CommandLine.Specialized
         /// 则为 <see langword="true"/>； 否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
+        /// <exception cref="FormatException">
         /// <paramref name="name"/> 不带参数提示符 "-" 或长度过短。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public override bool GetOption(string name)
         {
             if (name is null)
@@ -145,7 +136,6 @@ namespace XstarS.CommandLine.Specialized
                 throw new ArgumentNullException(nameof(name));
             }
 
-            var message = new ArgumentException().Message;
             var alterNames = name.Split(',');
             foreach (string alterName in alterNames)
             {
@@ -153,7 +143,7 @@ namespace XstarS.CommandLine.Specialized
                 {
                     if (alterName.Length < 3)
                     {
-                        throw new ArgumentException(message, nameof(name));
+                        throw new FormatException();
                     }
                     else
                     {
@@ -167,25 +157,19 @@ namespace XstarS.CommandLine.Specialized
                 {
                     if (alterName.Length < 2)
                     {
-                        throw new ArgumentException(message, nameof(name));
+                        throw new FormatException();
                     }
-                    else if (alterName.Length > 2)
+
+                    if (this.Arguments.Any(argument =>
+                        argument.StartsWith("-") && !argument.StartsWith("--") &&
+                        argument.Contains(alterName.Substring(1, 1))))
                     {
-                        throw new ArgumentException(message, nameof(name));
-                    }
-                    else
-                    {
-                        if (this.Arguments.Any(argument =>
-                            argument.StartsWith("-") && !argument.StartsWith("--") &&
-                            argument.Contains(alterName.Substring(1, 1))))
-                        {
-                            return true;
-                        }
+                        return true;
                     }
                 }
                 else
                 {
-                    throw new ArgumentException(message, nameof(name));
+                    throw new FormatException();
                 }
             }
 
@@ -200,10 +184,8 @@ namespace XstarS.CommandLine.Specialized
         /// 若不存在则为空数组。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="name"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
+        /// <exception cref="FormatException">
         /// <paramref name="name"/> 不带参数提示符 "-" 或长度过短。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public virtual string[] GetArguments(string name)
         {
             if (name is null)
@@ -211,7 +193,6 @@ namespace XstarS.CommandLine.Specialized
                 throw new ArgumentNullException(nameof(name));
             }
 
-            var message = new ArgumentException().Message;
             var values = new List<string>();
             var alterNames = name.Split(',');
             foreach (string alterName in alterNames)
@@ -220,23 +201,19 @@ namespace XstarS.CommandLine.Specialized
                 {
                     if (alterName.Length < 3)
                     {
-                        throw new ArgumentException(message, nameof(name));
+                        throw new FormatException();
                     }
                 }
                 else if (alterName.StartsWith("-"))
                 {
-                    if (alterName.Length < 2)
+                    if (alterName.Length != 2)
                     {
-                        throw new ArgumentException(message, nameof(name));
-                    }
-                    else if (alterName.Length > 2)
-                    {
-                        throw new ArgumentException(message, nameof(name));
+                        throw new FormatException();
                     }
                 }
                 else
                 {
-                    throw new ArgumentException(message, nameof(name));
+                    throw new FormatException();
                 }
 
                 for (int index = 0; index < this.Arguments.Length - 1; index++)
