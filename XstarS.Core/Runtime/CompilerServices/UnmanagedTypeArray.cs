@@ -1,4 +1,4 @@
-﻿namespace XstarS.Runtime
+﻿namespace XstarS.Runtime.CompilerServices
 {
     /// <summary>
     /// 提供非托管类型的数组相关的帮助方法。

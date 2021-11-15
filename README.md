@@ -25,7 +25,7 @@
 * `XstarS.Linq`
 * `XstarS.Reflection`
 * `XstarS.Reflection.Emit`
-* `XstarS.Runtime`
+* `XstarS.Runtime.CompilerServices`
 * `XstarS.Text`
 * `XstarS.Text.RegularExpressions`
 

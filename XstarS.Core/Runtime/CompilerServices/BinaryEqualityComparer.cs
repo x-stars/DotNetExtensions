@@ -1,4 +1,4 @@
-﻿namespace XstarS.Runtime
+﻿namespace XstarS.Runtime.CompilerServices
 {
     /// <summary>
     /// 提供二进制相等比较相关的帮助方法。

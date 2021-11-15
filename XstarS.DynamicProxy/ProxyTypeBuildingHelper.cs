@@ -61,8 +61,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException"><paramref name="baseGenericParams"/>
         /// 不为泛型参数列表，或与 <paramref name="genericParams"/> 的长度不等。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static void SetGenericConstraintsLike(
             this GenericTypeParameterBuilder[] genericParams, Type[] baseGenericParams,
             Type[] baseTypeGenericArgs)
@@ -81,13 +79,13 @@ namespace XstarS.Reflection.Emit
             }
             if (baseGenericParams.Length != genericParams.Length)
             {
-                throw new ArgumentException(
-                    new ArgumentException().Message, nameof(baseGenericParams));
+                var inner = new TargetParameterCountException();
+                throw new ArgumentException(inner.Message, nameof(baseGenericParams), inner);
             }
             if (baseGenericParams.Any(type => !type.IsGenericParameter))
             {
-                throw new ArgumentException(
-                    new ArgumentException().Message, nameof(baseGenericParams));
+                var inner = new InvalidOperationException();
+                throw new ArgumentException(inner.Message, nameof(baseGenericParams), inner);
             }
 
             Type makeConstraint(Type constraintType)
@@ -151,8 +149,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static MethodBuilder DefineMethodLike(
             this TypeBuilder type, MethodInfo baseMethod, Type baseType)
         {
@@ -170,7 +166,8 @@ namespace XstarS.Reflection.Emit
             }
             if (!baseMethod.IsInheritable())
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseMethod));
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseMethod), inner);
             }
 
             var baseGenericParams = baseMethod.GetGenericArguments();
@@ -211,8 +208,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static MethodBuilder DefineBaseInvokeMethodLike(
             this TypeBuilder type, MethodInfo baseMethod, Type baseType)
         {
@@ -230,7 +225,8 @@ namespace XstarS.Reflection.Emit
             }
             if (!baseMethod.IsProxyOverride())
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseMethod));
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseMethod), inner);
             }
 
             var method = type.DefineMethodLike(baseMethod, baseType);
@@ -270,8 +266,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static KeyValuePair<FieldBuilder, FieldBuilder> DefineMethodInfoAndDelegateField(
             this TypeBuilder type, MethodInfo baseMethod, Type baseType, MethodInfo baseInvokeMethod)
         {
@@ -293,7 +287,8 @@ namespace XstarS.Reflection.Emit
             }
             if (!baseMethod.IsProxyOverride())
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseMethod));
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseMethod), inner);
             }
 
             var baseGenericParams = baseMethod.GetGenericArguments();
@@ -395,8 +390,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static MethodBuilder DefineProxyMethodOverride(
             this TypeBuilder type, MethodInfo baseMethod,
             FieldInfo baseMethodInfoField, FieldInfo baseMethodDelegateField,
@@ -424,7 +417,8 @@ namespace XstarS.Reflection.Emit
             }
             if (!baseMethod.IsProxyOverride())
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseMethod));
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseMethod), inner);
             }
 
             var method = type.DefineMethodOverride(baseMethod, explicitOverride);

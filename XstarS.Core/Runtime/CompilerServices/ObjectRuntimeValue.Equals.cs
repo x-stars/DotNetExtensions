@@ -4,11 +4,11 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using XstarS.Collections.Specialized;
 
-namespace XstarS.Runtime
+namespace XstarS.Runtime.CompilerServices
 {
     using ObjectPair = KeyValuePair<object, object>;
 
-    partial class ObjectValues
+    partial class ObjectRuntimeValue
     {
         /// <summary>
         /// 确定指定的两个对象包含的值是否递归相等。
@@ -23,7 +23,7 @@ namespace XstarS.Runtime
         {
             var comparer = PairReferenceEqualityComparer.Default;
             var compared = new HashSet<ObjectPair>(comparer);
-            return ObjectValues.RecursiveEquals(value, other, compared);
+            return ObjectRuntimeValue.RecursiveEquals(value, other, compared);
         }
 
         /// <summary>
@@ -48,19 +48,19 @@ namespace XstarS.Runtime
             var type = value.GetType();
             if (type.IsPrimitive)
             {
-                return ObjectValues.PrimitiveEquals(value, other);
+                return ObjectRuntimeValue.PrimitiveEquals(value, other);
             }
             if (type == typeof(string))
             {
-                return ObjectValues.PrimitiveEquals(value, other);
+                return ObjectRuntimeValue.PrimitiveEquals(value, other);
             }
             else if (type.IsArray)
             {
-                return ObjectValues.ArrayRecursiveEquals((Array)value, (Array)other, compared);
+                return ObjectRuntimeValue.ArrayRecursiveEquals((Array)value, (Array)other, compared);
             }
             else
             {
-                return ObjectValues.ObjectRecursiveEquals(value, other, compared);
+                return ObjectRuntimeValue.ObjectRecursiveEquals(value, other, compared);
             }
         }
 
@@ -118,7 +118,7 @@ namespace XstarS.Runtime
                 {
                     var valueItem = methodGet.Invoke(value, value.OffsetToIndices(index).Box())!;
                     var otherItem = methodGet.Invoke(other, other.OffsetToIndices(index).Box())!;
-                    if (!ObjectValues.BoxedPointerEquals(valueItem, otherItem))
+                    if (!ObjectRuntimeValue.BoxedPointerEquals(valueItem, otherItem))
                     {
                         return false;
                     }
@@ -133,7 +133,7 @@ namespace XstarS.Runtime
                         value.GetValue(index) : value.GetValue(value.OffsetToIndices(index));
                     var otherItem = isSZArray ?
                         other.GetValue(index) : other.GetValue(other.OffsetToIndices(index));
-                    if (!ObjectValues.RecursiveEquals(valueItem, otherItem, compared))
+                    if (!ObjectRuntimeValue.RecursiveEquals(valueItem, otherItem, compared))
                     {
                         return false;
                     }
@@ -165,14 +165,14 @@ namespace XstarS.Runtime
                     var otherMember = field.GetValue(other);
                     if (field.FieldType.IsPointer)
                     {
-                        if (!ObjectValues.BoxedPointerEquals(valueMember!, otherMember!))
+                        if (!ObjectRuntimeValue.BoxedPointerEquals(valueMember!, otherMember!))
                         {
                             return false;
                         }
                     }
                     else
                     {
-                        if (!ObjectValues.RecursiveEquals(valueMember, otherMember, compared))
+                        if (!ObjectRuntimeValue.RecursiveEquals(valueMember, otherMember, compared))
                         {
                             return false;
                         }

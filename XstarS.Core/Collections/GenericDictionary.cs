@@ -24,12 +24,14 @@ namespace XstarS.Collections
         /// <summary>
         /// 表示实例包装的字典的键的集合的泛型包装。
         /// </summary>
-        private readonly KeyCollection DictionaryGenericKeys;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly KeyCollection GenericKeys;
 
         /// <summary>
         /// 表示实例包装的字典的值的集合的泛型包装。
         /// </summary>
-        private readonly ValueCollection DictionaryGenericValues;
+        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
+        private readonly ValueCollection GenericValues;
 
         /// <summary>
         /// 将 <see cref="GenericDictionary{TKey, TValue}"/> 类的新实例初始化为指定字典的包装。
@@ -41,8 +43,8 @@ namespace XstarS.Collections
         {
             this.Dictionary = dictionary ??
                 throw new ArgumentNullException(nameof(dictionary));
-            this.DictionaryGenericKeys = new KeyCollection(this.Dictionary);
-            this.DictionaryGenericValues = new ValueCollection(this.Dictionary);
+            this.GenericKeys = new KeyCollection(this.Dictionary);
+            this.GenericValues = new ValueCollection(this.Dictionary);
         }
 
         /// <inheritdoc/>
@@ -66,13 +68,13 @@ namespace XstarS.Collections
         /// 获取包含字典的键的集合。
         /// </summary>
         /// <returns>包含字典的键的 <see cref="KeyCollection"/>。</returns>
-        public KeyCollection Keys => this.DictionaryGenericKeys;
+        public KeyCollection Keys => this.GenericKeys;
 
         /// <summary>
         /// 获取包含字典的值的集合。
         /// </summary>
         /// <returns>包含字典的值的 <see cref="ValueCollection"/>。</returns>
-        public ValueCollection Values => this.DictionaryGenericValues;
+        public ValueCollection Values => this.GenericValues;
 
         /// <inheritdoc/>
         ICollection<TKey> IDictionary<TKey, TValue?>.Keys => this.Keys;
@@ -200,6 +202,7 @@ namespace XstarS.Collections
             /// <summary>
             /// 表示当前实例包装的字典。
             /// </summary>
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             private readonly IDictionary Dictionary;
 
             /// <summary>
@@ -285,6 +288,7 @@ namespace XstarS.Collections
             /// <summary>
             /// 表示当前实例包装的字典。
             /// </summary>
+            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             private readonly IDictionary Dictionary;
 
             /// <summary>

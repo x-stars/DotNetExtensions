@@ -58,8 +58,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseConstructor"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static ConstructorBuilder DefineConstructorLike(
             this TypeBuilder type, ConstructorInfo baseConstructor)
         {
@@ -73,7 +71,8 @@ namespace XstarS.Reflection.Emit
             }
             if (!baseConstructor.IsInheritable())
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseConstructor));
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseConstructor), inner);
             }
 
             var constructor = type.DefineConstructor(
@@ -100,8 +99,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseConstructor"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static ConstructorBuilder DefineBaseInvokeConstructorLike(
             this TypeBuilder type, ConstructorInfo baseConstructor)
         {
@@ -115,7 +112,8 @@ namespace XstarS.Reflection.Emit
             }
             if (!baseConstructor.IsInheritable())
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseConstructor));
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseConstructor), inner);
             }
 
             var constructor = type.DefineConstructorLike(baseConstructor);
@@ -142,8 +140,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static MethodBuilder DefineMethodOverride(
             this TypeBuilder type, MethodInfo baseMethod, bool explicitOverride = false)
         {
@@ -157,7 +153,8 @@ namespace XstarS.Reflection.Emit
             }
             if (!baseMethod.IsOverridable())
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseMethod));
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseMethod), inner);
             }
 
             var baseGenericParams = baseMethod.GetGenericArguments();
@@ -218,8 +215,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static MethodBuilder DefineNotImplementedMethodOverride(
             this TypeBuilder type, MethodInfo baseMethod, bool explicitOverride = false)
         {
@@ -233,7 +228,8 @@ namespace XstarS.Reflection.Emit
             }
             if (!baseMethod.IsOverridable())
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseMethod));
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseMethod), inner);
             }
 
             var method = type.DefineMethodOverride(baseMethod, explicitOverride);
@@ -256,8 +252,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static PropertyBuilder DefineNotImplementedPropertyOverride(
             this TypeBuilder type, PropertyInfo baseProperty, bool explicitOverride = false)
         {
@@ -271,7 +265,8 @@ namespace XstarS.Reflection.Emit
             }
             if (!baseProperty.GetAccessors().All(accessor => accessor.IsOverridable()))
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseProperty));
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseProperty), inner);
             }
 
             var propertyName = baseProperty.Name;
@@ -310,8 +305,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 是索引属性或无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static KeyValuePair<PropertyBuilder, FieldBuilder> DefineAutoPropertyOverride(
             this TypeBuilder type, PropertyInfo baseProperty, bool explicitOverride = false)
         {
@@ -325,11 +318,13 @@ namespace XstarS.Reflection.Emit
             }
             if (baseProperty.GetIndexParameters().Length != 0)
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseProperty));
+                var inner = new TargetParameterCountException();
+                throw new ArgumentException(inner.Message, nameof(baseProperty), inner);
             }
             if (!baseProperty.GetAccessors().All(accessor => accessor.IsOverridable()))
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseProperty));
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseProperty), inner);
             }
 
             var propertyName = baseProperty.Name;
@@ -388,8 +383,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseEvent"/> 的方法无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static EventBuilder DefineNotImplementedEventOverride(
             this TypeBuilder type, EventInfo baseEvent, bool explicitOverride = false)
         {
@@ -403,7 +396,8 @@ namespace XstarS.Reflection.Emit
             }
             if (!baseEvent.AddMethod!.IsOverridable())
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseEvent));
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseEvent), inner);
             }
 
             var eventName = baseEvent.Name;
@@ -441,8 +435,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseEvent"/> 的方法无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         public static KeyValuePair<EventBuilder, FieldBuilder> DefineDefaultEventOverride(
             this TypeBuilder type, EventInfo baseEvent, bool explicitOverride = false)
         {
@@ -456,7 +448,8 @@ namespace XstarS.Reflection.Emit
             }
             if (!baseEvent.AddMethod!.IsOverridable())
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseEvent));
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseEvent), inner);
             }
 
             var eventName = baseEvent.Name;

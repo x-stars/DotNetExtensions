@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XstarS.Runtime
+namespace XstarS.Reflection
 {
     [TestClass]
     public class ByRefConverterTest
@@ -9,8 +9,8 @@ namespace XstarS.Runtime
         public void ToIntPtr_Int32ByRef_CanEditRefValue()
         {
             int value = 0;
-            var reference = ByRefConverter.ToIntPtr(ref value);
-            ByRefConverter.FromIntPtr<int>(reference) = 1;
+            var pointer = ByRefConverter.ToIntPtr(ref value);
+            ByRefConverter.ToByRef<int>(pointer) = 1;
             Assert.AreEqual(1, value);
         }
     }

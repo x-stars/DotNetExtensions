@@ -44,8 +44,6 @@ namespace XstarS.ComponentModel
         /// <paramref name="baseType"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="baseType"/> 为 <see langword="null"/>。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         private ObservableTypeProvider(Type baseType)
         {
             if (baseType is null)
@@ -54,7 +52,8 @@ namespace XstarS.ComponentModel
             }
             if (!(baseType.IsVisible && !baseType.IsSealed && !baseType.ContainsGenericParameters))
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseType));
+                var inner = new TypeAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseType), inner);
             }
 
             this.BaseType = baseType;

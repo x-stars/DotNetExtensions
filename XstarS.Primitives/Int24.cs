@@ -160,10 +160,13 @@ namespace XstarS
         /// <paramref name="obj"/>，则大于零；若此实例等于 <paramref name="obj"/>，则为零。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="obj"/> 不为 <see cref="Int24"/>。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
-        public int CompareTo(object? obj) => (obj is null) ? this.CompareTo(default(Int24)) :
-            (obj is Int24 other) ? this.CompareTo(other) : throw new ArgumentException();
+        public int CompareTo(object? obj)
+        {
+            if (obj is null) { return this.CompareTo(default(Int24)); }
+            if (obj is Int24 other) { return this.CompareTo(other); }
+            var inner = new InvalidCastException();
+            throw new ArgumentException(inner.Message, nameof(obj), inner);
+        }
 
         /// <summary>
         /// 将此实例与指定的 <see cref="Int24"/> 值进行比较并返回对其相对值的指示。

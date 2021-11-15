@@ -64,8 +64,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的声明类型不为接口。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static MethodBuilder DefineWrapBaseInvokeMethodLike(
             this TypeBuilder type, MethodInfo baseMethod, Type baseType, FieldInfo instanceField)
         {
@@ -83,7 +81,8 @@ namespace XstarS.Reflection.Emit
             }
             if (!(baseMethod.IsPublic && baseMethod.IsInheritable()))
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseMethod));
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseMethod), inner);
             }
 
             var method = type.DefineMethodLike(baseMethod, baseType);
@@ -114,8 +113,6 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 的声明类型不为接口。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Usage", "CA2208:InstantiateArgumentExceptionsCorrectly")]
         internal static MethodBuilder DefineWrapBaseInvokeMethodOverride(
             this TypeBuilder type, MethodInfo baseMethod,
             FieldInfo instanceField, bool explicitOverride = false)
@@ -130,7 +127,8 @@ namespace XstarS.Reflection.Emit
             }
             if (!baseMethod.IsWrapProxyOverride())
             {
-                throw new ArgumentException(new ArgumentException().Message, nameof(baseMethod));
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseMethod), inner);
             }
 
             var method = type.DefineMethodOverride(baseMethod, explicitOverride);
