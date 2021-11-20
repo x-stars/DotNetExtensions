@@ -102,7 +102,7 @@ namespace XstarS.Reflection
                 throw new ArgumentException(inner.Message, nameof(delegateType), inner);
             }
 
-            var instExpr = field.IsStatic ? null : Expression.Parameter(field.DeclaringType, "instance");
+            var instExpr = field.IsStatic ? null : Expression.Parameter(field.DeclaringType!, "instance");
             var fieldExpr = Expression.Field(instExpr, field);
             var paramExprs = (instExpr is null) ? Array.Empty<ParameterExpression>() : new[] { instExpr };
             var lambda = Expression.Lambda(delegateType, fieldExpr, paramExprs);
@@ -118,7 +118,7 @@ namespace XstarS.Reflection
         /// <returns>获取 <paramref name="field"/> 字段值的委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
-        public static TDelegate CreateGetDelegate<TDelegate>(this FieldInfo field, object target)
+        public static TDelegate CreateGetDelegate<TDelegate>(this FieldInfo field, object? target)
             where TDelegate : Delegate
         {
             return (TDelegate)field.CreateGetDelegate(typeof(TDelegate), target);
@@ -135,7 +135,7 @@ namespace XstarS.Reflection
         /// 或 <paramref name="delegateType"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="delegateType"/> 表示的类型不从 <see cref="Delegate"/> 派生。</exception>
-        public static Delegate CreateGetDelegate(this FieldInfo field, Type delegateType, object target)
+        public static Delegate CreateGetDelegate(this FieldInfo field, Type delegateType, object? target)
         {
             if (field is null)
             {
@@ -197,7 +197,7 @@ namespace XstarS.Reflection
                 throw new ArgumentException(inner.Message, nameof(delegateType), inner);
             }
 
-            var instExpr = field.IsStatic ? null : Expression.Parameter(field.DeclaringType, "instance");
+            var instExpr = field.IsStatic ? null : Expression.Parameter(field.DeclaringType!, "instance");
             var valueExpr = Expression.Parameter(field.FieldType, "value");
             var fieldExpr = Expression.Field(instExpr, field);
             var assignExpr = Expression.Assign(fieldExpr, valueExpr);
@@ -215,7 +215,7 @@ namespace XstarS.Reflection
         /// <returns>设置 <paramref name="field"/> 字段值的委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
-        public static TDelegate CreateSetDelegate<TDelegate>(this FieldInfo field, object target)
+        public static TDelegate CreateSetDelegate<TDelegate>(this FieldInfo field, object? target)
             where TDelegate : Delegate
         {
             return (TDelegate)field.CreateSetDelegate(typeof(TDelegate), target);
@@ -232,7 +232,7 @@ namespace XstarS.Reflection
         /// 或 <paramref name="delegateType"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="delegateType"/> 表示的类型不从 <see cref="Delegate"/> 派生。</exception>
-        public static Delegate CreateSetDelegate(this FieldInfo field, Type delegateType, object target)
+        public static Delegate CreateSetDelegate(this FieldInfo field, Type delegateType, object? target)
         {
             if (field is null)
             {
@@ -280,7 +280,7 @@ namespace XstarS.Reflection
         /// <returns><paramref name="method"/> 方法的委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-        public static TDelegate CreateDelegate<TDelegate>(this MethodInfo method, object target)
+        public static TDelegate CreateDelegate<TDelegate>(this MethodInfo method, object? target)
             where TDelegate : Delegate
         {
             return (TDelegate)method.CreateDelegate(typeof(TDelegate), target);

@@ -13,7 +13,7 @@ namespace XstarS.Reflection
         /// <returns><paramref name="constructor"/> 构造函数的动态调用委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constructor"/> 为 <see langword="null"/>。</exception>
-        public static Func<object[], object> CreateDynamicDelegate(this ConstructorInfo constructor)
+        public static Func<object?[]?, object> CreateDynamicDelegate(this ConstructorInfo constructor)
         {
             if (constructor is null)
             {
@@ -25,7 +25,7 @@ namespace XstarS.Reflection
                 throw new ArgumentException(inner.Message, nameof(constructor), inner);
             }
 
-            var argsExpr = Expression.Parameter(typeof(object[]), "arguments");
+            var argsExpr = Expression.Parameter(typeof(object?[]), "arguments");
             var paramInfos = constructor.GetParameters();
             var argCastExprs = new Expression[paramInfos.Length];
             for (int index = 0; index < argCastExprs.Length; index++)
@@ -38,7 +38,7 @@ namespace XstarS.Reflection
             }
             var newExpr = Expression.New(constructor, argCastExprs);
             var boxExpr = Expression.Convert(newExpr, typeof(object));
-            var lambda = Expression.Lambda<Func<object[], object>>(boxExpr, argsExpr);
+            var lambda = Expression.Lambda<Func<object?[]?, object>>(boxExpr, argsExpr);
             return lambda.Compile();
         }
 
@@ -49,7 +49,7 @@ namespace XstarS.Reflection
         /// <returns>获取 <paramref name="field"/> 字段值的动态调用委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
-        public static Func<object, object> CreateDynamicGetDelegate(this FieldInfo field)
+        public static Func<object?, object?> CreateDynamicGetDelegate(this FieldInfo field)
         {
             if (field is null)
             {
@@ -57,10 +57,10 @@ namespace XstarS.Reflection
             }
 
             var instExpr = Expression.Parameter(typeof(object), "instance");
-            var castExpr = field.IsStatic ? null : Expression.Convert(instExpr, field.DeclaringType);
+            var castExpr = field.IsStatic ? null : Expression.Convert(instExpr, field.DeclaringType!);
             var fieldExpr = Expression.Field(castExpr, field);
             var boxExpr = Expression.Convert(fieldExpr, typeof(object));
-            var lambda = Expression.Lambda<Func<object, object>>(boxExpr, instExpr);
+            var lambda = Expression.Lambda<Func<object?, object?>>(boxExpr, instExpr);
             return lambda.Compile();
         }
 
@@ -72,7 +72,7 @@ namespace XstarS.Reflection
         /// <returns>获取 <paramref name="field"/> 字段值的动态调用委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
-        public static Func<object> CreateDynamicGetDelegate(this FieldInfo field, object target)
+        public static Func<object?> CreateDynamicGetDelegate(this FieldInfo field, object? target)
         {
             if (field is null)
             {
@@ -82,7 +82,7 @@ namespace XstarS.Reflection
             var instExpr = field.IsStatic ? null : Expression.Constant(target);
             var fieldExpr = Expression.Field(instExpr, field);
             var boxExpr = Expression.Convert(fieldExpr, typeof(object));
-            var lambda = Expression.Lambda<Func<object>>(boxExpr);
+            var lambda = Expression.Lambda<Func<object?>>(boxExpr);
             return lambda.Compile();
         }
 
@@ -93,7 +93,7 @@ namespace XstarS.Reflection
         /// <returns>设置 <paramref name="field"/> 字段值的动态调用委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
-        public static Action<object, object> CreateDynamicSetDelegate(this FieldInfo field)
+        public static Action<object?, object?> CreateDynamicSetDelegate(this FieldInfo field)
         {
             if (field is null)
             {
@@ -101,12 +101,12 @@ namespace XstarS.Reflection
             }
 
             var instExpr = Expression.Parameter(typeof(object), "instance");
-            var castExpr = field.IsStatic ? null : Expression.Convert(instExpr, field.DeclaringType);
+            var castExpr = field.IsStatic ? null : Expression.Convert(instExpr, field.DeclaringType!);
             var fieldExpr = Expression.Field(castExpr, field);
             var valueExpr = Expression.Parameter(typeof(object), "value");
             var valueCastExpr = Expression.Convert(valueExpr, field.FieldType);
             var assignExpr = Expression.Assign(fieldExpr, valueCastExpr);
-            var lambda = Expression.Lambda<Action<object, object>>(assignExpr, instExpr, valueExpr);
+            var lambda = Expression.Lambda<Action<object?, object?>>(assignExpr, instExpr, valueExpr);
             return lambda.Compile();
         }
 
@@ -118,7 +118,7 @@ namespace XstarS.Reflection
         /// <returns>设置 <paramref name="field"/> 字段值的动态调用委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
-        public static Action<object> CreateDynamicSetDelegate(this FieldInfo field, object target)
+        public static Action<object?> CreateDynamicSetDelegate(this FieldInfo field, object? target)
         {
             if (field is null)
             {
@@ -130,7 +130,7 @@ namespace XstarS.Reflection
             var valueExpr = Expression.Parameter(typeof(object), "value");
             var valueCastExpr = Expression.Convert(valueExpr, field.FieldType);
             var assignExpr = Expression.Assign(fieldExpr, valueCastExpr);
-            var lambda = Expression.Lambda<Action<object>>(assignExpr, valueExpr);
+            var lambda = Expression.Lambda<Action<object?>>(assignExpr, valueExpr);
             return lambda.Compile();
         }
 
@@ -141,7 +141,7 @@ namespace XstarS.Reflection
         /// <returns><paramref name="method"/> 方法的动态调用委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-        public static Func<object, object[], object> CreateDynamicDelegate(this MethodInfo method)
+        public static Func<object?, object?[]?, object?> CreateDynamicDelegate(this MethodInfo method)
         {
             if (method is null)
             {
@@ -149,8 +149,8 @@ namespace XstarS.Reflection
             }
 
             var instExpr = Expression.Parameter(typeof(object), "instance");
-            var castExpr = method.IsStatic ? null : Expression.Convert(instExpr, method.DeclaringType);
-            var argsExpr = Expression.Parameter(typeof(object[]), "arguments");
+            var castExpr = method.IsStatic ? null : Expression.Convert(instExpr, method.DeclaringType!);
+            var argsExpr = Expression.Parameter(typeof(object?[]), "arguments");
             var paramInfos = method.GetParameters();
             var argCastExprs = new Expression[paramInfos.Length];
             for (int index = 0; index < argCastExprs.Length; index++)
@@ -164,14 +164,14 @@ namespace XstarS.Reflection
             if (method.ReturnType == typeof(void))
             {
                 var callExpr = Expression.Call(castExpr, method, argCastExprs);
-                var lambda = Expression.Lambda<Action<object, object[]>>(callExpr, instExpr, argsExpr);
+                var lambda = Expression.Lambda<Action<object?, object?[]?>>(callExpr, instExpr, argsExpr);
                 var innerAction = lambda.Compile();
                 return (instance, arguments) => { innerAction.Invoke(instance, arguments); return null; };
             }
             else
             {
                 var callExpr = Expression.Call(castExpr, method, argCastExprs);
-                var lambda = Expression.Lambda<Func<object, object[], object>>(callExpr, instExpr, argsExpr);
+                var lambda = Expression.Lambda<Func<object?, object?[]?, object?>>(callExpr, instExpr, argsExpr);
                 return lambda.Compile();
             }
         }
@@ -184,7 +184,7 @@ namespace XstarS.Reflection
         /// <returns><paramref name="method"/> 方法的动态调用委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-        public static Func<object[], object> CreateDynamicDelegate(this MethodInfo method, object target)
+        public static Func<object?[]?, object?> CreateDynamicDelegate(this MethodInfo method, object? target)
         {
             if (method is null)
             {
@@ -192,7 +192,7 @@ namespace XstarS.Reflection
             }
 
             var instExpr = method.IsStatic ? null : Expression.Constant(target);
-            var argsExpr = Expression.Parameter(typeof(object[]), "arguments");
+            var argsExpr = Expression.Parameter(typeof(object?[]), "arguments");
             var paramInfos = method.GetParameters();
             var argCastExprs = new Expression[paramInfos.Length];
             for (int index = 0; index < argCastExprs.Length; index++)
@@ -206,14 +206,14 @@ namespace XstarS.Reflection
             if (method.ReturnType == typeof(void))
             {
                 var callExpr = Expression.Call(instExpr, method, argCastExprs);
-                var lambda = Expression.Lambda<Action<object[]>>(callExpr, argsExpr);
+                var lambda = Expression.Lambda<Action<object?[]?>>(callExpr, argsExpr);
                 var innerAction = lambda.Compile();
                 return arguments => { innerAction.Invoke(arguments); return null; };
             }
             else
             {
                 var callExpr = Expression.Call(instExpr, method, argCastExprs);
-                var lambda = Expression.Lambda<Func<object[], object>>(callExpr, argsExpr);
+                var lambda = Expression.Lambda<Func<object?[]?, object?>>(callExpr, argsExpr);
                 return lambda.Compile();
             }
         }

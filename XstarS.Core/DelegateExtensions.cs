@@ -21,8 +21,8 @@ namespace XstarS
         /// <summary>
         /// 表示委托类型对应的动态调用委托。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Func<object, object[], object>> DynamicDelegates =
-            new ConcurrentDictionary<Type, Func<object, object[], object>>();
+        private static readonly ConcurrentDictionary<Type, Func<object?, object?[], object?>> DynamicDelegates =
+            new ConcurrentDictionary<Type, Func<object?, object?[], object?>>();
 
         /// <summary>
         /// 确定当前委托是否是否能转换为另一类型的委托。
@@ -82,7 +82,7 @@ namespace XstarS
         /// <returns><paramref name="delegate"/> 所表示的方法返回的对象。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="delegate"/> 为 <see langword="null"/>。</exception>
-        public static object DynamicInvokeFast(this Delegate @delegate, params object[] arguments)
+        public static object? DynamicInvokeFast(this Delegate @delegate, params object?[]? arguments)
         {
             if (@delegate is null)
             {
@@ -90,9 +90,8 @@ namespace XstarS
             }
             arguments = arguments ?? Array.Empty<object>();
 
-            var delegateType = @delegate.GetType();
-            var dynamicDelegate = DelegateExtensions.DynamicDelegates.GetOrAdd(delegateType,
-                newDelegateType => newDelegateType.GetMethod(nameof(Action.Invoke)).CreateDynamicDelegate());
+            var dynamicDelegate = DelegateExtensions.DynamicDelegates.GetOrAdd(@delegate.GetType(),
+                newDelegateType => newDelegateType.GetMethod(nameof(Action.Invoke))!.CreateDynamicDelegate());
             return dynamicDelegate.Invoke(@delegate, arguments);
         }
 
@@ -103,14 +102,14 @@ namespace XstarS
         /// <returns><paramref name="delegate"/> 的动态调用委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="delegate"/> 为 <see langword="null"/>。</exception>
-        public static Func<object[], object> ToDynamicDelegate(this Delegate @delegate)
+        public static Func<object?[], object?> ToDynamicDelegate(this Delegate @delegate)
         {
             if (@delegate is null)
             {
                 throw new ArgumentNullException(nameof(@delegate));
             }
 
-            return @delegate.GetType().GetMethod(nameof(Action.Invoke)).CreateDynamicDelegate(@delegate);
+            return @delegate.GetType().GetMethod(nameof(Action.Invoke))!.CreateDynamicDelegate(@delegate);
         }
     }
 }
