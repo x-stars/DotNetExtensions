@@ -5,7 +5,7 @@ namespace XstarS.Reflection
     /// <summary>
     /// 提供动态代理相关的服务方法。
     /// </summary>
-    public static class ProxyServices
+    public static class DynamicProxyServices
     {
         /// <summary>
         /// 将当前 <see cref="IntPtr"/> 转换为等效的引用传递 <see langword="ref"/>。
