@@ -39,7 +39,7 @@ namespace XstarS.ComponentModel
         protected bool IsEnum(
             [CallerMemberName] string enumName = null)
         {
-            enumName = enumName ?? string.Empty;
+            enumName ??= string.Empty;
             var enumValue = this.ParseEnum(enumName);
             return this[enumValue];
         }
@@ -54,7 +54,7 @@ namespace XstarS.ComponentModel
         protected void SetEnum(bool value,
             [CallerMemberName] string enumName = null)
         {
-            enumName = enumName ?? string.Empty;
+            enumName ??= string.Empty;
             var enumValue = this.ParseEnum(enumName);
             this[enumValue] = value;
         }

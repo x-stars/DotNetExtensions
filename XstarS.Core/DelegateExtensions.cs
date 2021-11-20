@@ -88,7 +88,7 @@ namespace XstarS
             {
                 throw new ArgumentNullException(nameof(@delegate));
             }
-            arguments = arguments ?? Array.Empty<object>();
+            arguments ??= Array.Empty<object>();
 
             var dynamicDelegate = DelegateExtensions.DynamicDelegates.GetOrAdd(@delegate.GetType(),
                 newDelegateType => newDelegateType.GetMethod(nameof(Action.Invoke)).CreateDynamicDelegate());

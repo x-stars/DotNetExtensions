@@ -52,7 +52,7 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(enumerable));
             }
 
-            comparer = comparer ?? EqualityComparer<T>.Default;
+            comparer ??= EqualityComparer<T>.Default;
 
             int count = 0;
             foreach (var item in enumerable)

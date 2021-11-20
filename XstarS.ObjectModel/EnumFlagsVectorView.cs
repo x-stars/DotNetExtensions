@@ -39,7 +39,7 @@ namespace XstarS.ComponentModel
         protected bool HasFlag(
             [CallerMemberName] string flagName = null)
         {
-            flagName = flagName ?? string.Empty;
+            flagName ??= string.Empty;
             var flagValue = this.ParseEnum(flagName);
             return this[flagValue];
         }
@@ -54,7 +54,7 @@ namespace XstarS.ComponentModel
         protected void SetFlag(bool value,
             [CallerMemberName] string flagName = null)
         {
-            flagName = flagName ?? string.Empty;
+            flagName ??= string.Empty;
             var flagValue = this.ParseEnum(flagName);
             this[flagValue] = value;
         }

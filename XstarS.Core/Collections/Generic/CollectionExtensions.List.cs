@@ -201,7 +201,7 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(keySelector));
             }
 
-            comparer = comparer ?? Comparer<TKey>.Default;
+            comparer ??= Comparer<TKey>.Default;
 
             var items = new T[list.Count];
             list.CopyTo(items, 0);
@@ -226,7 +226,7 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(list));
             }
 
-            comparer = comparer ?? Comparer<T>.Default;
+            comparer ??= Comparer<T>.Default;
 
             var items = new T[list.Count];
             list.CopyTo(items, 0);

@@ -22,7 +22,7 @@ namespace XstarS
         internal static void ThrowArgumentException(string paramName = null,
             string message = null, Exception innerException = null)
         {
-            message = message ?? new ArgumentException().Message;
+            message ??= new ArgumentException().Message;
             throw new ArgumentException(message, paramName, innerException);
         }
 
@@ -38,7 +38,7 @@ namespace XstarS
         internal static void ThrowArgumentNullException(string paramName = null,
             string message = null)
         {
-            message = message ?? new ArgumentNullException().Message;
+            message ??= new ArgumentNullException().Message;
             throw new ArgumentNullException(paramName, message);
         }
 
@@ -55,7 +55,7 @@ namespace XstarS
         internal static void ThrowArgumentOutOfRangeException(string paramName = null,
             object actualValue = null, string message = null)
         {
-            message = message ?? new ArgumentOutOfRangeException().Message;
+            message ??= new ArgumentOutOfRangeException().Message;
             throw new ArgumentOutOfRangeException(paramName, actualValue, message);
         }
 
@@ -69,7 +69,7 @@ namespace XstarS
         internal static void ThrowIndexOutOfRangeException(
             string message = null, Exception innerException = null)
         {
-            message = message ?? new IndexOutOfRangeException().Message;
+            message ??= new IndexOutOfRangeException().Message;
             throw new IndexOutOfRangeException(message, innerException);
         }
 
@@ -83,7 +83,7 @@ namespace XstarS
         internal static void ThrowKeyNotFoundException(
             string message = null, Exception innerException = null)
         {
-            message = message ?? new KeyNotFoundException().Message;
+            message ??= new KeyNotFoundException().Message;
             throw new KeyNotFoundException(message, innerException);
         }
 
@@ -98,7 +98,7 @@ namespace XstarS
         internal static void ThrowFileNotFoundException(string fileName = null,
             string message = null, Exception innerException = null)
         {
-            message = message ?? new FileNotFoundException().Message;
+            message ??= new FileNotFoundException().Message;
             throw new FileNotFoundException(message, fileName, innerException);
         }
 
@@ -112,7 +112,7 @@ namespace XstarS
         internal static void ThrowDirectoryNotFoundException(
             string message = null, Exception innerException = null)
         {
-            message = message ?? new DirectoryNotFoundException().Message;
+            message ??= new DirectoryNotFoundException().Message;
             throw new DirectoryNotFoundException(message, innerException);
         }
     }

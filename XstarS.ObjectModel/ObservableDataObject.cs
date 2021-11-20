@@ -44,7 +44,7 @@ namespace XstarS.ComponentModel
         protected T GetProperty<T>(
             [CallerMemberName] string propertyName = null)
         {
-            propertyName = propertyName ?? string.Empty;
+            propertyName ??= string.Empty;
             this.Properties.TryGetValue(propertyName, out var value);
             return (value is T valueT) ? valueT : default(T);
         }
@@ -58,7 +58,7 @@ namespace XstarS.ComponentModel
         protected virtual void SetProperty<T>(T value,
             [CallerMemberName] string propertyName = null)
         {
-            propertyName = propertyName ?? string.Empty;
+            propertyName ??= string.Empty;
             var property = this.GetProperty<T>(propertyName);
             this.Properties[propertyName] = (object)value;
             var propertyChanged = !RuntimeHelpers.Equals(property, value);
@@ -72,7 +72,7 @@ namespace XstarS.ComponentModel
         protected void NotifyPropertyChanged(
             [CallerMemberName] string propertyName = null)
         {
-            propertyName = propertyName ?? string.Empty;
+            propertyName ??= string.Empty;
             this.OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
 
