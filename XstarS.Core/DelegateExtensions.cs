@@ -42,7 +42,9 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 将当前委托转换为另一种类型的委托。
+        /// 将当前委托转换为另一种类型的委托。此方法并不会检查委托的适配性，使用
+        /// <see cref="DelegateExtensions.CanConvertTo{TDelegate}(Delegate)"/>
+        /// 方法检查当前委托是否能够转换为 <typeparamref name="TDelegate"/> 类型。
         /// </summary>
         /// <typeparam name="TDelegate">要转换到的委托类型。</typeparam>
         /// <param name="delegate">要转换为另一类型的委托。</param>
@@ -50,18 +52,12 @@ namespace XstarS
         /// 类型的 <paramref name="delegate"/> 委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="delegate"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="InvalidCastException"><typeparamref name="TDelegate"/>
-        /// 的参数列表的类型或返回值的类型与 <paramref name="delegate"/> 的不一致。</exception>
         public static TDelegate ChangeType<TDelegate>(this Delegate @delegate)
             where TDelegate : Delegate
         {
             if (@delegate is null)
             {
                 throw new ArgumentNullException(nameof(@delegate));
-            }
-            if (!@delegate.CanConvertTo<TDelegate>())
-            {
-                throw new InvalidCastException();
             }
 
             var result = FormatterServices.GetUninitializedObject(typeof(TDelegate));
