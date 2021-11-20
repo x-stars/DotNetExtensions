@@ -33,7 +33,7 @@ namespace XstarS.Reflection
         /// 应使用此构造函数实现继承，而非 <see langword="public"/> 构造函数。
         /// </summary>
         /// <param name="unused">不使用此参数，应为 <see langword="null"/>。</param>
-        protected DispatchProxy(object unused) : base() { }
+        protected DispatchProxy(object? unused) : base() { }
 
         /// <summary>
         /// 调用代理类型的方法时实际调用的方法，执行传入的 <see cref="Handler"/> 委托。

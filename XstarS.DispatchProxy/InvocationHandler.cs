@@ -9,5 +9,5 @@ namespace XstarS.Reflection
     /// <param name="method">当前调用的方法。</param>
     /// <param name="arguments">方法的参数列表。</param>
     /// <returns>方法的返回值。若无返回值，应为 <see langword="null"/>。</returns>
-    public delegate object InvocationHandler(object instance, MethodInfo method, object[] arguments);
+    public delegate object? InvocationHandler(object instance, MethodInfo method, object?[]? arguments);
 }
