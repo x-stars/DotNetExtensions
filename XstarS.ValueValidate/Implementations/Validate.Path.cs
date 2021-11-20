@@ -24,7 +24,7 @@ namespace XstarS
             }
             catch (Exception e)
             {
-                message = message ?? e.Message;
+                message ??= e.Message;
                 ThrowHelper.ThrowArgumentException(valueInfo.Name, message, e);
             }
 

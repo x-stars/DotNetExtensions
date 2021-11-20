@@ -51,7 +51,7 @@ namespace XstarS.ComponentModel
         public bool ContainsErrors(
             [CallerMemberName] string? propertyName = null)
         {
-            propertyName = propertyName ?? string.Empty;
+            propertyName ??= string.Empty;
             return this.PropertiesErrors.ContainsKey(propertyName);
         }
 
@@ -63,7 +63,7 @@ namespace XstarS.ComponentModel
         public IEnumerable GetErrors(
             [CallerMemberName] string? propertyName = null)
         {
-            propertyName = propertyName ?? string.Empty;
+            propertyName ??= string.Empty;
             this.PropertiesErrors.TryGetValue(propertyName, out var errors);
             return errors ?? Array.Empty<object>();
         }
@@ -77,7 +77,7 @@ namespace XstarS.ComponentModel
             [param: AllowNull] IEnumerable errors,
             [CallerMemberName] string? propertyName = null)
         {
-            propertyName = propertyName ?? string.Empty;
+            propertyName ??= string.Empty;
             var thisHadErrors = !this.PropertiesErrors.IsEmpty;
             var hadErrors = this.PropertiesErrors.ContainsKey(propertyName);
             var hasErrors = !(errors is null) && errors.GetEnumerator().MoveNext();
@@ -99,7 +99,7 @@ namespace XstarS.ComponentModel
             [param: AllowNull] T value,
             [CallerMemberName] string? propertyName = null)
         {
-            propertyName = propertyName ?? string.Empty;
+            propertyName ??= string.Empty;
             base.SetProperty(value, propertyName);
             this.ValidateProperty<T>(propertyName);
         }
@@ -112,7 +112,7 @@ namespace XstarS.ComponentModel
         protected virtual void ValidateProperty<T>(
             [CallerMemberName] string? propertyName = null)
         {
-            propertyName = propertyName ?? string.Empty;
+            propertyName ??= string.Empty;
             var value = this.GetProperty<T>(propertyName);
             var context = new ValidationContext(this) { MemberName = propertyName };
             var results = new List<ValidationResult>();
@@ -130,7 +130,7 @@ namespace XstarS.ComponentModel
         protected void NotifyErrorsChanged(
             [CallerMemberName] string? propertyName = null)
         {
-            propertyName = propertyName ?? string.Empty;
+            propertyName ??= string.Empty;
             this.OnErrorsChanged(new DataErrorsChangedEventArgs(propertyName));
         }
 

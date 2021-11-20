@@ -130,8 +130,8 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(dictionary));
             }
 
-            keyComparer = keyComparer ?? EqualityComparer<TKey>.Default;
-            valueComparer = valueComparer ?? EqualityComparer<TValue>.Default;
+            keyComparer ??= EqualityComparer<TKey>.Default;
+            valueComparer ??= EqualityComparer<TValue>.Default;
 
             var result = new Dictionary<TValue, ICollection<TKey>>(valueComparer);
             foreach (var item in dictionary)
@@ -195,7 +195,7 @@ namespace XstarS.Collections.Generic
             IEqualityComparer<TKey>? comparer = null)
             where TKey : notnull
         {
-            comparer = comparer ?? EqualityComparer<TKey>.Default;
+            comparer ??= EqualityComparer<TKey>.Default;
             return new ConcurrentDictionary<TKey, TValue>(dictionary, comparer);
         }
 
@@ -222,7 +222,7 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(pairs));
             }
 
-            comparer = comparer ?? EqualityComparer<TKey>.Default;
+            comparer ??= EqualityComparer<TKey>.Default;
 
             var result = new Dictionary<TKey, TValue>(comparer);
             foreach (var pair in pairs)

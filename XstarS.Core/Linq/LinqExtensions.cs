@@ -47,7 +47,7 @@ namespace XstarS.Linq
         public static IEnumerable<KeyValuePair<TSource, int>> GroupCount<TSource>(
             this IEnumerable<TSource> source, IEqualityComparer<TSource>? comparer = null)
         {
-            comparer = comparer ?? EqualityComparer<TSource>.Default;
+            comparer ??= EqualityComparer<TSource>.Default;
             return source.GroupBy(Self, GroupingExtensions.ToCount, comparer);
         }
 
@@ -67,7 +67,7 @@ namespace XstarS.Linq
             this IEnumerable<TSource> source, Func<TSource, TKey> keySelector,
             IEqualityComparer<TKey>? comparer = null)
         {
-            comparer = comparer ?? EqualityComparer<TKey>.Default;
+            comparer ??= EqualityComparer<TKey>.Default;
             return source.GroupBy(keySelector, GroupingExtensions.ToCount, comparer);
         }
 
@@ -118,7 +118,7 @@ namespace XstarS.Linq
         public static IOrderedEnumerable<TSource> Order<TSource>(
             this IEnumerable<TSource> source, IComparer<TSource>? comparer = null)
         {
-            comparer = comparer ?? Comparer<TSource>.Default;
+            comparer ??= Comparer<TSource>.Default;
             return source.OrderBy(LinqExtensions.Self, comparer);
         }
 
@@ -135,7 +135,7 @@ namespace XstarS.Linq
         public static IOrderedEnumerable<TSource> OrderDescending<TSource>(
             this IEnumerable<TSource> source, IComparer<TSource>? comparer = null)
         {
-            comparer = comparer ?? Comparer<TSource>.Default;
+            comparer ??= Comparer<TSource>.Default;
             return source.OrderByDescending(LinqExtensions.Self, comparer);
         }
 
