@@ -17,6 +17,8 @@ namespace XstarS.Reflection
         /// <returns><paramref name="constructor"/> 构造函数的委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constructor"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）。</exception>
         public static TDelegate CreateDelegate<TDelegate>(this ConstructorInfo constructor)
             where TDelegate : Delegate
         {
@@ -32,6 +34,7 @@ namespace XstarS.Reflection
         /// <exception cref="ArgumentNullException"><paramref name="constructor"/>
         /// 或 <paramref name="delegateType"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
+        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）；或
         /// <paramref name="delegateType"/> 表示的类型不从 <see cref="Delegate"/> 派生。</exception>
         public static Delegate CreateDelegate(this ConstructorInfo constructor, Type delegateType)
         {
@@ -267,6 +270,11 @@ namespace XstarS.Reflection
         public static TDelegate CreateDelegate<TDelegate>(this MethodInfo method)
             where TDelegate : Delegate
         {
+            if (method is null)
+            {
+                throw new ArgumentNullException(nameof(method));
+            }
+
             return (TDelegate)method.CreateDelegate(typeof(TDelegate));
         }
 
@@ -282,6 +290,11 @@ namespace XstarS.Reflection
         public static TDelegate CreateDelegate<TDelegate>(this MethodInfo method, object? target)
             where TDelegate : Delegate
         {
+            if (method is null)
+            {
+                throw new ArgumentNullException(nameof(method));
+            }
+
             return (TDelegate)method.CreateDelegate(typeof(TDelegate), target);
         }
 #endif

@@ -13,6 +13,8 @@ namespace XstarS.Reflection
         /// <returns><paramref name="constructor"/> 构造函数的动态调用委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="constructor"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）。</exception>
         public static Func<object?[]?, object> CreateDynamicDelegate(this ConstructorInfo constructor)
         {
             if (constructor is null)
@@ -171,7 +173,8 @@ namespace XstarS.Reflection
             else
             {
                 var callExpr = Expression.Call(castExpr, method, argCastExprs);
-                var lambda = Expression.Lambda<Func<object?, object?[]?, object?>>(callExpr, instExpr, argsExpr);
+                var boxExpr = Expression.Convert(callExpr, typeof(object));
+                var lambda = Expression.Lambda<Func<object?, object?[]?, object?>>(boxExpr, instExpr, argsExpr);
                 return lambda.Compile();
             }
         }
@@ -213,7 +216,8 @@ namespace XstarS.Reflection
             else
             {
                 var callExpr = Expression.Call(instExpr, method, argCastExprs);
-                var lambda = Expression.Lambda<Func<object?[]?, object?>>(callExpr, argsExpr);
+                var boxExpr = Expression.Convert(callExpr, typeof(object));
+                var lambda = Expression.Lambda<Func<object?[]?, object?>>(boxExpr, argsExpr);
                 return lambda.Compile();
             }
         }

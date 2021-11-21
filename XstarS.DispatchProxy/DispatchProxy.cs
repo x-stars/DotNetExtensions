@@ -36,13 +36,16 @@ namespace XstarS.Reflection
         protected DispatchProxy(object? unused) : base() { }
 
         /// <summary>
-        /// 调用代理类型的方法时实际调用的方法，执行传入的 <see cref="Handler"/> 委托。
+        /// 每当对生成的代理类型调用任何方法时，都会调用此方法来调度控件。
+        /// 执行传入的 <see cref="DispatchProxy{TInterface}.Handler"/> 委托。
         /// </summary>
-        /// <param name="method">当前调用的方法。</param>
-        /// <param name="arguments">方法的参数列表。</param>
-        /// <returns>方法的返回值。若无返回值，应为 <see langword="null"/>。</returns>
+        /// <param name="method">调用方调用的方法。</param>
+        /// <param name="arguments">调用方传递给方法的参数。</param>
+        /// <returns>要返回给调用方的对象。或者对于
+        /// <see langword="void"/> 方法，应为 <see langword="null"/>。</returns>
         protected override object? Invoke(MethodInfo? method, object?[]? arguments)
         {
+            arguments ??= Array.Empty<object>();
             return (method is null) ? null :
                 this.Handler!.Invoke(this.Instance!, method, arguments);
         }
