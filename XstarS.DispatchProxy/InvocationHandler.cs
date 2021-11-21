@@ -10,5 +10,5 @@ namespace XstarS.Reflection
     /// <param name="arguments">调用方传递给方法的参数。</param>
     /// <returns>要返回给调用方的对象。或者对于
     /// <see langword="void"/> 方法，应为 <see langword="null"/>。</returns>
-    public delegate object? InvocationHandler(object instance, MethodInfo method, object?[]? arguments);
+    public delegate object? InvocationHandler(object instance, MethodInfo method, object?[] arguments);
 }
