@@ -46,7 +46,8 @@ namespace XstarS.Reflection
             else
             {
                 var callExpr = Expression.Call(castExpr, method, argCastExprs);
-                var lambda = Expression.Lambda<Func<object, object[], object>>(callExpr, instExpr, argsExpr);
+                var boxExpr = Expression.Convert(callExpr, typeof(object));
+                var lambda = Expression.Lambda<Func<object, object[], object>>(boxExpr, instExpr, argsExpr);
                 return lambda.Compile();
             }
         }
@@ -88,7 +89,8 @@ namespace XstarS.Reflection
             else
             {
                 var callExpr = Expression.Call(instExpr, method, argCastExprs);
-                var lambda = Expression.Lambda<Func<object[], object>>(callExpr, argsExpr);
+                var boxExpr = Expression.Convert(callExpr, typeof(object));
+                var lambda = Expression.Lambda<Func<object[], object>>(boxExpr, argsExpr);
                 return lambda.Compile();
             }
         }
