@@ -54,9 +54,8 @@ namespace XstarS.Reflection
                 throw new ArgumentException(inner.Message, nameof(delegateType), inner);
             }
 
-            var paramInfos = constructor.GetParameters();
             var paramExprs = Array.ConvertAll(constructor.GetParameters(),
-                parameter => Expression.Parameter(parameter.ParameterType, parameter.Name));
+                paramInfo => Expression.Parameter(paramInfo.ParameterType, paramInfo.Name));
             var newExpr = Expression.New(constructor, paramExprs);
             var lambda = Expression.Lambda(delegateType, newExpr, paramExprs);
             return lambda.Compile();
