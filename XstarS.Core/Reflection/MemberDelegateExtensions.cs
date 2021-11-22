@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Linq.Expressions;
 using System.Reflection;
+using System.Reflection.Emit;
+using XstarS.Reflection.Emit;
 
 namespace XstarS.Reflection
 {
@@ -57,11 +58,21 @@ namespace XstarS.Reflection
                 throw new ArgumentException(inner.Message, nameof(delegateType), inner);
             }
 
-            var paramExprs = Array.ConvertAll(constructor.GetParameters(),
-                paramInfo => Expression.Parameter(paramInfo.ParameterType, paramInfo.Name));
-            var newExpr = Expression.New(constructor, paramExprs);
-            var lambda = Expression.Lambda(delegateType, newExpr, paramExprs);
-            return lambda.Compile();
+            var paramInfos = constructor.GetParameters();
+            var paramTypes = Array.ConvertAll(paramInfos, param => param.ParameterType);
+            var createMethod = new DynamicMethod(
+                "CreateInstance", constructor.DeclaringType, paramTypes,
+                restrictedSkipVisibility: true);
+            var ilGen = createMethod.GetILGenerator();
+            for (int index = 0; index < paramInfos.Length; index++)
+            {
+                var param = paramInfos[index];
+                createMethod.DefineParameter(index, param.Attributes, param.Name);
+                ilGen.EmitLdarg(index);
+            }
+            ilGen.Emit(OpCodes.Newobj, constructor);
+            ilGen.Emit(OpCodes.Ret);
+            return createMethod.CreateDelegate(delegateType);
         }
 
         /// <summary>
@@ -90,25 +101,7 @@ namespace XstarS.Reflection
         /// <paramref name="delegateType"/> 表示的类型不从 <see cref="Delegate"/> 派生。</exception>
         public static Delegate CreateGetDelegate(this FieldInfo field, Type delegateType)
         {
-            if (field is null)
-            {
-                throw new ArgumentNullException(nameof(field));
-            }
-            if (delegateType is null)
-            {
-                throw new ArgumentNullException(nameof(delegateType));
-            }
-            if (!typeof(Delegate).IsAssignableFrom(delegateType))
-            {
-                var inner = new InvalidCastException();
-                throw new ArgumentException(inner.Message, nameof(delegateType), inner);
-            }
-
-            var instExpr = field.IsStatic ? null : Expression.Parameter(field.DeclaringType, "instance");
-            var fieldExpr = Expression.Field(instExpr, field);
-            var paramExprs = (instExpr is null) ? Array.Empty<ParameterExpression>() : new[] { instExpr };
-            var lambda = Expression.Lambda(delegateType, fieldExpr, paramExprs);
-            return lambda.Compile();
+            return field.CreateGetDelegate(delegateType, target: null);
         }
 
         /// <summary>
@@ -153,10 +146,25 @@ namespace XstarS.Reflection
                 throw new ArgumentException(inner.Message, nameof(delegateType), inner);
             }
 
-            var instExpr = field.IsStatic ? null : Expression.Constant(target);
-            var fieldExpr = Expression.Field(instExpr, field);
-            var lambda = Expression.Lambda(delegateType, fieldExpr);
-            return lambda.Compile();
+            var paramTypes = field.IsStatic ?
+                Type.EmptyTypes : new[] { field.DeclaringType };
+            var getMethod = new DynamicMethod(
+                "GetValue", field.FieldType, paramTypes,
+                restrictedSkipVisibility: true);
+            var ilGen = getMethod.GetILGenerator();
+            if (field.IsStatic)
+            {
+                ilGen.Emit(OpCodes.Ldsfld, field);
+            }
+            else
+            {
+                var paramAttr = ParameterAttributes.None;
+                getMethod.DefineParameter(0, paramAttr, "instance");
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldfld, field);
+            }
+            ilGen.Emit(OpCodes.Ret);
+            return getMethod.CreateDelegate(delegateType, target);
         }
 
         /// <summary>
@@ -185,27 +193,7 @@ namespace XstarS.Reflection
         /// <paramref name="delegateType"/> 表示的类型不从 <see cref="Delegate"/> 派生。</exception>
         public static Delegate CreateSetDelegate(this FieldInfo field, Type delegateType)
         {
-            if (field is null)
-            {
-                throw new ArgumentNullException(nameof(field));
-            }
-            if (delegateType is null)
-            {
-                throw new ArgumentNullException(nameof(delegateType));
-            }
-            if (!typeof(Delegate).IsAssignableFrom(delegateType))
-            {
-                var inner = new InvalidCastException();
-                throw new ArgumentException(inner.Message, nameof(delegateType), inner);
-            }
-
-            var instExpr = field.IsStatic ? null : Expression.Parameter(field.DeclaringType, "instance");
-            var valueExpr = Expression.Parameter(field.FieldType, "value");
-            var fieldExpr = Expression.Field(instExpr, field);
-            var assignExpr = Expression.Assign(fieldExpr, valueExpr);
-            var paramExprs = (instExpr is null) ? new[] { valueExpr } : new[] { instExpr, valueExpr };
-            var lambda = Expression.Lambda(delegateType, assignExpr, paramExprs);
-            return lambda.Compile();
+            return field.CreateSetDelegate(delegateType, target: null);
         }
 
         /// <summary>
@@ -250,12 +238,31 @@ namespace XstarS.Reflection
                 throw new ArgumentException(inner.Message, nameof(delegateType), inner);
             }
 
-            var instExpr = field.IsStatic ? null : Expression.Constant(target);
-            var valueExpr = Expression.Parameter(field.FieldType, "value");
-            var fieldExpr = Expression.Field(instExpr, field);
-            var assignExpr = Expression.Assign(fieldExpr, valueExpr);
-            var lambda = Expression.Lambda(delegateType, assignExpr, valueExpr);
-            return lambda.Compile();
+            var paramTypes = field.IsStatic ?
+                new[] { field.FieldType } :
+                new[] { field.DeclaringType, field.FieldType };
+            var setMethod = new DynamicMethod(
+                "SetValue", typeof(void), paramTypes,
+                restrictedSkipVisibility: true);
+            var ilGen = setMethod.GetILGenerator();
+            if (field.IsStatic)
+            {
+                var paramAttr = ParameterAttributes.None;
+                setMethod.DefineParameter(0, paramAttr, "value");
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Stsfld, field);
+            }
+            else
+            {
+                var paramAttr = ParameterAttributes.None;
+                setMethod.DefineParameter(0, paramAttr, "instance");
+                ilGen.Emit(OpCodes.Ldarg_0);
+                setMethod.DefineParameter(1, paramAttr, "value");
+                ilGen.Emit(OpCodes.Ldarg_1);
+                ilGen.Emit(OpCodes.Stfld, field);
+            }
+            ilGen.Emit(OpCodes.Ret);
+            return setMethod.CreateDelegate(delegateType, target);
         }
 
 #if !NET5_0_OR_GREATER
