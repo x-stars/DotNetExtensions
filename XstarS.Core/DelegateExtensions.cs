@@ -12,8 +12,8 @@ namespace XstarS
         /// <summary>
         /// 表示委托类型对应的动态调用委托。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Func<object?, object?[], object?>> DynamicDelegates =
-            new ConcurrentDictionary<Type, Func<object?, object?[], object?>>();
+        private static readonly ConcurrentDictionary<Type, Func<object?, object?[]?, object?>> DynamicDelegates =
+            new ConcurrentDictionary<Type, Func<object?, object?[]?, object?>>();
 
         /// <summary>
         /// 以构造的动态调用委托调用由当前委托所表示的方法。

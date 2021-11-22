@@ -30,7 +30,7 @@ namespace XstarS.Reflection
 
             var paramInfos = constructor.GetParameters();
             var createMethod = new DynamicMethod(
-                "CreateInstance", typeof(object), new[] { typeof(object[]) },
+                "CreateInstance", typeof(object), new[] { typeof(object?[]) },
                 restrictedSkipVisibility: true);
             createMethod.DefineParameter(0, ParameterAttributes.None, "arguments");
             var ilGen = createMethod.GetILGenerator();
@@ -43,9 +43,9 @@ namespace XstarS.Reflection
                 ilGen.EmitUnbox(param.ParameterType);
             }
             ilGen.Emit(OpCodes.Newobj, constructor);
-            ilGen.EmitBox(constructor.DeclaringType);
+            ilGen.EmitBox(constructor.DeclaringType!);
             ilGen.Emit(OpCodes.Ret);
-            return createMethod.CreateDelegate<Func<object[], object>>();
+            return createMethod.CreateDelegate<Func<object?[]?, object>>();
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace XstarS.Reflection
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
         public static Func<object?, object?> CreateDynamicGetDelegate(this FieldInfo field)
         {
-            return field.CreateDynamicGetMethod().CreateDelegate<Func<object, object>>();
+            return field.CreateDynamicGetMethod().CreateDelegate<Func<object?, object?>>();
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace XstarS.Reflection
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
         public static Func<object?> CreateDynamicGetDelegate(this FieldInfo field, object? target)
         {
-            return field.CreateDynamicGetMethod().CreateDelegate<Func<object>>(target);
+            return field.CreateDynamicGetMethod().CreateDelegate<Func<object?>>(target);
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace XstarS.Reflection
             if (!field.IsStatic)
             {
                 ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.EmitUnbox(field.DeclaringType);
+                ilGen.EmitUnbox(field.DeclaringType!);
             }
             ilGen.Emit(field.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld, field);
             ilGen.EmitBox(field.FieldType);
@@ -113,7 +113,7 @@ namespace XstarS.Reflection
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
         public static Action<object?, object?> CreateDynamicSetDelegate(this FieldInfo field)
         {
-            return field.CreateDynamicSetMethod().CreateDelegate<Action<object, object>>();
+            return field.CreateDynamicSetMethod().CreateDelegate<Action<object?, object?>>();
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace XstarS.Reflection
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
         public static Action<object?> CreateDynamicSetDelegate(this FieldInfo field, object? target)
         {
-            return field.CreateDynamicSetMethod().CreateDelegate<Action<object>>(target);
+            return field.CreateDynamicSetMethod().CreateDelegate<Action<object?>>(target);
         }
 
         /// <summary>
@@ -153,7 +153,7 @@ namespace XstarS.Reflection
             if (!field.IsStatic)
             {
                 ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.EmitUnbox(field.DeclaringType);
+                ilGen.EmitUnbox(field.DeclaringType!);
             }
             ilGen.Emit(OpCodes.Ldarg_1);
             ilGen.EmitUnbox(field.FieldType);
@@ -171,7 +171,7 @@ namespace XstarS.Reflection
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
         public static Func<object?, object?[]?, object?> CreateDynamicDelegate(this MethodInfo method)
         {
-            return method.CreateDynamicMethod().CreateDelegate<Func<object, object[], object>>();
+            return method.CreateDynamicMethod().CreateDelegate<Func<object?, object?[]?, object?>>();
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace XstarS.Reflection
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
         public static Func<object?[]?, object?> CreateDynamicDelegate(this MethodInfo method, object? target)
         {
-            return method.CreateDynamicMethod().CreateDelegate<Func<object[], object>>(target);
+            return method.CreateDynamicMethod().CreateDelegate<Func<object?[]?, object?>>(target);
         }
 
         /// <summary>
@@ -204,7 +204,7 @@ namespace XstarS.Reflection
 
             var paramInfos = method.GetParameters();
             var invokeMethod = new DynamicMethod(
-                "Invoke", typeof(object), new[] { typeof(object), typeof(object[]) },
+                "Invoke", typeof(object), new[] { typeof(object), typeof(object?[]) },
                 restrictedSkipVisibility: true);
             invokeMethod.DefineParameter(0, ParameterAttributes.None, "instance");
             invokeMethod.DefineParameter(1, ParameterAttributes.None, "arguments");
@@ -212,7 +212,7 @@ namespace XstarS.Reflection
             if (!method.IsStatic)
             {
                 ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.EmitUnbox(method.DeclaringType);
+                ilGen.EmitUnbox(method.DeclaringType!);
             }
             for (int index = 0; index < paramInfos.Length; index++)
             {

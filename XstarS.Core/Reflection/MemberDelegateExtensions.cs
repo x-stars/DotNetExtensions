@@ -61,7 +61,7 @@ namespace XstarS.Reflection
             var paramInfos = constructor.GetParameters();
             var paramTypes = Array.ConvertAll(paramInfos, param => param.ParameterType);
             var createMethod = new DynamicMethod(
-                "CreateInstance", constructor.DeclaringType, paramTypes,
+                "CreateInstance", constructor.DeclaringType!, paramTypes,
                 restrictedSkipVisibility: true);
             var ilGen = createMethod.GetILGenerator();
             for (int index = 0; index < paramInfos.Length; index++)
@@ -147,7 +147,7 @@ namespace XstarS.Reflection
             }
 
             var paramTypes = field.IsStatic ?
-                Type.EmptyTypes : new[] { field.DeclaringType };
+                Type.EmptyTypes : new[] { field.DeclaringType! };
             var getMethod = new DynamicMethod(
                 "GetValue", field.FieldType, paramTypes,
                 restrictedSkipVisibility: true);
@@ -240,7 +240,7 @@ namespace XstarS.Reflection
 
             var paramTypes = field.IsStatic ?
                 new[] { field.FieldType } :
-                new[] { field.DeclaringType, field.FieldType };
+                new[] { field.DeclaringType!, field.FieldType };
             var setMethod = new DynamicMethod(
                 "SetValue", typeof(void), paramTypes,
                 restrictedSkipVisibility: true);
