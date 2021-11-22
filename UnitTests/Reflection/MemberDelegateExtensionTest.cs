@@ -65,8 +65,8 @@ namespace XstarS.Reflection
             var constructor = typeof(StrongBox<object>).GetConstructor(new[] { typeof(object) });
             var createDelegate = constructor.CreateDynamicDelegate();
             var value = new object();
-            var result = createDelegate.Invoke(new[] { value });
-            Assert.AreSame(value, ((StrongBox<object>)result).Value);
+            var result = (StrongBox<object>)createDelegate.Invoke(new[] { value });
+            Assert.AreSame(value, result.Value);
         }
 
         [TestMethod]
