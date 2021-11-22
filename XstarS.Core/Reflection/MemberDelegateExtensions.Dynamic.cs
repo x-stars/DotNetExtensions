@@ -1,6 +1,7 @@
 ﻿using System;
-using System.Linq.Expressions;
 using System.Reflection;
+using System.Reflection.Emit;
+using XstarS.Reflection.Emit;
 
 namespace XstarS.Reflection
 {
@@ -27,21 +28,24 @@ namespace XstarS.Reflection
                 throw new ArgumentException(inner.Message, nameof(constructor), inner);
             }
 
-            var argsExpr = Expression.Parameter(typeof(object?[]), "arguments");
             var paramInfos = constructor.GetParameters();
-            var argCastExprs = new Expression[paramInfos.Length];
-            for (int index = 0; index < argCastExprs.Length; index++)
+            var createMethod = new DynamicMethod(
+                "CreateInstance", typeof(object), new[] { typeof(object[]) },
+                restrictedSkipVisibility: true);
+            createMethod.DefineParameter(0, ParameterAttributes.None, "arguments");
+            var ilGen = createMethod.GetILGenerator();
+            for (int index = 0; index < paramInfos.Length; index++)
             {
-                var indexExpr = Expression.Constant(index);
-                var argsItemExpr = Expression.ArrayIndex(argsExpr, indexExpr);
-                var paramType = paramInfos[index].ParameterType;
-                var argCastExpr = Expression.Convert(argsItemExpr, paramType);
-                argCastExprs[index] = argCastExpr;
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.EmitLdcI4(index);
+                ilGen.Emit(OpCodes.Ldelem_Ref);
+                var param = paramInfos[index];
+                ilGen.EmitUnbox(param.ParameterType);
             }
-            var newExpr = Expression.New(constructor, argCastExprs);
-            var boxExpr = Expression.Convert(newExpr, typeof(object));
-            var lambda = Expression.Lambda<Func<object?[]?, object>>(boxExpr, argsExpr);
-            return lambda.Compile();
+            ilGen.Emit(OpCodes.Newobj, constructor);
+            ilGen.EmitBox(constructor.DeclaringType);
+            ilGen.Emit(OpCodes.Ret);
+            return createMethod.CreateDelegate<Func<object[], object>>();
         }
 
         /// <summary>
@@ -53,17 +57,7 @@ namespace XstarS.Reflection
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
         public static Func<object?, object?> CreateDynamicGetDelegate(this FieldInfo field)
         {
-            if (field is null)
-            {
-                throw new ArgumentNullException(nameof(field));
-            }
-
-            var instExpr = Expression.Parameter(typeof(object), "instance");
-            var castExpr = field.IsStatic ? null : Expression.Convert(instExpr, field.DeclaringType!);
-            var fieldExpr = Expression.Field(castExpr, field);
-            var boxExpr = Expression.Convert(fieldExpr, typeof(object));
-            var lambda = Expression.Lambda<Func<object?, object?>>(boxExpr, instExpr);
-            return lambda.Compile();
+            return field.CreateDynamicGetMethod().CreateDelegate<Func<object, object>>();
         }
 
         /// <summary>
@@ -76,16 +70,38 @@ namespace XstarS.Reflection
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
         public static Func<object?> CreateDynamicGetDelegate(this FieldInfo field, object? target)
         {
+            return field.CreateDynamicGetMethod().CreateDelegate<Func<object>>(target);
+        }
+
+        /// <summary>
+        /// 从当前字段创建获取值的动态调用方法。
+        /// 方法签名类似于 <see cref="FieldInfo.GetValue(object)"/>。
+        /// </summary>
+        /// <param name="field">要创建获取值方法的 <see cref="FieldInfo"/>。</param>
+        /// <returns>获取 <paramref name="field"/> 字段值的动态调用方法。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
+        private static DynamicMethod CreateDynamicGetMethod(this FieldInfo field)
+        {
             if (field is null)
             {
                 throw new ArgumentNullException(nameof(field));
             }
 
-            var instExpr = field.IsStatic ? null : Expression.Constant(target);
-            var fieldExpr = Expression.Field(instExpr, field);
-            var boxExpr = Expression.Convert(fieldExpr, typeof(object));
-            var lambda = Expression.Lambda<Func<object?>>(boxExpr);
-            return lambda.Compile();
+            var getMethod = new DynamicMethod(
+                "GetValue", typeof(object), new[] { typeof(object) },
+                restrictedSkipVisibility: true);
+            getMethod.DefineParameter(0, ParameterAttributes.None, "instance");
+            var ilGen = getMethod.GetILGenerator();
+            if (!field.IsStatic)
+            {
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.EmitUnbox(field.DeclaringType);
+            }
+            ilGen.Emit(field.IsStatic ? OpCodes.Ldsfld : OpCodes.Ldfld, field);
+            ilGen.EmitBox(field.FieldType);
+            ilGen.Emit(OpCodes.Ret);
+            return getMethod;
         }
 
         /// <summary>
@@ -97,19 +113,7 @@ namespace XstarS.Reflection
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
         public static Action<object?, object?> CreateDynamicSetDelegate(this FieldInfo field)
         {
-            if (field is null)
-            {
-                throw new ArgumentNullException(nameof(field));
-            }
-
-            var instExpr = Expression.Parameter(typeof(object), "instance");
-            var castExpr = field.IsStatic ? null : Expression.Convert(instExpr, field.DeclaringType!);
-            var fieldExpr = Expression.Field(castExpr, field);
-            var valueExpr = Expression.Parameter(typeof(object), "value");
-            var valueCastExpr = Expression.Convert(valueExpr, field.FieldType);
-            var assignExpr = Expression.Assign(fieldExpr, valueCastExpr);
-            var lambda = Expression.Lambda<Action<object?, object?>>(assignExpr, instExpr, valueExpr);
-            return lambda.Compile();
+            return field.CreateDynamicSetMethod().CreateDelegate<Action<object, object>>();
         }
 
         /// <summary>
@@ -122,18 +126,40 @@ namespace XstarS.Reflection
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
         public static Action<object?> CreateDynamicSetDelegate(this FieldInfo field, object? target)
         {
+            return field.CreateDynamicSetMethod().CreateDelegate<Action<object>>(target);
+        }
+
+        /// <summary>
+        /// 从当前字段创建设置值的动态调用方法。
+        /// 方法签名类似于 <see cref="FieldInfo.SetValue(object, object)"/>。
+        /// </summary>
+        /// <param name="field">要创建设置值方法的 <see cref="FieldInfo"/>。</param>
+        /// <returns>设置 <paramref name="field"/> 字段值的动态调用方法。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
+        private static DynamicMethod CreateDynamicSetMethod(this FieldInfo field)
+        {
             if (field is null)
             {
                 throw new ArgumentNullException(nameof(field));
             }
 
-            var instExpr = field.IsStatic ? null : Expression.Constant(target);
-            var fieldExpr = Expression.Field(instExpr, field);
-            var valueExpr = Expression.Parameter(typeof(object), "value");
-            var valueCastExpr = Expression.Convert(valueExpr, field.FieldType);
-            var assignExpr = Expression.Assign(fieldExpr, valueCastExpr);
-            var lambda = Expression.Lambda<Action<object?>>(assignExpr, valueExpr);
-            return lambda.Compile();
+            var setMethod = new DynamicMethod(
+                "SetValue", typeof(void), new[] { typeof(object), typeof(object) },
+                restrictedSkipVisibility: true);
+            setMethod.DefineParameter(0, ParameterAttributes.None, "instance");
+            setMethod.DefineParameter(1, ParameterAttributes.None, "value");
+            var ilGen = setMethod.GetILGenerator();
+            if (!field.IsStatic)
+            {
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.EmitUnbox(field.DeclaringType);
+            }
+            ilGen.Emit(OpCodes.Ldarg_1);
+            ilGen.EmitUnbox(field.FieldType);
+            ilGen.Emit(field.IsStatic ? OpCodes.Stsfld : OpCodes.Stfld, field);
+            ilGen.Emit(OpCodes.Ret);
+            return setMethod;
         }
 
         /// <summary>
@@ -145,38 +171,7 @@ namespace XstarS.Reflection
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
         public static Func<object?, object?[]?, object?> CreateDynamicDelegate(this MethodInfo method)
         {
-            if (method is null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
-
-            var instExpr = Expression.Parameter(typeof(object), "instance");
-            var castExpr = method.IsStatic ? null : Expression.Convert(instExpr, method.DeclaringType!);
-            var argsExpr = Expression.Parameter(typeof(object?[]), "arguments");
-            var paramInfos = method.GetParameters();
-            var argCastExprs = new Expression[paramInfos.Length];
-            for (int index = 0; index < argCastExprs.Length; index++)
-            {
-                var indexExpr = Expression.Constant(index);
-                var argsItemExpr = Expression.ArrayIndex(argsExpr, indexExpr);
-                var paramType = paramInfos[index].ParameterType;
-                var argCastExpr = Expression.Convert(argsItemExpr, paramType);
-                argCastExprs[index] = argCastExpr;
-            }
-            if (method.ReturnType == typeof(void))
-            {
-                var callExpr = Expression.Call(castExpr, method, argCastExprs);
-                var lambda = Expression.Lambda<Action<object?, object?[]?>>(callExpr, instExpr, argsExpr);
-                var innerAction = lambda.Compile();
-                return (instance, arguments) => { innerAction.Invoke(instance, arguments); return null; };
-            }
-            else
-            {
-                var callExpr = Expression.Call(castExpr, method, argCastExprs);
-                var boxExpr = Expression.Convert(callExpr, typeof(object));
-                var lambda = Expression.Lambda<Func<object?, object?[]?, object?>>(boxExpr, instExpr, argsExpr);
-                return lambda.Compile();
-            }
+            return method.CreateDynamicMethod().CreateDelegate<Func<object, object[], object>>();
         }
 
         /// <summary>
@@ -189,37 +184,55 @@ namespace XstarS.Reflection
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
         public static Func<object?[]?, object?> CreateDynamicDelegate(this MethodInfo method, object? target)
         {
+            return method.CreateDynamicMethod().CreateDelegate<Func<object[], object>>(target);
+        }
+
+        /// <summary>
+        /// 从当前方法创建指定类型的动态调用方法。
+        /// 方法签名类似于 <see cref="MethodBase.Invoke(object, object[])"/>。
+        /// </summary>
+        /// <param name="method">要创建方法的 <see cref="MethodInfo"/>。</param>
+        /// <returns><paramref name="method"/> 方法的动态调用方法。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
+        private static DynamicMethod CreateDynamicMethod(this MethodInfo method)
+        {
             if (method is null)
             {
                 throw new ArgumentNullException(nameof(method));
             }
 
-            var instExpr = method.IsStatic ? null : Expression.Constant(target);
-            var argsExpr = Expression.Parameter(typeof(object?[]), "arguments");
             var paramInfos = method.GetParameters();
-            var argCastExprs = new Expression[paramInfos.Length];
-            for (int index = 0; index < argCastExprs.Length; index++)
+            var invokeMethod = new DynamicMethod(
+                "Invoke", typeof(object), new[] { typeof(object), typeof(object[]) },
+                restrictedSkipVisibility: true);
+            invokeMethod.DefineParameter(0, ParameterAttributes.None, "instance");
+            invokeMethod.DefineParameter(1, ParameterAttributes.None, "arguments");
+            var ilGen = invokeMethod.GetILGenerator();
+            if (!method.IsStatic)
             {
-                var indexExpr = Expression.Constant(index);
-                var argsItemExpr = Expression.ArrayIndex(argsExpr, indexExpr);
-                var paramType = paramInfos[index].ParameterType;
-                var argCastExpr = Expression.Convert(argsItemExpr, paramType);
-                argCastExprs[index] = argCastExpr;
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.EmitUnbox(method.DeclaringType);
             }
+            for (int index = 0; index < paramInfos.Length; index++)
+            {
+                ilGen.Emit(OpCodes.Ldarg_1);
+                ilGen.EmitLdcI4(index);
+                ilGen.Emit(OpCodes.Ldelem_Ref);
+                var param = paramInfos[index];
+                ilGen.EmitUnbox(param.ParameterType);
+            }
+            ilGen.Emit(method.IsVirtual ? OpCodes.Callvirt : OpCodes.Call, method);
             if (method.ReturnType == typeof(void))
             {
-                var callExpr = Expression.Call(instExpr, method, argCastExprs);
-                var lambda = Expression.Lambda<Action<object?[]?>>(callExpr, argsExpr);
-                var innerAction = lambda.Compile();
-                return arguments => { innerAction.Invoke(arguments); return null; };
+                ilGen.Emit(OpCodes.Ldnull);
             }
             else
             {
-                var callExpr = Expression.Call(instExpr, method, argCastExprs);
-                var boxExpr = Expression.Convert(callExpr, typeof(object));
-                var lambda = Expression.Lambda<Func<object?[]?, object?>>(boxExpr, argsExpr);
-                return lambda.Compile();
+                ilGen.EmitBox(method.ReturnType);
             }
+            ilGen.Emit(OpCodes.Ret);
+            return invokeMethod;
         }
     }
 }
