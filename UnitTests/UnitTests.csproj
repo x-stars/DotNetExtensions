@@ -45,7 +45,6 @@
     <ProjectReference Include="..\XstarS.Primitives\XstarS.Primitives.csproj" />
     <ProjectReference Include="..\XstarS.Unions\XstarS.Unions.csproj" />
     <ProjectReference Include="..\XstarS.ValueValidate\XstarS.ValueValidate.csproj" />
-    <ProjectReference Include="..\XstarS.Win32\XstarS.Win32.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.Split(`-`)[0].TrimEnd(`.0123456789`))'=='net' And
