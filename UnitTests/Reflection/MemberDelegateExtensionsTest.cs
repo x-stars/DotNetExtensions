@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace XstarS.Reflection
 {
     [TestClass]
-    public class MemberDelegateExtensionTest
+    public class MemberDelegateExtensionsTest
     {
         [TestMethod]
         public void CreateDelegate_PublicConstructor_CanCreateInstance()
