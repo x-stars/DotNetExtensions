@@ -8,11 +8,12 @@ namespace XstarS
         [TestMethod]
         public void InitializeArray_FiveLayers_ValueEqualsIndices()
         {
-            var array = 10.InitializeArray(
-                index1 => 10.InitializeArray(
-                    index2 => 10.InitializeArray(
-                        index3 => 10.InitializeArray(
-                            index4 => 10.InitializeArray(
+            var length = 10;
+            var array = length.InitializeArray(
+                index1 => length.InitializeArray(
+                    index2 => length.InitializeArray(
+                        index3 => length.InitializeArray(
+                            index4 => length.InitializeArray(
                                 index5 => new[] {
                                     index1, index2, index3, index4, index5 })))));
             for (int index = 0; index < 5; index++)

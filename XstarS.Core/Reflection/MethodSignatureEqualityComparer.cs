@@ -147,7 +147,6 @@ namespace XstarS.Reflection
             return hashCode;
         }
 
-
         /// <summary>
         /// 组合当前哈希代码和新的哈希代码。
         /// </summary>
