@@ -11,6 +11,14 @@ namespace XstarS.Runtime.CompilerServices
     public static unsafe class ObjectDirectValue
     {
         /// <summary>
+        /// 获取当前类型的直接值以字节为单位的大小。
+        /// </summary>
+        /// <typeparam name="T">要获取直接值大小的类型。</typeparam>
+        /// <returns>当前类型的直接值以字节为单位的大小。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int SizeOf<T>() => Unsafe.SizeOf<T>();
+
+        /// <summary>
         /// 确定当前对象与指定对象的直接值是否相等。
         /// </summary>
         /// <typeparam name="T">对象的类型。</typeparam>
@@ -18,6 +26,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <param name="other">要与当前对象进行比较的对象。</param>
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的直接值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Equals<T>(T value, T other)
         {
             var pValue = Unsafe.AsPointer(ref value);
@@ -32,6 +41,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要获取基于直接值哈希代码的对象。</param>
         /// <returns><paramref name="value"/> 基于的直接值的哈希代码。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetHashCode<T>(T value)
         {
             var pValue = Unsafe.AsPointer(ref value);

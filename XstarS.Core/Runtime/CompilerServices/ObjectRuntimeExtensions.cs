@@ -16,6 +16,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要创建浅表副本的对象。</param>
         /// <returns><paramref name="value"/> 的浅表副本。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T DirectClone<T>(this T value) =>
             (T)ObjectRuntimeValue.DirectClone(value);
 
@@ -26,6 +27,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要创建深度副本的对象。</param>
         /// <returns><paramref name="value"/> 的深度副本。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T RecursiveClone<T>(this T value) =>
             (T)ObjectRuntimeValue.RecursiveClone(value);
 
@@ -39,6 +41,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <exception cref="SerializationException">
         /// <paramref name="value"/> 中的某个对象未标记为可序列化。</exception>
         /// <exception cref="SecurityException">调用方没有所要求的权限。</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
 #if NET5_0_OR_GREATER
         [Obsolete("BinaryFormatter serialization is obsolete and should not be used.")]
 #endif
@@ -53,6 +56,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <param name="other">要与当前对象进行比较的对象。</param>
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的引用相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ReferenceEquals<T>(this T value, T other) =>
             object.ReferenceEquals(value, other);
 
@@ -67,6 +71,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <param name="other">要与当前对象进行比较的对象。</param>
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ValueEquals<T>(this T value, T other) =>
             ObjectRuntimeValue.RecursiveEquals(value, other);
 
@@ -78,6 +83,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <param name="other">要与当前对象进行比较的对象。</param>
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的直接值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool DirectValueEquals<T>(this T value, T other) =>
             ObjectDirectValue.Equals(value, other);
 
@@ -87,6 +93,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要获取基于引用的哈希代码的对象。</param>
         /// <returns><paramref name="value"/> 基于引用的哈希代码。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetReferenceHashCode<T>(this T value) =>
             RuntimeHelpers.GetHashCode(value);
 
@@ -99,6 +106,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要获取基于值的哈希代码的对象。</param>
         /// <returns>由 <paramref name="value"/> 基于值的哈希代码。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetValueHashCode<T>(this T value) =>
             ObjectRuntimeValue.GetRecursiveHashCode(value);
 
@@ -108,6 +116,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要获取基于直接值哈希代码的对象。</param>
         /// <returns><paramref name="value"/> 基于的直接值的哈希代码。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int GetDirectValueHashCode<T>(this T value) =>
             ObjectDirectValue.GetHashCode(value);
 
@@ -117,6 +126,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要将直接值填充到字节数组的对象。</param>
         /// <returns>以 <paramref name="value"/> 的直接值填充的字节数组。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte[] DirectValueToByteArray<T>(this T value) =>
             ObjectDirectValue.ToByteArray(value);
     }
