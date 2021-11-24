@@ -32,7 +32,7 @@ namespace XstarS.Reflection
             var createMethod = new DynamicMethod(
                 "CreateInstance", typeof(object), new[] { typeof(object[]) },
                 restrictedSkipVisibility: true);
-            createMethod.DefineParameter(0, ParameterAttributes.None, "arguments");
+            createMethod.DefineParameter(1, ParameterAttributes.None, "arguments");
             var ilGen = createMethod.GetILGenerator();
             for (int index = 0; index < paramInfos.Length; index++)
             {
@@ -91,7 +91,7 @@ namespace XstarS.Reflection
             var getMethod = new DynamicMethod(
                 "GetValue", typeof(object), new[] { typeof(object) },
                 restrictedSkipVisibility: true);
-            getMethod.DefineParameter(0, ParameterAttributes.None, "instance");
+            getMethod.DefineParameter(1, ParameterAttributes.None, "instance");
             var ilGen = getMethod.GetILGenerator();
             if (!field.IsStatic)
             {
@@ -147,8 +147,8 @@ namespace XstarS.Reflection
             var setMethod = new DynamicMethod(
                 "SetValue", typeof(void), new[] { typeof(object), typeof(object) },
                 restrictedSkipVisibility: true);
-            setMethod.DefineParameter(0, ParameterAttributes.None, "instance");
-            setMethod.DefineParameter(1, ParameterAttributes.None, "value");
+            setMethod.DefineParameter(1, ParameterAttributes.None, "instance");
+            setMethod.DefineParameter(2, ParameterAttributes.None, "value");
             var ilGen = setMethod.GetILGenerator();
             if (!field.IsStatic)
             {
@@ -206,8 +206,8 @@ namespace XstarS.Reflection
             var invokeMethod = new DynamicMethod(
                 "Invoke", typeof(object), new[] { typeof(object), typeof(object[]) },
                 restrictedSkipVisibility: true);
-            invokeMethod.DefineParameter(0, ParameterAttributes.None, "instance");
-            invokeMethod.DefineParameter(1, ParameterAttributes.None, "arguments");
+            invokeMethod.DefineParameter(1, ParameterAttributes.None, "instance");
+            invokeMethod.DefineParameter(2, ParameterAttributes.None, "arguments");
             var ilGen = invokeMethod.GetILGenerator();
             if (!method.IsStatic)
             {
