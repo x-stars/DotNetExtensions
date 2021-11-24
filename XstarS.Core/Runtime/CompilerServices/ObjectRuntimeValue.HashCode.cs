@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using ReferenceEqualityComparer =
     XstarS.Collections.Specialized.ReferenceEqualityComparer;
 
@@ -29,6 +30,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <param name="nextHashCode">新的哈希代码。</param>
         /// <returns><paramref name="hashCode"/> 与
         /// <paramref name="nextHashCode"/> 组合得到的哈希代码。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static int CombineHashCode(int hashCode, int nextHashCode)
         {
             return hashCode * -1521134295 + nextHashCode;
