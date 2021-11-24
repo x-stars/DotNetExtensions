@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using XstarS.Collections.Generic;
 
 namespace XstarS.Reflection
@@ -96,16 +97,22 @@ namespace XstarS.Reflection
         {
             if (obj is null) { return 0; }
 
+            [MethodImpl(MethodImplOptions.AggressiveInlining)]
+            int CombineHashCode(int hashCode, int nextHashCode)
+            {
+                return hashCode * -1521134295 + nextHashCode;
+            }
+
             var hashCode = 0;
 
-            hashCode = this.CombineHasCode(hashCode, obj.Name.GetHashCode());
-            hashCode = this.CombineHasCode(hashCode, obj.CallingConvention.GetHashCode());
+            hashCode = CombineHashCode(hashCode, obj.Name.GetHashCode());
+            hashCode = CombineHashCode(hashCode, obj.CallingConvention.GetHashCode());
 
             if (obj.IsGenericMethod) { obj = obj.GetGenericMethodDefinition(); }
             var gTypes = obj.IsGenericMethod ? obj.GetGenericArguments() : Array.Empty<Type>();
             for (int gIndex = 0; gIndex < gTypes.Length; gIndex++)
             {
-                hashCode = this.CombineHasCode(hashCode, gIndex);
+                hashCode = CombineHashCode(hashCode, gIndex);
             }
 
             int GetTypeHashCode(Type type)
@@ -114,21 +121,21 @@ namespace XstarS.Reflection
 
                 if (type.IsGenericParameter)
                 {
-                    tHashCode = this.CombineHasCode(tHashCode, type.GenericParameterPosition);
+                    tHashCode = CombineHashCode(tHashCode, type.GenericParameterPosition);
                 }
                 else if (!type.IsGenericType)
                 {
-                    tHashCode = this.CombineHasCode(tHashCode, type.GetHashCode());
+                    tHashCode = CombineHashCode(tHashCode, type.GetHashCode());
                 }
                 else
                 {
                     var typeDType = type.GetGenericTypeDefinition();
-                    tHashCode = this.CombineHasCode(tHashCode, typeDType.GetHashCode());
+                    tHashCode = CombineHashCode(tHashCode, typeDType.GetHashCode());
 
                     var typeGTypes = type.GetGenericArguments();
                     foreach (var typeGType in typeGTypes)
                     {
-                        tHashCode = this.CombineHasCode(tHashCode, GetTypeHashCode(typeGType));
+                        tHashCode = CombineHashCode(tHashCode, GetTypeHashCode(typeGType));
                     }
                 }
 
@@ -136,29 +143,15 @@ namespace XstarS.Reflection
             }
 
             var rType = obj.ReturnParameter.ParameterType;
-            hashCode = this.CombineHasCode(hashCode, GetTypeHashCode(rType));
+            hashCode = CombineHashCode(hashCode, GetTypeHashCode(rType));
 
             var pTypes = Array.ConvertAll(obj.GetParameters(), param => param.ParameterType);
             foreach (var pType in pTypes)
             {
-                hashCode = this.CombineHasCode(hashCode, GetTypeHashCode(pType));
+                hashCode = CombineHashCode(hashCode, GetTypeHashCode(pType));
             }
 
             return hashCode;
-        }
-
-        /// <summary>
-        /// 组合当前哈希代码和新的哈希代码。
-        /// </summary>
-        /// <param name="hashCode">当前哈希代码。</param>
-        /// <param name="nextHashCode">新的哈希代码。</param>
-        /// <returns><paramref name="hashCode"/> 与
-        /// <paramref name="nextHashCode"/> 组合得到的哈希代码。</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Performance", "CA1822: MarkMembersAsStatic")]
-        private int CombineHasCode(int hashCode, int nextHashCode)
-        {
-            return hashCode * -1521134295 + nextHashCode;
         }
     }
 }

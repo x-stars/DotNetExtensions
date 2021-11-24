@@ -67,7 +67,7 @@ namespace XstarS.Reflection
             for (int index = 0; index < paramInfos.Length; index++)
             {
                 var param = paramInfos[index];
-                createMethod.DefineParameter(index, param.Attributes, param.Name);
+                createMethod.DefineParameter(index + 1, param.Attributes, param.Name);
                 ilGen.EmitLdarg(index);
             }
             ilGen.Emit(OpCodes.Newobj, constructor);
@@ -159,7 +159,7 @@ namespace XstarS.Reflection
             else
             {
                 var paramAttr = ParameterAttributes.None;
-                getMethod.DefineParameter(0, paramAttr, "instance");
+                getMethod.DefineParameter(1, paramAttr, "instance");
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.Emit(OpCodes.Ldfld, field);
             }
@@ -248,16 +248,16 @@ namespace XstarS.Reflection
             if (field.IsStatic)
             {
                 var paramAttr = ParameterAttributes.None;
-                setMethod.DefineParameter(0, paramAttr, "value");
+                setMethod.DefineParameter(1, paramAttr, "value");
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.Emit(OpCodes.Stsfld, field);
             }
             else
             {
                 var paramAttr = ParameterAttributes.None;
-                setMethod.DefineParameter(0, paramAttr, "instance");
+                setMethod.DefineParameter(1, paramAttr, "instance");
                 ilGen.Emit(OpCodes.Ldarg_0);
-                setMethod.DefineParameter(1, paramAttr, "value");
+                setMethod.DefineParameter(2, paramAttr, "value");
                 ilGen.Emit(OpCodes.Ldarg_1);
                 ilGen.Emit(OpCodes.Stfld, field);
             }

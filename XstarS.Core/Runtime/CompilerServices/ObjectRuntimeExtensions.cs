@@ -2,7 +2,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using System.Security;
 
 namespace XstarS.Runtime.CompilerServices
 {
@@ -43,10 +42,6 @@ namespace XstarS.Runtime.CompilerServices
         /// <returns><paramref name="value"/> 的序列化副本。</returns>
         /// <exception cref="SerializationException">
         /// <paramref name="value"/> 中的某个对象未标记为可序列化。</exception>
-        /// <exception cref="SecurityException">调用方没有所要求的权限。</exception>
-#if NET5_0_OR_GREATER
-        [Obsolete("BinaryFormatter serialization is obsolete and should not be used.")]
-#endif
         [return: NotNullIfNotNull("value")]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T? SerializationClone<T>(this T? value) =>

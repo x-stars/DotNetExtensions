@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using XstarS.Collections.Specialized;
+using PairReferenceEqualityComparer =
+    XstarS.Collections.Specialized.PairReferenceEqualityComparer;
 
 namespace XstarS.Runtime.CompilerServices
 {

@@ -23,7 +23,7 @@ namespace XstarS
             var noAction = (Action)(() => { });
             noAction.DynamicInvoke();
             noAction.DynamicInvokeFast();
-            var testCount = 1_000_000;
+            var testCount = 1000;
             var time = DiagnosticsHelper.ExecutionTime(
                 () => noAction.DynamicInvoke(), testCount);
             var fastTime = DiagnosticsHelper.ExecutionTime(
@@ -38,7 +38,7 @@ namespace XstarS
             var selfFunc = (Func<object, object>)(value => value);
             selfFunc.DynamicInvoke(input);
             selfFunc.DynamicInvokeFast(input);
-            var testCount = 1_000_000;
+            var testCount = 1000;
             var time = DiagnosticsHelper.ExecutionTime(
                 () => selfFunc.DynamicInvoke(input), testCount);
             var fastTime = DiagnosticsHelper.ExecutionTime(
