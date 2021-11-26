@@ -59,6 +59,10 @@ namespace XstarS.Text
             {
                 return new ParsableStringParser<T>();
             }
+            else if (ExtensionStringParser<T>.CanParse)
+            {
+                return new ExtensionStringParser<T>();
+            }
             else
             {
                 return new InvalidStringParser<T>();
