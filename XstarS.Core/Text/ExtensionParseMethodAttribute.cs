@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
@@ -30,7 +31,7 @@ namespace XstarS.Text
         /// 若无法找到对应的扩展字符串解析方法，则为 <see langword="null"/>。</param>
         /// <returns>若能够找到 <paramref name="type"/> 类型的扩展字符串解析方法，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        internal static bool TryGetParseMethod(Type type, out MethodInfo method)
+        internal static bool TryGetParseMethod(Type type, [NotNullWhen(true)] out MethodInfo? method)
         {
             return ParseMethods.LookupTable.TryGetValue(type, out method);
         }
@@ -72,7 +73,7 @@ namespace XstarS.Text
             /// </summary>
             /// <param name="sender">加载程序集事件的事件源。</param>
             /// <param name="args">提供程序集事件的事件数据的对象。</param>
-            private static void UpdateLookupTableOnAssemblyLoad(object sender, AssemblyLoadEventArgs args)
+            private static void UpdateLookupTableOnAssemblyLoad(object? sender, AssemblyLoadEventArgs args)
             {
                 if (args.LoadedAssembly.IsDynamic) { return; }
                 var lookupTable = ParseMethods.LookupTable;

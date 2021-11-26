@@ -22,7 +22,6 @@ namespace XstarS.Text
         /// <returns>始终抛出 <see cref="InvalidCastException"/> 异常。</returns>
         /// <exception cref="InvalidCastException">始终抛出此异常。</exception>
         [DoesNotReturn]
-        [return: NotNull]
         public override T Parse(string text) => throw new InvalidCastException();
     }
 }
