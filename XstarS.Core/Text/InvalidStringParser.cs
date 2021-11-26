@@ -3,9 +3,9 @@
 namespace XstarS.Text
 {
     /// <summary>
-    /// 表示无法由字符串形式转换为数值形式的类型的字符串解析对象。
+    /// 表示无法由字符串形式转换为对象的类型的字符串解析对象。
     /// </summary>
-    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
     [Serializable]
     internal sealed class InvalidStringParser<T> : SimpleStringParser<T>
     {

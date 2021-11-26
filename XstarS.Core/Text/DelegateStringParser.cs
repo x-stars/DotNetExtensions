@@ -5,19 +5,19 @@ namespace XstarS.Text
     /// <summary>
     /// 表示以 <see cref="Converter{TInput, TOutput}"/> 委托定义的字符串解析对象。
     /// </summary>
-    /// <typeparam name="T">要转换为的数值的类型。</typeparam>
+    /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
     [Serializable]
     internal sealed class DelegateStringParser<T> : StringParser<T>
     {
         /// <summary>
-        /// 表示将字符串解析为指定类型的数值的方法的委托。
+        /// 表示将字符串解析为指定类型的对象的方法的委托。
         /// </summary>
         private readonly Converter<string, T> Delegate;
 
         /// <summary>
         /// 以指定的委托初始化 <see cref="DelegateStringParser{T}"/> 类的新实例。
         /// </summary>
-        /// <param name="parser">用于解析字符串为数值的方法的
+        /// <param name="parser">用于将字符串解析为对象的方法的
         /// <see cref="Converter{TInput, TOutput}"/> 委托。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="parser"/> 为 <see langword="null"/>。</exception>
@@ -27,10 +27,10 @@ namespace XstarS.Text
         }
 
         /// <summary>
-        /// 将指定的字符串表示形式转换为其等效的数值形式。
+        /// 将指定的字符串表示形式转换为其等效的对象。
         /// </summary>
-        /// <param name="text">包含要转换的数值的字符串。</param>
-        /// <returns>与 <paramref name="text"/> 等效的数值形式。</returns>
+        /// <param name="text">包含要转换的对象的字符串。</param>
+        /// <returns>与 <paramref name="text"/> 中的内容等效的对象。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException"><paramref name="text"/> 不表示有效的值。</exception>

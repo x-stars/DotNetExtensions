@@ -55,7 +55,7 @@ namespace XstarS.Text
         /// </summary>
         /// <param name="unused">不使用此参数。</param>
         /// <param name="typeName">类型的完整名称。</param>
-        /// <param name="ignoreCase">指定查找时是否忽略类型名称的大小写。。</param>
+        /// <param name="ignoreCase">指定查找时是否忽略类型名称的大小写。</param>
         /// <returns>名为 <paramref name="typeName"/> 的类型；
         /// 若未找到匹配的类型，则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentNullException">

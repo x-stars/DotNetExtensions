@@ -5,7 +5,7 @@ namespace XstarS.Text
     /// <summary>
     /// 为字符串解析对象 <see cref="IStringParser{T}"/> 提供抽象基类。
     /// </summary>
-    /// <typeparam name="T">要解析为的数值的类型。</typeparam>
+    /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
     [Serializable]
     public abstract class StringParser<T> : IStringParser, IStringParser<T>
     {
@@ -39,17 +39,21 @@ namespace XstarS.Text
         /// <returns><see cref="StringParser{T}"/> 类的默认实例。</returns>
         private static StringParser<T> CreateDefault()
         {
-            if (typeof(T) == typeof(string))
+            if (typeof(T).IsEnum)
             {
-                return (StringParser<T>)(object)new DefaultStringParser();
+                return new EnumStringParser<T>();
             }
-            if (typeof(T) == typeof(Type))
+            else if (typeof(T) == typeof(string))
+            {
+                return (StringParser<T>)(object)new SelfStringParser();
+            }
+            else if (typeof(T) == typeof(Type))
             {
                 return (StringParser<T>)(object)new TypeStringParser();
             }
-            else if (typeof(T).IsEnum)
+            else if (typeof(T) == typeof(Uri))
             {
-                return new EnumStringParser<T>();
+                return (StringParser<T>)(object)new UriStringParser();
             }
             else if (ParsableStringParser<T>.CanParse)
             {
@@ -62,10 +66,10 @@ namespace XstarS.Text
         }
 
         /// <summary>
-        /// 将指定的字符串表示形式转换为其等效的数值形式。
+        /// 将指定的字符串表示形式转换为其等效的对象。
         /// </summary>
-        /// <param name="text">包含要转换的数值的字符串。</param>
-        /// <returns>与 <paramref name="text"/> 等效的数值形式。</returns>
+        /// <param name="text">包含要转换的对象的字符串。</param>
+        /// <returns>与 <paramref name="text"/> 中的内容等效的对象。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException"><paramref name="text"/> 不表示有效的值。</exception>
@@ -76,10 +80,10 @@ namespace XstarS.Text
         public abstract T Parse(string text);
 
         /// <summary>
-        /// 将指定的字符串表示形式转换为其等效的数值形式。
+        /// 将指定的字符串表示形式转换为其等效的对象。
         /// </summary>
-        /// <param name="text">包含要转换的数值的字符串。</param>
-        /// <returns>与 <paramref name="text"/> 等效的数值形式。</returns>
+        /// <param name="text">包含要转换的对象的字符串。</param>
+        /// <returns>与 <paramref name="text"/> 中的内容等效的对象。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException"><paramref name="text"/> 不表示有效的值。</exception>
@@ -91,15 +95,15 @@ namespace XstarS.Text
     }
 
     /// <summary>
-    /// 提供将字符串解析为数值的方法。
+    /// 提供将字符串解析为对象的方法。
     /// </summary>
     public static class StringParser
     {
         /// <summary>
         /// 创建以指定的委托定义的指定类型的 <see cref="StringParser{T}"/> 类的实例。
         /// </summary>
-        /// <typeparam name="T">数值形式的类型。</typeparam>
-        /// <param name="parser">用于解析字符串为数值的方法的
+        /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
+        /// <param name="parser">用于解析字符串为对象的方法的
         /// <see cref="Converter{TInput, TOutput}"/> 委托。</param>
         /// <returns>以委托定义的指定类型的 <see cref="StringParser{T}"/> 类的实例。</returns>
         /// <exception cref="ArgumentNullException">
@@ -110,12 +114,11 @@ namespace XstarS.Text
         }
 
         /// <summary>
-        /// 将当前字符串表示形式转换为其等效的数值形式。
+        /// 将当前字符串表示形式转换为其等效的对象。
         /// </summary>
-        /// <typeparam name="T">数值形式的类型，
-        /// 应为枚举类型或包含类似于 <see cref="int.Parse(string)"/> 的方法。</typeparam>
-        /// <param name="text">包含要转换的数值的字符串。</param>
-        /// <returns>与 <paramref name="text"/> 等效的数值形式。</returns>
+        /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
+        /// <param name="text">包含要转换的对象的字符串。</param>
+        /// <returns>与 <paramref name="text"/> 中的内容等效的对象。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException"><paramref name="text"/> 不表示有效的值。</exception>
