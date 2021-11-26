@@ -4,15 +4,15 @@ using System.Diagnostics.CodeAnalysis;
 namespace XstarS.Text
 {
     /// <summary>
-    /// 提供将字符串转换为数值的方法。
+    /// 提供将字符串转换为对象的方法。
     /// </summary>
     public interface IStringParser
     {
         /// <summary>
-        /// 将指定的字符串表示形式转换为其等效的数值形式。
+        /// 将指定的字符串表示形式转换为其等效的对象。
         /// </summary>
-        /// <param name="text">包含要转换的数值的字符串。</param>
-        /// <returns>与 <paramref name="text"/> 等效的数值形式。</returns>
+        /// <param name="text">包含要转换的对象的字符串。</param>
+        /// <returns>与 <paramref name="text"/> 中的内容等效的对象。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException"><paramref name="text"/> 不表示有效的值。</exception>
@@ -24,16 +24,16 @@ namespace XstarS.Text
     }
 
     /// <summary>
-    /// 提供字符串转换为指定类型的数值的方法。
+    /// 提供字符串转换为指定类型的对象的方法。
     /// </summary>
-    /// <typeparam name="T">要转换为的数值的类型。</typeparam>
+    /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
     public interface IStringParser<out T> where T : notnull
     {
         /// <summary>
-        /// 将指定的字符串表示形式转换为其等效的数值形式。
+        /// 将指定的字符串表示形式转换为其等效的对象。
         /// </summary>
-        /// <param name="text">包含要转换的数值的字符串。</param>
-        /// <returns>与 <paramref name="text"/> 等效的数值形式。</returns>
+        /// <param name="text">包含要转换的对象的字符串。</param>
+        /// <returns>与 <paramref name="text"/> 中的内容等效的对象。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException"><paramref name="text"/> 不表示有效的值。</exception>
