@@ -110,7 +110,7 @@ namespace XstarS.Reflection
         /// <exception cref="MethodAccessException">
         /// <see cref="ProxyFactory{T}.ProxyType"/>
         /// 中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
-        public T CreateInstance(params object[] arguments) =>
+        public T CreateInstance(params object?[]? arguments) =>
             this.InitializeHandler((T)Activator.CreateInstance(this.ProxyType, arguments)!);
 
         /// <summary>
