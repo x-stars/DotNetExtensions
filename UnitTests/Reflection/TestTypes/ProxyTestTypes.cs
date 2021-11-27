@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace XstarS.Reflection.TestTypes
 {
-    public static class ProxyFactoryTestHandlers
+    public static class ProxyTestHandlers
     {
         public static readonly MethodInvokeHandler WriteMethodAndInvokeBaseHandler =
             (instance, method, @delegate, arguments) =>

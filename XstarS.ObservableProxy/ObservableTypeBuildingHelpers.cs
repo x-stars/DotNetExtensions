@@ -11,7 +11,7 @@ namespace XstarS.Reflection.Emit
     /// <summary>
     /// 提供属性更改通知类型运行时类型生成相关的帮助方法。
     /// </summary>
-    internal static class ObservableTypeBuildingHelper
+    internal static class ObservableTypeBuildingHelpers
     {
         /// <summary>
         /// 定义 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的触发方法，并添加到当前类型。

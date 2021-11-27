@@ -12,7 +12,7 @@ namespace XstarS.Reflection
         public void CreateInstance_Interface_WorksProperly()
         {
             var o = WrapProxyFactory<IList<int>>.WithHandler(
-                ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
+                ProxyTestHandlers.WriteMethodAndInvokeBaseHandler
                 ).CreateInstance(new List<int>());
             for (int index = 0; index < 10; index++) { o.Add(index); }
             Assert.AreEqual(10, o.Count);
@@ -22,7 +22,7 @@ namespace XstarS.Reflection
         public void CreateInstance_InterfaceWithGenericMethod_WorksProperly()
         {
             var o = WrapProxyFactory<ICreator>.WithHandler(
-                ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
+                ProxyTestHandlers.WriteMethodAndInvokeBaseHandler
                 ).CreateInstance(new Creator());
             Assert.IsNotNull(o.Create<object>());
         }
@@ -31,7 +31,7 @@ namespace XstarS.Reflection
         public void CreateInstance_DuplicateInterface_WorksProperly()
         {
             var o = WrapProxyFactory<IFakeClonable>.WithHandler(
-                ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
+                ProxyTestHandlers.WriteMethodAndInvokeBaseHandler
                 ).CreateInstance(new FakeClonable());
             Assert.AreEqual(o.Clone(), ((IWrapProxy)o).GetInstance());
             Assert.AreNotEqual(((IWrapProxy)o).GetInstance(), ((ICloneable)o).Clone());
@@ -41,7 +41,7 @@ namespace XstarS.Reflection
         public void CreateInstance_InterfaceWithConstraintGenericMethod_WorksProperly()
         {
             var o = WrapProxyFactory<IListCreator<object>>.WithHandler(
-                ProxyFactoryTestHandlers.WriteMethodAndInvokeBaseHandler
+                ProxyTestHandlers.WriteMethodAndInvokeBaseHandler
                 ).CreateInstance(new ListCreator<object>());
             Assert.IsNotNull(o.Create<List<object>>());
         }
