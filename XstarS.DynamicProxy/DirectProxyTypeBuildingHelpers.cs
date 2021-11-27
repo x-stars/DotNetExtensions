@@ -9,13 +9,13 @@ namespace XstarS.Reflection.Emit
     /// <summary>
     /// 提供代理类型运行时类型生成相关的帮助方法。
     /// </summary>
-    internal static class ProxyTypeBuildingHelpers
+    internal static class DirectProxyTypeBuildingHelpers
     {
         /// <summary>
-        /// 确定当前 <see cref="MemberInfo"/> 是否应由 <see cref="ProxyTypeProvider"/> 按照代理模式重写。
+        /// 确定当前 <see cref="MemberInfo"/> 是否应由 <see cref="DirectProxyTypeProvider"/> 按照代理模式重写。
         /// </summary>
         /// <param name="method">要确定是否按照代理模式重写的 <see cref="MethodInfo"/> 对象。</param>
-        /// <returns>若 <paramref name="method"/> 应由 <see cref="ProxyTypeProvider"/> 按照代理模式重写，
+        /// <returns>若 <paramref name="method"/> 应由 <see cref="DirectProxyTypeProvider"/> 按照代理模式重写，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
@@ -34,10 +34,10 @@ namespace XstarS.Reflection.Emit
         }
 
         /// <summary>
-        /// 确定当前 <see cref="MemberInfo"/> 是否应由 <see cref="ProxyTypeProvider"/> 按照非代理模式重写。
+        /// 确定当前 <see cref="MemberInfo"/> 是否应由 <see cref="DirectProxyTypeProvider"/> 按照非代理模式重写。
         /// </summary>
         /// <param name="method">要确定是否按照非代理模式重写的 <see cref="MethodInfo"/> 对象。</param>
-        /// <returns>若 <paramref name="method"/> 应由 <see cref="ProxyTypeProvider"/> 按照非代理模式重写，
+        /// <returns>若 <paramref name="method"/> 应由 <see cref="DirectProxyTypeProvider"/> 按照非代理模式重写，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>

@@ -11,21 +11,21 @@ namespace XstarS.Reflection
     /// <summary>
     /// 提供基于代理委托 <see cref="MethodInvokeHandler"/> 的代理类型。
     /// </summary>
-    public sealed class ProxyTypeProvider
+    public sealed class DirectProxyTypeProvider
     {
         /// <summary>
-        /// 表示 <see cref="ProxyTypeProvider.OfType(Type)"/> 的延迟初始化对象。
+        /// 表示 <see cref="DirectProxyTypeProvider.OfType(Type)"/> 的延迟初始化对象。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Lazy<ProxyTypeProvider>> LazyOfTypes =
-            new ConcurrentDictionary<Type, Lazy<ProxyTypeProvider>>();
+        private static readonly ConcurrentDictionary<Type, Lazy<DirectProxyTypeProvider>> LazyOfTypes =
+            new ConcurrentDictionary<Type, Lazy<DirectProxyTypeProvider>>();
 
         /// <summary>
-        /// 表示 <see cref="ProxyTypeProvider.ProxyType"/> 的延迟初始化对象。
+        /// 表示 <see cref="DirectProxyTypeProvider.ProxyType"/> 的延迟初始化对象。
         /// </summary>
         private readonly Lazy<Type> LazyProxyType;
 
         /// <summary>
-        /// 表示 <see cref="ProxyTypeProvider.HandlerField"/> 的延迟初始化对象。
+        /// 表示 <see cref="DirectProxyTypeProvider.HandlerField"/> 的延迟初始化对象。
         /// </summary>
         private readonly Lazy<FieldInfo> LazyHandlerField;
 
@@ -60,14 +60,14 @@ namespace XstarS.Reflection
         private Dictionary<MethodInfo, FieldInfo> BaseMethodInfoFields;
 
         /// <summary>
-        /// 使用指定的原型类型初始化 <see cref="ProxyTypeProvider"/> 类的新实例。
+        /// 使用指定的原型类型初始化 <see cref="DirectProxyTypeProvider"/> 类的新实例。
         /// </summary>
         /// <param name="baseType">原型类型，应为接口或非密封类。</param>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseType"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="baseType"/> 为 <see langword="null"/>。</exception>
-        private ProxyTypeProvider(Type baseType)
+        private DirectProxyTypeProvider(Type baseType)
         {
             if (baseType is null)
             {
@@ -103,19 +103,19 @@ namespace XstarS.Reflection
         public FieldInfo HandlerField => this.LazyHandlerField.Value;
 
         /// <summary>
-        /// 获取原型类型为指定类型的 <see cref="ProxyTypeProvider"/> 类的实例。
+        /// 获取原型类型为指定类型的 <see cref="DirectProxyTypeProvider"/> 类的实例。
         /// </summary>
         /// <param name="baseType">原型类型的 <see cref="Type"/> 对象。</param>
         /// <returns>一个原型类型为 <paramref name="baseType"/> 的
-        /// <see cref="ProxyTypeProvider"/> 类的实例。</returns>
+        /// <see cref="DirectProxyTypeProvider"/> 类的实例。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseType"/> 不是公共接口，也不是公共非密封类。</exception>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="baseType"/> 为 <see langword="null"/>。</exception>
-        public static ProxyTypeProvider OfType(Type baseType) =>
-            ProxyTypeProvider.LazyOfTypes.GetOrAdd(baseType,
-                newBaseType => new Lazy<ProxyTypeProvider>(
-                    () => new ProxyTypeProvider(newBaseType))).Value;
+        public static DirectProxyTypeProvider OfType(Type baseType) =>
+            DirectProxyTypeProvider.LazyOfTypes.GetOrAdd(baseType,
+                newBaseType => new Lazy<DirectProxyTypeProvider>(
+                    () => new DirectProxyTypeProvider(newBaseType))).Value;
 
         /// <summary>
         /// 创建代理类型。
