@@ -9,7 +9,7 @@ namespace XstarS.Reflection.Emit
     /// <summary>
     /// 提供代理类型运行时类型生成相关的帮助方法。
     /// </summary>
-    internal static class ProxyTypeBuildingHelper
+    internal static class ProxyTypeBuildingHelpers
     {
         /// <summary>
         /// 确定当前 <see cref="MemberInfo"/> 是否应由 <see cref="ProxyTypeProvider"/> 按照代理模式重写。
