@@ -10,16 +10,6 @@ namespace XstarS.Reflection
     public class DispatchProxyTest
     {
         [TestMethod]
-        public void Create_WithoutHandler_GetProxyInstance()
-        {
-            var list = new Collection<object>() { new object() };
-            var pList = DispatchProxy<IList<object>>.Create(list);
-            Assert.IsNotNull(pList);
-            Assert.IsInstanceOfType(pList, typeof(DispatchProxy<IList<object>>));
-            Assert.AreEqual(1, pList.Count);
-        }
-
-        [TestMethod]
         public void Create_WithDefaultHandler_GetProxyInstance()
         {
             var list = new Collection<object>() { new object() };

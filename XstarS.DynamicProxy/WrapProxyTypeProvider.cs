@@ -135,6 +135,38 @@ namespace XstarS.Reflection
                     () => new WrapProxyTypeProvider(newBaseType))).Value;
 
         /// <summary>
+        /// 使用指定的代理对象创建代理类型的实例，并将其代理委托设定为指定的委托。
+        /// </summary>
+        /// <param name="instance">要为其提供代理的对象。</param>
+        /// <param name="handler">方法调用所用的代理委托。</param>
+        /// <returns>一个为指定对象提供以指定委托定义的代理的代理类型的实例。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="instance"/>
+        /// 或 <paramref name="handler"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException"><paramref name="instance"/>
+        /// 无法转换为 <see cref="WrapProxyTypeProvider.BaseType"/> 类型。</exception>
+        public object CreateProxyInstance(object instance, MethodInvokeHandler handler)
+        {
+            if (instance is null)
+            {
+                throw new ArgumentNullException(nameof(instance));
+            }
+            if (handler is null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+            if (!this.BaseType.IsAssignableFrom(instance.GetType()))
+            {
+                var inner = new InvalidCastException();
+                throw new ArgumentException(inner.Message, nameof(instance), inner);
+            }
+
+            var proxy = Activator.CreateInstance(this.ProxyType);
+            this.InstanceField.SetValue(proxy, instance);
+            this.HandlerField.SetValue(proxy, handler);
+            return proxy;
+        }
+
+        /// <summary>
         /// 创建代理类型。
         /// </summary>
         /// <returns>创建的代理类型。</returns>

@@ -20,7 +20,7 @@ namespace XstarS
         /// <summary>
         /// 返回当前 <see cref="TimeSpan"/> 对象除以指定数值得到的对象。
         /// </summary>
-        /// <param name="span">要进行除法运算的 <see cref="TimeSpan"/> 对象。。</param>
+        /// <param name="span">要进行除法运算的 <see cref="TimeSpan"/> 对象。</param>
         /// <param name="factor">当前 <see cref="TimeSpan"/> 对象要除以的倍数。</param>
         /// <returns><paramref name="span"/> 除以 <paramref name="factor"/> 的结果。</returns>
         public static TimeSpan Divide(this TimeSpan span, double factor) =>

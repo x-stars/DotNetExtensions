@@ -7,7 +7,7 @@ using System.Reflection.Emit;
 namespace XstarS.Reflection.Emit
 {
     /// <summary>
-    /// 提供代理类型运行时类型生成相关的帮助方法。
+    /// 提供直接代理类型运行时类型生成相关的帮助方法。
     /// </summary>
     internal static class DirectProxyTypeBuildingHelpers
     {
