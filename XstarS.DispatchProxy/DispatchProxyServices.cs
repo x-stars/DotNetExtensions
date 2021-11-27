@@ -25,8 +25,8 @@ namespace XstarS.Reflection
         /// <summary>
         /// 表示类型对应的代理创建方法的委托。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Func<object, object[], object>> ProxyCreateDelegates =
-            new ConcurrentDictionary<Type, Func<object, object[], object>>();
+        private static readonly ConcurrentDictionary<Type, Func<object?, object?[]?, object>> ProxyCreateDelegates =
+            new ConcurrentDictionary<Type, Func<object?, object?[]?, object>>();
 
         /// <summary>
         /// 使用指定的代理对象和代理委托创建 <see cref="DispatchProxy{TInterface}"/> 类的实例。
@@ -37,7 +37,7 @@ namespace XstarS.Reflection
         /// <returns>实现 <typeparamref name="TInterface"/> 接口的代理类型的对象。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="instance"/>
         /// 或 <paramref name="handler"/> 为 <see langword="null"/>。</exception>
-        public static TInterface CreateProxy<TInterface>(TInterface instance, InvocationHandler handler = null)
+        public static TInterface CreateProxy<TInterface>(TInterface instance, InvocationHandler? handler = null)
             where TInterface : class
         {
             handler ??= DispatchProxyServices.DefaultHandler;
@@ -53,14 +53,14 @@ namespace XstarS.Reflection
         /// <returns>实现 <paramref name="interfaceType"/> 接口的代理类型的对象。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="instance"/>
         /// 或 <paramref name="handler"/> 为 <see langword="null"/>。</exception>
-        public static object CreateProxy(Type interfaceType, object instance, InvocationHandler handler = null)
+        public static object CreateProxy(Type interfaceType, object instance, InvocationHandler? handler = null)
         {
             if (interfaceType is null) { throw new ArgumentNullException(nameof(interfaceType)); }
             handler ??= DispatchProxyServices.DefaultHandler;
             var createDelegate = DispatchProxyServices.ProxyCreateDelegates.GetOrAdd(interfaceType,
                 newInterfaceType => typeof(DispatchProxy<>).MakeGenericType(newInterfaceType).GetMethod(
                     nameof(DispatchProxy<object>.Create), new[] { newInterfaceType, typeof(InvocationHandler) }
-                ).CreateDynamicDelegate());
+                )!.CreateDynamicDelegate()!);
             return createDelegate.Invoke(null, new[] { instance, handler });
         }
 

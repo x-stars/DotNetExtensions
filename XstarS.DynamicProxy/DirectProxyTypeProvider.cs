@@ -131,7 +131,7 @@ namespace XstarS.Reflection
         /// <exception cref="MethodAccessException">
         /// <see cref="DirectProxyTypeProvider.BaseType"/>
         /// 中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
-        public object CreateProxyInstance(object[] arguments, MethodInvokeHandler handler)
+        public object CreateProxyInstance(object?[]? arguments, MethodInvokeHandler handler)
         {
             if (handler is null)
             {
@@ -140,8 +140,8 @@ namespace XstarS.Reflection
             arguments ??= Array.Empty<object>();
 
             var proxy = (arguments.Length == 0) ?
-                Activator.CreateInstance(this.ProxyType) :
-                Activator.CreateInstance(this.ProxyType, arguments);
+                Activator.CreateInstance(this.ProxyType)! :
+                Activator.CreateInstance(this.ProxyType, arguments)!;
             this.HandlerField.SetValue(proxy, handler);
             return proxy;
         }

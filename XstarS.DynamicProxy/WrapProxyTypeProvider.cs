@@ -160,7 +160,7 @@ namespace XstarS.Reflection
                 throw new ArgumentException(inner.Message, nameof(instance), inner);
             }
 
-            var proxy = Activator.CreateInstance(this.ProxyType);
+            var proxy = Activator.CreateInstance(this.ProxyType)!;
             this.InstanceField.SetValue(proxy, instance);
             this.HandlerField.SetValue(proxy, handler);
             return proxy;
