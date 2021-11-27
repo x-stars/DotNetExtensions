@@ -9,7 +9,7 @@ using XstarS.Reflection.Emit;
 namespace XstarS.Reflection
 {
     /// <summary>
-    /// 提供基于代理委托 <see cref="MethodInvokeHandler"/> 的代理类型。
+    /// 提供基于代理委托 <see cref="MethodInvokeHandler"/> 的直接代理类型。
     /// </summary>
     public sealed class DirectProxyTypeProvider
     {
@@ -116,6 +116,35 @@ namespace XstarS.Reflection
             DirectProxyTypeProvider.LazyOfTypes.GetOrAdd(baseType,
                 newBaseType => new Lazy<DirectProxyTypeProvider>(
                     () => new DirectProxyTypeProvider(newBaseType))).Value;
+
+        /// <summary>
+        /// 使用与指定参数匹配程度最高的构造函数创建代理类型的实例，并将其代理委托设定为指定的委托。
+        /// </summary>
+        /// <param name="arguments">用于创建代理对象的参数数组。</param>
+        /// <param name="handler">方法调用所用的代理委托。</param>
+        /// <returns>一个使用指定参数创建并使用指定代理委托的代理类型的实例。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="arguments"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="MissingMethodException">
+        /// <see cref="DirectProxyTypeProvider.BaseType"/>
+        /// 不包含与 <paramref name="arguments"/> 相匹配的构造函数。</exception>
+        /// <exception cref="MethodAccessException">
+        /// <see cref="DirectProxyTypeProvider.BaseType"/>
+        /// 中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
+        public object CreateProxyInstance(object[] arguments, MethodInvokeHandler handler)
+        {
+            if (handler is null)
+            {
+                throw new ArgumentNullException(nameof(handler));
+            }
+            arguments ??= Array.Empty<object>();
+
+            var proxy = (arguments.Length == 0) ?
+                Activator.CreateInstance(this.ProxyType) :
+                Activator.CreateInstance(this.ProxyType, arguments);
+            this.HandlerField.SetValue(proxy, handler);
+            return proxy;
+        }
 
         /// <summary>
         /// 创建代理类型。

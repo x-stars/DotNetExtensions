@@ -11,39 +11,39 @@ namespace XstarS.Reflection
         [TestMethod]
         public void CreateInstance_Interface_WorksProperly()
         {
-            var o = WrapProxyFactory<IList<int>>.WithHandler(
-                ProxyTestHandlers.WriteMethodAndInvokeBaseHandler
-                ).CreateInstance(new List<int>());
-            for (int index = 0; index < 10; index++) { o.Add(index); }
-            Assert.AreEqual(10, o.Count);
+            var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
+            var instance = new List<int>();
+            var proxy = new WrapProxyFactory<IList<int>>(handler).CreateInstance(instance);
+            for (int index = 0; index < 10; index++) { proxy.Add(index); }
+            Assert.AreEqual(10, proxy.Count);
         }
 
         [TestMethod]
         public void CreateInstance_InterfaceWithGenericMethod_WorksProperly()
         {
-            var o = WrapProxyFactory<ICreator>.WithHandler(
-                ProxyTestHandlers.WriteMethodAndInvokeBaseHandler
-                ).CreateInstance(new Creator());
-            Assert.IsNotNull(o.Create<object>());
+            var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
+            var instance = new Creator();
+            var proxy = new WrapProxyFactory<ICreator>(handler).CreateInstance(instance);
+            Assert.IsNotNull(proxy.Create<object>());
         }
 
         [TestMethod]
         public void CreateInstance_DuplicateInterface_WorksProperly()
         {
-            var o = WrapProxyFactory<IFakeClonable>.WithHandler(
-                ProxyTestHandlers.WriteMethodAndInvokeBaseHandler
-                ).CreateInstance(new FakeClonable());
-            Assert.AreEqual(o.Clone(), ((IWrapProxy)o).GetInstance());
-            Assert.AreNotEqual(((IWrapProxy)o).GetInstance(), ((ICloneable)o).Clone());
+            var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
+            var instance = new FakeClonable();
+            var proxy = new WrapProxyFactory<IFakeClonable>(handler).CreateInstance(instance);
+            Assert.AreEqual(proxy.Clone(), ((IWrapProxy)proxy).GetInstance());
+            Assert.AreNotEqual(((IWrapProxy)proxy).GetInstance(), ((ICloneable)proxy).Clone());
         }
 
         [TestMethod]
         public void CreateInstance_InterfaceWithConstraintGenericMethod_WorksProperly()
         {
-            var o = WrapProxyFactory<IListCreator<object>>.WithHandler(
-                ProxyTestHandlers.WriteMethodAndInvokeBaseHandler
-                ).CreateInstance(new ListCreator<object>());
-            Assert.IsNotNull(o.Create<List<object>>());
+            var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
+            var instance = new ListCreator<object>();
+            var proxy = new WrapProxyFactory<IListCreator<object>>(handler).CreateInstance(instance);
+            Assert.IsNotNull(proxy.Create<List<object>>());
         }
     }
 }
