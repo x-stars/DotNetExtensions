@@ -96,7 +96,7 @@ namespace XstarS.Reflection.Emit
             }
             il.Emit(OpCodes.Callvirt,
                 (baseMethod.GetGenericArguments().Length == 0) ? baseMethod :
-                baseMethod.MakeGenericMethod(method.GetGenericArguments()));
+                    baseMethod.MakeGenericMethod(method.GetGenericArguments()));
             il.Emit(OpCodes.Ret);
 
             return method;
@@ -142,7 +142,7 @@ namespace XstarS.Reflection.Emit
             }
             il.Emit(OpCodes.Callvirt,
                 (baseMethod.GetGenericArguments().Length == 0) ? baseMethod :
-                baseMethod.MakeGenericMethod(method.GetGenericArguments()));
+                    baseMethod.MakeGenericMethod(method.GetGenericArguments()));
             il.Emit(OpCodes.Ret);
 
             type.DefineMethodOverride(method, baseMethod);

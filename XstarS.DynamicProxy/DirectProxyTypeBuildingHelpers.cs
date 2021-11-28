@@ -147,7 +147,7 @@ namespace XstarS.Reflection.Emit
         /// <param name="baseType">定义基础方法的类型，若为泛型类型，则应为构造泛型类型。</param>
         /// <returns>定义的方法，仅包括方法定义，不包括任何实现。</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
+        /// <paramref name="baseMethod"/> 的访问级别不为公共或保护。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static MethodBuilder DefineMethodLike(
             this TypeBuilder type, MethodInfo baseMethod, Type baseType)
@@ -223,7 +223,7 @@ namespace XstarS.Reflection.Emit
             {
                 throw new ArgumentNullException(nameof(baseType));
             }
-            if (!baseMethod.IsProxyOverride())
+            if (!baseMethod.IsInheritable())
             {
                 var inner = new MemberAccessException();
                 throw new ArgumentException(inner.Message, nameof(baseMethod), inner);
@@ -241,7 +241,7 @@ namespace XstarS.Reflection.Emit
                 }
                 il.Emit(OpCodes.Call,
                     (baseMethod.GetGenericArguments().Length == 0) ? baseMethod :
-                    baseMethod.MakeGenericMethod(method.GetGenericArguments()));
+                        baseMethod.MakeGenericMethod(method.GetGenericArguments()));
                 il.Emit(OpCodes.Ret);
             }
             else
@@ -264,7 +264,7 @@ namespace XstarS.Reflection.Emit
         /// <param name="baseInvokeMethod">调用基础方法的当前类型的方法。</param>
         /// <returns>定义的基类方法的 <see cref="MethodInfo"/> 和 <see cref="MethodDelegate"/> 字段</returns>
         /// <exception cref="ArgumentException">
-        /// <paramref name="baseMethod"/> 的访问级别不为公共或保护。</exception>
+        /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static KeyValuePair<FieldBuilder, FieldBuilder> DefineMethodInfoAndDelegateField(
             this TypeBuilder type, MethodInfo baseMethod, Type baseType, MethodInfo baseInvokeMethod)
@@ -357,7 +357,7 @@ namespace XstarS.Reflection.Emit
                 var il = constructor.GetILGenerator();
                 il.Emit(OpCodes.Ldtoken,
                     !baseMethod.IsGenericMethod ? baseMethod :
-                    baseMethod.MakeGenericMethod(nestedType.GetGenericArguments()));
+                        baseMethod.MakeGenericMethod(nestedType.GetGenericArguments()));
                 il.Emit(OpCodes.Ldtoken, baseMethod.DeclaringType);
                 il.Emit(OpCodes.Call, typeof(MethodBase).GetMethod(
                     nameof(MethodBase.GetMethodFromHandle),
