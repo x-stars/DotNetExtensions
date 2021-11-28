@@ -34,6 +34,27 @@ namespace XstarS.Linq
         }
 #endif
 
+#if !NET6_0_OR_GREATER
+        /// <summary>
+        /// 使用键选择器函数和指定的比较器对键进行比较，返回序列中的非重复元素。
+        /// </summary>
+        /// <typeparam name="TSource"><paramref name="source"/> 中的元素的类型。</typeparam>
+        /// <typeparam name="TKey"><paramref name="keySelector"/> 返回的键的类型。</typeparam>
+        /// <param name="source">要从中移除重复元素的序列。</param>
+        /// <param name="keySelector">用于提取每个元素的键的函数。</param>
+        /// <param name="comparer">对键进行比较的 <see cref="IEqualityComparer{T}"/>。</param>
+        /// <returns>一个包含源序列中的非重复元素的 <see cref="IEnumerable{T}"/>。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>
+        /// 或 <paramref name="keySelector"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<TSource> DistinctBy<TSource, TKey>(
+            this IEnumerable<TSource> source, Func<TSource, TKey> keySelector,
+            IEqualityComparer<TKey> comparer = null)
+        {
+            comparer ??= EqualityComparer<TKey>.Default;
+            return source.GroupBy(keySelector, comparer).Select(Enumerable.First);
+        }
+#endif
+
         /// <summary>
         /// 使用指定的比较器对序列的元素进行分组计数。
         /// </summary>
@@ -52,7 +73,7 @@ namespace XstarS.Linq
         }
 
         /// <summary>
-        /// 根据指定的键选择器函数并将进行比较的键使用指定的比较器对序列的元素进行分组。
+        /// 根据指定的键选择器函数对序列中的元素进行分组计数，并使用指定的比较器对键进行比较。
         /// </summary>
         /// <typeparam name="TSource"><paramref name="source"/> 中的元素的类型。</typeparam>
         /// <typeparam name="TKey"><paramref name="keySelector"/> 返回的键的类型。</typeparam>

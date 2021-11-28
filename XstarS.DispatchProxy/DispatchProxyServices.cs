@@ -17,16 +17,16 @@ namespace XstarS.Reflection
             (instance, method, arguments) => method.GetDynamicDelegate().Invoke(instance, arguments);
 
         /// <summary>
+        /// 表示类型对应的代理创建方法的委托。
+        /// </summary>
+        private static readonly ConcurrentDictionary<Type, Func<object?[]?, object>> ProxyCreateDelegates =
+            new ConcurrentDictionary<Type, Func<object?[]?, object>>();
+
+        /// <summary>
         /// 表示方法对应的动态调用委托。
         /// </summary>
         private static readonly ConcurrentDictionary<MethodInfo, Func<object, object?[]?, object?>> MethodDelegates =
             new ConcurrentDictionary<MethodInfo, Func<object, object?[]?, object?>>();
-
-        /// <summary>
-        /// 表示类型对应的代理创建方法的委托。
-        /// </summary>
-        private static readonly ConcurrentDictionary<Type, Func<object?, object?[]?, object>> ProxyCreateDelegates =
-            new ConcurrentDictionary<Type, Func<object?, object?[]?, object>>();
 
         /// <summary>
         /// 使用指定的代理对象和代理委托创建 <see cref="DispatchProxy{TInterface}"/> 类的实例。
@@ -60,8 +60,8 @@ namespace XstarS.Reflection
             var createDelegate = DispatchProxyServices.ProxyCreateDelegates.GetOrAdd(interfaceType,
                 newInterfaceType => typeof(DispatchProxy<>).MakeGenericType(newInterfaceType).GetMethod(
                     nameof(DispatchProxy<object>.Create), new[] { newInterfaceType, typeof(InvocationHandler) }
-                )!.CreateDynamicDelegate()!);
-            return createDelegate.Invoke(null, new[] { instance, handler });
+                )!.CreateDynamicDelegate(null)!);
+            return createDelegate.Invoke(new[] { instance, handler });
         }
 
         /// <summary>
