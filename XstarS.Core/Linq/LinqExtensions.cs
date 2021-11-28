@@ -48,7 +48,7 @@ namespace XstarS.Linq
         /// 或 <paramref name="keySelector"/> 为 <see langword="null"/>。</exception>
         public static IEnumerable<TSource> DistinctBy<TSource, TKey>(
             this IEnumerable<TSource> source, Func<TSource, TKey> keySelector,
-            IEqualityComparer<TKey> comparer = null)
+            IEqualityComparer<TKey>? comparer = null)
         {
             comparer ??= EqualityComparer<TKey>.Default;
             return source.GroupBy(keySelector, comparer).Select(Enumerable.First);

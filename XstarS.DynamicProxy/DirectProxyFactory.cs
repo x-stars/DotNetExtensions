@@ -66,7 +66,7 @@ namespace XstarS.Reflection
         /// 类型不包含与 <paramref name="arguments"/> 相匹配的构造函数。</exception>
         /// <exception cref="MethodAccessException"><typeparamref name="T"/>
         /// 类型中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
-        public T CreateInstance(params object[] arguments) =>
+        public T CreateInstance(params object?[]? arguments) =>
             (T)this.TypeProvider.CreateProxyInstance(arguments, this.Handler);
     }
 }

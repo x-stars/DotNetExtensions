@@ -39,7 +39,7 @@ namespace XstarS.Reflection
         /// <returns><paramref name="method"/> 方法的委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-        public static TDelegate CreateDelegate<TDelegate>(this MethodInfo method, object target)
+        public static TDelegate CreateDelegate<TDelegate>(this MethodInfo method, object? target)
             where TDelegate : Delegate
         {
             if (method is null)
@@ -58,9 +58,9 @@ namespace XstarS.Reflection
         /// <returns><paramref name="method"/> 方法的动态调用委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-        public static Func<object, object[], object> CreateDynamicDelegate(this MethodInfo method)
+        public static Func<object?, object?[]?, object?> CreateDynamicDelegate(this MethodInfo method)
         {
-            return method.CreateDynamicMethod().CreateDelegate<Func<object, object[], object>>();
+            return method.CreateDynamicMethod().CreateDelegate<Func<object?, object?[]?, object?>>();
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace XstarS.Reflection
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
         public static Func<object?[]?, object?> CreateDynamicDelegate(this MethodInfo method, object? target)
         {
-            return method.CreateDynamicMethod().CreateDelegate<Func<object[], object>>(target);
+            return method.CreateDynamicMethod().CreateDelegate<Func<object?[]?, object?>>(target);
         }
 
         /// <summary>
@@ -93,7 +93,7 @@ namespace XstarS.Reflection
 
             var paramInfos = method.GetParameters();
             var invokeMethod = new DynamicMethod(
-                "Invoke", typeof(object), new[] { typeof(object), typeof(object[]) },
+                "Invoke", typeof(object), new[] { typeof(object), typeof(object?[]) },
                 restrictedSkipVisibility: true);
             invokeMethod.DefineParameter(1, ParameterAttributes.None, "instance");
             invokeMethod.DefineParameter(2, ParameterAttributes.None, "arguments");
@@ -101,7 +101,7 @@ namespace XstarS.Reflection
             if (!method.IsStatic)
             {
                 ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.EmitUnbox(method.DeclaringType);
+                ilGen.EmitUnbox(method.DeclaringType!);
             }
             for (int index = 0; index < paramInfos.Length; index++)
             {
