@@ -9,7 +9,7 @@ namespace XstarS.Reflection
     public class DirectProxyFactoryTest
     {
         [TestMethod]
-        public void CreateInstance_Class_WorksProperly()
+        public void CreateInstance_Class_HasSameBehavior()
         {
             var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
             var proxy = new DirectProxyFactory<Collection<int>>(handler).CreateInstance();
@@ -18,7 +18,7 @@ namespace XstarS.Reflection
         }
 
         [TestMethod]
-        public void CreateInstance_ClassWithGenericMethod_WorksProperly()
+        public void CreateInstance_ClassWithGenericMethod_HasSameBehavior()
         {
             var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
             var proxy = new DirectProxyFactory<Creator>(handler).CreateInstance();
@@ -27,7 +27,7 @@ namespace XstarS.Reflection
         }
 
         [TestMethod]
-        public void CreateInstance_AbstractClass_WorksProperly()
+        public void CreateInstance_AbstractClass_GetDefaultResult()
         {
             var handler = ProxyTestHandlers.WriteMethodAndReturnDefaultHandler;
             var proxy = new DirectProxyFactory<EqualityComparer<object>>(handler).CreateInstance();
@@ -35,7 +35,7 @@ namespace XstarS.Reflection
         }
 
         [TestMethod]
-        public void CreateInstance_Interface_WorksProperly()
+        public void CreateInstance_Interface_GetDefaultResult()
         {
             var handler = ProxyTestHandlers.WriteMethodAndReturnDefaultHandler;
             var proxy = new DirectProxyFactory<IList<object>>(handler).CreateInstance();
@@ -47,7 +47,7 @@ namespace XstarS.Reflection
         }
 
         [TestMethod]
-        public void CreateInstance_ClassWithConstraintGenericMethod_WorksProperly()
+        public void CreateInstance_ClassWithConstraintGenericMethod_HasSameBehavior()
         {
             var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
             var proxy = new DirectProxyFactory<ListCreator<object>>(handler).CreateInstance();
@@ -55,7 +55,7 @@ namespace XstarS.Reflection
         }
 
         [TestMethod]
-        public void CreateInstance_ClassWithByRefParameterMethod_WorksProperly()
+        public void CreateInstance_ClassWithByRefParameterMethod_HasSameBehavior()
         {
             var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
             var proxy = new DirectProxyFactory<Int32Increaser>(handler).CreateInstance();
@@ -65,7 +65,7 @@ namespace XstarS.Reflection
         }
 
         [TestMethod]
-        public void CreateInstance_ClassWithByRefReturnMethod_WorksProperly()
+        public void CreateInstance_ClassWithByRefReturnMethod_HasSameBehavior()
         {
             var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
             var proxy = new DirectProxyFactory<ByRefValueBox<int>>(handler).CreateInstance();
