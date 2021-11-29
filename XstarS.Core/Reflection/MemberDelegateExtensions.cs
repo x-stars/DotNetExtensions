@@ -265,7 +265,6 @@ namespace XstarS.Reflection
             return setMethod.CreateDelegate(delegateType, target);
         }
 
-#if !NET5_0_OR_GREATER
         /// <summary>
         /// 从当前方法创建指定类型的委托。
         /// </summary>
@@ -304,6 +303,5 @@ namespace XstarS.Reflection
 
             return (TDelegate)method.CreateDelegate(typeof(TDelegate), target);
         }
-#endif
     }
 }

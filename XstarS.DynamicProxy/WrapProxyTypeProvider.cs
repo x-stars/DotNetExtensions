@@ -20,6 +20,12 @@ namespace XstarS.Reflection
             new ConcurrentDictionary<Type, Lazy<WrapProxyTypeProvider>>();
 
         /// <summary>
+        /// 表示用于定义代理类型的动态程序集的模块。
+        /// </summary>
+        private static readonly ModuleBuilder ProxyDynamicModule =
+            WrapProxyTypeProvider.DefineProxyModule();
+
+        /// <summary>
         /// 表示 <see cref="WrapProxyTypeProvider.ProxyType"/> 的延迟初始化对象。
         /// </summary>
         private readonly Lazy<Type> LazyProxyType;
@@ -135,6 +141,19 @@ namespace XstarS.Reflection
                     () => new WrapProxyTypeProvider(newBaseType))).Value;
 
         /// <summary>
+        /// 定义代理类型所在的动态程序集的模块。
+        /// </summary>
+        /// <returns>用于定义代理类型的动态程序集的模块。</returns>
+        private static ModuleBuilder DefineProxyModule()
+        {
+            var assemblyName = typeof(WrapProxyTypeProvider).ToString();
+            var assembly = AssemblyBuilder.DefineDynamicAssembly(
+                new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
+            var module = assembly.DefineDynamicModule($"{assemblyName}.dll");
+            return module;
+        }
+
+        /// <summary>
         /// 使用指定的代理对象创建代理类型的实例，并将其代理委托设定为指定的委托。
         /// </summary>
         /// <param name="instance">要为其提供代理的对象。</param>
@@ -223,11 +242,7 @@ namespace XstarS.Reflection
         private void DefineProxyType()
         {
             var baseType = this.BaseType;
-
-            var assemblyName = $"WrapProxy[{baseType.ToString()}]";
-            var assembly = AssemblyBuilder.DefineDynamicAssembly(
-                new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
-            var module = assembly.DefineDynamicModule($"{assemblyName}.dll");
+            var module = WrapProxyTypeProvider.ProxyDynamicModule;
 
             var baseNamespace = baseType.Namespace;
             var @namespace = !(baseNamespace is null) ? $"{baseNamespace}." : "";
@@ -244,7 +259,8 @@ namespace XstarS.Reflection
                 baseGenericArgumentNames, name => name.Replace('.', '-').Replace('+', '-'));
             var joinedGenericArgumentNames = baseType.IsGenericType ?
                 $"<{string.Join(",", genericArgumentNames)}>" : "";
-            var fullName = $"{@namespace}$WrapProxy@{joinedTypeNames}{joinedGenericArgumentNames}";
+            var fullName = $"{@namespace}$WrapProxy@{joinedTypeNames}{joinedGenericArgumentNames}" +
+                $"#{baseType.TypeHandle.Value.ToString()}";
 
             var parent = typeof(object);
             var interfaces = new[] { baseType }.Concat(baseType.GetInterfaces()).ToArray();
@@ -341,7 +357,6 @@ namespace XstarS.Reflection
             this.BaseMethodInfoFields = infoFields;
             this.BaseMethodDelegateFields = delegateFields;
         }
-
 
         /// <summary>
         /// 定义所有代理方法，并重写原型类型中的对应方法。

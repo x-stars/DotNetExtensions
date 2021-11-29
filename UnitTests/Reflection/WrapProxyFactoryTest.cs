@@ -9,7 +9,7 @@ namespace XstarS.Reflection
     public class WrapProxyFactoryTest
     {
         [TestMethod]
-        public void CreateInstance_Interface_WorksProperly()
+        public void CreateInstance_Interface_HasSameBehavior()
         {
             var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
             var instance = new List<int>();
@@ -19,7 +19,7 @@ namespace XstarS.Reflection
         }
 
         [TestMethod]
-        public void CreateInstance_InterfaceWithGenericMethod_WorksProperly()
+        public void CreateInstance_InterfaceWithGenericMethod_HasSameBehavior()
         {
             var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
             var instance = new Creator();
@@ -28,7 +28,7 @@ namespace XstarS.Reflection
         }
 
         [TestMethod]
-        public void CreateInstance_DuplicateInterface_WorksProperly()
+        public void CreateInstance_DuplicateInterface_HasSameBehavior()
         {
             var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
             var instance = new FakeClonable();
@@ -38,7 +38,7 @@ namespace XstarS.Reflection
         }
 
         [TestMethod]
-        public void CreateInstance_InterfaceWithConstraintGenericMethod_WorksProperly()
+        public void CreateInstance_InterfaceWithConstraintGenericMethod_HasSameBehavior()
         {
             var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
             var instance = new ListCreator<object>();

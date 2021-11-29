@@ -34,7 +34,6 @@ namespace XstarS.Linq
         }
 #endif
 
-#if !NET6_0_OR_GREATER
         /// <summary>
         /// 使用键选择器函数和指定的比较器对键进行比较，返回序列中的非重复元素。
         /// </summary>
@@ -53,7 +52,6 @@ namespace XstarS.Linq
             comparer ??= EqualityComparer<TKey>.Default;
             return source.GroupBy(keySelector, comparer).Select(Enumerable.First);
         }
-#endif
 
         /// <summary>
         /// 使用指定的比较器对序列的元素进行分组计数。

@@ -7,7 +7,6 @@ namespace XstarS
     /// </summary>
     public static class TimeSpanExtensions
     {
-#if !NETCOREAPP2_0_OR_GREATER && !NETSTANDARD2_1_OR_GREATER
         /// <summary>
         /// 返回当前 <see cref="TimeSpan"/> 对象乘以指定数值得到的对象。
         /// </summary>
@@ -34,6 +33,5 @@ namespace XstarS
         /// <returns><paramref name="span"/> 除以 <paramref name="other"/> 的结果。</returns>
         public static double Divide(this TimeSpan span, TimeSpan other) =>
             (double)span.Ticks / other.Ticks;
-#endif
     }
 }

@@ -22,6 +22,12 @@ namespace XstarS.ComponentModel
             new ConcurrentDictionary<Type, Lazy<ObservableTypeProvider>>();
 
         /// <summary>
+        /// 表示用于定义属性更改通知类型的动态程序集的模块。
+        /// </summary>
+        private static readonly ModuleBuilder ObservableDynamicModule =
+            ObservableTypeProvider.DefineObservableModule();
+
+        /// <summary>
         /// 表示 <see cref="ObservableTypeProvider.ObservableType"/> 的延迟初始化对象。
         /// </summary>
         private readonly Lazy<Type> LazyObservableType;
@@ -91,6 +97,19 @@ namespace XstarS.ComponentModel
                     () => new ObservableTypeProvider(newBaseType))).Value;
 
         /// <summary>
+        /// 定义代理类型所在的动态程序集的模块。
+        /// </summary>
+        /// <returns>用于定义代理类型的动态程序集的模块。</returns>
+        private static ModuleBuilder DefineObservableModule()
+        {
+            var assemblyName = typeof(ObservableTypeProvider).ToString();
+            var assembly = AssemblyBuilder.DefineDynamicAssembly(
+                new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
+            var module = assembly.DefineDynamicModule($"{assemblyName}.dll");
+            return module;
+        }
+
+        /// <summary>
         /// 创建属性更改通知类型。
         /// </summary>
         /// <returns>创建的属性更改通知类型。</returns>
@@ -116,11 +135,7 @@ namespace XstarS.ComponentModel
         private void DefineObservableType()
         {
             var baseType = this.BaseType;
-
-            var assemblyName = $"Observable[{baseType.ToString()}]";
-            var assembly = AssemblyBuilder.DefineDynamicAssembly(
-                new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
-            var module = assembly.DefineDynamicModule($"{assemblyName}.dll");
+            var module = ObservableTypeProvider.ObservableDynamicModule;
 
             var baseNamespace = baseType.Namespace;
             var @namespace = !(baseNamespace is null) ? $"{baseNamespace}." : "";
@@ -137,7 +152,8 @@ namespace XstarS.ComponentModel
                 baseGenericArgumentNames, name => name.Replace('.', '-').Replace('+', '-'));
             var joinedGenericArgumentNames = baseType.IsGenericType ?
                 $"<{string.Join(",", genericArgumentNames)}>" : "";
-            var fullName = $"{@namespace}$Observable@{joinedTypeNames}{joinedGenericArgumentNames}";
+            var fullName = $"{@namespace}$Observable@{joinedTypeNames}{joinedGenericArgumentNames}" +
+                $"#{baseType.TypeHandle.Value.ToString()}";
 
             var baseIsInterface = baseType.IsInterface;
             var parent = !baseIsInterface ? baseType : typeof(object);
@@ -192,12 +208,12 @@ namespace XstarS.ComponentModel
             }
             else
             {
-                var method = baseType.GetAccessibleMethods().Where(iMethod =>
-                    (iMethod.Name == "OnPropertyChanged") &&
-                    (iMethod.ReturnParameter.ParameterType == typeof(void)) &&
-                    (iMethod.GetParameters().Length == 1) &&
-                    (iMethod.GetParameters()[0].ParameterType == typeof(PropertyChangedEventArgs)) &&
-                    iMethod.IsInheritable() && !iMethod.IsAbstract).FirstOrDefault();
+                var method = baseType.GetAccessibleMethods().Where(baseMethod =>
+                    (baseMethod.Name == "OnPropertyChanged") &&
+                    (baseMethod.ReturnParameter.ParameterType == typeof(void)) &&
+                    (baseMethod.GetParameters().Length == 1) &&
+                    (baseMethod.GetParameters()[0].ParameterType == typeof(PropertyChangedEventArgs)) &&
+                    (baseMethod.IsInheritable() && !baseMethod.IsAbstract)).FirstOrDefault();
 
                 if (method is null)
                 {
@@ -217,8 +233,9 @@ namespace XstarS.ComponentModel
             var type = this.ObservableTypeBuilder!;
             var onPropertyChangedMethod = this.OnPropertyChangedMethod!;
 
-            foreach (var baseProperty in baseType.GetAccessibleProperties().Where(
-                property => property.GetAccessors(true).All(accessor => accessor.IsInheritable())))
+            var baseProperties = baseType.GetAccessibleProperties().Where(
+                property => property.GetAccessors(true).All(accessor => accessor.IsInheritable()));
+            foreach (var baseProperty in baseProperties)
             {
                 if (baseProperty.GetAccessors(true).All(accessor => accessor.IsOverridable()))
                 {
@@ -253,8 +270,9 @@ namespace XstarS.ComponentModel
             var baseType = this.BaseType;
             var type = this.ObservableTypeBuilder!;
 
-            foreach (var baseEvent in baseType.GetAccessibleEvents().Where(
-                @event => @event.AddMethod!.IsInheritable()))
+            var baseEvents = baseType.GetAccessibleEvents().Where(
+                @event => @event.AddMethod!.IsInheritable());
+            foreach (var baseEvent in baseEvents)
             {
                 if ((baseEvent.Name != nameof(INotifyPropertyChanged.PropertyChanged)) &&
                     (baseEvent.EventHandlerType != typeof(PropertyChangedEventHandler)))
@@ -275,8 +293,9 @@ namespace XstarS.ComponentModel
             var baseType = this.BaseType;
             var type = this.ObservableTypeBuilder!;
 
-            foreach (var baseMethod in baseType.GetAccessibleMethods().Where(
-                method => method.IsInheritable()))
+            var baseMethods = baseType.GetAccessibleMethods().Where(
+                method => method.IsInheritable());
+            foreach (var baseMethod in baseMethods)
             {
                 if (!baseMethod.IsSpecialName && baseMethod.IsAbstract)
                 {

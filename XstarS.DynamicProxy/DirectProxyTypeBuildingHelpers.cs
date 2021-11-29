@@ -88,7 +88,7 @@ namespace XstarS.Reflection.Emit
                 throw new ArgumentException(inner.Message, nameof(baseGenericParams), inner);
             }
 
-            Type makeConstraint(Type constraintType)
+            Type MakeConstraint(Type constraintType)
             {
                 if (constraintType.IsGenericParameter)
                 {
@@ -102,7 +102,7 @@ namespace XstarS.Reflection.Emit
                     var typeGenericArguments = constraintType.GetGenericArguments();
                     for (int index = 0; index < typeGenericArguments.Length; index++)
                     {
-                        typeGenericArguments[index] = makeConstraint(typeGenericArguments[index]);
+                        typeGenericArguments[index] = MakeConstraint(typeGenericArguments[index]);
                     }
                     return typeGenericDefinition.MakeGenericType(typeGenericArguments);
                 }
@@ -119,7 +119,7 @@ namespace XstarS.Reflection.Emit
 
                 var baseGenericConstraints = baseGenericParam.GetGenericParameterConstraints();
 
-                baseGenericConstraints = Array.ConvertAll(baseGenericConstraints, makeConstraint);
+                baseGenericConstraints = Array.ConvertAll(baseGenericConstraints, MakeConstraint);
 
                 var baseTypeConstraint = baseGenericConstraints.Where(
                     genericConstraint => genericConstraint.IsClass).SingleOrDefault();
