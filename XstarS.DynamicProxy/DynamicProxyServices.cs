@@ -30,7 +30,7 @@ namespace XstarS.Reflection
         /// <typeparamref name="T"/> 类型不包含无参构造函数。</exception>
         /// <exception cref="MethodAccessException">
         /// <typeparamref name="T"/> 类型的无参构造函数访问级别过低。</exception>
-        public static T CreateDirectProxyInstance<T>(MethodInvokeHandler handler = null)
+        public static T CreateDirectProxy<T>(MethodInvokeHandler handler = null)
             where T : class
         {
             handler ??= DynamicProxyServices.DefaultHandler;
@@ -49,7 +49,7 @@ namespace XstarS.Reflection
         /// <paramref name="baseType"/> 类型不包含无参构造函数。</exception>
         /// <exception cref="MethodAccessException">
         /// <paramref name="baseType"/> 类型的无参构造函数访问级别过低。</exception>
-        public static object CreateDirectProxyInstance(Type baseType, MethodInvokeHandler handler = null)
+        public static object CreateDirectProxy(Type baseType, MethodInvokeHandler handler = null)
         {
             if (baseType is null) { throw new ArgumentNullException(nameof(baseType)); }
             handler ??= DynamicProxyServices.DefaultHandler;
@@ -70,7 +70,7 @@ namespace XstarS.Reflection
         /// 类型不包含与 <paramref name="arguments"/> 相匹配的构造函数。</exception>
         /// <exception cref="MethodAccessException"><typeparamref name="T"/>
         /// 类型中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
-        public static T CreateDirectProxyInstance<T>(object[] arguments, MethodInvokeHandler handler = null)
+        public static T CreateDirectProxy<T>(object[] arguments, MethodInvokeHandler handler = null)
             where T : class
         {
             handler ??= DynamicProxyServices.DefaultHandler;
@@ -90,7 +90,7 @@ namespace XstarS.Reflection
         /// 类型不包含与 <paramref name="arguments"/> 相匹配的构造函数。</exception>
         /// <exception cref="MethodAccessException"><paramref name="baseType"/>
         /// 类型中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
-        public static object CreateDirectProxyInstance(
+        public static object CreateDirectProxy(
             Type baseType, object[] arguments, MethodInvokeHandler handler = null)
         {
             if (baseType is null) { throw new ArgumentNullException(nameof(baseType)); }
@@ -108,7 +108,7 @@ namespace XstarS.Reflection
         /// <returns>一个为指定对象提供以指定委托定义的代理的代理类型的实例。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="instance"/> 为 <see langword="null"/>。</exception>
-        public static T CreateWrapProxyInstance<T>(T instance, MethodInvokeHandler handler = null)
+        public static T CreateWrapProxy<T>(T instance, MethodInvokeHandler handler = null)
             where T : class
         {
             handler ??= DynamicProxyServices.DefaultHandler;
@@ -126,7 +126,7 @@ namespace XstarS.Reflection
         /// 或 <paramref name="instance"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException"><paramref name="instance"/>
         /// 无法转换为 <see cref="WrapProxyTypeProvider.BaseType"/> 类型。</exception>
-        public static object CreateWrapProxyInstance(
+        public static object CreateWrapProxy(
             Type baseType, object instance, MethodInvokeHandler handler = null)
         {
             if (baseType is null) { throw new ArgumentNullException(nameof(baseType)); }
