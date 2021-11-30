@@ -33,8 +33,8 @@ namespace XstarS.Reflection
             var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
             var instance = new FakeClonable();
             var proxy = new WrapProxyFactory<IFakeClonable>(handler).CreateInstance(instance);
-            Assert.AreEqual(proxy.Clone(), ((IWrapProxy)proxy).GetInstance());
-            Assert.AreNotEqual(((IWrapProxy)proxy).GetInstance(), ((ICloneable)proxy).Clone());
+            Assert.AreSame(instance, proxy.Clone());
+            Assert.AreNotSame(instance, ((ICloneable)proxy).Clone());
         }
 
         [TestMethod]
