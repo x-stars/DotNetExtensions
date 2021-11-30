@@ -16,16 +16,35 @@ namespace XstarS.ComponentModel
     public sealed class ObservableTypeProvider
     {
         /// <summary>
+        /// 提供用于定义属性更改通知类型的动态程序集的模块。
+        /// </summary>
+        private static class ModuleProvider
+        {
+            /// <summary>
+            /// 表示用于定义属性更改通知类型的动态程序集的模块。
+            /// </summary>
+            internal static readonly ModuleBuilder ObservableTypesModule =
+                ModuleProvider.CreateObservableTypesModule();
+
+            /// <summary>
+            /// 定义属性更改通知类型所在的动态程序集的模块。
+            /// </summary>
+            /// <returns>用于定义属性更改通知类型的动态程序集的模块。</returns>
+            private static ModuleBuilder CreateObservableTypesModule()
+            {
+                var assemblyName = typeof(ObservableTypeProvider).ToString();
+                var assembly = AssemblyBuilder.DefineDynamicAssembly(
+                    new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
+                var module = assembly.DefineDynamicModule($"{assemblyName}.dll");
+                return module;
+            }
+        }
+
+        /// <summary>
         /// 表示 <see cref="ObservableTypeProvider.OfType(Type)"/> 的延迟初始化对象。
         /// </summary>
         private static readonly ConcurrentDictionary<Type, Lazy<ObservableTypeProvider>> LazyOfTypes =
             new ConcurrentDictionary<Type, Lazy<ObservableTypeProvider>>();
-
-        /// <summary>
-        /// 表示用于定义属性更改通知类型的动态程序集的模块。
-        /// </summary>
-        private static readonly ModuleBuilder ObservableDynamicModule =
-            ObservableTypeProvider.DefineObservableModule();
 
         /// <summary>
         /// 表示 <see cref="ObservableTypeProvider.ObservableType"/> 的延迟初始化对象。
@@ -97,19 +116,6 @@ namespace XstarS.ComponentModel
                     () => new ObservableTypeProvider(newBaseType))).Value;
 
         /// <summary>
-        /// 定义代理类型所在的动态程序集的模块。
-        /// </summary>
-        /// <returns>用于定义代理类型的动态程序集的模块。</returns>
-        private static ModuleBuilder DefineObservableModule()
-        {
-            var assemblyName = typeof(ObservableTypeProvider).ToString();
-            var assembly = AssemblyBuilder.DefineDynamicAssembly(
-                new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
-            var module = assembly.DefineDynamicModule($"{assemblyName}.dll");
-            return module;
-        }
-
-        /// <summary>
         /// 创建属性更改通知类型。
         /// </summary>
         /// <returns>创建的属性更改通知类型。</returns>
@@ -135,7 +141,7 @@ namespace XstarS.ComponentModel
         private void DefineObservableType()
         {
             var baseType = this.BaseType;
-            var module = ObservableTypeProvider.ObservableDynamicModule;
+            var module = ModuleProvider.ObservableTypesModule;
 
             var baseNamespace = baseType.Namespace;
             var @namespace = !(baseNamespace is null) ? $"{baseNamespace}." : "";

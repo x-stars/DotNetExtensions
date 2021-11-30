@@ -103,7 +103,7 @@ namespace XstarS.Reflection.Emit
         }
 
         /// <summary>
-        /// 以指定的方法为基础，定义调用调用代理对象方法的重写方法，并添加到当前类型。
+        /// 以指定的方法为基础，定义调用代理对象方法的重写方法，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
         /// <param name="baseMethod">作为基础的方法。</param>

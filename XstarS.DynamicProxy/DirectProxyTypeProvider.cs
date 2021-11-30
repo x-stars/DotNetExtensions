@@ -14,16 +14,35 @@ namespace XstarS.Reflection
     public sealed class DirectProxyTypeProvider
     {
         /// <summary>
+        /// 提供用于定义代理类型的动态程序集的模块。
+        /// </summary>
+        private static class ModuleProvider
+        {
+            /// <summary>
+            /// 表示用于定义代理类型的动态程序集的模块。
+            /// </summary>
+            internal static readonly ModuleBuilder ProxyTypesModule =
+                ModuleProvider.CreateProxyTypesModule();
+
+            /// <summary>
+            /// 定义代理类型所在的动态程序集的模块。
+            /// </summary>
+            /// <returns>用于定义代理类型的动态程序集的模块。</returns>
+            private static ModuleBuilder CreateProxyTypesModule()
+            {
+                var assemblyName = typeof(DirectProxyTypeProvider).ToString();
+                var assembly = AssemblyBuilder.DefineDynamicAssembly(
+                    new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
+                var module = assembly.DefineDynamicModule($"{assemblyName}.dll");
+                return module;
+            }
+        }
+
+        /// <summary>
         /// 表示 <see cref="DirectProxyTypeProvider.OfType(Type)"/> 的延迟初始化对象。
         /// </summary>
         private static readonly ConcurrentDictionary<Type, Lazy<DirectProxyTypeProvider>> LazyOfTypes =
             new ConcurrentDictionary<Type, Lazy<DirectProxyTypeProvider>>();
-
-        /// <summary>
-        /// 表示用于定义代理类型的动态程序集的模块。
-        /// </summary>
-        private static readonly ModuleBuilder ProxyDynamicModule =
-            DirectProxyTypeProvider.DefineProxyModule();
 
         /// <summary>
         /// 表示 <see cref="DirectProxyTypeProvider.ProxyType"/> 的延迟初始化对象。
@@ -124,19 +143,6 @@ namespace XstarS.Reflection
                     () => new DirectProxyTypeProvider(newBaseType))).Value;
 
         /// <summary>
-        /// 定义代理类型所在的动态程序集的模块。
-        /// </summary>
-        /// <returns>用于定义代理类型的动态程序集的模块。</returns>
-        private static ModuleBuilder DefineProxyModule()
-        {
-            var assemblyName = typeof(DirectProxyTypeProvider).ToString();
-            var assembly = AssemblyBuilder.DefineDynamicAssembly(
-                new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
-            var module = assembly.DefineDynamicModule($"{assemblyName}.dll");
-            return module;
-        }
-
-        /// <summary>
         /// 使用与指定参数匹配程度最高的构造函数创建代理类型的实例，并将其代理委托设定为指定的委托。
         /// </summary>
         /// <param name="arguments">用于创建代理对象的参数数组。</param>
@@ -211,7 +217,7 @@ namespace XstarS.Reflection
         private void DefineProxyType()
         {
             var baseType = this.BaseType;
-            var module = DirectProxyTypeProvider.ProxyDynamicModule;
+            var module = ModuleProvider.ProxyTypesModule;
 
             var baseNamespace = baseType.Namespace;
             var @namespace = !(baseNamespace is null) ? $"{baseNamespace}." : "";
