@@ -11,6 +11,12 @@ namespace XstarS.ComponentModel
     public sealed class ObservableFactory<T> where T : class
     {
         /// <summary>
+        /// 表示 <see cref="ObservableFactory{T}.Default"/> 的延迟初始化对象。
+        /// </summary>
+        private static readonly Lazy<ObservableFactory<T>> LazyDefault =
+            new Lazy<ObservableFactory<T>>(() => new ObservableFactory<T>());
+
+        /// <summary>
         /// 表示提供属性更改通知类型的 <see cref="ObservableTypeProvider"/> 对象。
         /// </summary>
         private readonly ObservableTypeProvider TypeProvider;
@@ -29,7 +35,10 @@ namespace XstarS.ComponentModel
         /// 获取默认的 <see cref="ObservableFactory{T}"/> 类的实例。
         /// </summary>
         /// <returns>默认的 <see cref="ObservableFactory{T}"/> 类的实例。</returns>
-        public static ObservableFactory<T> Default { get; } = new ObservableFactory<T>();
+        /// <exception cref="ArgumentException">
+        /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
+        public static ObservableFactory<T> Default =>
+            ObservableFactory<T>.LazyDefault.Value;
 
         /// <summary>
         /// 获取原型类型的 <see cref="Type"/> 对象。
