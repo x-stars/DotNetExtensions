@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Runtime.CompilerServices;
 using XstarS.IO;
@@ -12,109 +11,22 @@ namespace XstarS
     public static partial class ConsoleEx
     {
         /// <summary>
-        /// 提供控制台的标准输入流、输出流和错误流。
-        /// </summary>
-        private static class StandardStreams
-        {
-            /// <summary>
-            /// 表示标准输入流。
-            /// </summary>
-            private static volatile Stream? Input;
-
-            /// <summary>
-            /// 表示标准输出流。
-            /// </summary>
-            private static volatile Stream? Output;
-
-            /// <summary>
-            /// 表示标准错误流。
-            /// </summary>
-            private static volatile Stream? Error;
-
-            /// <summary>
-            /// 获取标准输入流；若标准输入流已经释放，则重新获取标准输入流。
-            /// </summary>
-            /// <returns>标准输入流。</returns>
-            internal static Stream GetOrReloadInput()
-            {
-                if (StandardStreams.IsNullOrDisposed(StandardStreams.Input))
-                {
-                    lock (typeof(StandardStreams))
-                    {
-                        if (StandardStreams.IsNullOrDisposed(StandardStreams.Input))
-                        {
-                            StandardStreams.Input = Console.OpenStandardInput();
-                        }
-                    }
-                }
-                return StandardStreams.Input;
-            }
-
-            /// <summary>
-            /// 获取标准输出流；若标准输出流已经释放，则重新获取标准输出流。
-            /// </summary>
-            /// <returns>标准输出流。</returns>
-            internal static Stream GetOrReloadOutput()
-            {
-                if (StandardStreams.IsNullOrDisposed(StandardStreams.Output))
-                {
-                    lock (typeof(StandardStreams))
-                    {
-                        if (StandardStreams.IsNullOrDisposed(StandardStreams.Output))
-                        {
-                            StandardStreams.Output = Console.OpenStandardOutput();
-                        }
-                    }
-                }
-                return StandardStreams.Output;
-            }
-
-            /// <summary>
-            /// 获取标准错误流；若标准错误流已经释放，则重新获取标准错误流。
-            /// </summary>
-            /// <returns>标准错误流。</returns>
-            internal static Stream GetOrReloadError()
-            {
-                if (StandardStreams.IsNullOrDisposed(StandardStreams.Error))
-                {
-                    lock (typeof(StandardStreams))
-                    {
-                        if (StandardStreams.IsNullOrDisposed(StandardStreams.Error))
-                        {
-                            StandardStreams.Error = Console.OpenStandardError();
-                        }
-                    }
-                }
-                return StandardStreams.Error;
-            }
-
-            /// <summary>
-            /// 确定流是否为 <see langword="null"/> 或已经被释放。
-            /// </summary>
-            /// <param name="stream">要确定状态的流。</param>
-            /// <returns>若流为 <see langword="null"/> 或已经被释放，
-            /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-            private static bool IsNullOrDisposed([NotNullWhen(false)] Stream? stream) =>
-                (stream is null) || (!stream.CanRead && !stream.CanWrite);
-        }
-
-        /// <summary>
         /// 获取标准输入流。
         /// </summary>
         /// <returns>标准输入流。</returns>
-        public static Stream InStream => StandardStreams.GetOrReloadInput();
+        public static Stream InStream => Console.OpenStandardInput();
 
         /// <summary>
         /// 获取标准输出流。
         /// </summary>
         /// <returns>标准输出流。</returns>
-        public static Stream OutStream => StandardStreams.GetOrReloadOutput();
+        public static Stream OutStream => Console.OpenStandardOutput();
 
         /// <summary>
         /// 获取标准错误流。
         /// </summary>
         /// <returns>标准错误流。</returns>
-        public static Stream ErrorStream => StandardStreams.GetOrReloadError();
+        public static Stream ErrorStream => Console.OpenStandardError();
 
         /// <summary>
         /// 从标准输入流读取下一个字符串值。
