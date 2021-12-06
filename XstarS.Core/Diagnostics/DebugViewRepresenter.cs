@@ -37,7 +37,7 @@ namespace XstarS.Diagnostics
         /// <param name="value">要表示为字符串的对象。</param>
         /// <returns>调用 <paramref name="value"/> 的
         /// <see cref="DebuggerDisplayAttribute"/> 特性定义的调试器显示格式的字符串。</returns>
-        public override string Represent(T value) =>
+        public override string Represent(T? value) =>
             (value is null) ? Representer<T>.NullRefString :
                 $"{{ {DebuggerAttributes.ValidateDebuggerDisplayReferences(value)} }}";
     }

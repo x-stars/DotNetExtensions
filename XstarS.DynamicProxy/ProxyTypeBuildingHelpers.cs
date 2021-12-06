@@ -152,7 +152,7 @@ namespace XstarS.Reflection.Emit
         /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static KeyValuePair<FieldBuilder, FieldBuilder> DefineBaseMethodInfoAndDelegateField(
-            this TypeBuilder type, MethodInfo baseMethod, Type baseType, FieldInfo instanceField = null)
+            this TypeBuilder type, MethodInfo baseMethod, Type baseType, FieldInfo? instanceField = null)
         {
             if (type is null)
             {
@@ -277,7 +277,7 @@ namespace XstarS.Reflection.Emit
             this TypeBuilder type, MethodInfo baseMethod, Type baseType,
             FieldInfo baseMethodInfoField, FieldInfo baseMethodDelegateField,
             FieldInfo methodInvokeHandlerField,
-            FieldInfo instanceField = null, bool explicitOverride = false)
+            FieldInfo? instanceField = null, bool explicitOverride = false)
         {
             if (type is null)
             {
@@ -403,7 +403,7 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static MethodBuilder DefineBaseInvokeMethodOverride(
             this TypeBuilder type, MethodInfo baseMethod,
-            FieldInfo instanceField = null, bool explicitOverride = false)
+            FieldInfo? instanceField = null, bool explicitOverride = false)
         {
             if (type is null)
             {
