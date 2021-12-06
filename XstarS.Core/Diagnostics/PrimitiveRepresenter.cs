@@ -13,7 +13,15 @@ namespace XstarS.Diagnostics
         /// <summary>
         /// 初始化 <see cref="PrimitiveRepresenter{T}"/> 类的新实例。
         /// </summary>
-        public PrimitiveRepresenter() { }
+        /// <exception cref="InvalidOperationException">当前类型不为基元类型
+        /// （<see cref="Type.IsPrimitive"/> 返回 <see langword="false"/>）。</exception>
+        public PrimitiveRepresenter()
+        {
+            if (!typeof(T).IsPrimitive)
+            {
+                throw new InvalidOperationException();
+            }
+        }
 
         /// <summary>
         /// 将指定对象表示为其 <see cref="object.ToString"/> 方法返回的字符串。

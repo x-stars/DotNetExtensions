@@ -47,10 +47,9 @@ namespace XstarS.Diagnostics
             {
                 return (Representer<T>)(object)new StringRepresenter();
             }
-            else if (typeof(IRepresentable).IsAssignableFrom(type))
+            else if (DebugViewRepresenter<T>.HasDebugView)
             {
-                return (Representer<T>)Activator.CreateInstance(
-                    typeof(RepresentableRepresenter<>).MakeGenericType(type));
+                return new DebugViewRepresenter<T>();
             }
             else
             {
@@ -72,6 +71,7 @@ namespace XstarS.Diagnostics
         /// <returns>表示 <paramref name="value"/> 的字符串。</returns>
         /// <exception cref="InvalidCastException">
         /// 无法强制转换 <paramref name="value"/> 到 <typeparamref name="T"/> 类型。</exception>
-        string IRepresenter.Represent(object value) => this.Represent((T)value);
+        string IRepresenter.Represent(object value) =>
+            (value is null) ? Representer<T>.NullRefString : this.Represent((T)value);
     }
 }

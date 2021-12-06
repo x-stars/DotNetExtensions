@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using XstarS.Collections;
 using XstarS.Collections.Generic;
 using XstarS.Reflection;
@@ -34,16 +35,27 @@ namespace XstarS.Diagnostics
             InternalStructuralRepresenter<T>.LazyDefault.Value;
 
         /// <summary>
+        /// 获取当前类型是否应用了 <see cref="DebuggerDisplayAttribute"/> 特性。
+        /// </summary>
+        /// <returns>若当前类型应用了 <see cref="DebuggerDisplayAttribute"/> 特性，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        internal static bool HasDebugView =>
+            Attribute.IsDefined(typeof(T), typeof(DebuggerDisplayAttribute));
+
+        /// <summary>
         /// 判断当前类型的 <see cref="object.ToString"/> 方法是否为默认定义。
         /// </summary>
         /// <returns>若当前类型的 <see cref="object.ToString"/> 方法定义于
         /// <see cref="object"/> 或 <see cref="ValueType"/> 类，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        internal static bool IsDefaultToString()
+        internal static bool IsDefaultToString
         {
-            var method = typeof(T).GetMethod(nameof(object.ToString), Type.EmptyTypes);
-            return (method.DeclaringType == typeof(object)) ||
-                (method.DeclaringType == typeof(ValueType));
+            get
+            {
+                var method = typeof(T).GetMethod(nameof(object.ToString), Type.EmptyTypes);
+                return (method.DeclaringType == typeof(object)) ||
+                    (method.DeclaringType == typeof(ValueType));
+            }
         }
 
         /// <summary>
@@ -90,7 +102,11 @@ namespace XstarS.Diagnostics
                 return (InternalStructuralRepresenter<T>)Activator.CreateInstance(
                     typeof(KeyValuePairRepresenter<,>).MakeGenericType(keyValueTypes));
             }
-            else if (InternalStructuralRepresenter<T>.IsDefaultToString())
+            else if (InternalStructuralRepresenter<T>.HasDebugView)
+            {
+                return new PlainRepresenter<T>();
+            }
+            else if (InternalStructuralRepresenter<T>.IsDefaultToString)
             {
                 return new MemberRepresenter<T>();
             }
