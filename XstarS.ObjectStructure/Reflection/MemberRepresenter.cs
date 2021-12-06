@@ -50,7 +50,8 @@ namespace XstarS.Reflection
         private static PropertyInfo[] GetPublicProperties()
         {
             return typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public).Where(
-                property => property.CanRead && property.GetMethod!.IsPublic).ToArray();
+                property => property.CanRead && property.GetMethod!.IsPublic &&
+                            property.GetIndexParameters().Length == 0).ToArray();
         }
 
         /// <summary>

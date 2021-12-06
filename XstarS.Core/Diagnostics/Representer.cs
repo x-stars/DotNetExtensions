@@ -47,10 +47,9 @@ namespace XstarS.Diagnostics
             {
                 return (Representer<T>)(object)new StringRepresenter();
             }
-            else if (typeof(IRepresentable).IsAssignableFrom(type))
+            else if (DebugViewRepresenter<T>.HasDebugView)
             {
-                return (Representer<T>)Activator.CreateInstance(
-                    typeof(RepresentableRepresenter<>).MakeGenericType(type))!;
+                return new DebugViewRepresenter<T>();
             }
             else
             {

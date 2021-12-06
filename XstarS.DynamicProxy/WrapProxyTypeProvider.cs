@@ -80,11 +80,6 @@ namespace XstarS.Reflection
         private FieldInfo? ProxyInstanceField;
 
         /// <summary>
-        /// 表示代理类型中所有访问原型类型方法的方法。
-        /// </summary>
-        private Dictionary<MethodInfo, MethodInfo>? BaseInvokeMethods;
-
-        /// <summary>
         /// 表示代理类型中所有原型类型方法的 <see cref="MethodDelegate"/> 委托的字段。
         /// </summary>
         private Dictionary<MethodInfo, FieldInfo>? BaseMethodDelegateFields;
@@ -203,7 +198,6 @@ namespace XstarS.Reflection
 
             this.DefineProxyTypeConstructors();
             this.DefineProxyInstanceField();
-            this.DefineBaseInvokeMethods();
             this.DefineBaseMethodInfoAndDelegateFields();
             this.DefineProxyOverrideMethods();
             this.DefineNonProxyOverrideMethods();
@@ -237,9 +231,9 @@ namespace XstarS.Reflection
         private void InitializeBaseMethods()
         {
             this.BaseMethods = this.BaseType.GetAccessibleMethods().Where(
-                method => method.IsWrapProxyOverride()).ToArray();
+                method => method.IsProxyOverride()).ToArray();
             this.BaseNonMethods = this.BaseType.GetAccessibleMethods().Where(
-                method => method.IsNonWrapProxyOverride()).ToArray();
+                method => method.IsNonProxyOverride()).ToArray();
         }
 
         /// <summary>
@@ -270,8 +264,6 @@ namespace XstarS.Reflection
 
             var parent = typeof(object);
             var interfaces = new[] { baseType }.Concat(baseType.GetInterfaces()).ToArray();
-            interfaces = interfaces.Contains(typeof(IWrapProxy)) ?
-                interfaces : interfaces.Concat(new[] { typeof(IWrapProxy) }).ToArray();
 
             var type = module.DefineType(fullName, TypeAttributes.Class |
                 TypeAttributes.Public | TypeAttributes.BeforeFieldInit, parent, interfaces);
@@ -307,36 +299,7 @@ namespace XstarS.Reflection
 
             var field = type.DefineField("Instance", baseType, FieldAttributes.Assembly);
 
-            var baseMethod = typeof(IWrapProxy).GetMethod(nameof(IWrapProxy.GetInstance))!;
-            var method = type.DefineMethodOverride(baseMethod, explicitOverride: false);
-            var il = method.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldfld, field);
-            il.Emit(OpCodes.Ret);
-
             this.ProxyInstanceField = field;
-        }
-
-        /// <summary>
-        /// 定义代理类型中访问原型类型方法的方法。
-        /// </summary>
-        private void DefineBaseInvokeMethods()
-        {
-            var baseType = this.BaseType;
-            var type = this.ProxyTypeBuilder!;
-            var instanceField = this.ProxyInstanceField!;
-            var baseMethods = this.BaseMethods!;
-
-            var methods = new Dictionary<MethodInfo, MethodInfo>();
-            for (int index = 0; index < baseMethods.Length; index++)
-            {
-                var baseMethod = baseMethods[index];
-                var method = type.DefineWrapBaseInvokeMethodLike(
-                    baseMethod, baseType, instanceField);
-                methods[baseMethod] = method;
-            }
-
-            this.BaseInvokeMethods = methods;
         }
 
         /// <summary>
@@ -347,15 +310,15 @@ namespace XstarS.Reflection
             var baseType = this.BaseType;
             var baseMethods = this.BaseMethods!;
             var type = this.ProxyTypeBuilder!;
-            var baseInvokeMethods = this.BaseInvokeMethods!;
+            var instanceField = this.ProxyInstanceField!;
 
             var infoFields = new Dictionary<MethodInfo, FieldInfo>();
             var delegateFields = new Dictionary<MethodInfo, FieldInfo>();
 
             foreach (var baseMethod in baseMethods)
             {
-                var baseInvokeMethod = baseInvokeMethods[baseMethod];
-                var fields = type.DefineMethodInfoAndDelegateField(baseMethod, baseType, baseInvokeMethod);
+                var fields = type.DefineBaseMethodInfoAndDelegateField(
+                    baseMethod, baseType, instanceField);
                 infoFields[baseMethod] = fields.Key;
                 delegateFields[baseMethod] = fields.Value;
             }
@@ -369,8 +332,10 @@ namespace XstarS.Reflection
         /// </summary>
         private void DefineProxyOverrideMethods()
         {
+            var baseType = this.BaseType;
             var baseMethods = this.BaseMethods!;
             var type = this.ProxyTypeBuilder!;
+            var instanceField = this.ProxyInstanceField!;
             var baseMethodInfoFields = this.BaseMethodInfoFields!;
             var baseMethodDelegateFields = this.BaseMethodDelegateFields!;
 
@@ -381,8 +346,9 @@ namespace XstarS.Reflection
             {
                 var baseMethodInfoField = baseMethodInfoFields[baseMethod];
                 var baseMethodDelegateField = baseMethodDelegateFields[baseMethod];
-                var method = type.DefineProxyMethodOverride(baseMethod,
-                    baseMethodInfoField, baseMethodDelegateField, handlerField, explicitOverride: true);
+                var method = type.DefineProxyMethodOverride(baseMethod, baseType,
+                    baseMethodInfoField, baseMethodDelegateField, handlerField,
+                    instanceField, explicitOverride: true);
             }
         }
 
@@ -397,7 +363,7 @@ namespace XstarS.Reflection
 
             foreach (var baseMethod in baseMethods)
             {
-                var method = type.DefineWrapBaseInvokeMethodOverride(
+                var method = type.DefineBaseInvokeMethodOverride(
                     baseMethod, instanceField, explicitOverride: true);
             }
         }

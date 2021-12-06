@@ -70,11 +70,6 @@ namespace XstarS.Reflection
         private TypeBuilder? ProxyTypeBuilder;
 
         /// <summary>
-        /// 表示代理类型中所有访问原型类型方法的方法。
-        /// </summary>
-        private Dictionary<MethodInfo, MethodInfo>? BaseInvokeMethods;
-
-        /// <summary>
         /// 表示代理类型中所有原型类型方法的 <see cref="MethodDelegate"/> 委托的字段。
         /// </summary>
         private Dictionary<MethodInfo, FieldInfo>? BaseMethodDelegateFields;
@@ -182,7 +177,6 @@ namespace XstarS.Reflection
             this.DefineProxyType();
 
             this.DefineProxyTypeConstructors();
-            this.DefineBaseInvokeMethods();
             this.DefineBaseMethodInfoAndDelegateFields();
             this.DefineProxyOverrideMethods();
             this.DefineNonProxyOverrideMethods();
@@ -268,26 +262,6 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 定义代理类型中访问原型类型方法的方法。
-        /// </summary>
-        private void DefineBaseInvokeMethods()
-        {
-            var baseType = this.BaseType;
-            var type = this.ProxyTypeBuilder!;
-            var baseMethods = this.BaseMethods!;
-
-            var methods = new Dictionary<MethodInfo, MethodInfo>();
-            for (int index = 0; index < baseMethods.Length; index++)
-            {
-                var baseMethod = baseMethods[index];
-                var method = type.DefineBaseInvokeMethodLike(baseMethod, baseType);
-                methods[baseMethod] = method;
-            }
-
-            this.BaseInvokeMethods = methods;
-        }
-
-        /// <summary>
         /// 定义所有原型类型方法的方法信息和方法委托字段。
         /// </summary>
         private void DefineBaseMethodInfoAndDelegateFields()
@@ -295,15 +269,14 @@ namespace XstarS.Reflection
             var baseType = this.BaseType;
             var baseMethods = this.BaseMethods!;
             var type = this.ProxyTypeBuilder!;
-            var baseInvokeMethods = this.BaseInvokeMethods!;
 
             var infoFields = new Dictionary<MethodInfo, FieldInfo>();
             var delegateFields = new Dictionary<MethodInfo, FieldInfo>();
 
             foreach (var baseMethod in baseMethods)
             {
-                var baseInvokeMethod = baseInvokeMethods[baseMethod];
-                var fields = type.DefineMethodInfoAndDelegateField(baseMethod, baseType, baseInvokeMethod);
+                var fields = type.DefineBaseMethodInfoAndDelegateField(
+                    baseMethod, baseType, instanceField: null);
                 infoFields[baseMethod] = fields.Key;
                 delegateFields[baseMethod] = fields.Value;
             }
@@ -317,6 +290,7 @@ namespace XstarS.Reflection
         /// </summary>
         private void DefineProxyOverrideMethods()
         {
+            var baseType = this.BaseType;
             var baseMethods = this.BaseMethods!;
             var type = this.ProxyTypeBuilder!;
             var baseMethodInfoFields = this.BaseMethodInfoFields!;
@@ -329,8 +303,9 @@ namespace XstarS.Reflection
             {
                 var baseMethodInfoField = baseMethodInfoFields[baseMethod];
                 var baseMethodDelegateField = baseMethodDelegateFields[baseMethod];
-                var method = type.DefineProxyMethodOverride(baseMethod,
-                    baseMethodInfoField, baseMethodDelegateField, handlerField, explicitOverride: true);
+                var method = type.DefineProxyMethodOverride(baseMethod, baseType,
+                    baseMethodInfoField, baseMethodDelegateField, handlerField,
+                    instanceField: null, explicitOverride: true);
             }
         }
 
