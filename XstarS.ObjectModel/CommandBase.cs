@@ -25,8 +25,8 @@ namespace XstarS.Windows.Input
         /// </summary>
         protected CommandBase()
         {
-            this.InitialSyncContext =
-                SynchronizationContext.Current ?? CommandBase.DefaultSyncContext;
+            this.InitialSyncContext = SynchronizationContext.Current ??
+                CommandBase.DefaultSyncContext;
         }
 
         /// <summary>

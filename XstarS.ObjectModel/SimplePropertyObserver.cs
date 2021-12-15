@@ -4,10 +4,20 @@ using System.ComponentModel;
 namespace XstarS.ComponentModel
 {
     /// <summary>
-    /// 提供观察指定名称属性的方法，并在属性发生更改时发出通知。
+    /// 提供接收属性更改通知的机制，并在属性发生更改时发出通知。
     /// </summary>
     internal sealed class SimplePropertyObserver : IDisposable
     {
+        /// <summary>
+        /// 表示属性更改通知的事件源对象。
+        /// </summary>
+        private readonly INotifyPropertyChanged Source;
+
+        /// <summary>
+        /// 表示要接收更改通知的属性的名称。
+        /// </summary>
+        private readonly string PropertyName;
+
         /// <summary>
         /// 使用要观察的对象和属性的名称初始化 <see cref="SimplePropertyObserver"/> 类的新实例。
         /// </summary>
@@ -22,18 +32,6 @@ namespace XstarS.ComponentModel
             this.PropertyName = propertyName;
             this.Source.PropertyChanged += this.OnSourcePropertyChanged;
         }
-
-        /// <summary>
-        /// 获取属性更改通知的事件源对象。
-        /// </summary>
-        /// <returns>属性更改通知的事件源对象。</returns>
-        public INotifyPropertyChanged Source { get; }
-
-        /// <summary>
-        /// 获取要接收更改通知的属性的名称。
-        /// </summary>
-        /// <returns>要接收更改通知的属性的名称。</returns>
-        public string PropertyName { get; }
 
         /// <summary>
         /// 在当前正在观察的属性更改时发生。

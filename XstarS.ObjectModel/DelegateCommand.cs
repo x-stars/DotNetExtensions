@@ -25,31 +25,16 @@ namespace XstarS.Windows.Input
         /// </summary>
         /// <param name="executeDelegate">
         /// <see cref="DelegateCommand.Execute(object)"/> 方法的委托。</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="executeDelegate"/> 为 <see langword="null"/>。</exception>
-        public DelegateCommand(Action<object> executeDelegate)
-        {
-            this.ExecuteDelegate = executeDelegate ??
-                throw new ArgumentNullException(nameof(executeDelegate));
-            this.CanExecuteDelegate = base.CanExecute;
-        }
-
-        /// <summary>
-        /// 使用指定的委托初始化 <see cref="DelegateCommand"/> 类的新实例。
-        /// </summary>
-        /// <param name="executeDelegate">
-        /// <see cref="DelegateCommand.Execute(object)"/> 方法的委托。</param>
         /// <param name="canExecuteDelegate">
         /// <see cref="DelegateCommand.CanExecute(object)"/> 方法的委托。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="executeDelegate"/>
-        /// 或 <paramref name="canExecuteDelegate"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="executeDelegate"/> 为 <see langword="null"/>。</exception>
         public DelegateCommand(Action<object> executeDelegate,
-            Predicate<object> canExecuteDelegate)
+            Predicate<object> canExecuteDelegate = null)
         {
             this.ExecuteDelegate = executeDelegate ??
                 throw new ArgumentNullException(nameof(executeDelegate));
-            this.CanExecuteDelegate = canExecuteDelegate ??
-                throw new ArgumentNullException(nameof(canExecuteDelegate));
+            this.CanExecuteDelegate = canExecuteDelegate ?? base.CanExecute;
         }
 
         /// <summary>
