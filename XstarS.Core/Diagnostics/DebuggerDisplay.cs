@@ -13,13 +13,13 @@ namespace XstarS.Diagnostics
     public static class DebuggerDisplay
     {
         /// <summary>
-        /// 表示用于匹配 <see cref="DebuggerDisplayAttribute"/> 中的表达式的对象。
+        /// 表示用于匹配 <see cref="DebuggerDisplayAttribute"/> 中的成员表达式的正则表达式。
         /// </summary>
         private static readonly Regex ExpressionMatcher =
             new Regex(@"(?<={)([^,{}]+)(,([^,{}]+))?(?=})");
 
         /// <summary>
-        /// 表示指定类型的 <see cref="DebuggerDisplayAttribute"/> 的格式化方法的委托对象。
+        /// 表示指定类型的 <see cref="DebuggerDisplayAttribute"/> 的格式化方法的委托。
         /// </summary>
         private static readonly ConcurrentDictionary<Type, Func<object, string?>> Formatters =
             new ConcurrentDictionary<Type, Func<object, string?>>();
@@ -40,7 +40,7 @@ namespace XstarS.Diagnostics
         }
 
         /// <summary>
-        /// 创建指定类型的 <see cref="DebuggerDisplayAttribute"/> 的格式化字符串。
+        /// 获取指定类型的 <see cref="DebuggerDisplayAttribute"/> 的格式化字符串。
         /// </summary>
         /// <param name="type">要获取格式字符串的对象的类型。</param>
         /// <returns><paramref name="type"/> 类型的
@@ -53,15 +53,15 @@ namespace XstarS.Diagnostics
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
             if (!Attribute.IsDefined(type, typeof(DebuggerDisplayAttribute))) { return null; }
             var attribute = Attribute.GetCustomAttribute(type, typeof(DebuggerDisplayAttribute));
-            return ((DebuggerDisplayAttribute)attribute).Value;
+            return ((DebuggerDisplayAttribute)attribute!).Value;
         }
 
         /// <summary>
-        /// 创建指定类型的 <see cref="DebuggerDisplayAttribute"/> 的格式化方法的委托对象。
+        /// 创建指定类型的 <see cref="DebuggerDisplayAttribute"/> 的格式化方法的委托。
         /// </summary>
         /// <param name="type">要创建格式化方法的对象的类型。</param>
         /// <returns><paramref name="type"/> 类型的
-        /// <see cref="DebuggerDisplayAttribute"/> 的格式化方法的委托对象。</returns>
+        /// <see cref="DebuggerDisplayAttribute"/> 的格式化方法的委托。</returns>
         private static Func<object, string?> CreateFormatter(Type type)
         {
             var index = 0;
@@ -77,13 +77,13 @@ namespace XstarS.Diagnostics
         }
 
         /// <summary>
-        /// 创建指定成员表达式的的格式化方法的委托对象。
+        /// 创建指定成员表达式的的格式化方法的委托。
         /// </summary>
         /// <param name="type">成员所在的类型。</param>
         /// <param name="name">要访问的成员的名称；对于方法调用，应以 <c>()</c> 结尾。</param>
         /// <param name="format">成员的格式化方法；应为 <c>nq</c> 或 <c>raw</c>，或为空值。</param>
         /// <returns><paramref name="type"/> 类型中名为 <paramref name="name"/>
-        /// 的成员按照 <paramref name="format"/> 指定的格式进行格式化的方法的委托对象。</returns>
+        /// 的成员按照 <paramref name="format"/> 指定的格式进行格式化的方法的委托。</returns>
         private static Func<object, string?> CreateMemberFormatter(Type type, string name, string format)
         {
             var accessor = DebuggerDisplay.CreateMemberAccessor(type, name);
@@ -92,12 +92,12 @@ namespace XstarS.Diagnostics
         }
 
         /// <summary>
-        /// 创建指定类型的具有指定名称成员的访问方法的委托对象。
+        /// 创建指定类型的指定名称的成员的访问方法的委托。
         /// </summary>
         /// <param name="type">成员所在的类型。</param>
         /// <param name="name">要访问的成员的名称；对于方法调用，应以 <c>()</c> 结尾。</param>
         /// <returns><paramref name="type"/> 类型中名为
-        /// <paramref name="name"/> 的成员的访问方法的委托对象。</returns>
+        /// <paramref name="name"/> 的成员的访问方法的委托。</returns>
         private static Func<object, object?> CreateMemberAccessor(Type type, string name)
         {
             name = name.Trim();
@@ -137,10 +137,10 @@ namespace XstarS.Diagnostics
         }
 
         /// <summary>
-        /// 创建指定格式字符串对应的格式化方法的委托对象。
+        /// 创建指定格式字符串对应的格式化方法的委托。
         /// </summary>
         /// <param name="format">成员的格式化方法；应为 <c>nq</c> 或 <c>raw</c>，或为空值。</param>
-        /// <returns>按照 <paramref name="format"/> 指定的格式进行格式化的方法的委托对象。</returns>
+        /// <returns>按照 <paramref name="format"/> 指定的格式进行格式化的方法的委托。</returns>
         private static Func<object?, string?> CreateValueFormatter(string format)
         {
             return instance => instance switch
