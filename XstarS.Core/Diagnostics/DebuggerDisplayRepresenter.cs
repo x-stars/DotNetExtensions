@@ -8,16 +8,16 @@ namespace XstarS.Diagnostics
     /// </summary>
     /// <typeparam name="T">应用了 <see cref="DebuggerDisplayAttribute"/> 特性的类型。</typeparam>
     [Serializable]
-    internal sealed class DebugViewRepresenter<T> : SimpleRepresenter<T>
+    internal sealed class DebuggerDisplayRepresenter<T> : SimpleRepresenter<T>
     {
         /// <summary>
-        /// 初始化 <see cref="DebugViewRepresenter{T}"/> 类的新实例。
+        /// 初始化 <see cref="DebuggerDisplayRepresenter{T}"/> 类的新实例。
         /// </summary>
         /// <exception cref="InvalidOperationException">
         /// 当前类型未应用 <see cref="DebuggerDisplayAttribute"/> 特性。</exception>
-        public DebugViewRepresenter()
+        public DebuggerDisplayRepresenter()
         {
-            if (!DebugViewRepresenter<T>.HasDebugView)
+            if (!DebuggerDisplayRepresenter<T>.HasDebuggerDisplay)
             {
                 throw new InvalidOperationException();
             }
@@ -28,7 +28,7 @@ namespace XstarS.Diagnostics
         /// </summary>
         /// <returns>若当前类型应用了 <see cref="DebuggerDisplayAttribute"/> 特性，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        internal static bool HasDebugView =>
+        internal static bool HasDebuggerDisplay =>
             Attribute.IsDefined(typeof(T), typeof(DebuggerDisplayAttribute));
 
         /// <summary>
@@ -38,7 +38,6 @@ namespace XstarS.Diagnostics
         /// <returns>调用 <paramref name="value"/> 的
         /// <see cref="DebuggerDisplayAttribute"/> 特性定义的调试器显示格式的字符串。</returns>
         public override string Represent(T value) =>
-            (value is null) ? Representer<T>.NullRefString :
-                $"{{ {DebuggerAttributes.ValidateDebuggerDisplayReferences(value)} }}";
+            (value is null) ? Representer<T>.NullRefString : $"{{ {DebuggerDisplay.Format(value)} }}";
     }
 }
