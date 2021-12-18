@@ -24,9 +24,9 @@ namespace XstarS
             noAction.DynamicInvoke();
             noAction.DynamicInvokeFast();
             var testCount = 1000;
-            var time = DiagnosticsHelper.ExecutionTime(
+            var time = DiagnosticsMetrics.ExecutionTime(
                 () => noAction.DynamicInvoke(), testCount);
-            var fastTime = DiagnosticsHelper.ExecutionTime(
+            var fastTime = DiagnosticsMetrics.ExecutionTime(
                 () => noAction.DynamicInvokeFast(), testCount);
             Assert.IsTrue(time > fastTime);
         }
@@ -39,9 +39,9 @@ namespace XstarS
             selfFunc.DynamicInvoke(input);
             selfFunc.DynamicInvokeFast(input);
             var testCount = 1000;
-            var time = DiagnosticsHelper.ExecutionTime(
+            var time = DiagnosticsMetrics.ExecutionTime(
                 () => selfFunc.DynamicInvoke(input), testCount);
-            var fastTime = DiagnosticsHelper.ExecutionTime(
+            var fastTime = DiagnosticsMetrics.ExecutionTime(
                 () => selfFunc.DynamicInvokeFast(input), testCount);
             Assert.IsTrue(time > fastTime);
         }
