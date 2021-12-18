@@ -4,9 +4,9 @@ using System.Diagnostics;
 namespace XstarS.Diagnostics
 {
     /// <summary>
-    /// 提供用于程序诊断和测试的帮助方法。
+    /// 提供用于程序诊断和测试的度量方法。
     /// </summary>
-    public static class DiagnosticsHelper
+    public static class DiagnosticsMetrics
     {
         /// <summary>
         /// 返回指定过程的执行指定次数的总时间。

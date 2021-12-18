@@ -214,12 +214,12 @@ namespace XstarS.ComponentModel
             }
             else
             {
-                var method = baseType.GetAccessibleMethods().Where(baseMethod =>
-                    (baseMethod.Name == "OnPropertyChanged") &&
-                    (baseMethod.ReturnParameter.ParameterType == typeof(void)) &&
-                    (baseMethod.GetParameters().Length == 1) &&
-                    (baseMethod.GetParameters()[0].ParameterType == typeof(PropertyChangedEventArgs)) &&
-                    (baseMethod.IsInheritable() && !baseMethod.IsAbstract)).FirstOrDefault();
+                var method = baseType.GetAccessibleMethods().Where(method =>
+                    (method.Name == "OnPropertyChanged") &&
+                    (method.ReturnParameter.ParameterType == typeof(void)) &&
+                    (method.GetParameters().Length == 1) &&
+                    (method.GetParameters()[0].ParameterType == typeof(PropertyChangedEventArgs)) &&
+                    (method.IsInheritable() && !method.IsAbstract)).FirstOrDefault();
 
                 if (method is null)
                 {

@@ -47,9 +47,9 @@ namespace XstarS.Diagnostics
             {
                 return (Representer<T>)(object)new StringRepresenter();
             }
-            else if (DebugViewRepresenter<T>.HasDebugView)
+            else if (DebuggerDisplayRepresenter<T>.HasDebuggerDisplay)
             {
-                return new DebugViewRepresenter<T>();
+                return new DebuggerDisplayRepresenter<T>();
             }
             else
             {
