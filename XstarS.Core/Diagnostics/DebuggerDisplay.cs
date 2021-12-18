@@ -21,8 +21,8 @@ namespace XstarS.Diagnostics
         /// <summary>
         /// 表示指定类型的 <see cref="DebuggerDisplayAttribute"/> 的格式化方法的委托对象。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, Func<object, string>> Formatters =
-            new ConcurrentDictionary<Type, Func<object, string>>();
+        private static readonly ConcurrentDictionary<Type, Func<object, string?>> Formatters =
+            new ConcurrentDictionary<Type, Func<object, string?>>();
 
         /// <summary>
         /// 将指定对象表示为 <see cref="DebuggerDisplayAttribute"/> 指定的格式。
@@ -30,7 +30,7 @@ namespace XstarS.Diagnostics
         /// <param name="instance">要进行格式化表示的对象。</param>
         /// <returns><paramref name="instance"/> 按照
         /// <see cref="DebuggerDisplayAttribute"/> 格式化得到的字符串。</returns>
-        public static string Format(object instance)
+        public static string? Format(object instance)
         {
             if (instance == null) { return null; }
             var type = instance.GetType();
@@ -48,7 +48,7 @@ namespace XstarS.Diagnostics
         /// 若并未应用此特性，则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        public static string GetFormat(Type type)
+        public static string? GetFormat(Type type)
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
             if (!Attribute.IsDefined(type, typeof(DebuggerDisplayAttribute))) { return null; }
@@ -62,7 +62,7 @@ namespace XstarS.Diagnostics
         /// <param name="type">要创建格式化方法的对象的类型。</param>
         /// <returns><paramref name="type"/> 类型的
         /// <see cref="DebuggerDisplayAttribute"/> 的格式化方法的委托对象。</returns>
-        private static Func<object, string> CreateFormatter(Type type)
+        private static Func<object, string?> CreateFormatter(Type type)
         {
             var index = 0;
             var display = DebuggerDisplay.GetFormat(type);
@@ -84,7 +84,7 @@ namespace XstarS.Diagnostics
         /// <param name="format">成员的格式化方法；应为 <c>nq</c> 或 <c>raw</c>，或为空值。</param>
         /// <returns><paramref name="type"/> 类型中名为 <paramref name="name"/>
         /// 的成员按照 <paramref name="format"/> 指定的格式进行格式化的方法的委托对象。</returns>
-        private static Func<object, string> CreateMemberFormatter(Type type, string name, string format)
+        private static Func<object, string?> CreateMemberFormatter(Type type, string name, string format)
         {
             var accessor = DebuggerDisplay.CreateMemberAccessor(type, name);
             var formatter = DebuggerDisplay.CreateValueFormatter(format);
@@ -98,7 +98,7 @@ namespace XstarS.Diagnostics
         /// <param name="name">要访问的成员的名称；对于方法调用，应以 <c>()</c> 结尾。</param>
         /// <returns><paramref name="type"/> 类型中名为
         /// <paramref name="name"/> 的成员的访问方法的委托对象。</returns>
-        private static Func<object, object> CreateMemberAccessor(Type type, string name)
+        private static Func<object, object?> CreateMemberAccessor(Type type, string name)
         {
             name = name.Trim();
             var instFlags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
@@ -141,7 +141,7 @@ namespace XstarS.Diagnostics
         /// </summary>
         /// <param name="format">成员的格式化方法；应为 <c>nq</c> 或 <c>raw</c>，或为空值。</param>
         /// <returns>按照 <paramref name="format"/> 指定的格式进行格式化的方法的委托对象。</returns>
-        private static Func<object, string> CreateValueFormatter(string format)
+        private static Func<object?, string?> CreateValueFormatter(string format)
         {
             return instance => instance switch
             {
