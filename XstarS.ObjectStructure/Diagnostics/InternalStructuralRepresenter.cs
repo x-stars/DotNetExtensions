@@ -39,7 +39,7 @@ namespace XstarS.Diagnostics
         /// </summary>
         /// <returns>若当前类型应用了 <see cref="DebuggerDisplayAttribute"/> 特性，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        internal static bool HasDebugView =>
+        internal static bool HasDebuggerDisplay =>
             Attribute.IsDefined(typeof(T), typeof(DebuggerDisplayAttribute));
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace XstarS.Diagnostics
                 return (InternalStructuralRepresenter<T>)Activator.CreateInstance(
                     typeof(KeyValuePairRepresenter<,>).MakeGenericType(keyValueTypes))!;
             }
-            else if (InternalStructuralRepresenter<T>.HasDebugView)
+            else if (InternalStructuralRepresenter<T>.HasDebuggerDisplay)
             {
                 return new PlainRepresenter<T>();
             }
