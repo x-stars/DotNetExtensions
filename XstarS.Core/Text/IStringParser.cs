@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Text
 {
@@ -41,7 +40,6 @@ namespace XstarS.Text
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="OverflowException">
         /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
-        [return: NotNull]
         T Parse(string text);
     }
 }

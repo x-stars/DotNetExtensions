@@ -83,6 +83,21 @@ namespace XstarS.Text
         public abstract T Parse(string text);
 
         /// <summary>
+        /// 尝试将指定的字符串表示形式转换为其等效的对象，并返回转换是否成功。
+        /// </summary>
+        /// <param name="text">包含要转换的对象的字符串。</param>
+        /// <param name="result">与 <paramref name="text"/> 中的内容等效的对象。</param>
+        /// <returns>若 <paramref name="text"/> 成功转换，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Design", "CA1031:DoNot$1neralExceptionTypes")]
+        public bool TryParse(string text, out T? result)
+        {
+            try { result = this.Parse(text); return true; }
+            catch (Exception) { result = default(T); return false; }
+        }
+
+        /// <summary>
         /// 将指定的字符串表示形式转换为其等效的对象。
         /// </summary>
         /// <param name="text">包含要转换的对象的字符串。</param>
@@ -134,6 +149,20 @@ namespace XstarS.Text
             where T : notnull
         {
             return StringParser<T>.Default.Parse(text);
+        }
+
+        /// <summary>
+        /// 尝试将指定的字符串表示形式转换为其等效的对象，并返回转换是否成功。
+        /// </summary>
+        /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
+        /// <param name="text">包含要转换的对象的字符串。</param>
+        /// <param name="result">与 <paramref name="text"/> 中的内容等效的对象。</param>
+        /// <returns>若 <paramref name="text"/> 成功转换，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        public static bool TryParseAs<T>(this string text, out T? result)
+            where T : notnull
+        {
+            return StringParser<T>.Default.TryParse(text, out result);
         }
     }
 }
