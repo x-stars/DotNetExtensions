@@ -45,7 +45,7 @@ namespace XstarS.Text
             }
             else if (typeof(T) == typeof(string))
             {
-                return (StringParser<T>)(object)new SelfStringParser();
+                return (StringParser<T>)(object)new StringStringParser();
             }
             else if (typeof(T) == typeof(Type))
             {
