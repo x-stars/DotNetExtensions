@@ -38,7 +38,8 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(comparer));
             }
 
-            return new ReversedComparer<T>(comparer);
+            return (comparer is ReversedComparer<T> reversedComparer) ?
+                reversedComparer.BaseComparer : new ReversedComparer<T>(comparer);
         }
     }
 }

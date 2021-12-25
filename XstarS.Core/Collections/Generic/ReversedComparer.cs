@@ -13,19 +13,19 @@ namespace XstarS.Collections.Generic
         /// <summary>
         /// 要进行反转的比较器 <see cref="IComparer{T}"/>。
         /// </summary>
-        private readonly IComparer<T> Comparer;
+        internal readonly IComparer<T> BaseComparer;
 
         /// <summary>
         /// 使用要进行反转的比较器 <see cref="IComparer{T}"/>
         /// 初始化 <see cref="ReversedComparer{T}"/> 类的新实例。
         /// </summary>
-        /// <param name="comparer">要进行反转的比较器 <see cref="IComparer{T}"/>。</param>
+        /// <param name="baseComparer">要进行反转的比较器 <see cref="IComparer{T}"/>。</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="comparer"/> 为 <see langword="null"/>。</exception>
-        public ReversedComparer(IComparer<T> comparer)
+        /// <paramref name="baseComparer"/> 为 <see langword="null"/>。</exception>
+        public ReversedComparer(IComparer<T> baseComparer)
         {
-            this.Comparer = comparer ??
-                throw new ArgumentNullException(nameof(comparer));
+            this.BaseComparer = baseComparer ??
+                throw new ArgumentNullException(nameof(baseComparer));
         }
 
         /// <summary>
@@ -42,6 +42,6 @@ namespace XstarS.Collections.Generic
         /// <param name="y">要比较的第二个对象。</param>
         /// <returns>一个指示 <paramref name="x"/> 和 <paramref name="y"/> 的大小关系的有符号整数：
         /// 小于为正，相等为零，大于为负。</returns>
-        public override int Compare(T? x, T? y) => -this.Comparer.Compare(x!, y!);
+        public override int Compare(T? x, T? y) => -this.BaseComparer.Compare(x!, y!);
     }
 }
