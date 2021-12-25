@@ -42,10 +42,12 @@ namespace XstarS
         public static string? ReadToken() => Console.In.ReadToken();
 
         /// <summary>
-        /// 从标准输入流读取下一个字符串值，并将其转换为指定的数值形式。
+        /// 从标准输入流读取下一个字符串值，并将其转换为等效的对象形式。
         /// </summary>
-        /// <typeparam name="T">数值形式的类型。</typeparam>
-        /// <returns>输入流中的下一个字符串值的数值形式。</returns>
+        /// <typeparam name="T">要转换为的对象的类型。</typeparam>
+        /// <param name="endValue">当没有更多的可用字符串值时使用的替代值。</param>
+        /// <returns>输入流中的下一个字符串值的对象形式；
+        /// 如果当前没有更多的可用字符串值，则为 <paramref name="endValue"/>。</returns>
         /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// 下一个字符串值的字符数大于 <see cref="int.MaxValue"/>。</exception>
@@ -57,13 +59,16 @@ namespace XstarS
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static T ReadTokenAs<T>() where T : notnull => Console.In.ReadTokenAs<T>();
+        public static T? ReadTokenAs<T>(T? endValue = null) where T : class =>
+            Console.In.ReadTokenAs<T>(endValue);
 
         /// <summary>
-        /// 从标准输入流读取下一行字符串，并将其转换为指定的数值形式。
+        /// 从标准输入流读取下一个字符串值，并将其转换为等效的数值形式。
         /// </summary>
-        /// <typeparam name="T">数值形式的类型。</typeparam>
-        /// <returns>输入流中的下一行字符串的数值形式。</returns>
+        /// <typeparam name="T">要转换为的数值的类型。</typeparam>
+        /// <param name="endValue">当没有更多的可用字符串值时使用的替代值。</param>
+        /// <returns>输入流中的下一个字符串值的对象形式；
+        /// 如果当前没有更多的可用字符串值，则为 <paramref name="endValue"/>。</returns>
         /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// 下一个字符串值的字符数大于 <see cref="int.MaxValue"/>。</exception>
@@ -75,7 +80,8 @@ namespace XstarS
         /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static T ReadLineAs<T>() where T : notnull => Console.In.ReadLineAs<T>();
+        public static T? ReadTokenAs<T>(T? endValue = null) where T : struct =>
+            Console.In.ReadTokenAs<T>(endValue);
 
         /// <summary>
         /// 从标准输入流读取下一行的所有字符串值。
@@ -87,109 +93,7 @@ namespace XstarS
         /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static string[] ReadLineTokens() => Console.In.ReadLineTokens();
-
-        /// <summary>
-        /// 从标准输入流读取下一行字符，并将其包含的所有字符串值转换为指定的数值形式。
-        /// </summary>
-        /// <typeparam name="T">数值形式的类型。</typeparam>
-        /// <returns>输入流中的下一行包含的所有字符串值的数值形式。</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// 下一行中的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
-        /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
-        /// <exception cref="OutOfMemoryException">
-        /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
-        /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
-        /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
-        /// <exception cref="OverflowException">
-        /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static T[] ReadLineTokensAs<T>() where T : notnull => Console.In.ReadLineTokensAs<T>();
-
-        /// <summary>
-        /// 从标准输入流读取到末尾的所有字符。
-        /// </summary>
-        /// <returns>输入流到末尾的所有字符。</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
-        /// <exception cref="OutOfMemoryException">
-        /// 没有足够的内存来为到末尾的字符串分配缓冲区。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static string ReadToEnd() => Console.In.ReadToEnd();
-
-        /// <summary>
-        /// 从标准输入流读取到末尾的所有字符串，并将其转换为指定的数值形式。
-        /// </summary>
-        /// <typeparam name="T">数值形式的类型。</typeparam>
-        /// <returns>输入流读取到末尾的字符串的数值形式。</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
-        /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
-        /// <exception cref="OutOfMemoryException">
-        /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
-        /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
-        /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static T ReadToEndAs<T>() where T : notnull => Console.In.ReadToEndAs<T>();
-
-        /// <summary>
-        /// 从标准输入流读取到末尾的所有字符串行。
-        /// </summary>
-        /// <returns>输入流到末尾的所有字符串行。</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
-        /// <exception cref="OutOfMemoryException">
-        /// 没有足够的内存来为到末尾的字符串分配缓冲区。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static string[] ReadLinesToEnd() => Console.In.ReadLinesToEnd();
-
-        /// <summary>
-        /// 从标准输入流读取到末尾的所有字符，并将其包含的所有字符串行转换为指定的数值形式。
-        /// </summary>
-        /// <typeparam name="T">数值形式的类型。</typeparam>
-        /// <returns>输入流读取到末尾的所有字符串行的数值形式。</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
-        /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
-        /// <exception cref="OutOfMemoryException">
-        /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
-        /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
-        /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static T[] ReadLinesToEndAs<T>() where T : notnull => Console.In.ReadLinesToEndAs<T>();
-
-        /// <summary>
-        /// 从标准输入流读取到末尾的所有字符串值。
-        /// </summary>
-        /// <returns>输入流到末尾的所有字符串值。</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
-        /// <exception cref="OutOfMemoryException">
-        /// 没有足够的内存来为到末尾的字符串分配缓冲区。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static string[] ReadTokensToEnd() => Console.In.ReadTokensToEnd();
-
-        /// <summary>
-        /// 从标准输入流读取到末尾的所有字符，并将其包含的所有字符串值转换为指定的数值形式。
-        /// </summary>
-        /// <typeparam name="T">数值形式的类型。</typeparam>
-        /// <returns>输入流读取到末尾的所有字符串值的数值形式。</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// 到末尾的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
-        /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
-        /// <exception cref="OutOfMemoryException">
-        /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
-        /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
-        /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
-        /// <exception cref="IOException">出现 I/O 错误。</exception>
-        [MethodImpl(MethodImplOptions.NoInlining)]
-        public static T[] ReadTokensToEndAs<T>() where T : notnull => Console.In.ReadTokensToEndAs<T>();
+        public static string[]? ReadLineTokens() => Console.In.ReadLineTokens();
 
         /// <summary>
         /// 将指定的多个字符串值逐行（后跟当前行终止符）写入标准输出流。
