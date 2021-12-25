@@ -9,6 +9,25 @@ namespace XstarS.IO
     public static class StreamExtensions
     {
         /// <summary>
+        /// 获取当前流的包装 <see cref="Stream"/>，使其在释放后保持打开状态。
+        /// </summary>
+        /// <param name="stream">要保持打开状态的流。</param>
+        /// <returns><paramref name="stream"/> 的包装 <see cref="Stream"/>，
+        /// 在流释放后保持 <paramref name="stream"/> 保持打开状态。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="stream"/> 为 <see langword="null"/>。</exception>
+        public static Stream LeaveOpen(this Stream stream)
+        {
+            if (stream is null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
+            return (stream is LeaveOpenStream leaveOpenStream) ?
+                leaveOpenStream : new LeaveOpenStream(stream);
+        }
+
+        /// <summary>
         /// 从当前流读取指定长度的字节序列到缓冲区，并提升流的位置。
         /// </summary>
         /// <param name="stream">要读取的流。</param>
