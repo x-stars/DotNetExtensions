@@ -20,21 +20,21 @@ namespace XstarS.Text.RegularExpressions
         /// <exception cref="ArgumentException">
         /// <paramref name="pattern"/> 的正则表达式分析错误。</exception>
         public static bool IsMatch(this string text, string pattern) =>
-            new Regex(pattern).IsMatch(text);
+            Regex.IsMatch(text, pattern);
 
         /// <summary>
         /// 返回一个新字符串，此字符串中所有匹配指定正则表达式模式的子字符串都被替换为指定值。
         /// </summary>
         /// <param name="text">要进行替换的字符串。</param>
         /// <param name="pattern">指定要替换的正则表达式模式。</param>
-        /// <param name="value">指定用于替换的新字符串。</param>
+        /// <param name="replacement">指定用于替换的新字符串。</param>
         /// <returns><paramref name="text"/> 中所有匹配 <paramref name="pattern"/>
-        /// 的子字符串被替换为 <paramref name="value"/> 得到的新字符串。</returns>
+        /// 的子字符串被替换为 <paramref name="replacement"/> 得到的新字符串。</returns>
         /// <exception cref="ArgumentNullException">
         /// 存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="ArgumentException">
         /// <paramref name="pattern"/> 的正则表达式分析错误。</exception>
-        public static string ReplaceMatches(this string text, string pattern, string value) =>
-            new Regex(pattern).Replace(text, value);
+        public static string ReplaceMatches(this string text, string pattern, string replacement) =>
+            Regex.Replace(text, pattern, replacement);
     }
 }
