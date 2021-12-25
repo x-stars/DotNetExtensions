@@ -6,7 +6,6 @@ namespace XstarS.Diagnostics
     /// 为无参数的无环字符串表示对象 <see cref="IAcyclicRepresenter{T}"/> 提供抽象基类。
     /// </summary>
     /// <typeparam name="T">要无环地表示为字符串的对象的类型。</typeparam>
-    [Serializable]
     public abstract class SimpleAcyclicRepresenter<T> : AcyclicRepresenter<T>
     {
         /// <summary>

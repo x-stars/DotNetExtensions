@@ -12,7 +12,6 @@ namespace XstarS.Diagnostics
     /// 为结构化对象的字符串表示对象提供抽象基类。
     /// </summary>
     /// <typeparam name="T">要表示为字符串的对象的类型。</typeparam>
-    [Serializable]
     internal abstract class InternalStructuralRepresenter<T> : SimpleAcyclicRepresenter<T>
     {
         /// <summary>

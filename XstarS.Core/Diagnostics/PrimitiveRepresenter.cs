@@ -7,7 +7,6 @@ namespace XstarS.Diagnostics
     /// 提供将指定基元类型的值表示为其 <see cref="object.ToString()"/> 方法返回的字符串的方法。
     /// </summary>
     /// <typeparam name="T">要表示为字符串的基元类型。</typeparam>
-    [Serializable]
     internal sealed class PrimitiveRepresenter<T> : SimpleRepresenter<T>
         where T : struct
     {

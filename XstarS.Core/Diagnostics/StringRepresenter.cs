@@ -5,7 +5,6 @@ namespace XstarS.Diagnostics
     /// <summary>
     /// 提供将指定字符串包装后表示为字符串的方法。
     /// </summary>
-    [Serializable]
     internal sealed class StringRepresenter : SimpleRepresenter<string>
     {
         /// <summary>

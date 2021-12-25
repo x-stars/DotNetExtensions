@@ -8,7 +8,6 @@ namespace XstarS
     /// 提供将数组中的元素的表示为字符串的方法。
     /// </summary>
     /// <typeparam name="TItem">数组中的元素的类型。</typeparam>
-    [Serializable]
     internal sealed class SZArrayRepresenter<TItem> : InternalStructuralRepresenter<TItem[]>
     {
         /// <summary>

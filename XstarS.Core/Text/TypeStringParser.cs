@@ -6,7 +6,6 @@ namespace XstarS.Text
     /// <summary>
     /// 表示将类型的完整名称转换为其等效的类型声明的字符串解析对象。
     /// </summary>
-    [Serializable]
     internal sealed class TypeStringParser : SimpleStringParser<Type>
     {
         /// <summary>

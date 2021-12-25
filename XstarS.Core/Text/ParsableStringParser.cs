@@ -7,7 +7,6 @@ namespace XstarS.Text
     /// 表示使用类似于 <see cref="int.Parse(string)"/> 的方法将字符串转换为对象的字符串解析对象。
     /// </summary>
     /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
-    [Serializable]
     internal sealed class ParsableStringParser<T> : SimpleStringParser<T> where T : notnull
     {
         /// <summary>

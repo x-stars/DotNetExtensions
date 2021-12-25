@@ -7,7 +7,6 @@ namespace XstarS.Diagnostics
     /// 提供将结构化对象表示为字符串的方法。
     /// </summary>
     /// <typeparam name="T">结构化对象的类型。</typeparam>
-    [Serializable]
     public sealed class StructuralRepresenter<T> : SimpleRepresenter<T>
     {
         /// <summary>

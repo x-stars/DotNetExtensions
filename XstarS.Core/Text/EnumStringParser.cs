@@ -6,7 +6,6 @@ namespace XstarS.Text
     /// 表示使用 <see cref="Enum.Parse(Type, string)"/> 方法将字符串转换为枚举的字符串解析对象。
     /// </summary>
     /// <typeparam name="T">要转换为的枚举的类型。</typeparam>
-    [Serializable]
     internal sealed class EnumStringParser<T> : SimpleStringParser<T> where T : notnull
     {
         /// <summary>

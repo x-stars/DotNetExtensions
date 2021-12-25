@@ -7,7 +7,6 @@ namespace XstarS.Text
     /// 表示使用标记为 <see cref="ExtensionParseMethodAttribute"/> 的方法将字符串转换为对象的字符串解析对象。
     /// </summary>
     /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
-    [Serializable]
     internal sealed class ExtensionStringParser<T> : SimpleStringParser<T> where T : notnull
     {
         /// <summary>

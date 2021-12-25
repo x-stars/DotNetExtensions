@@ -7,7 +7,6 @@ namespace XstarS.Diagnostics
     /// 提供将应用了 <see cref="DebuggerDisplayAttribute"/> 特性的类型的对象表示为其调试器显示格式的方法。
     /// </summary>
     /// <typeparam name="T">应用了 <see cref="DebuggerDisplayAttribute"/> 特性的类型。</typeparam>
-    [Serializable]
     internal sealed class DebuggerDisplayRepresenter<T> : SimpleRepresenter<T>
     {
         /// <summary>

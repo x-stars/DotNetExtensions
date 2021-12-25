@@ -6,7 +6,6 @@ namespace XstarS.Text
     /// 为无参数的字符串解析对象 <see cref="IStringParser{T}"/> 提供抽象基类。
     /// </summary>
     /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
-    [Serializable]
     public abstract class SimpleStringParser<T> : StringParser<T> where T : notnull
     {
         /// <summary>

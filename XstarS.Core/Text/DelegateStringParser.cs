@@ -6,7 +6,6 @@ namespace XstarS.Text
     /// 表示以 <see cref="Converter{TInput, TOutput}"/> 委托定义的字符串解析对象。
     /// </summary>
     /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
-    [Serializable]
     internal sealed class DelegateStringParser<T> : StringParser<T> where T : notnull
     {
         /// <summary>

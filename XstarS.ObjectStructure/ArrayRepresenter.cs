@@ -9,7 +9,6 @@ namespace XstarS
     /// 提供将数组中的元素表示为字符串的方法。
     /// </summary>
     /// <typeparam name="T">数组的类型。</typeparam>
-    [Serializable]
     internal sealed class ArrayRepresenter<T> : InternalStructuralRepresenter<T>
     {
         /// <summary>
