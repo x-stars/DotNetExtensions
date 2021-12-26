@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace XstarS.Diagnostics
+﻿namespace XstarS.Diagnostics
 {
     /// <summary>
     /// 提供将指定类型的对象表示为其 <see cref="object.ToString()"/> 方法返回的字符串的包装的方法。

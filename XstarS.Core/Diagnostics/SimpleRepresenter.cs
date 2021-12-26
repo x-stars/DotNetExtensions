@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace XstarS.Diagnostics
+﻿namespace XstarS.Diagnostics
 {
     /// <summary>
     /// 为无参数的字符串表示对象 <see cref="IRepresenter{T}"/> 提供抽象基类。

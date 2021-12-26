@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace XstarS.Text
+﻿namespace XstarS.Text
 {
     /// <summary>
     /// 表示原样返回的输入字符串的字符串解析对象。

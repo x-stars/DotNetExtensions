@@ -35,7 +35,7 @@ namespace XstarS.Text
         {
             return ParseMethods.LookupTable.TryGetValue(type, out method);
         }
-        
+
         /// <summary>
         /// 提供标记为 <see cref="ExtensionParseMethodAttribute"/> 的扩展字符串解析方法。
         /// </summary>

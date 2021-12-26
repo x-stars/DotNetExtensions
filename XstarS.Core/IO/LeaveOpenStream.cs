@@ -53,7 +53,7 @@ namespace XstarS.IO
         public override int ReadTimeout
         {
             get => this.BaseStream.ReadTimeout;
-            set => this.BaseStream.ReadTimeout = value; 
+            set => this.BaseStream.ReadTimeout = value;
         }
 
         /// <inheritdoc/>
