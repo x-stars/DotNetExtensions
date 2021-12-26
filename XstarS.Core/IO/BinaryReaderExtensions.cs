@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using mstring = System.Text.StringBuilder;
 
 namespace XstarS.IO
 {
@@ -9,7 +10,7 @@ namespace XstarS.IO
     public static class BinaryReaderExtensions
     {
         /// <summary>
-        /// 从当前二进制读取器读取指定类型的非托管数据，并将当前位置前移对应的字节数。
+        /// 从当前流读取指定类型的非托管数据，并将当前位置前移对应的字节数。
         /// </summary>
         /// <typeparam name="T">非托管数据的类型。</typeparam>
         /// <param name="reader">要读取数据的二进制读取器。</param>
@@ -35,6 +36,46 @@ namespace XstarS.IO
             {
                 var value = *(T*)pBuffer;
                 return value;
+            }
+        }
+
+        /// <summary>
+        /// 从当前流根据所使用的编码读取以 <c>NUL</c> 字符结尾的字符串，并提升流的当前位置。
+        /// </summary>
+        /// <param name="reader">要读取数据的二进制读取器。</param>
+        /// <returns>从基础流中读取的字符串。
+        /// 若字符串不以 <c>NUL</c> 结尾，则为 <see langword="null"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="reader"/> 为 <see langword="null"/>。</exception>
+        public static string? ReadStringToNull(this BinaryReader reader)
+        {
+            if (reader is null)
+            {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            if (reader.BaseStream.IsSynchronized())
+            {
+                lock (reader)
+                {
+                    return ReadCore(reader);
+                }
+            }
+            else
+            {
+                return ReadCore(reader);
+            }
+
+            string? ReadCore(BinaryReader reader)
+            {
+                var iChar = -1;
+                var result = new mstring();
+                while ((iChar = reader.Read()) != -1)
+                {
+                    if ((char)iChar == '\0') { break; }
+                    result.Append((char)iChar);
+                }
+                return ((char)iChar != '\0') ? null : result.ToString();
             }
         }
     }

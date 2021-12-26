@@ -9,6 +9,30 @@ namespace XstarS.IO
     public static class StreamExtensions
     {
         /// <summary>
+        /// 表示线程安全（同步）的 <see cref="Stream"/> 的类型。
+        /// </summary>
+        private static readonly Type SyncStreamType =
+            Stream.Synchronized(Stream.Null).GetType();
+
+        /// <summary>
+        /// 确认当前流是否为线程安全（同步）的包装 <see cref="Stream"/>。
+        /// </summary>
+        /// <param name="stream">要确定是否线程安全的流。</param>
+        /// <returns>若 <paramref name="stream"/> 为线程安全（同步）的包装；
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="stream"/> 为 <see langword="null"/>。</exception>
+        public static bool IsSynchronized(this Stream stream)
+        {
+            if (stream is null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
+            return stream.GetType() == StreamExtensions.SyncStreamType;
+        }
+
+        /// <summary>
         /// 获取当前流的包装 <see cref="Stream"/>，使其在释放后保持打开状态。
         /// </summary>
         /// <param name="stream">要保持打开状态的流。</param>
