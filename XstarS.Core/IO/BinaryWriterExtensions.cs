@@ -9,7 +9,7 @@ namespace XstarS.IO
     public static class BinaryWriterExtensions
     {
         /// <summary>
-        /// 将指定类型的非托管数据写入当前流，并将当前位置前移对应的字节数。
+        /// 将指定类型的非托管数据写入当前流，并将当前位置前移非托管数据大小的字节数。
         /// </summary>
         /// <typeparam name="T">非托管数据的类型。</typeparam>
         /// <param name="writer">要写入数据的二进制写入器。</param>

@@ -10,13 +10,15 @@ namespace XstarS.IO
     public static class BinaryReaderExtensions
     {
         /// <summary>
-        /// 从当前流读取指定类型的非托管数据，并将当前位置前移对应的字节数。
+        /// 从当前流读取指定类型的非托管数据，并将当前位置前移非托管数据大小的字节数。
         /// </summary>
         /// <typeparam name="T">非托管数据的类型。</typeparam>
         /// <param name="reader">要读取数据的二进制读取器。</param>
         /// <returns>从基础流中读取的非托管数据。如果到达了流的末尾，则该数据可能不完整。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="reader"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ObjectDisposedException">流已关闭。</exception>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static unsafe T Read<T>(this BinaryReader reader)
             where T : unmanaged
         {
@@ -47,6 +49,8 @@ namespace XstarS.IO
         /// 若字符串不以 <c>NUL</c> 结尾，则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="reader"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ObjectDisposedException">流已关闭。</exception>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
         public static string? ReadStringToNull(this BinaryReader reader)
         {
             if (reader is null)
