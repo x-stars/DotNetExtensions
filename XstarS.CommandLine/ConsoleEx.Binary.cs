@@ -76,11 +76,10 @@ namespace XstarS
         /// <exception cref="ArgumentNullException">
         /// <paramref name="buffer"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         [MethodImpl(MethodImplOptions.NoInlining)]
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public static int ReadBytes(Span<byte> buffer) => ConsoleEx.InStream.Read(buffer);
 #else
-        [MethodImpl(MethodImplOptions.NoInlining)]
         public static int ReadBytes(byte[] buffer) => ConsoleEx.InStream.Read(buffer);
 #endif
 
@@ -109,6 +108,7 @@ namespace XstarS
         /// <exception cref="ArgumentNullException">
         /// <paramref name="buffer"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
 #if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public static void WriteBytes(ReadOnlySpan<byte> buffer) => ConsoleEx.OutStream.Write(buffer);
 #else
@@ -140,6 +140,7 @@ namespace XstarS
         /// <exception cref="ArgumentNullException">
         /// <paramref name="buffer"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
 #if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         public static void WriteErrorBytes(ReadOnlySpan<byte> buffer) => ConsoleEx.ErrorStream.Write(buffer);
 #else
