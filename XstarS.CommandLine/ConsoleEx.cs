@@ -11,24 +11,6 @@ namespace XstarS
     public static partial class ConsoleEx
     {
         /// <summary>
-        /// 获取标准输入流。
-        /// </summary>
-        /// <returns>标准输入流。</returns>
-        public static Stream InStream => Console.OpenStandardInput();
-
-        /// <summary>
-        /// 获取标准输出流。
-        /// </summary>
-        /// <returns>标准输出流。</returns>
-        public static Stream OutStream => Console.OpenStandardOutput();
-
-        /// <summary>
-        /// 获取标准错误流。
-        /// </summary>
-        /// <returns>标准错误流。</returns>
-        public static Stream ErrorStream => Console.OpenStandardError();
-
-        /// <summary>
         /// 从标准输入流读取下一个字符串值。
         /// </summary>
         /// <returns>输入流中的下一个字符串值；
