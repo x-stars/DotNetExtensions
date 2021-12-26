@@ -58,18 +58,6 @@ namespace XstarS.IO
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (reader.BaseStream.IsSynchronized())
-            {
-                lock (reader)
-                {
-                    return ReadCore(reader);
-                }
-            }
-            else
-            {
-                return ReadCore(reader);
-            }
-
             string? ReadCore(BinaryReader reader)
             {
                 var iChar = -1;
@@ -80,6 +68,18 @@ namespace XstarS.IO
                     result.Append((char)iChar);
                 }
                 return ((char)iChar != '\0') ? null : result.ToString();
+            }
+
+            if (reader.BaseStream.IsSynchronized())
+            {
+                lock (reader.BaseStream)
+                {
+                    return ReadCore(reader);
+                }
+            }
+            else
+            {
+                return ReadCore(reader);
             }
         }
     }

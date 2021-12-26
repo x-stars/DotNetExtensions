@@ -56,18 +56,6 @@ namespace XstarS.IO
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            if (reader.IsSynchronized())
-            {
-                lock (reader)
-                {
-                    return ReadCore(reader);
-                }
-            }
-            else
-            {
-                return ReadCore(reader);
-            }
-
             string? ReadCore(TextReader reader)
             {
                 var iChar = -1;
@@ -83,6 +71,18 @@ namespace XstarS.IO
                     result.Append((char)iChar);
                 }
                 return (result.Length == 0) ? null : result.ToString();
+            }
+
+            if (reader.IsSynchronized())
+            {
+                lock (reader)
+                {
+                    return ReadCore(reader);
+                }
+            }
+            else
+            {
+                return ReadCore(reader);
             }
         }
 
