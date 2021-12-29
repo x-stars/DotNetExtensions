@@ -24,8 +24,8 @@ namespace XstarS
             /// 表示所有空白字符的集合。
             /// </summary>
             internal static readonly char[] WhiteSpaces =
-                Enumerable.Range(char.MinValue, char.MaxValue - char.MinValue + 1
-                    ).Select(Convert.ToChar).Where(char.IsWhiteSpace).ToArray();
+                Enumerable.Range(char.MinValue, char.MaxValue - char.MinValue + 1)
+                    .Select(Convert.ToChar).Where(char.IsWhiteSpace).ToArray();
         }
 
         /// <summary>
@@ -66,7 +66,8 @@ namespace XstarS
         /// 并根据 <paramref name="options"/> 的指示去除空字符串。</returns>
         /// <exception cref="ArgumentNullException">
         /// 存在为 <see langword="null"/> 的参数。</exception>
-        public static IEnumerable<string> Split(this string text, Predicate<char> isSeparator,
+        public static IEnumerable<string> Split(
+            this string text, Predicate<char> isSeparator,
             StringSplitOptions options = StringSplitOptions.None)
         {
             if (text is null)
@@ -112,8 +113,12 @@ namespace XstarS
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         public static string[] SplitLines(this string text)
         {
-            return (text ?? throw new ArgumentNullException(nameof(text))).Split(
-                Separators.NewLines, StringSplitOptions.None);
+            if (text is null)
+            {
+                throw new ArgumentNullException(nameof(text));
+            }
+
+            return text.Split(Separators.NewLines, StringSplitOptions.None);
         }
 
         /// <summary>
@@ -125,8 +130,12 @@ namespace XstarS
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         public static string[] SplitTokens(this string text)
         {
-            return (text ?? throw new ArgumentNullException(nameof(text))).Split(
-                Separators.WhiteSpaces, StringSplitOptions.RemoveEmptyEntries);
+            if (text is null)
+            {
+                throw new ArgumentNullException(nameof(text));
+            }
+
+            return text.Split(Separators.WhiteSpaces, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }
