@@ -9,6 +9,13 @@ namespace XstarS
     public static class EnumInfo<TEnum> where TEnum : struct, Enum
     {
         /// <summary>
+        /// 获取当前枚举类型是否应用了 <see cref="FlagsAttribute"/> 特性。
+        /// </summary>
+        /// <returns>当前枚举类型是否应用了 <see cref="FlagsAttribute"/> 特性。</returns>
+        public static bool IsFlags =>
+            Attribute.IsDefined(typeof(TEnum), typeof(FlagsAttribute), inherit: false);
+
+        /// <summary>
         /// 检索当前枚举中常数名称的数组。
         /// </summary>
         /// <returns>当前枚举的常数名称的字符串数组。</returns>
@@ -23,6 +30,12 @@ namespace XstarS
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public static TEnum[] Values => (TEnum[])Enum.GetValues(typeof(TEnum));
+
+        /// <summary>
+        /// 获取当前枚举类型的基础类型的类型代码。
+        /// </summary>
+        /// <returns>当前枚举类型的基础类型的类型代码。</returns>
+        public static TypeCode TypeCode => default(TEnum).GetTypeCode();
 
         /// <summary>
         /// 返回当前枚举的基础类型。
