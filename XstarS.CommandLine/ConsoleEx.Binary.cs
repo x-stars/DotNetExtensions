@@ -50,7 +50,14 @@ namespace XstarS
         public static Stream ErrorStream => StandardStreams.Error;
 
         /// <summary>
-        /// 从标准输入流读取字节序列到指定的缓冲区，并将此流中的位置提升读取的字节数。
+        /// 从标准输入流中读取一个字节，或者如果已到达流结尾，则返回 -1。
+        /// </summary>
+        /// <returns>强制转换为 <see cref="int"/> 的无符号字节，如果到达流的末尾，则为 -1。</returns>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static int ReadByte() => ConsoleEx.InStream.ReadByte();
+
+        /// <summary>
+        /// 从标准输入流读取字节序列到指定的缓冲区。
         /// </summary>
         /// <param name="buffer">包含读取得到的字节序列的缓冲区。</param>
         /// <param name="offset"><paramref name="buffer"/>
@@ -69,7 +76,7 @@ namespace XstarS
             ConsoleEx.InStream.Read(buffer, offset, count);
 
         /// <summary>
-        /// 从标准输入流读取字节序列到指定的缓冲区，并将此流中的位置提升读取的字节数。
+        /// 从标准输入流读取字节序列到指定的缓冲区。
         /// </summary>
         /// <param name="buffer">包含读取得到的字节序列的缓冲区。</param>
         /// <returns>读入缓冲区中的总字节数。</returns>
@@ -84,7 +91,18 @@ namespace XstarS
 #endif
 
         /// <summary>
-        /// 向标准输出流写入指定的缓冲区中的字节序列，并将此流中的位置提升写入的字节数。
+        /// 从标准输入流读取指定类型的非托管数据。
+        /// </summary>
+        /// <typeparam name="T">非托管数据的类型。</typeparam>
+        /// <param name="value">读取得到的非托管数据。</param>
+        /// <returns>是否读取到完整大小的非托管数据。</returns>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static bool ReadBinary<T>(out T value) where T : unmanaged =>
+            ConsoleEx.InStream.Read(out value);
+
+        /// <summary>
+        /// 向标准输出流写入指定的缓冲区中的字节序列。
         /// </summary>
         /// <param name="buffer">包含要写入的字节序列的缓冲区。</param>
         /// <param name="offset"><paramref name="buffer"/>
@@ -102,7 +120,7 @@ namespace XstarS
             ConsoleEx.OutStream.Write(buffer, offset, count);
 
         /// <summary>
-        /// 向标准输出流写入指定的缓冲区中的字节序列，并将此流中的位置提升写入的字节数。
+        /// 向标准输出流写入指定的缓冲区中的字节序列。
         /// </summary>
         /// <param name="buffer">包含要写入的字节序列的缓冲区。</param>
         /// <exception cref="ArgumentNullException">
@@ -116,7 +134,17 @@ namespace XstarS
 #endif
 
         /// <summary>
-        /// 向标准错误输出流写入指定的缓冲区中的字节序列，并将此流中的位置提升写入的字节数。
+        /// 向标准输出流写入指定类型的非托管数据。
+        /// </summary>
+        /// <typeparam name="T">非托管数据的类型。</typeparam>
+        /// <param name="value">要写入的非托管数据。</param>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteBinary<T>(in T value) where T : unmanaged =>
+            ConsoleEx.OutStream.Write(in value);
+
+        /// <summary>
+        /// 向标准错误输出流写入指定的缓冲区中的字节序列。
         /// </summary>
         /// <param name="buffer">包含要写入的字节序列的缓冲区。</param>
         /// <param name="offset"><paramref name="buffer"/>
@@ -134,7 +162,7 @@ namespace XstarS
             ConsoleEx.ErrorStream.Write(buffer, offset, count);
 
         /// <summary>
-        /// 向标准错误输出流写入指定的缓冲区中的字节序列，并将此流中的位置提升写入的字节数。
+        /// 向标准错误输出流写入指定的缓冲区中的字节序列。
         /// </summary>
         /// <param name="buffer">包含要写入的字节序列的缓冲区。</param>
         /// <exception cref="ArgumentNullException">
@@ -146,5 +174,15 @@ namespace XstarS
 #else
         public static void WriteErrorBytes(byte[] buffer) => ConsoleEx.ErrorStream.Write(buffer);
 #endif
+
+        /// <summary>
+        /// 向标准错误输出流写入指定类型的非托管数据。
+        /// </summary>
+        /// <typeparam name="T">非托管数据的类型。</typeparam>
+        /// <param name="value">要写入的非托管数据。</param>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteErrorBinary<T>(in T value) where T : unmanaged =>
+            ConsoleEx.ErrorStream.Write(in value);
     }
 }
