@@ -177,9 +177,9 @@ namespace XstarS.Reflection
         public static void SetProperty(this object @object, string name, object? value, params object?[]? indices)
         {
             if (@object is null) { throw new ArgumentNullException(nameof(@object)); }
-            indices = indices ?? Array.Empty<object?>();
+            var arguments = (indices ?? Array.Empty<object?>()).Append(value);
             @object.GetType().InvokeMember(name, BindingFlags.SetProperty |
-                MemberInvokeExtensions.InstanceBindingFlags, null, @object, indices.Append(value));
+                MemberInvokeExtensions.InstanceBindingFlags, null, @object, arguments);
         }
 
         /// <summary>
@@ -218,9 +218,9 @@ namespace XstarS.Reflection
         public static void SetStaticProperty(this Type type, string name, object? value, params object?[]? indices)
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
-            indices = indices ?? Array.Empty<object?>();
+            var arguments = (indices ?? Array.Empty<object?>()).Append(value);
             type.InvokeMember(name, BindingFlags.SetProperty |
-                MemberInvokeExtensions.StaticBindingFlags, null, null, indices.Append(value));
+                MemberInvokeExtensions.StaticBindingFlags, null, null, arguments);
         }
     }
 }

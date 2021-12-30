@@ -113,11 +113,7 @@ namespace XstarS
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         public static string[] SplitLines(this string text)
         {
-            if (text is null)
-            {
-                throw new ArgumentNullException(nameof(text));
-            }
-
+            if (text is null) { throw new ArgumentNullException(nameof(text)); }
             return text.Split(Separators.NewLines, StringSplitOptions.None);
         }
 
@@ -130,11 +126,7 @@ namespace XstarS
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         public static string[] SplitTokens(this string text)
         {
-            if (text is null)
-            {
-                throw new ArgumentNullException(nameof(text));
-            }
-
+            if (text is null) { throw new ArgumentNullException(nameof(text)); }
             return text.Split(Separators.WhiteSpaces, StringSplitOptions.RemoveEmptyEntries);
         }
     }
