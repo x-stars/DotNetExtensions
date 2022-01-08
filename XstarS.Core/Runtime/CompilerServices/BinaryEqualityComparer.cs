@@ -34,18 +34,14 @@
                 case sizeof(uint) + sizeof(ushort):
                     return (*(uint*)value == *(uint*)other) &&
                         (*(ushort*)((uint*)value + 1) == *(ushort*)((uint*)other + 1));
-                case sizeof(uint) * 2 - sizeof(byte):
+                case sizeof(uint) + sizeof(ushort) + sizeof(byte):
                     return (*(uint*)value == *(uint*)other) &&
-                        (*((uint*)((byte*)value - 1) + 1) == *((uint*)((byte*)other - 1) + 1));
+                        (*(ushort*)((uint*)value + 1) == *(ushort*)((uint*)other + 1)) &&
+                        (*(byte*)((ushort*)((uint*)value + 1) + 1) ==
+                            *(byte*)((ushort*)((uint*)other + 1) + 1));
                 case sizeof(ulong):
                     return *(ulong*)value == *(ulong*)other;
                 default:
-                    if (size < 0)
-                    {
-                        size = -size;
-                        value = (byte*)value - size;
-                        other = (byte*)value - size;
-                    }
                     var lValue = (ulong*)value;
                     var lOther = (ulong*)other;
                     var pEnd = lValue + (size / sizeof(ulong));
@@ -86,16 +82,12 @@
                     return *(int*)value ^ *(byte*)((int*)value + 1);
                 case sizeof(int) + sizeof(ushort):
                     return *(int*)value ^ *(ushort*)((int*)value + 1);
-                case sizeof(int) * 2 - sizeof(byte):
-                    return *(int*)value ^ *((int*)((byte*)value - 1) + 1);
+                case sizeof(int) + sizeof(ushort) + sizeof(byte):
+                    return *(int*)value ^ (*(ushort*)((int*)value + 1) |
+                        (*(byte*)((ushort*)((int*)value + 1) + 1) << (sizeof(ushort) * 8)));
                 case sizeof(int) * 2:
                     return *(int*)value ^ *((int*)value + 1);
                 default:
-                    if (size < 0)
-                    {
-                        size = -size;
-                        value = (byte*)value - size;
-                    }
                     var hashCode = 0;
                     var iValue = (int*)value;
                     var pEnd = iValue + (size / sizeof(int));
