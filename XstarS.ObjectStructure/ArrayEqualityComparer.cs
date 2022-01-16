@@ -12,7 +12,7 @@ namespace XstarS
     /// </summary>
     /// <typeparam name="T">数组的类型。</typeparam>
     [Serializable]
-    internal sealed class ArrayEqualityComparer<T> : InternalStructuralEqualityComparer<T>
+    internal sealed class ArrayEqualityComparer<T> : StructuralEqualityComparer<T>
     {
         /// <summary>
         /// 初始化 <see cref="ArrayEqualityComparer{T}"/> 类的新实例。

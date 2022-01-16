@@ -14,7 +14,7 @@ namespace XstarS.Reflection
     /// 提供将对象中的公共成员表示为字符串的方法。
     /// </summary>
     /// <typeparam name="T">要表示为字符串的对象的类型。</typeparam>
-    internal sealed class MemberRepresenter<T> : InternalStructuralRepresenter<T>
+    internal sealed class MemberRepresenter<T> : StructuralRepresenter<T>
     {
         /// <summary>
         /// 表示当前类型的所有公共实例字段的 <see cref="FieldInfo"/> 对象。

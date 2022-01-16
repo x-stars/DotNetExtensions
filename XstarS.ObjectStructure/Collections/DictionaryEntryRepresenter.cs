@@ -7,7 +7,7 @@ namespace XstarS.Collections
     /// <summary>
     /// 提供将 <see cref="DictionaryEntry"/> 中的键值表示为字符串的方法。
     /// </summary>
-    internal sealed class DictionaryEntryRepresenter : InternalStructuralRepresenter<DictionaryEntry>
+    internal sealed class DictionaryEntryRepresenter : StructuralRepresenter<DictionaryEntry>
     {
         /// <summary>
         /// 初始化 <see cref="DictionaryEntry"/> 类的新实例。

@@ -8,7 +8,7 @@ namespace XstarS.Collections
     /// 提供用于将 <see cref="IEnumerable"/> 中的元素表示为字符串的方法。
     /// </summary>
     /// <typeparam name="T">实现了 <see cref="IEnumerable"/> 接口的集合类型。</typeparam>
-    internal sealed class EnumerableRepresenter<T> : InternalStructuralRepresenter<T>
+    internal sealed class EnumerableRepresenter<T> : StructuralRepresenter<T>
         where T : IEnumerable
     {
         /// <summary>

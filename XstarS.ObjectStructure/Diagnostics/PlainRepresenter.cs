@@ -7,7 +7,7 @@ namespace XstarS.Diagnostics
     /// 提供将非结构化对象表示为字符串的方法。
     /// </summary>
     /// <typeparam name="T">非结构化对象的类型。</typeparam>
-    internal sealed class PlainRepresenter<T> : InternalStructuralRepresenter<T>
+    internal sealed class PlainRepresenter<T> : StructuralRepresenter<T>
     {
         /// <summary>
         /// 初始化 <see cref="PlainRepresenter{T}"/> 类的新实例。

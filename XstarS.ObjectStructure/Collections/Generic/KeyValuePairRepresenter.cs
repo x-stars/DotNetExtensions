@@ -9,7 +9,7 @@ namespace XstarS.Collections.Generic
     /// <typeparam name="TKey"><see cref="KeyValuePair{TKey, TValue}"/> 中的键的类型。</typeparam>
     /// <typeparam name="TValue"><see cref="KeyValuePair{TKey, TValue}"/> 中的值的类型。</typeparam>
     internal sealed class KeyValuePairRepresenter<TKey, TValue>
-        : InternalStructuralRepresenter<KeyValuePair<TKey, TValue>>
+        : StructuralRepresenter<KeyValuePair<TKey, TValue>>
     {
         /// <summary>
         /// 初始化 <see cref="KeyValuePairRepresenter{TKey, TValue}"/> 类的新实例。

@@ -10,7 +10,7 @@ namespace XstarS
     /// 提供指针将数组中的元素表示为字符串的方法。
     /// </summary>
     /// <typeparam name="T">指针数组的类型。</typeparam>
-    internal sealed class PointerArrayRepresenter<T> : InternalStructuralRepresenter<T>
+    internal sealed class PointerArrayRepresenter<T> : StructuralRepresenter<T>
     {
         /// <summary>
         /// 表示数组根据索引获取元素的方法的 <see cref="MethodInfo"/> 对象。
