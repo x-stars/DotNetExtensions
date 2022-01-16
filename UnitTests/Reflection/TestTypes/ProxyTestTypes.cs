@@ -60,8 +60,7 @@ namespace XstarS.Reflection.TestTypes
     {
         public ListCreator() { }
 
-        public virtual TList Create<TList>()
-            where TList : IList<T>, new()
+        public virtual TList Create<TList>() where TList : IList<T>, new()
         {
             return Activator.CreateInstance<TList>();
         }

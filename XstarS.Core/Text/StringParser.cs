@@ -126,8 +126,7 @@ namespace XstarS.Text
         /// <returns>以委托定义的指定类型的 <see cref="StringParser{T}"/> 类的实例。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="parser"/> 为 <see langword="null"/>。</exception>
-        public static StringParser<T> Create<T>(Converter<string, T> parser)
-            where T : notnull
+        public static StringParser<T> Create<T>(Converter<string, T> parser) where T : notnull
         {
             return StringParser<T>.Create(parser);
         }
@@ -145,8 +144,7 @@ namespace XstarS.Text
         /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
         /// <exception cref="OverflowException">
         /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
-        public static T ParseAs<T>(this string text)
-            where T : notnull
+        public static T ParseAs<T>(this string text) where T : notnull
         {
             return StringParser<T>.Default.Parse(text);
         }
@@ -159,8 +157,7 @@ namespace XstarS.Text
         /// <param name="result">与 <paramref name="text"/> 中的内容等效的对象。</param>
         /// <returns>若 <paramref name="text"/> 成功转换，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        public static bool TryParseAs<T>(this string text, out T? result)
-            where T : notnull
+        public static bool TryParseAs<T>(this string text, out T? result) where T : notnull
         {
             return StringParser<T>.Default.TryParse(text, out result);
         }

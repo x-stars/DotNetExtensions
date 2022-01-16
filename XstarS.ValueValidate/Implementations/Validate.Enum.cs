@@ -39,16 +39,16 @@ namespace XstarS
             /// <param name="value">要确定是否包含的枚举值。</param>
             /// <returns>若当前枚举类型包含 <paramref name="value"/> 表示的枚举值，
             /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-            internal static bool ContainsValue(T value) => EnumInfo<T>.Values.Contains(value);
+            internal static bool HasValue(T value) => EnumInfo<T>.Values.Contains(value);
 
             /// <summary>
             /// 确定当前位域枚举类型是否包含指定的位域组合值。
             /// </summary>
-            /// <param name="flag">要确定是否包含的位域组合值。</param>
-            /// <returns>若当前枚举类型包含 <paramref name="flag"/> 表示的位域组合值，
+            /// <param name="flags">要确定是否包含的位域组合值。</param>
+            /// <returns>若当前枚举类型包含 <paramref name="flags"/> 表示的位域组合值，
             /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-            internal static bool ContainsFlag(T flag) =>
-                (EnumInfo<T>.AllFlags | Convert.ToUInt64(flag)) == EnumInfo<T>.AllFlags;
+            internal static bool HasFlags(T flags) =>
+                (EnumInfo<T>.AllFlags | Convert.ToUInt64(flags)) == EnumInfo<T>.AllFlags;
         }
 
         /// <summary>
@@ -66,14 +66,14 @@ namespace XstarS
         {
             if (EnumInfo<T>.IsFlags)
             {
-                if (!EnumInfo<T>.ContainsFlag(valueInfo.Value))
+                if (!EnumInfo<T>.HasFlags(valueInfo.Value))
                 {
                     ThrowHelper.ThrowArgumentOutOfRangeException(valueInfo.Name, valueInfo.Value, message);
                 }
             }
             else
             {
-                if (!EnumInfo<T>.ContainsValue(valueInfo.Value))
+                if (!EnumInfo<T>.HasValue(valueInfo.Value))
                 {
                     ThrowHelper.ThrowArgumentOutOfRangeException(valueInfo.Name, valueInfo.Value, message);
                 }
