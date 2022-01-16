@@ -83,7 +83,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的直接值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool DirectValueEquals<T>(this T? value, T? other) =>
+        public static bool DirectEquals<T>(this T? value, T? other) =>
             ObjectDirectValue.Equals(value, other);
 
         /// <summary>
@@ -116,17 +116,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <param name="value">要获取基于直接值哈希代码的对象。</param>
         /// <returns><paramref name="value"/> 基于的直接值的哈希代码。</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int GetDirectValueHashCode<T>(this T? value) =>
+        public static int GetDirectHashCode<T>(this T? value) =>
             ObjectDirectValue.GetHashCode(value);
-
-        /// <summary>
-        /// 将当前对象的直接值填充到对应长度的字节数组并返回。
-        /// </summary>
-        /// <typeparam name="T">对象的类型。</typeparam>
-        /// <param name="value">要将直接值填充到字节数组的对象。</param>
-        /// <returns>以 <paramref name="value"/> 的直接值填充的字节数组。</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static byte[] DirectValueToByteArray<T>(this T? value) =>
-            ObjectDirectValue.ToByteArray(value);
     }
 }
