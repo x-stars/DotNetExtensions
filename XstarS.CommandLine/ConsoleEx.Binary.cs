@@ -84,10 +84,19 @@ namespace XstarS
         /// <paramref name="buffer"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        public static int ReadBytes(Span<byte> buffer) => ConsoleEx.InStream.Read(buffer);
-#else
         public static int ReadBytes(byte[] buffer) => ConsoleEx.InStream.Read(buffer);
+
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// 从标准输入流读取字节序列到指定的缓冲区。
+        /// </summary>
+        /// <param name="buffer">包含读取得到的字节序列的缓冲区。</param>
+        /// <returns>读入缓冲区中的总字节数。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="buffer"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static int ReadBytes(Span<byte> buffer) => ConsoleEx.InStream.Read(buffer);
 #endif
 
         /// <summary>
@@ -127,10 +136,18 @@ namespace XstarS
         /// <paramref name="buffer"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        public static void WriteBytes(ReadOnlySpan<byte> buffer) => ConsoleEx.OutStream.Write(buffer);
-#else
         public static void WriteBytes(byte[] buffer) => ConsoleEx.OutStream.Write(buffer);
+
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// 向标准输出流写入指定的缓冲区中的字节序列。
+        /// </summary>
+        /// <param name="buffer">包含要写入的字节序列的缓冲区。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="buffer"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteBytes(ReadOnlySpan<byte> buffer) => ConsoleEx.OutStream.Write(buffer);
 #endif
 
         /// <summary>
@@ -169,10 +186,18 @@ namespace XstarS
         /// <paramref name="buffer"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        public static void WriteErrorBytes(ReadOnlySpan<byte> buffer) => ConsoleEx.ErrorStream.Write(buffer);
-#else
         public static void WriteErrorBytes(byte[] buffer) => ConsoleEx.ErrorStream.Write(buffer);
+
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// 向标准错误输出流写入指定的缓冲区中的字节序列。
+        /// </summary>
+        /// <param name="buffer">包含要写入的字节序列的缓冲区。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="buffer"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
+        public static void WriteErrorBytes(ReadOnlySpan<byte> buffer) => ConsoleEx.ErrorStream.Write(buffer);
 #endif
 
         /// <summary>
