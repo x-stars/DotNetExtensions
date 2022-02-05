@@ -75,7 +75,7 @@ namespace XstarS
         /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static string[]? ReadLineTokens() => Console.In.ReadLineTokens();
+        public static string[]? ReadTokensInLine() => Console.In.ReadTokensInLine();
 
         /// <summary>
         /// 将指定的多个字符串值逐行（后跟当前行终止符）写入标准输出流。
@@ -105,7 +105,7 @@ namespace XstarS
         /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteTokensLine(params string?[] values) => Console.Out.WriteTokensLine(values);
+        public static void WriteTokensInLine(params string?[] values) => Console.Out.WriteTokensInLine(values);
 
         /// <summary>
         /// 将指定的多个对象的文本表示形式逐个（后跟当前行终止符）写入标准输出流。
@@ -115,7 +115,7 @@ namespace XstarS
         /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteTokensLine(params object?[] values) => Console.Out.WriteTokensLine(values);
+        public static void WriteTokensInLine(params object?[] values) => Console.Out.WriteTokensInLine(values);
 
         /// <summary>
         /// 将指定的字符串值写入标准错误输出流。
@@ -262,7 +262,7 @@ namespace XstarS
         /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteErrorTokensLine(params string?[] values) => Console.Error.WriteTokensLine(values);
+        public static void WriteErrorTokensInLine(params string?[] values) => Console.Error.WriteTokensInLine(values);
 
         /// <summary>
         /// 将指定的多个对象的文本表示形式逐个（后跟当前行终止符）写入标准错误输出流。
@@ -272,6 +272,6 @@ namespace XstarS
         /// <paramref name="values"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
         [MethodImpl(MethodImplOptions.NoInlining)]
-        public static void WriteErrorTokensLine(params object?[] values) => Console.Error.WriteTokensLine(values);
+        public static void WriteErrorTokensInLine(params object?[] values) => Console.Error.WriteTokensInLine(values);
     }
 }

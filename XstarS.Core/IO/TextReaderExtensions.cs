@@ -169,7 +169,7 @@ namespace XstarS.IO
         /// <exception cref="OutOfMemoryException">
         /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
         /// <exception cref="IOException">出现 I/O 错误。</exception>
-        public static string[]? ReadLineTokens(this TextReader reader)
+        public static string[]? ReadTokensInLine(this TextReader reader)
         {
             if (reader is null)
             {
