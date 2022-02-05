@@ -50,7 +50,7 @@ namespace XstarS.Reflection
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Design", "CA1061:DoNotHideBaseClassMethods")]
         public static int GetHashCode(object? obj) =>
-            (obj is null) ? 0 : ((IntPtr)Pointer.Unbox(obj)).GetHashCode();
+            (obj is null) ? 0 : ((nint)Pointer.Unbox(obj)).GetHashCode();
 
         /// <summary>
         /// 确定指定的两个以 <see cref="Pointer"/> 包装的指针是否相等。

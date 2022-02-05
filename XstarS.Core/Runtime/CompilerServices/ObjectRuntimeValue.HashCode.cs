@@ -85,7 +85,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <returns><paramref name="value"/> 中包装的指针的哈希代码。</returns>
         private static unsafe int GetBoxedPointerHashCode(object value)
         {
-            return ((IntPtr)Pointer.Unbox(value)).GetHashCode();
+            return ((nint)Pointer.Unbox(value)).GetHashCode();
         }
 
         /// <summary>

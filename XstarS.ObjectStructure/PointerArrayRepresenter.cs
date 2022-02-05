@@ -47,7 +47,7 @@ namespace XstarS
             if (indices.Length == array.Rank)
             {
                 var item = PointerArrayRepresenter<T>.GetMethod.Invoke(array, indices.Box())!;
-                unsafe { return ((IntPtr)Pointer.Unbox(item)).ToString(); }
+                unsafe { return ((nint)Pointer.Unbox(item)).ToString(); }
             }
             else
             {

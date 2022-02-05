@@ -92,7 +92,7 @@ namespace XstarS.Reflection.Emit
             }
             else if (type.IsByRef || type.IsPointer)
             {
-                il.Emit(OpCodes.Box, typeof(IntPtr));
+                il.Emit(OpCodes.Box, typeof(nint));
             }
             else if (type.IsValueType)
             {
@@ -124,7 +124,7 @@ namespace XstarS.Reflection.Emit
             }
             else if (type.IsByRef || type.IsPointer)
             {
-                il.Emit(OpCodes.Unbox_Any, typeof(IntPtr));
+                il.Emit(OpCodes.Unbox_Any, typeof(nint));
             }
             else if (type.IsValueType)
             {
