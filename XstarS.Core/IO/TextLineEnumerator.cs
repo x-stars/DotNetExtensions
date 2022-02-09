@@ -68,9 +68,6 @@ namespace XstarS.IO
         /// <inheritdoc/>
         public IEnumerator<string> GetEnumerator() => this;
 
-        /// <inheritdoc/>
-        IEnumerator IEnumerable.GetEnumerator() => this;
-
 #if NETCOREAPP3_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
         /// <inheritdoc/>
         public IAsyncEnumerator<string> GetAsyncEnumerator(
@@ -86,10 +83,10 @@ namespace XstarS.IO
             (this.CurrentLine = await this.Reader.ReadLineAsync()) != null;
 #endif
 
-        /// <summary>
-        /// 不支持此操作，永远抛出 <see cref="NotSupportedException"/> 异常。
-        /// </summary>
-        /// <exception cref="NotSupportedException">永远抛出此异常。</exception>
+        /// <inheritdoc/>
+        IEnumerator IEnumerable.GetEnumerator() => this;
+
+        /// <inheritdoc/>
         void IEnumerator.Reset() => throw new NotSupportedException();
     }
 }
