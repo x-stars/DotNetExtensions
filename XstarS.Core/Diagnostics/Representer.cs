@@ -39,8 +39,7 @@ namespace XstarS.Diagnostics
             var type = typeof(T);
             if (type.IsPrimitive)
             {
-                return (Representer<T>)Activator.CreateInstance(
-                    typeof(PrimitiveRepresenter<>).MakeGenericType(type))!;
+                return (Representer<T>)(object)new PrimitiveRepresenter<T>();
             }
             else if (type == typeof(string))
             {
