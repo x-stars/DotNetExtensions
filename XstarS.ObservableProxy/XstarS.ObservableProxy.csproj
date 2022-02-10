@@ -53,15 +53,6 @@
     <ProjectReference Include="..\XstarS.Core\XstarS.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="('$(TargetFramework.Split(`-`)[0].TrimEnd(`.01234567890`))'=='net' And
-                         '$(TargetFramework.Split(`-`)[0].CompareTo(`net5.0`))'&gt;='0') Or
-                        ('$(TargetFramework.TrimEnd(`.01234567890`))'=='netcoreapp' And
-                         '$(TargetFramework.CompareTo(`netcoreapp3.0`))'&gt;='0') Or
-                        ('$(TargetFramework.TrimEnd(`.01234567890`))'=='netstandard' And
-                         '$(TargetFramework.CompareTo(`netstandard2.1`))'&gt;='0')">
-    <Compile Remove="Properties\NullableAttributes.cs" />
-  </ItemGroup>
-
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard' And
                         '$(TargetFramework.CompareTo(`netstandard2.1`))'&lt;'0'">
     <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />

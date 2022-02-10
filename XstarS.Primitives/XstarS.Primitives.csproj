@@ -50,13 +50,4 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
-  <ItemGroup Condition="('$(TargetFramework.Split(`-`)[0].TrimEnd(`.01234567890`))'=='net' And
-                         '$(TargetFramework.Split(`-`)[0].CompareTo(`net5.0`))'&gt;='0') Or
-                        ('$(TargetFramework.TrimEnd(`.01234567890`))'=='netcoreapp' And
-                         '$(TargetFramework.CompareTo(`netcoreapp3.0`))'&gt;='0') Or
-                        ('$(TargetFramework.TrimEnd(`.01234567890`))'=='netstandard' And
-                         '$(TargetFramework.CompareTo(`netstandard2.1`))'&gt;='0')">
-    <Compile Remove="Properties\NullableAttributes.cs" />
-  </ItemGroup>
-
 </Project>

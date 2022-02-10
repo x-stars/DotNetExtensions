@@ -1,10 +1,11 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System.Runtime.CompilerServices;
-
+#if !(NETCOREAPP3_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER)
 namespace System.Diagnostics.CodeAnalysis
 {
+    using System.Runtime.CompilerServices;
+
     /// <summary>
     /// Specifies that null is allowed as an input even if the corresponding type disallows it.
     /// </summary>
@@ -197,8 +198,14 @@ namespace System.Diagnostics.CodeAnalysis
         /// if the argument to the associated parameter matches this value.</returns>
         public bool ParameterValue { get; }
     }
+}
+#endif
 
-#if false
+#if !NET5_0_OR_GREATER
+namespace System.Diagnostics.CodeAnalysis
+{
+    using System.Runtime.CompilerServices;
+
     /// <summary>
     /// Specifies that the method or property will ensure
     /// that the listed field and property members have not-null values.
@@ -290,5 +297,5 @@ namespace System.Diagnostics.CodeAnalysis
         /// The list of field and property members that are promised to be not-null.</returns>
         public string[] Members { get; }
     }
-#endif
 }
+#endif
