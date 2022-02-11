@@ -24,8 +24,8 @@ namespace XstarS
             /// 表示所有空白字符的集合。
             /// </summary>
             internal static readonly char[] WhiteSpaces =
-                Enumerable.Range(char.MinValue, char.MaxValue - char.MinValue + 1)
-                    .Select(Convert.ToChar).Where(char.IsWhiteSpace).ToArray();
+                Enumerable.Range(0, char.MaxValue + 1).Select(
+                    Convert.ToChar).Where(char.IsWhiteSpace).ToArray();
         }
 
         /// <summary>
@@ -113,8 +113,19 @@ namespace XstarS
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         public static string[] SplitLines(this string text)
         {
-            if (text is null) { throw new ArgumentNullException(nameof(text)); }
-            return text.Split(Separators.NewLines, StringSplitOptions.None);
+            if (text is null)
+            {
+                throw new ArgumentNullException(nameof(text));
+            }
+            
+            var lines = text.Split(Separators.NewLines, StringSplitOptions.None);
+            if (lines[lines.Length - 1].Length == 0)
+            {
+                var result = new string[lines.Length - 1];
+                Array.Copy(lines, result, lines.Length - 1);
+                lines = result;
+            }
+            return lines;
         }
 
         /// <summary>
@@ -126,7 +137,11 @@ namespace XstarS
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         public static string[] SplitTokens(this string text)
         {
-            if (text is null) { throw new ArgumentNullException(nameof(text)); }
+            if (text is null)
+            {
+                throw new ArgumentNullException(nameof(text));
+            }
+
             return text.Split(Separators.WhiteSpaces, StringSplitOptions.RemoveEmptyEntries);
         }
     }
