@@ -9,6 +9,24 @@ namespace XstarS.Collections.Generic
     public static partial class CollectionExtensions
     {
         /// <summary>
+        /// 返回 <see cref="IEnumerator{T}"/> 的公开枚举数包装。
+        /// </summary>
+        /// <typeparam name="T">要枚举的对象的类型。</typeparam>
+        /// <param name="enumerator">要包装的 <see cref="IEnumerator{T}"/> 对象。</param>
+        /// <returns><paramref name="enumerator"/> 的 <see cref="IEnumerable{T}"/> 包装。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="enumerator"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<T> AsEnumerable<T>(IEnumerator<T> enumerator)
+        {
+            if (enumerator is null)
+            {
+                throw new ArgumentNullException(nameof(enumerator));
+            }
+
+            return new EnumeratorWrapper<T>(enumerator);
+        }
+
+        /// <summary>
         /// 解构当前 <see cref="KeyValuePair{TKey, TValue}"/>。
         /// </summary>
         /// <typeparam name="TKey">当前 <see cref="KeyValuePair{TKey, TValue}"/> 的键的类型。</typeparam>

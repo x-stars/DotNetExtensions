@@ -10,6 +10,23 @@ namespace XstarS.Collections
     public static class CollectionExtensions
     {
         /// <summary>
+        /// 返回 <see cref="IEnumerator"/> 的公开枚举数包装。
+        /// </summary>
+        /// <param name="enumerator">要包装的 <see cref="IEnumerator"/> 对象。</param>
+        /// <returns><paramref name="enumerator"/> 的 <see cref="IEnumerable"/> 包装。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="enumerator"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable AsEnumerable(IEnumerator enumerator)
+        {
+            if (enumerator is null)
+            {
+                throw new ArgumentNullException(nameof(enumerator));
+            }
+
+            return new EnumeratorWrapper(enumerator);
+        }
+
+        /// <summary>
         /// 将 <see cref="IList"/> 强制转换为指定元素类型的泛型集合。
         /// </summary>
         /// <typeparam name="T"><see cref="IList"/> 中的元素要转换为的类型。</typeparam>
