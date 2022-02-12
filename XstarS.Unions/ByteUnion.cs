@@ -8,7 +8,7 @@ namespace XstarS.Unions
     /// 表示 8 位数据类型的联合。
     /// </summary>
     [Serializable]
-    [StructLayout(LayoutKind.Explicit, Size = 1)]
+    [StructLayout(LayoutKind.Explicit)]
     public unsafe struct ByteUnion : IEquatable<ByteUnion>, ISerializable
     {
         /// <summary>
@@ -70,7 +70,17 @@ namespace XstarS.Unions
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="IndexOutOfRangeException">
+        /// <paramref name="offset"/> 超出了 <paramref name="bytes"/> 中元素的范围。</exception>
         public ByteUnion(byte[] bytes, int offset = 0) : this() { this.LoadFrom(bytes, offset); }
+
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// 将 <see cref="ByteUnion"/> 结构的新实例初始化为指定只读字节跨度表示的值。
+        /// </summary>
+        /// <param name="bytes">包含值的只读字节跨度。</param>
+        public ByteUnion(ReadOnlySpan<byte> bytes) : this() { this.LoadFrom(bytes); }
+#endif
 
         /// <summary>
         /// 将 <see cref="ByteUnion"/> 结构的新实例初始化为指定序列化信息和上下文表示的值。
@@ -105,6 +115,17 @@ namespace XstarS.Unions
             return new ByteUnion(Convert.ToByte(text, 16));
         }
 
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// 在当前 <see cref="ByteUnion"/> 上创建字节跨度。
+        /// </summary>
+        /// <returns>当前 <see cref="ByteUnion"/> 的字节跨度表示形式。</returns>
+        public Span<byte> AsByteSpan()
+        {
+            fixed (byte* pValue = &this.Byte) { return new Span<byte>(pValue, 1); }
+        }
+#endif
+
         /// <summary>
         /// 将当前 <see cref="ByteUnion"/> 的值复制到指定字节数组中，并指定数组的偏移量。
         /// </summary>
@@ -112,11 +133,24 @@ namespace XstarS.Unions
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="IndexOutOfRangeException">
+        /// <paramref name="offset"/> 超出了 <paramref name="bytes"/> 中元素的范围。</exception>
         public void CopyTo(byte[] bytes, int offset = 0)
         {
             if (bytes is null) { throw new ArgumentNullException(nameof(bytes)); }
-            fixed (byte* pBytes = bytes) { *(byte*)(pBytes + offset) = this.Byte; }
+            fixed (byte* pBytes = &bytes[offset]) { *(byte*)pBytes = this.Byte; }
         }
+
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// 将当前 <see cref="ByteUnion"/> 的值复制到指定字节跨度中。
+        /// </summary>
+        /// <param name="bytes">作为复制目标的字节跨度。</param>
+        public void CopyTo(Span<byte> bytes)
+        {
+            fixed (byte* pBytes = bytes) { *(byte*)pBytes = this.Byte; }
+        }
+#endif
 
         /// <summary>
         /// 确定当前 <see cref="ByteUnion"/> 与指定的 <see cref="ByteUnion"/> 是否相等。
@@ -144,15 +178,28 @@ namespace XstarS.Unions
         /// <summary>
         /// 将指定字节数组的值复制到当前 <see cref="ByteUnion"/> 中，并指定数组偏移量。
         /// </summary>
-        /// <param name="bytes">作为复制源字节数组。</param>
+        /// <param name="bytes">作为复制源的字节数组。</param>
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="IndexOutOfRangeException">
+        /// <paramref name="offset"/> 超出了 <paramref name="bytes"/> 中元素的范围。</exception>
         public void LoadFrom(byte[] bytes, int offset = 0)
         {
             if (bytes is null) { throw new ArgumentNullException(nameof(bytes)); }
-            fixed (byte* pBytes = bytes) { this.Byte = *(byte*)(pBytes + offset); }
+            fixed (byte* pBytes = &bytes[offset]) { this.Byte = *(byte*)pBytes; }
         }
+
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// 将指定只读字节跨度的值复制到当前 <see cref="ByteUnion"/> 中。
+        /// </summary>
+        /// <param name="bytes">作为复制源的只读字节跨度。</param>
+        public void LoadFrom(ReadOnlySpan<byte> bytes)
+        {
+            fixed (byte* pBytes = bytes) { this.Byte = *(byte*)pBytes; }
+        }
+#endif
 
         /// <summary>
         /// 将当前 <see cref="ByteUnion"/> 的值转换为字节数组。

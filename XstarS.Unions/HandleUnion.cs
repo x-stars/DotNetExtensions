@@ -22,6 +22,11 @@ namespace XstarS.Unions
         public static readonly HandleUnion Zero;
 
         /// <summary>
+        /// 表示 <see cref="HandleUnion.ToString()"/> 方法使用的格式。
+        /// </summary>
+        private static readonly string Format = "X" + (2 * Size);
+
+        /// <summary>
         /// 表示当前 <see cref="HandleUnion"/> 的有符号指针或句柄。
         /// </summary>
         [FieldOffset(0)] public nint IntPtr;
@@ -42,7 +47,7 @@ namespace XstarS.Unions
         /// 表示当前 <see cref="HandleUnion"/> 的字节缓冲区。
         /// </summary>
         [CLSCompliant(false)]
-        [FieldOffset(0)] public fixed byte Bytes[4];
+        [FieldOffset(0)] public fixed byte Bytes[sizeof(uint)];
 
         /// <summary>
         /// 将 <see cref="HandleUnion"/> 结构的新实例初始化为指定的有符号指针或句柄。
@@ -71,7 +76,17 @@ namespace XstarS.Unions
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="IndexOutOfRangeException">
+        /// <paramref name="offset"/> 超出了 <paramref name="bytes"/> 中元素的范围。</exception>
         public HandleUnion(byte[] bytes, int offset = 0) : this() { this.LoadFrom(bytes, offset); }
+
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// 将 <see cref="HandleUnion"/> 结构的新实例初始化为指定只读字节跨度表示的值。
+        /// </summary>
+        /// <param name="bytes">包含值的只读字节跨度。</param>
+        public HandleUnion(ReadOnlySpan<byte> bytes) : this() { this.LoadFrom(bytes); }
+#endif
 
         /// <summary>
         /// 将 <see cref="HandleUnion"/> 结构的新实例初始化为指定序列化信息和上下文表示的值。
@@ -108,6 +123,17 @@ namespace XstarS.Unions
             return new HandleUnion(checked((nuint)Convert.ToUInt64(text, 16)));
         }
 
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// 在当前 <see cref="HandleUnion"/> 上创建字节跨度。
+        /// </summary>
+        /// <returns>当前 <see cref="HandleUnion"/> 的字节跨度表示形式。</returns>
+        public Span<byte> AsByteSpan()
+        {
+            fixed (nuint* pValue = &this.UIntPtr) { return new Span<byte>(pValue, Size); }
+        }
+#endif
+
         /// <summary>
         /// 将当前 <see cref="HandleUnion"/> 的值复制到指定字节数组中，并指定数组的偏移量。
         /// </summary>
@@ -115,11 +141,24 @@ namespace XstarS.Unions
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="IndexOutOfRangeException">
+        /// <paramref name="offset"/> 超出了 <paramref name="bytes"/> 中元素的范围。</exception>
         public void CopyTo(byte[] bytes, int offset = 0)
         {
             if (bytes is null) { throw new ArgumentNullException(nameof(bytes)); }
-            fixed (byte* pBytes = bytes) { *(nuint*)(pBytes + offset) = this.UIntPtr; }
+            fixed (byte* pBytes = &bytes[offset]) { *(nuint*)pBytes = this.UIntPtr; }
         }
+
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// 将当前 <see cref="HandleUnion"/> 的值复制到指定字节跨度中。
+        /// </summary>
+        /// <param name="bytes">作为复制目标的字节跨度。</param>
+        public void CopyTo(Span<byte> bytes)
+        {
+            fixed (byte* pBytes = bytes) { *(nuint*)pBytes = this.UIntPtr; }
+        }
+#endif
 
         /// <summary>
         /// 确定当前 <see cref="HandleUnion"/> 与指定的 <see cref="HandleUnion"/> 是否相等。
@@ -151,11 +190,24 @@ namespace XstarS.Unions
         /// <param name="offset">字节数组的偏移量。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="bytes"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="IndexOutOfRangeException">
+        /// <paramref name="offset"/> 超出了 <paramref name="bytes"/> 中元素的范围。</exception>
         public void LoadFrom(byte[] bytes, int offset = 0)
         {
             if (bytes is null) { throw new ArgumentNullException(nameof(bytes)); }
-            fixed (byte* pBytes = bytes) { this.UIntPtr = *(nuint*)(pBytes + offset); }
+            fixed (byte* pBytes = &bytes[offset]) { this.UIntPtr = *(nuint*)pBytes; }
         }
+
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        /// <summary>
+        /// 将指定只读字节跨度的值复制到当前 <see cref="HandleUnion"/> 中。
+        /// </summary>
+        /// <param name="bytes">作为复制源的只读字节跨度。</param>
+        public void LoadFrom(ReadOnlySpan<byte> bytes)
+        {
+            fixed (byte* pBytes = bytes) { this.UIntPtr = *(nuint*)pBytes; }
+        }
+#endif
 
         /// <summary>
         /// 将当前 <see cref="HandleUnion"/> 的值转换为字节数组。
@@ -167,7 +219,7 @@ namespace XstarS.Unions
         /// 将当前 <see cref="HandleUnion"/> 转换为其等效的十六进制数字的字符串表达形式。
         /// </summary>
         /// <returns>表示当前 <see cref="HandleUnion"/> 的十六进制数字的字符串。</returns>
-        public override string ToString() => "0x" + ((ulong)this.UIntPtr).ToString("X" + (2 * Size));
+        public override string ToString() => "0x" + ((ulong)this.UIntPtr).ToString(Format);
 
         /// <summary>
         /// 获取序列化当前 <see cref="HandleUnion"/> 所需的数据。
