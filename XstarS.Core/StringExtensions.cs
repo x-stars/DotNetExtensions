@@ -117,7 +117,7 @@ namespace XstarS
             {
                 throw new ArgumentNullException(nameof(text));
             }
-            
+
             var lines = text.Split(Separators.NewLines, StringSplitOptions.None);
             if (lines[lines.Length - 1].Length == 0)
             {

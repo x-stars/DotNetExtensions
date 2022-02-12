@@ -216,7 +216,6 @@ namespace XstarS
             catch (Exception) { result = default(Half); return false; }
         }
 
-
         /// <summary>
         /// 将此实例与指定对象进行比较并返回一个对二者的相对值的指示。
         /// </summary>
