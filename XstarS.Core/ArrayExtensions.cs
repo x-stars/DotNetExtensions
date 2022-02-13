@@ -8,12 +8,13 @@ namespace XstarS
     public static partial class ArrayExtensions
     {
         /// <summary>
-        /// 返回一个新数组，此数组为当前数组追加指定元素后的结果。
+        /// 返回一个新数组，此数组为当前数组末尾追加指定元素后的结果。
         /// </summary>
         /// <typeparam name="T"><paramref name="array"/> 中元素的类型。</typeparam>
-        /// <param name="array">要进行追加的数组。</param>
+        /// <param name="array">要追加元素的数组。</param>
         /// <param name="item">要追加到当前数组的元素。</param>
-        /// <returns>一个新数组，此数组为当前数组追加指定元素后的结果。</returns>
+        /// <returns>一个新数组，此数组为 <paramref name="array"/>
+        /// 在末尾追加 <paramref name="item"/> 后的结果。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
         public static T[] Append<T>(this T[] array, T item)
@@ -24,7 +25,7 @@ namespace XstarS
             }
 
             var result = new T[array.Length + 1];
-            Array.Copy(array, result, array.Length);
+            Array.Copy(array, 0, result, 0, array.Length);
             result[array.Length] = item;
             return result;
         }
@@ -281,6 +282,72 @@ namespace XstarS
         }
 
         /// <summary>
+        /// 返回一个新数组，此数组为当前数组指定位置插入指定元素后的结果。
+        /// </summary>
+        /// <typeparam name="T"><paramref name="array"/> 中元素的类型。</typeparam>
+        /// <param name="array">要插入元素的数组。</param>
+        /// <param name="index">要插入元素的位置的索引。</param>
+        /// <param name="item">要插入到当前数组的元素。</param>
+        /// <returns>一个新数组，此数组为 <paramref name="array"/>
+        /// 在 <paramref name="index"/> 位置擦汗如 <paramref name="item"/> 后的结果。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/>
+        /// 小于 0，或者大于或等于 <paramref name="array"/> 的长度。</exception>
+        public static T[] Insert<T>(this T[] array, int index, T item)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+            if (index < 0 || index > array.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            var result = new T[array.Length + 1];
+            Array.Copy(array, 0, result, 0, index);
+            result[index] = item;
+            Array.Copy(array, index, result, index + 1, array.Length - index);
+            return result;
+        }
+
+        /// <summary>
+        /// 返回一个新数组，此数组为当前数组指定位置插入另一个数组后的结果。
+        /// </summary>
+        /// <typeparam name="T"><paramref name="array"/> 中元素的类型。</typeparam>
+        /// <param name="array">要插入另一个数组的数组。</param>
+        /// <param name="index">要插入另一个数组的位置的索引。</param>
+        /// <param name="items">要插入到当前数组的另一个数组。</param>
+        /// <returns>一个新数组，此数组为 <paramref name="array"/>
+        /// 在 <paramref name="index"/> 位置插入 <paramref name="items"/> 后的结果。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="array"/>
+        /// 或 <paramref name="items"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/>
+        /// 小于 0，或者大于或等于 <paramref name="array"/> 的长度。</exception>
+        public static T[] InsertRange<T>(this T[] array, int index, T[] items)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+            if (items is null)
+            {
+                throw new ArgumentNullException(nameof(items));
+            }
+            if (index < 0 || index > array.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            var result = new T[array.Length + items.Length];
+            Array.Copy(array, 0, result, 0, index);
+            Array.Copy(items, 0, result, index, items.Length);
+            Array.Copy(array, index, result, index + items.Length, array.Length - index);
+            return result;
+        }
+
+        /// <summary>
         /// 确定当前数组是否为一个下限为零的一维数组。
         /// </summary>
         /// <param name="array">要进行判断的数组。</param>
@@ -331,6 +398,29 @@ namespace XstarS
                 result[rank] = start + offset / scale;
                 offset %= scale;
             }
+            return result;
+        }
+
+        /// <summary>
+        /// 返回一个新数组，此数组为当前数组开头添加指定元素后的结果。
+        /// </summary>
+        /// <typeparam name="T"><paramref name="array"/> 中元素的类型。</typeparam>
+        /// <param name="array">要添加元素的数组。</param>
+        /// <param name="item">要添加到当前数组的元素。</param>
+        /// <returns>一个新数组，此数组为 <paramref name="array"/>
+        /// 在开头添加 <paramref name="item"/> 后的结果。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+        public static T[] Prepend<T>(this T[] array, T item)
+        {
+            if (array is null)
+            {
+                throw new ArgumentNullException(nameof(array));
+            }
+
+            var result = new T[array.Length + 1];
+            result[0] = item;
+            Array.Copy(array, 0, result, 1, array.Length);
             return result;
         }
 

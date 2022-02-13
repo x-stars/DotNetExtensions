@@ -113,15 +113,15 @@ namespace XstarS.Linq
         /// <typeparam name="TSource">输入序列中的元素的类型。</typeparam>
         /// <param name="source">要插入另一序列的序列。</param>
         /// <param name="index">要在 <paramref name="source"/> 中插入序列的位置。</param>
-        /// <param name="other">要插入到 <paramref name="source"/> 的序列。</param>
+        /// <param name="elements">要插入到 <paramref name="source"/> 的序列。</param>
         /// <returns>在 <paramref name="source"/> 的 <paramref name="index"/>
-        /// 处插入 <paramref name="other"/> 得到的新序列。</returns>
+        /// 处插入 <paramref name="elements"/> 得到的新序列。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/>
-        /// 或 <paramref name="other"/> 为 <see langword="null"/>。</exception>
+        /// 或 <paramref name="elements"/> 为 <see langword="null"/>。</exception>
         public static IEnumerable<TSource> InsertRange<TSource>(
-            this IEnumerable<TSource> source, int index, IEnumerable<TSource> other)
+            this IEnumerable<TSource> source, int index, IEnumerable<TSource> elements)
         {
-            return source.Take(index).Concat(other).Concat(source.Skip(index));
+            return source.Take(index).Concat(elements).Concat(source.Skip(index));
         }
 
         /// <summary>
