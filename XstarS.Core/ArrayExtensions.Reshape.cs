@@ -15,7 +15,7 @@ namespace XstarS
         /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
         /// <exception cref="NotSupportedException">
         /// <paramref name="array"/> 的最内层元素为指针。</exception>
-        public static IEnumerable RecurseEnumerate(this Array array)
+        public static IEnumerable RecursiveEnumerate(this Array array)
         {
             if (array is null)
             {
@@ -26,7 +26,7 @@ namespace XstarS
             {
                 foreach (var item in array)
                 {
-                    var innerItems = ((Array)item!).RecurseEnumerate();
+                    var innerItems = ((Array)item!).RecursiveEnumerate();
                     foreach (var innerItem in innerItems)
                     {
                         yield return innerItem;
@@ -81,7 +81,7 @@ namespace XstarS
             }
 
             var result = Array.CreateInstance(itemType, lengths);
-            var items = array.RecurseEnumerate().GetEnumerator();
+            var items = array.RecursiveEnumerate().GetEnumerator();
 
             bool isMultiDim = lengths.Length > 1;
             for (int offset = 0; offset < result.Length; offset++)
@@ -170,7 +170,7 @@ namespace XstarS
                 }
 
                 var result = Array.CreateInstance(itemType, 0);
-                var items = array.RecurseEnumerate().GetEnumerator();
+                var items = array.RecursiveEnumerate().GetEnumerator();
                 var lastLengths = lengths;
                 var restLengths = new int[lastLengths.Length - 1];
                 Array.Copy(lastLengths, 0, restLengths, 0, restLengths.Length);
