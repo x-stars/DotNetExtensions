@@ -42,11 +42,6 @@ namespace XstarS.IO
         /// <paramref name="stream"/> 为 <see langword="null"/>。</exception>
         public static Stream LeaveOpen(this Stream stream)
         {
-            if (stream is null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-
             return (stream is LeaveOpenStream leaveOpenStream) ?
                 leaveOpenStream : new LeaveOpenStream(stream);
         }

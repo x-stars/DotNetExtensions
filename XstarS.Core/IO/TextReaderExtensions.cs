@@ -46,11 +46,6 @@ namespace XstarS.IO
         public static IEnumerable<string> ReadLines(
             this TextReader reader, bool disposing = false)
         {
-            if (reader is null)
-            {
-                throw new ArgumentNullException(nameof(reader));
-            }
-
             return new TextLineEnumerator(reader, disposing);
         }
 
@@ -66,11 +61,6 @@ namespace XstarS.IO
         public static IAsyncEnumerable<string> ReadLinesAsync(
             this TextReader reader, bool disposing = false)
         {
-            if (reader is null)
-            {
-                throw new ArgumentNullException(nameof(reader));
-            }
-
             return new TextLineEnumerator(reader, disposing);
         }
 #endif
