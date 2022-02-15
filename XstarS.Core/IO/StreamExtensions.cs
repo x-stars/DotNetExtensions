@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Text;
 
 namespace XstarS.IO
 {
@@ -9,10 +10,93 @@ namespace XstarS.IO
     public static class StreamExtensions
     {
         /// <summary>
+        /// 表示 <see cref="Stream"/> 读写文本时默认使用的字符编码。
+        /// </summary>
+        internal static readonly Encoding DefaultEncoding =
+            new UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true);
+
+        /// <summary>
         /// 表示线程安全（同步）的 <see cref="Stream"/> 的类型。
         /// </summary>
         private static readonly Type SyncStreamType =
             Stream.Synchronized(Stream.Null).GetType();
+
+        /// <summary>
+        /// 创建以当前流为基础的二进制读取器 <see cref="BinaryReader"/>，
+        /// 使用指定的字符编码，并选择是否保持流处于打开状态。
+        /// </summary>
+        /// <param name="stream">要创建二进制读取器的流。</param>
+        /// <param name="encoding">要使用的字符编码。</param>
+        /// <param name="leaveOpen">是否在释放后保持流处于打开状态。</param>
+        /// <returns>以 <paramref name="stream"/> 为基础创建的 <see cref="BinaryReader"/>，
+        /// 使用 <paramref name="encoding"/> 作为字符编码。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="stream"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException"><paramref name="stream"/> 不可读。</exception>
+        public static BinaryReader AsBinaryReader(
+            this Stream stream, Encoding? encoding = null, bool leaveOpen = false)
+        {
+            encoding ??= StreamExtensions.DefaultEncoding;
+            return new BinaryReader(stream, encoding, leaveOpen);
+        }
+
+        /// <summary>
+        /// 创建以当前流为基础的二进制写入器 <see cref="BinaryWriter"/>，
+        /// 使用指定的字符编码，并选择是否保持流处于打开状态。
+        /// </summary>
+        /// <param name="stream">要创建二进制写入器的流。</param>
+        /// <param name="encoding">要使用的字符编码。</param>
+        /// <param name="leaveOpen">是否在释放后保持流处于打开状态。</param>
+        /// <returns>以 <paramref name="stream"/> 为基础创建的 <see cref="BinaryWriter"/>，
+        /// 使用 <paramref name="encoding"/> 作为字符编码。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="stream"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException"><paramref name="stream"/> 不可写。</exception>
+        public static BinaryWriter AsBinaryWriter(
+            this Stream stream, Encoding? encoding = null, bool leaveOpen = false)
+        {
+            encoding ??= StreamExtensions.DefaultEncoding;
+            return new BinaryWriter(stream, encoding, leaveOpen);
+        }
+
+        /// <summary>
+        /// 创建以当前流为基础的文本读取器 <see cref="TextReader"/>，
+        /// 使用指定的字符编码，并选择是否保持流处于打开状态。
+        /// </summary>
+        /// <param name="stream">要创建文本读取器的流。</param>
+        /// <param name="encoding">要使用的字符编码。</param>
+        /// <param name="leaveOpen">是否在释放后保持流处于打开状态。</param>
+        /// <returns>以 <paramref name="stream"/> 为基础创建的 <see cref="TextReader"/>，
+        /// 使用 <paramref name="encoding"/> 作为字符编码。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="stream"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException"><paramref name="stream"/> 不可读。</exception>
+        public static StreamReader AsTextReader(
+            this Stream stream, Encoding? encoding = null, bool leaveOpen = false)
+        {
+            encoding ??= StreamExtensions.DefaultEncoding;
+            return new StreamReader(stream, encoding,
+                detectEncodingFromByteOrderMarks: true, bufferSize: -1, leaveOpen);
+        }
+
+        /// <summary>
+        /// 创建以当前流为基础的文本写入器 <see cref="TextWriter"/>，
+        /// 使用指定的字符编码，并选择是否保持流处于打开状态。
+        /// </summary>
+        /// <param name="stream">要创建文本写入器的流。</param>
+        /// <param name="encoding">要使用的字符编码。</param>
+        /// <param name="leaveOpen">是否在释放后保持流处于打开状态。</param>
+        /// <returns>以 <paramref name="stream"/> 为基础创建的 <see cref="TextWriter"/>，
+        /// 使用 <paramref name="encoding"/> 作为字符编码。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="stream"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException"><paramref name="stream"/> 不可写。</exception>
+        public static StreamWriter AsTextWriter(
+            this Stream stream, Encoding? encoding = null, bool leaveOpen = false)
+        {
+            encoding ??= StreamExtensions.DefaultEncoding;
+            return new StreamWriter(stream, encoding, bufferSize: -1, leaveOpen);
+        }
 
         /// <summary>
         /// 确认当前流是否为线程安全（同步）的包装 <see cref="Stream"/>。
@@ -22,7 +106,7 @@ namespace XstarS.IO
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="stream"/> 为 <see langword="null"/>。</exception>
-        public static bool IsSynchronized(this Stream stream)
+        internal static bool IsSynchronized(this Stream stream)
         {
             if (stream is null)
             {

@@ -39,7 +39,7 @@ namespace XstarS.IO
         /// 读取当前文本读取器中的每一行文本，并指定是否在迭代完成后释放当前文本读取器。
         /// </summary>
         /// <param name="reader">要按行读取的文本读取器。</param>
-        /// <param name="disposing">指定是否在迭代完成后释放当前文本读取器。</param>
+        /// <param name="disposing">是否在迭代完成后释放当前文本读取器。</param>
         /// <returns><paramref name="reader"/> 的按行读取的公开枚举数。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="reader"/> 为 <see langword="null"/>。</exception>
@@ -54,7 +54,7 @@ namespace XstarS.IO
         /// 异步读取当前文本读取器中的每一行文本，并指定是否在迭代完成后释放当前文本读取器。
         /// </summary>
         /// <param name="reader">要按行异步读取的文本读取器。</param>
-        /// <param name="disposing">指定是否在迭代完成后释放当前文本读取器。</param>
+        /// <param name="disposing">是否在迭代完成后释放当前文本读取器。</param>
         /// <returns><paramref name="reader"/> 的按行读取的异步公开枚举数。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="reader"/> 为 <see langword="null"/>。</exception>
