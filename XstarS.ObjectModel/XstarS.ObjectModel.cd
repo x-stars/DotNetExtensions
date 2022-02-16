@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="XstarS.Windows.Input.CommandBase">
-    <Position X="12.25" Y="0.5" Width="2.75" />
+    <Position X="10" Y="0.5" Width="2.75" />
     <TypeIdentifier>
       <HashCode>EAAAAAAAAAACAAQAAEQAAAAACgAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>CommandBase.cs</FileName>
@@ -9,7 +9,7 @@
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="XstarS.Windows.Input.DelegateCommand">
-    <Position X="12.25" Y="4" Width="2.75" />
+    <Position X="10" Y="4" Width="2.75" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
@@ -19,45 +19,38 @@
     </TypeIdentifier>
   </Class>
   <Class Name="XstarS.ComponentModel.EnumFlagsVectorView&lt;TEnum&gt;">
-    <Position X="6" Y="7" Width="2.5" />
+    <Position X="3" Y="8.25" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAQAAAAAAAAAAAACAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
       <FileName>EnumFlagsVectorView.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="XstarS.ComponentModel.EnumListView&lt;TEnum&gt;">
-    <Position X="3" Y="0.5" Width="2.75" />
+    <Position X="13.75" Y="0.5" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAAAAAAIAAAAIAAAAEAAAAAAAAAJAAAAAAAAA=</HashCode>
       <FileName>EnumListView.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="XstarS.ComponentModel.EnumVectorView&lt;TEnum&gt;">
-    <Position X="3" Y="7" Width="2.25" />
+    <Position X="3" Y="5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAEAAAAAAAAAAACIAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>ACAAAAAAAAAAEAAACAAAAAAAAAAQAABAAAAgAAAAAAA=</HashCode>
       <FileName>EnumVectorView.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="XstarS.ComponentModel.EnumViewBase&lt;TEnum&gt;">
-    <Position X="4.5" Y="4" Width="2.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAAAABAAAAgAAAACAA=</HashCode>
-      <FileName>EnumViewBase.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="XstarS.ComponentModel.ObservableDataObject">
-    <Position X="7.25" Y="0.5" Width="2" />
+    <Position X="4.75" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAAAAAAAIQAIAAAAAAAgAEAAAAAAAAAAAACAAA=</HashCode>
+      <HashCode>EAAAAAAACAiAAIQAIAAAAAAAgAEAAAAAAAAAAAACAAg=</HashCode>
       <FileName>ObservableDataObject.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="XstarS.ComponentModel.ObservableValidDataObject">
-    <Position X="9.25" Y="4" Width="2.25" />
+    <Position X="6.25" Y="5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>gAEAAAAAAAAQAAABAAAAAAAAAAEAAAEIAAAAAAABIAA=</HashCode>
+      <HashCode>gAABAAAAAAgQAAABAAAAAAAAAAEAAAMIAQABAAABIAA=</HashCode>
       <FileName>ObservableValidDataObject.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
