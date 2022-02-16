@@ -36,5 +36,19 @@ namespace XstarS.Text.RegularExpressions
         /// <paramref name="pattern"/> 的正则表达式分析错误。</exception>
         public static string ReplaceMatches(this string text, string pattern, string replacement) =>
             Regex.Replace(text, pattern, replacement);
+
+        /// <summary>
+        /// 在由正则表达式模式定义的位置将当前字符串拆分为一个子字符串数组。
+        /// </summary>
+        /// <param name="text">要拆分的字符串。</param>
+        /// <param name="pattern">要匹配的正则表达式模式。</param>
+        /// <returns>将 <paramref name="text"/> 按匹配
+        /// <paramref name="pattern"/> 进行拆分得到的子字符串数组。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// 存在为 <see langword="null"/> 的参数。</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="pattern"/> 的正则表达式分析错误。</exception>
+        public static string[] SplitByMatch(this string text, string pattern) =>
+            Regex.Split(text, pattern);
     }
 }
