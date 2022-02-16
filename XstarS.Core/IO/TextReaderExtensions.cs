@@ -87,9 +87,7 @@ namespace XstarS.IO
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            var text = reader.ReadToEnd();
-            return string.IsNullOrEmpty(text) ?
-                Array.Empty<string>() : text.SplitLines();
+            return reader.ReadToEnd().SplitLines();
         }
 
         /// <summary>
