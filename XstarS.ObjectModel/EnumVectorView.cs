@@ -10,7 +10,7 @@ namespace XstarS.ComponentModel
     /// <typeparam name="TEnum">枚举的类型。</typeparam>
     [Serializable]
     [DebuggerDisplay("Value = {" + nameof(Value) + "}")]
-    public abstract class EnumVectorView<TEnum> : ObservableDataObject
+    public class EnumVectorView<TEnum> : ObservableDataObject
         where TEnum : struct, Enum
     {
         /// <summary>
