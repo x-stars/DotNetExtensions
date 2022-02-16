@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 namespace XstarS.ComponentModel
@@ -8,65 +9,107 @@ namespace XstarS.ComponentModel
     /// </summary>
     /// <typeparam name="TEnum">枚举的类型。</typeparam>
     [Serializable]
-    public class EnumVectorView<TEnum> : EnumViewBase<TEnum>
+    [DebuggerDisplay("Value = {" + nameof(Value) + "}")]
+    public abstract class EnumVectorView<TEnum> : ObservableDataObject
         where TEnum : struct, Enum
     {
         /// <summary>
         /// 初始化 <see cref="EnumVectorView{TEnum}"/> 类的新实例。
         /// </summary>
-        public EnumVectorView() { }
+        protected EnumVectorView() { }
 
         /// <summary>
-        /// 获取或设置当前视图表示的枚举值是否为指定的枚举值。
+        /// 获取或设置当前视图表示的枚举值。
         /// </summary>
-        /// <param name="enumValue">要获取或设置的枚举值。</param>
-        /// <returns>若当前视图表示的枚举值为指定的枚举值，
+        /// <returns>当前视图表示的枚举值。</returns>
+        public TEnum Value
+        {
+            get => this.GetProperty<TEnum>();
+            set => this.SetViewValue(value);
+        }
+
+        /// <summary>
+        /// 获取或设置当前视图是否选中了指定的枚举值。
+        /// </summary>
+        /// <param name="enumValue">要获取或设置是否选中的枚举值。</param>
+        /// <returns>若当前视图选中了 <paramref name="enumValue"/>，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public bool this[TEnum enumValue]
         {
-            get => this.Value.Equals(enumValue);
-            set => this.SetEnum(enumValue, value);
+            get => this.IsSelected(enumValue);
+            set => this.SelectEnum(enumValue, value);
         }
 
         /// <summary>
-        /// 获取当前视图表示的枚举值是否为指定的枚举值。
+        /// 获取当前视图是否选中了指定的枚举值。
         /// </summary>
-        /// <param name="enumName">要确定的枚举值的名称。</param>
-        /// <returns>若当前视图表示的枚举值为指定的枚举值，
+        /// <param name="enumValue">要确定是否选中的枚举值。</param>
+        /// <returns>若当前视图选中了 <paramref name="enumValue"/>，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        protected virtual bool IsSelected(TEnum enumValue)
+        {
+            return this.Value.Equals(enumValue);
+        }
+
+        /// <summary>
+        /// 根据指示在当前视图选中或取消选中指定的枚举值。
+        /// </summary>
+        /// <param name="enumValue">要选中或取消选中的枚举值。</param>
+        /// <param name="select">若要在当前视图选中指定的枚举值，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
+        protected virtual void SelectEnum(TEnum enumValue, bool select)
+        {
+            if (select) { this.Value = enumValue; }
+        }
+
+        /// <summary>
+        /// 获取当前视图是否选中了具有指定名称的枚举值。
+        /// </summary>
+        /// <param name="enumName">要确定是否选中的枚举值的名称。</param>
+        /// <returns>若当前视图选中了名为 <paramref name="enumName"/> 的枚举值，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="enumName"/> 不为有效的枚举值名称。</exception>
-        protected bool IsEnum(
-            [CallerMemberName] string? enumName = null)
+        protected bool IsSelected([CallerMemberName] string? enumName = null)
         {
-            enumName ??= string.Empty;
-            var enumValue = this.ParseEnum(enumName);
-            return this[enumValue];
+            var enumValue = (TEnum)Enum.Parse(typeof(TEnum), enumName!);
+            return this.IsSelected(enumValue);
         }
 
         /// <summary>
-        /// 根据指示设置当前视图表示的枚举值。
+        /// 根据指示在当前视图选中或取消选中具有指定名称的枚举值。
         /// </summary>
-        /// <param name="value">指示是否设置枚举值。</param>
-        /// <param name="enumName">要设置的枚举值的名称。</param>
+        /// <param name="select">若要在当前视图选中指定名称的枚举值，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</param>
+        /// <param name="enumName">要选中或取消选中的枚举值的名称。</param>
         /// <exception cref="ArgumentException">
         /// <paramref name="enumName"/> 不为有效的枚举值名称。</exception>
-        protected void SetEnum(bool value,
-            [CallerMemberName] string? enumName = null)
+        protected void SelectEnum(bool select, [CallerMemberName] string? enumName = null)
         {
-            enumName ??= string.Empty;
-            var enumValue = this.ParseEnum(enumName);
-            this[enumValue] = value;
+            var enumValue = (TEnum)Enum.Parse(typeof(TEnum), enumName!);
+            this.SelectEnum(enumValue, select);
         }
 
         /// <summary>
-        /// 根据指示设置当前视图表示的枚举值。
+        /// 设置当前视图表示的枚举值。
         /// </summary>
         /// <param name="enumValue">要设置的枚举值。</param>
-        /// <param name="value">指示是否设置枚举值。</param>
-        protected virtual void SetEnum(TEnum enumValue, bool value)
+        protected virtual void SetViewValue(TEnum enumValue)
         {
-            if (value) { this.Value = enumValue; }
+            var viewValue = this.Value;
+            this.SetProperty(enumValue, nameof(this.Value));
+            var valueChanged = !object.Equals(viewValue, enumValue);
+            if (valueChanged) { this.NotifyEnumPropertiesChanged(); }
+        }
+
+        /// <summary>
+        /// 通知所有枚举值对应的属性的值已更改。
+        /// </summary>
+        protected void NotifyEnumPropertiesChanged()
+        {
+            var enumNames = Enum.GetNames(typeof(TEnum));
+            Array.ForEach(enumNames, this.NotifyPropertyChanged);
+            this.NotifyPropertyChanged(ObservableDataObject.IndexerName);
         }
     }
 }
