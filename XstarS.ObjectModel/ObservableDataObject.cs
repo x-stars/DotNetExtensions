@@ -62,7 +62,7 @@ namespace XstarS.ComponentModel
         /// 如果要获取当前实体的值，则为 <see langword="null"/> 或空字符串。</param>
         /// <returns>名为 <paramref name="propertyName"/> 的属性或当前实体的值。</returns>
         /// <exception cref="InvalidCastException">
-        /// 属性的值无法转换为 <typeparamref name="T"/> 类型。</exception>
+        /// 指定属性或实体的值无法转换为 <typeparamref name="T"/> 类型。</exception>
         [return: MaybeNull]
         protected virtual T GetProperty<T>([CallerMemberName] string? propertyName = null)
         {

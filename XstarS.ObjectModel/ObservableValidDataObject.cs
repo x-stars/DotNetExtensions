@@ -50,6 +50,18 @@ namespace XstarS.ComponentModel
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         /// <summary>
+        /// 获取当前实体类型的所有公共属性的名称。
+        /// </summary>
+        /// <returns>当前实体类型的所有公共属性的名称。</returns>
+        private string[] GetAllPropertyNames()
+        {
+            var properties = this.GetType().GetProperties();
+            var propertyNames = new List<string>(properties.Length);
+            foreach (var property in properties) { propertyNames.Add(property.Name); }
+            return propertyNames.ToArray();
+        }
+
+        /// <summary>
         /// 获取指定属性或整个实体是否包含验证错误。
         /// </summary>
         /// <param name="propertyName">要获取是否包含验证错误的属性的名称；
@@ -177,18 +189,6 @@ namespace XstarS.ComponentModel
         protected virtual void OnErrorsChanged(DataErrorsChangedEventArgs e)
         {
             this.ErrorsChanged?.Invoke(this, e);
-        }
-
-        /// <summary>
-        /// 获取当前实体类型的所有公共属性的名称。
-        /// </summary>
-        /// <returns>当前实体类型的所有公共属性的名称。</returns>
-        private string[] GetAllPropertyNames()
-        {
-            var properties = this.GetType().GetProperties();
-            var propertyNames = new List<string>(properties.Length);
-            foreach (var property in properties) { propertyNames.Add(property.Name); }
-            return propertyNames.ToArray();
         }
     }
 }
