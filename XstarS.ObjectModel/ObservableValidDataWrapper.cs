@@ -80,7 +80,10 @@ namespace XstarS.ComponentModel
             [AllowNull] T value, [CallerMemberName] string? propertyName = null)
         {
             if (this.IsEntityName(propertyName)) { throw new InvalidOperationException(); }
+            var property = this.GetProperty<T>(propertyName);
             SimplePropertyAccessor<TData>.SetValue(this.DataObject, propertyName, value);
+            var propertyChanged = !RuntimeHelpers.Equals(property, value);
+            if (propertyChanged) { this.RelatedNotifyPropertyChanged(propertyName); }
         }
     }
 }
