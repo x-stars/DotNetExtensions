@@ -153,11 +153,11 @@ namespace XstarS.Reflection
         /// 中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
         public object CreateProxyInstance(object?[]? arguments, MethodInvokeHandler handler)
         {
+            arguments ??= Array.Empty<object>();
             if (handler is null)
             {
                 throw new ArgumentNullException(nameof(handler));
             }
-            arguments ??= Array.Empty<object>();
 
             var proxy = (arguments.Length == 0) ?
                 Activator.CreateInstance(this.ProxyType)! :

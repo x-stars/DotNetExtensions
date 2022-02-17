@@ -60,7 +60,7 @@ namespace XstarS.Reflection
             var createDelegate = DispatchProxyServices.ProxyCreateDelegates.GetOrAdd(interfaceType,
                 newInterfaceType => typeof(DispatchProxy<>).MakeGenericType(newInterfaceType).GetMethod(
                     nameof(DispatchProxy<object>.Create), new[] { newInterfaceType, typeof(InvocationHandler) }
-                )!.CreateDynamicDelegate(null)!);
+                    )!.CreateDynamicDelegate(target: null)!);
             return createDelegate.Invoke(new[] { instance, handler });
         }
 

@@ -29,8 +29,7 @@ namespace XstarS.Reflection
         public static T CreateDirectProxy<T>(MethodInvokeHandler? handler = null)
             where T : class
         {
-            handler ??= DynamicProxyServices.DefaultHandler;
-            return new DirectProxyFactory<T>(handler).CreateInstance();
+            return (T)DynamicProxyServices.CreateDirectProxy(typeof(T), handler);
         }
 
         /// <summary>
@@ -50,7 +49,7 @@ namespace XstarS.Reflection
             if (baseType is null) { throw new ArgumentNullException(nameof(baseType)); }
             handler ??= DynamicProxyServices.DefaultHandler;
             var provider = DirectProxyTypeProvider.OfType(baseType);
-            return provider.CreateProxyInstance(null, handler);
+            return provider.CreateProxyInstance(Array.Empty<object>(), handler);
         }
 
         /// <summary>
@@ -69,8 +68,7 @@ namespace XstarS.Reflection
         public static T CreateDirectProxy<T>(object?[]? arguments, MethodInvokeHandler? handler = null)
             where T : class
         {
-            handler ??= DynamicProxyServices.DefaultHandler;
-            return new DirectProxyFactory<T>(handler).CreateInstance(arguments);
+            return (T)DynamicProxyServices.CreateDirectProxy(typeof(T), arguments, handler);
         }
 
         /// <summary>
@@ -107,8 +105,7 @@ namespace XstarS.Reflection
         public static T CreateWrapProxy<T>(T instance, MethodInvokeHandler? handler = null)
             where T : class
         {
-            handler ??= DynamicProxyServices.DefaultHandler;
-            return new WrapProxyFactory<T>(handler).CreateInstance(instance);
+            return (T)DynamicProxyServices.CreateWrapProxy(typeof(T), instance, handler);
         }
 
         /// <summary>
