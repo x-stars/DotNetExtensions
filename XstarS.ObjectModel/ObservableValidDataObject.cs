@@ -80,7 +80,8 @@ namespace XstarS.ComponentModel
         /// <returns>当前数据实体的所有验证错误。</returns>
         public IEnumerable GetAllErrors()
         {
-            return this.ValidationErrors.Values.SelectMany(Enumerable.Cast<object?>).ToList();
+            var allErrors = this.ValidationErrors.Values;
+            return allErrors.SelectMany(Enumerable.Cast<object?>).ToList();
         }
 
         /// <summary>
@@ -115,7 +116,7 @@ namespace XstarS.ComponentModel
             var errorsChanged = hadErrors || hasErrors;
             if (errorsChanged) { this.NotifyErrorsChanged(propertyName); }
             var hasErrorsChanged = entityHadErrors ^ this.HasErrors;
-            if (hasErrorsChanged) { this.NotifyPropertyChanged(nameof(this.HasErrors)); }
+            if (hasErrorsChanged) { this.RelatedNotifyPropertyChanged(nameof(this.HasErrors)); }
         }
 
         /// <summary>
