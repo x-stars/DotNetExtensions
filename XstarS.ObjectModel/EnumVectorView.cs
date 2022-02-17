@@ -25,7 +25,7 @@ namespace XstarS.ComponentModel
         public TEnum Value
         {
             get => this.GetProperty<TEnum>();
-            set => this.SetViewValue(value);
+            set => this.SetProperty(value);
         }
 
         /// <summary>
@@ -38,6 +38,19 @@ namespace XstarS.ComponentModel
         {
             get => this.IsSelected(enumValue);
             set => this.SelectEnum(enumValue, value);
+        }
+
+        /// <summary>
+        /// 初始化 <see cref="EnumVectorView{TEnum}.Value"/> 属性的关联枚举名称属性。
+        /// </summary>
+        protected override void InitializeRelatedProperties()
+        {
+            base.InitializeRelatedProperties();
+            var enumNames = Enum.GetNames(typeof(TEnum));
+            var valueRelated = new string[enumNames.Length + 1];
+            Array.Copy(enumNames, valueRelated, enumNames.Length);
+            valueRelated[enumNames.Length] = ObservableDataObject.IndexerName;
+            this.SetRelatedProperties(nameof(this.Value), valueRelated);
         }
 
         /// <summary>
@@ -88,28 +101,6 @@ namespace XstarS.ComponentModel
         {
             var enumValue = (TEnum)Enum.Parse(typeof(TEnum), enumName!);
             this.SelectEnum(enumValue, select);
-        }
-
-        /// <summary>
-        /// 设置当前视图表示的枚举值。
-        /// </summary>
-        /// <param name="enumValue">要设置的枚举值。</param>
-        protected virtual void SetViewValue(TEnum enumValue)
-        {
-            var viewValue = this.Value;
-            this.SetProperty(enumValue, nameof(this.Value));
-            var valueChanged = !object.Equals(viewValue, enumValue);
-            if (valueChanged) { this.NotifyEnumPropertiesChanged(); }
-        }
-
-        /// <summary>
-        /// 通知所有枚举值对应的属性的值已更改。
-        /// </summary>
-        protected void NotifyEnumPropertiesChanged()
-        {
-            var enumNames = Enum.GetNames(typeof(TEnum));
-            Array.ForEach(enumNames, this.NotifyPropertyChanged);
-            this.NotifyPropertyChanged(ObservableDataObject.IndexerName);
         }
     }
 }

@@ -34,6 +34,7 @@ namespace XstarS.ComponentModel
         {
             this.Properties = new ConcurrentDictionary<string, object?>();
             this.RelatedProperties = new ConcurrentDictionary<string, string[]>();
+            this.InitializeRelatedProperties();
         }
 
         /// <summary>
@@ -41,6 +42,11 @@ namespace XstarS.ComponentModel
         /// </summary>
         [field: NonSerialized]
         public event PropertyChangedEventHandler? PropertyChanged;
+
+        /// <summary>
+        /// 在派生类中重写，初始化所有属性的关联属性的名称。
+        /// </summary>
+        protected virtual void InitializeRelatedProperties() { }
 
         /// <summary>
         /// 确定指定的属性名称是否表示当前数据实体。
