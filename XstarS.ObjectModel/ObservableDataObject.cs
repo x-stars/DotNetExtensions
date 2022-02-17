@@ -54,7 +54,6 @@ namespace XstarS.ComponentModel
         /// <param name="propertyName">要确认是否表示数据实体的属性名称。</param>
         /// <returns>若 <paramref name="propertyName"/> 为 <see langword="null"/> 或空字符串，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected bool IsEntityName([NotNullWhen(false)] string? propertyName)
         {
             return string.IsNullOrEmpty(propertyName);
@@ -100,7 +99,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="propertyName">要获取关联属性的属性的名称。</param>
         /// <returns>名为 <paramref name="propertyName"/> 的属性的关联属性的名称。</returns>
-        protected string[] GetRelatedProperties(string? propertyName)
+        protected string[] GetRelatedProperties([CallerMemberName] string? propertyName = null)
         {
             if (this.IsEntityName(propertyName)) { return Array.Empty<string>(); }
             this.RelatedProperties.TryGetValue(propertyName, out var relatedProperties);
