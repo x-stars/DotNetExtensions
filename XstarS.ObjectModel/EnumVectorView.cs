@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
@@ -13,6 +15,12 @@ namespace XstarS.ComponentModel
     public class EnumVectorView<TEnum> : ObservableDataObject
         where TEnum : struct, Enum
     {
+        /// <summary>
+        /// 表示在当前枚举类型中通过枚举名称查找枚举值的查找表。
+        /// </summary>
+        private static readonly ReadOnlyDictionary<string, TEnum> EnumLookupTable =
+            EnumVectorView<TEnum>.CreateEnumLookupTable();
+
         /// <summary>
         /// 初始化 <see cref="EnumVectorView{TEnum}"/> 类的新实例。
         /// </summary>
@@ -41,7 +49,23 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 初始化 <see cref="EnumVectorView{TEnum}.Value"/> 属性的关联枚举名称属性。
+        /// 创建在当前枚举类型中通过枚举名称查找枚举值的查找表。
+        /// </summary>
+        /// <returns>在当前枚举类型中通过枚举名称查找枚举值的查找表。</returns>
+        private static ReadOnlyDictionary<string, TEnum> CreateEnumLookupTable()
+        {
+            var enumNames = Enum.GetNames(typeof(TEnum));
+            var enumValues = (TEnum[])Enum.GetValues(typeof(TEnum));
+            var lookupTable = new Dictionary<string, TEnum>(enumNames.Length);
+            for (int index = 0; index < enumNames.Length; index++)
+            {
+                lookupTable[enumNames[index]] = enumValues[index];
+            }
+            return new ReadOnlyDictionary<string, TEnum>(lookupTable);
+        }
+
+        /// <summary>
+        /// 初始化 <see cref="EnumVectorView{TEnum}.Value"/> 属性的关联枚举属性的名称。
         /// </summary>
         protected override void InitializeRelatedProperties()
         {
@@ -76,6 +100,21 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
+        /// 在当前枚举类型中查找具有指定名称的枚举值。
+        /// </summary>
+        /// <param name="enumName">要查找的枚举值的名称。</param>
+        /// <returns><typeparamref name="TEnum"/> 类型中名为
+        /// <paramref name="enumName"/> 的枚举值。</returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="enumName"/> 不为有效的枚举值名称。</exception>
+        protected TEnum FindEnumValue(string enumName)
+        {
+            var lookupTable = EnumVectorView<TEnum>.EnumLookupTable;
+            var hasValue = lookupTable.TryGetValue(enumName, out var enumValue);
+            return hasValue ? enumValue : (TEnum)Enum.Parse(typeof(TEnum), enumName);
+        }
+
+        /// <summary>
         /// 获取当前视图是否选中了具有指定名称的枚举值。
         /// </summary>
         /// <param name="enumName">要确定是否选中的枚举值的名称。</param>
@@ -85,7 +124,7 @@ namespace XstarS.ComponentModel
         /// <paramref name="enumName"/> 不为有效的枚举值名称。</exception>
         protected bool IsSelected([CallerMemberName] string? enumName = null)
         {
-            var enumValue = (TEnum)Enum.Parse(typeof(TEnum), enumName!);
+            var enumValue = this.FindEnumValue(enumName!);
             return this.IsSelected(enumValue);
         }
 
@@ -99,7 +138,7 @@ namespace XstarS.ComponentModel
         /// <paramref name="enumName"/> 不为有效的枚举值名称。</exception>
         protected void SelectEnum(bool select, [CallerMemberName] string? enumName = null)
         {
-            var enumValue = (TEnum)Enum.Parse(typeof(TEnum), enumName!);
+            var enumValue = this.FindEnumValue(enumName!);
             this.SelectEnum(enumValue, select);
         }
     }
