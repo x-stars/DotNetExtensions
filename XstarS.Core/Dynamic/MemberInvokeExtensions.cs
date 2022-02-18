@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Reflection;
 
-namespace XstarS.Reflection
+namespace XstarS.Dynamic
 {
     /// <summary>
-    /// 提供反射调用对象或类型成员的扩展方法。
+    /// 提供动态调用对象或类型成员的扩展方法。
     /// </summary>
     public static class MemberInvokeExtensions
     {
