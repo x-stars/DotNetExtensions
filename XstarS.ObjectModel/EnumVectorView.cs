@@ -24,7 +24,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 初始化 <see cref="EnumVectorView{TEnum}"/> 类的新实例。
         /// </summary>
-        protected EnumVectorView() { }
+        public EnumVectorView() { }
 
         /// <summary>
         /// 获取或设置当前视图表示的枚举值。
