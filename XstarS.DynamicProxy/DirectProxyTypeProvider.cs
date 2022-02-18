@@ -144,7 +144,7 @@ namespace XstarS.Reflection
         /// <param name="handler">方法调用所用的代理委托。</param>
         /// <returns>一个使用指定参数创建并使用指定代理委托的代理类型的实例。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="arguments"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="handler"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="MissingMethodException">
         /// <see cref="DirectProxyTypeProvider.BaseType"/>
         /// 不包含与 <paramref name="arguments"/> 相匹配的构造函数。</exception>
@@ -153,13 +153,12 @@ namespace XstarS.Reflection
         /// 中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
         public object CreateProxyInstance(object?[]? arguments, MethodInvokeHandler handler)
         {
-            arguments ??= Array.Empty<object>();
             if (handler is null)
             {
                 throw new ArgumentNullException(nameof(handler));
             }
 
-            var proxy = (arguments.Length == 0) ?
+            var proxy = ((arguments is null) || (arguments.Length == 0)) ?
                 Activator.CreateInstance(this.ProxyType)! :
                 Activator.CreateInstance(this.ProxyType, arguments)!;
             this.HandlerField.SetValue(proxy, handler);
