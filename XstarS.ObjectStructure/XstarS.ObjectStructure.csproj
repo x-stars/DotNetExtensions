@@ -52,6 +52,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\XstarS.Core\XstarS.Core.csproj" />
+    <ProjectReference Include="..\XstarS.ObjectText\XstarS.ObjectText.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.01234567890`))'=='net' And

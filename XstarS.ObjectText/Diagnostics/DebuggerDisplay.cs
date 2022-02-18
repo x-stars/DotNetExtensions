@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -7,6 +8,8 @@ using System.Text.RegularExpressions;
 
 namespace XstarS.Diagnostics
 {
+    using StringPair = KeyValuePair<string, string>;
+
     /// <summary>
     /// 提供对象的 <see cref="DebuggerDisplayAttribute"/> 的格式化方法。
     /// </summary>
@@ -69,8 +72,8 @@ namespace XstarS.Diagnostics
             if (display is null) { return instance => instance?.ToString(); }
             var format = ExpressionMatcher.Replace(display, match => (index++).ToString());
             var formatters = ExpressionMatcher.Matches(display).Cast<Match>()
-                .Select(match => (Name: match.Groups[1].Value, Format: match.Groups[3].Value))
-                .Select(member => DebuggerDisplay.CreateMemberFormatter(type, member.Name, member.Format))
+                .Select(match => new StringPair(match.Groups[1].Value, match.Groups[3].Value))
+                .Select(member => DebuggerDisplay.CreateMemberFormatter(type, member.Key, member.Value))
                 .ToArray();
             return instance => string.Format(format,
                 Array.ConvertAll(formatters, formatter => formatter.Invoke(instance)));
