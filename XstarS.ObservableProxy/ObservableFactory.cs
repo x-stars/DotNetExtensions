@@ -11,12 +11,6 @@ namespace XstarS.ComponentModel
     public sealed class ObservableFactory<T> where T : class
     {
         /// <summary>
-        /// 表示 <see cref="ObservableFactory{T}.Default"/> 的延迟初始化对象。
-        /// </summary>
-        private static readonly Lazy<ObservableFactory<T>> LazyDefault =
-            new Lazy<ObservableFactory<T>>(() => new ObservableFactory<T>());
-
-        /// <summary>
         /// 表示提供属性更改通知类型的 <see cref="ObservableTypeProvider"/> 对象。
         /// </summary>
         private readonly ObservableTypeProvider TypeProvider;
@@ -37,8 +31,7 @@ namespace XstarS.ComponentModel
         /// <returns>默认的 <see cref="ObservableFactory{T}"/> 类的实例。</returns>
         /// <exception cref="ArgumentException">
         /// <typeparamref name="T"/> 不是公共接口，也不是公共非密封类。</exception>
-        public static ObservableFactory<T> Default =>
-            ObservableFactory<T>.LazyDefault.Value;
+        public static ObservableFactory<T> Default { get; } = new ObservableFactory<T>();
 
         /// <summary>
         /// 获取原型类型的 <see cref="Type"/> 对象。
@@ -63,23 +56,20 @@ namespace XstarS.ComponentModel
         /// <see cref="ObservableFactory{T}.ObservableType"/> 不包含无参构造函数。</exception>
         /// <exception cref="MethodAccessException">
         /// <see cref="ObservableFactory{T}.ObservableType"/> 的无参构造函数访问级别过低。</exception>
-        public T CreateInstance() =>
-            (T)Activator.CreateInstance(this.ObservableType)!;
+        public T CreateInstance() => this.CreateInstance(Array.Empty<object>());
 
         /// <summary>
         /// 使用与指定参数匹配程度最高的构造函数创建属性更改通知类型的实例。
         /// </summary>
         /// <param name="arguments">与要调用构造函数的参数数量、顺序和类型匹配的参数数组。</param>
         /// <returns>一个使用指定参数创建的属性更改通知类型的实例。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="arguments"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="MissingMethodException">
-        /// <see cref="ObservableFactory{T}.ObservableType"/> 
+        /// <see cref="ObservableFactory{T}.ObservableType"/>
         /// 不包含与 <paramref name="arguments"/> 相匹配的构造函数。</exception>
         /// <exception cref="MethodAccessException">
-        /// <see cref="ObservableFactory{T}.ObservableType"/> 
+        /// <see cref="ObservableFactory{T}.ObservableType"/>
         /// 中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
         public T CreateInstance(params object?[]? arguments) =>
-            (T)Activator.CreateInstance(this.ObservableType, arguments)!;
+            (T)this.TypeProvider.CreateObservableInstance(arguments);
     }
 }

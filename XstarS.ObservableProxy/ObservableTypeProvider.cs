@@ -116,6 +116,25 @@ namespace XstarS.ComponentModel
                     () => new ObservableTypeProvider(newBaseType))).Value;
 
         /// <summary>
+        /// 使用与指定参数匹配程度最高的构造函数创建属性更改通知类型的实例。
+        /// </summary>
+        /// <param name="arguments">与要调用构造函数的参数数量、顺序和类型匹配的参数数组。</param>
+        /// <returns>一个使用指定参数创建的属性更改通知类型的实例。</returns>
+        /// <exception cref="MissingMethodException">
+        /// <see cref="ObservableTypeProvider.ObservableType"/>
+        /// 不包含与 <paramref name="arguments"/> 相匹配的构造函数。</exception>
+        /// <exception cref="MethodAccessException">
+        /// <see cref="ObservableTypeProvider.ObservableType"/>
+        /// 中与 <paramref name="arguments"/> 相匹配的构造函数的访问级别过低。</exception>
+        public object CreateObservableInstance(object?[]? arguments)
+        {
+            var observable = ((arguments is null) || (arguments.Length == 0)) ?
+                Activator.CreateInstance(this.ObservableType)! :
+                Activator.CreateInstance(this.ObservableType, arguments)!;
+            return (INotifyPropertyChanged)observable;
+        }
+
+        /// <summary>
         /// 创建属性更改通知类型。
         /// </summary>
         /// <returns>创建的属性更改通知类型。</returns>
