@@ -54,6 +54,8 @@ namespace XstarS.ComponentModel
         /// <param name="propertyName">要确认是否表示数据实体的属性名称。</param>
         /// <returns>若 <paramref name="propertyName"/> 为 <see langword="null"/> 或空字符串，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         protected bool IsEntityName([NotNullWhen(false)] string? propertyName)
         {
             return string.IsNullOrEmpty(propertyName);

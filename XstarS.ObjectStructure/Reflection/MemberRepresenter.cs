@@ -61,7 +61,7 @@ namespace XstarS.Reflection
         /// <exception cref="ArgumentNullException">
         /// <paramref name="value"/> 为 <see langword="null"/>。</exception>
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Performance", "CA1822: MarkMembersAsStatic")]
+            "Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
         private NamedValues GetPublicValues([DisallowNull] T value)
         {
             if (value is null) { throw new ArgumentNullException(nameof(value)); }
