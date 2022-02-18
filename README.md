@@ -26,7 +26,6 @@
 * `XstarS.Reflection`
 * `XstarS.Reflection.Emit`
 * `XstarS.Runtime.CompilerServices`
-* `XstarS.Text`
 * `XstarS.Text.RegularExpressions`
 
 > `XstarS.Operators` 类型提供部分常用运算符，建议静态引入后调用。
@@ -64,13 +63,27 @@
 
 方法调用包装为通用静态委托 `XstarS.Reflection.MethodDelegate`，保持动态代理灵活性的同时避免了反射调用的低效率问题。
 
+核心 API 类型：
+
+* 直接代理类型 `XstarS.Reflection.DirectProxyTypeProvider`
+* 包装代理类型 `XstarS.Reflection.WrapProxyTypeProvider`
+
 ## 程序集 XstarS.ObjectModel
 
 提供部分组件模型类型的实现，包括：
 
-* 数据实体验证 `System.ComponentModel.INotifyDataErrorInfo`
 * 属性更改通知 `System.ComponentModel.INotifyPropertyChanged`
+  * `XstarS.ComponentModel.ObservableDataObject`
+* 数据实体验证 `System.ComponentModel.INotifyDataErrorInfo`
+  * `XstarS.ComponentModel.ObservableValidDataObject`
 * 命令 `System.Windows.Input.ICommand`
+  * `XstarS.Windows.Input.DelegateCommand`
+
+此外还为枚举类型提供了特定的的视图类型，包括：
+
+* 枚举列表视图 `XstarS.ComponentModel.EnumListView<TEnum>`
+* 枚举向量视图 `XstarS.ComponentModel.EnumVectorView<TEnum>`
+* 位域枚举向量视图 `XstarS.ComponentModel.EnumFlagsVectorView<TEnum>`
 
 相关文档：
 
@@ -80,6 +93,21 @@
 ## 程序集 XstarS.ObjectStructure
 
 提供结构化对象（数组、集合等）的结构化相等比较和结构化输出的方法。
+
+核心 API 类型：
+
+* 结构化相等比较 `XstarS.Collections.Generic.StructuralEqualityComparer<T>`
+* 对象结构化输出 `XstarS.Diagnostics.StructuralRepresenter<T>`
+
+## 程序集 XstarS.ObjectText
+
+提供对象与文本之间相互转换的方法，即将对象表示为文本和将文本解析为对象的方法。
+
+核心 API 类型：
+
+* 将对象表示为文本 `XstarS.Diagnostics.Representer<T>`
+* 将文本解析为对象 `XstarS.Text.StringParser<T>`
+  * 用户自定义扩展解析方法 `XstarS.Text.ExtensionParseMethodAttribute`
 
 ## 程序集 XstarS.ObservableProxy
 
