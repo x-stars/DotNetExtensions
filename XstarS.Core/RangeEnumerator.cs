@@ -52,8 +52,8 @@ namespace XstarS
         public unsafe RangeEnumerator(Range range)
         {
             var (start, end) = *(IndexPair*)&range;
-            this.StartIndex = (start >= 0) ? start : (start + 1);
-            this.EndIndex = (end >= 0) ? end : (end + 1);
+            this.StartIndex = start - (start >> 31);
+            this.EndIndex = end - (end >> 31);
             this.CurrentIndex = this.StartIndex - 1;
         }
 
@@ -87,7 +87,7 @@ namespace XstarS
         {
             var nextIndex = this.CurrentIndex + 1;
             if (nextIndex >= this.EndIndex) { return false; }
-            else { this.CurrentIndex = nextIndex; return true;}
+            else { this.CurrentIndex = nextIndex; return true; }
         }
 
         /// <summary>
