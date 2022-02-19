@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 
 namespace XstarS
@@ -17,6 +18,7 @@ namespace XstarS
         /// <typeparam name="T">当前对象的类型。</typeparam>
         /// <param name="value">要原样返回的对象。</param>
         /// <returns><paramref name="value"/> 本身。</returns>
+        [return: NotNullIfNotNull("value")]
         public static T Self<T>(T value) => value;
 
         /// <summary>
@@ -120,5 +122,14 @@ namespace XstarS
         /// <paramref name="items"/> 为 <see langword="null"/>。</exception>
         public static HashSet<T> SetOf<T>(params T[] items) =>
             new HashSet<T>(items ?? throw new ArgumentNullException(nameof(items)));
+
+        /// <summary>
+        /// 返回当前对象的字符串表示形式。
+        /// </summary>
+        /// <typeparam name="T">当前对象的类型。</typeparam>
+        /// <param name="value">要返回字符串表示形式的对象。</param>
+        /// <returns><paramref name="value"/> 的字符串表示形式。</returns>
+        [return: NotNullIfNotNull("value")]
+        public static string? StringOf<T>(T value) => value?.ToString();
     }
 }
