@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using XstarS.Text;
-using mstring = System.Text.StringBuilder;
 
 namespace XstarS.IO
 {
