@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using mstring = System.Text.StringBuilder;
 
 namespace XstarS.IO
 {
@@ -86,6 +87,83 @@ namespace XstarS.IO
             }
 
             return reader.ReadToEnd().SplitLines();
+        }
+
+        /// <summary>
+        /// 读取当前文本读取器的下一个字符串值。
+        /// </summary>
+        /// <param name="reader">要进行读取的文本读取器。</param>
+        /// <returns>文本读取器的下一个字符串值。
+        /// 如果当前没有更多的可用字符串值，则为 <see langword="null"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="reader"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// 下一个字符串值的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="ObjectDisposedException">
+        /// <see cref="TextReader"/> 已关闭。</exception>
+        /// <exception cref="OutOfMemoryException">
+        /// 没有足够的内存来为下一个字符串值分配缓冲区。</exception>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        public static string? ReadToken(this TextReader reader)
+        {
+            if (reader is null)
+            {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            string? ReadCore(TextReader reader)
+            {
+                var iChar = -1;
+                while ((iChar = reader.Read()) != -1)
+                {
+                    if (!char.IsWhiteSpace((char)iChar)) { break; }
+                }
+                var result = new mstring();
+                result.Append((char)iChar);
+                while ((iChar = reader.Read()) != -1)
+                {
+                    if (char.IsWhiteSpace((char)iChar)) { break; }
+                    result.Append((char)iChar);
+                }
+                return (result.Length == 0) ? null : result.ToString();
+            }
+
+            if (reader.IsSynchronized())
+            {
+                lock (reader)
+                {
+                    return ReadCore(reader);
+                }
+            }
+            else
+            {
+                return ReadCore(reader);
+            }
+        }
+
+        /// <summary>
+        /// 读取当前文本读取器到下一行的所有字符串值。
+        /// </summary>
+        /// <param name="reader">要进行读取的文本读取器。</param>
+        /// <returns>文本读取器的下一行包含的所有字符串值。
+        /// 如果当前没有更多的可用字符串值，则为 <see langword="null"/>。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="reader"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// 下一行中的字符的字符数大于 <see cref="int.MaxValue"/>。</exception>
+        /// <exception cref="ObjectDisposedException">
+        /// <see cref="TextReader"/> 已关闭。</exception>
+        /// <exception cref="OutOfMemoryException">
+        /// 没有足够的内存来为下一行的字符串分配缓冲区。</exception>
+        /// <exception cref="IOException">出现 I/O 错误。</exception>
+        public static string[]? ReadTokensInLine(this TextReader reader)
+        {
+            if (reader is null)
+            {
+                throw new ArgumentNullException(nameof(reader));
+            }
+
+            return reader.ReadLine()?.SplitTokens();
         }
     }
 }

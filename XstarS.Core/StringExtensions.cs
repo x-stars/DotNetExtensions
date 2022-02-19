@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using mstring = System.Text.StringBuilder;
 
 namespace XstarS
@@ -10,9 +11,22 @@ namespace XstarS
     public static class StringExtensions
     {
         /// <summary>
-        /// 表示所有行结束符的字符串的集合。
+        /// 提供字符串分隔符的集合。
         /// </summary>
-        private static readonly string[] NewLines = new[] { "\r\n", "\r", "\n" };
+        private static class Separators
+        {
+            /// <summary>
+            /// 表示所有行结束符的字符串的集合。
+            /// </summary>
+            internal static readonly string[] NewLines = new[] { "\r\n", "\r", "\n" };
+
+            /// <summary>
+            /// 表示所有空白字符的集合。
+            /// </summary>
+            internal static readonly char[] WhiteSpaces =
+                Enumerable.Range(0, char.MaxValue + 1).Select(
+                    Convert.ToChar).Where(char.IsWhiteSpace).ToArray();
+        }
 
         /// <summary>
         /// 返回一个新字符串，此字符串将当前字符串重复指定次数。
@@ -104,8 +118,7 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(text));
             }
 
-            var lines = text.Split(
-                StringExtensions.NewLines, StringSplitOptions.None);
+            var lines = text.Split(Separators.NewLines, StringSplitOptions.None);
             if (lines[lines.Length - 1].Length == 0)
             {
                 var result = new string[lines.Length - 1];
@@ -113,6 +126,23 @@ namespace XstarS
                 lines = result;
             }
             return lines;
+        }
+
+        /// <summary>
+        /// 将当前字符串按空白字符分隔为多个子字符串。
+        /// </summary>
+        /// <param name="text">要进行分隔的字符串。</param>
+        /// <returns>按空白字符分隔得到子字符串的数组。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
+        public static string[] SplitTokens(this string text)
+        {
+            if (text is null)
+            {
+                throw new ArgumentNullException(nameof(text));
+            }
+
+            return text.Split(Separators.WhiteSpaces, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }
