@@ -149,8 +149,7 @@ namespace XstarS.ComponentModel
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="propertyName">要验证错误的属性的名称；
         /// 如果要验证当前实体的错误，则为 <see langword="null"/> 或空字符串。</param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
+        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         protected virtual void ValidateProperty<T>([CallerMemberName] string? propertyName = null)
         {
             if (this.IsEntityName(propertyName)) { this.ValidateAllProperties(); }
