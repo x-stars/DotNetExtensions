@@ -1,11 +1,13 @@
-﻿#if NETCOREAPP3_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-using System;
-using System.Diagnostics;
-using System.Linq;
+﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace XstarS
 {
+#if !DEBUG
+    using System;
+    using System.Diagnostics;
+#endif
+
     [TestClass]
     public class RangeEnumeratorTest
     {
@@ -58,35 +60,6 @@ namespace XstarS
         }
 
         [TestMethod]
-        public void Reset_LoopFinished_GetSameSum()
-        {
-            using var etor = (0..100).GetEnumerator();
-            var iSum = 0;
-            while (etor.MoveNext())
-            {
-                iSum += etor.Current;
-            }
-            etor.Reset();
-            var rSum = 0;
-            while (etor.MoveNext())
-            {
-                rSum += etor.Current;
-            }
-            Assert.AreEqual(iSum, rSum);
-        }
-
-        [TestMethod]
-        public void Dispose_LoopNotStart_MoveNextFalse()
-        {
-            using var etor = (0..100).GetEnumerator();
-            Assert.IsTrue(etor.MoveNext());
-            etor.Reset();
-            etor.Dispose();
-            Assert.IsFalse(etor.MoveNext());
-        }
-
-#if NET5_0_OR_GREATER
-        [TestMethod]
         public void BenchTest_CompareWithForLoop_TimeLessThanTwo()
         {
 #if DEBUG
@@ -133,7 +106,5 @@ namespace XstarS
             Assert.IsTrue(rangeLoopTicks < forLoopTicks / 4);
 #endif
         }
-#endif
     }
 }
-#endif
