@@ -13,7 +13,6 @@ namespace XstarS
         /// </summary>
         /// <param name="range">要逐个枚举索引值的 <see cref="Range"/>。</param>
         /// <returns>逐个枚举 <paramref name="range"/> 中索引值的枚举器。</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static RangeEnumerator GetEnumerator(this Range range)
         {
             return new RangeEnumerator(range);
