@@ -30,7 +30,7 @@ namespace System
         {
             if (value < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(value), "value must be non-negative");
+                throw new ArgumentOutOfRangeException(nameof(value), "Non-negative number required.");
             }
 
             if (fromEnd)
@@ -67,7 +67,7 @@ namespace System
         {
             if (value < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(value), "value must be non-negative");
+                throw new ArgumentOutOfRangeException(nameof(value), "Non-negative number required.");
             }
 
             return new Index(value);
@@ -83,7 +83,7 @@ namespace System
         {
             if (value < 0)
             {
-                throw new ArgumentOutOfRangeException(nameof(value), "value must be non-negative");
+                throw new ArgumentOutOfRangeException(nameof(value), "Non-negative number required.");
             }
 
             return new Index(~value);
