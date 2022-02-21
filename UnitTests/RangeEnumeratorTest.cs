@@ -1,13 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace XstarS
 {
-#if !DEBUG
-    using System;
-    using System.Diagnostics;
-#endif
-
     [TestClass]
     public class RangeEnumeratorTest
     {
@@ -59,12 +56,10 @@ namespace XstarS
             Assert.AreEqual(expected, sum);
         }
 
+        [Ignore]
         [TestMethod]
-        public void BenchTest_CompareWithForLoop_TimeLessThanTwo()
+        public void BenchTest_CompareWithForLoop_TimeIsAboutEqual()
         {
-#if DEBUG
-            Assert.IsTrue(true);
-#else
             const int loopCount = 1000000;
             Console.WriteLine("Loop count: {0}", loopCount);
             var sw = new Stopwatch();
@@ -79,16 +74,13 @@ namespace XstarS
             sw.Stop();
             var rangeLoopTicks = sw.ElapsedTicks;
             Console.WriteLine("Range foreach-loop: {0}", sw.Elapsed);
-            Assert.IsTrue(rangeLoopTicks < forLoopTicks * 2);
-#endif
+            Assert.IsTrue(rangeLoopTicks < forLoopTicks * 1.25);
         }
 
+        [Ignore]
         [TestMethod]
         public void BenchTest_CompareWithEnumerable_TimeLessThanOneQuater()
         {
-#if DEBUG
-            Assert.IsTrue(true);
-#else
             const int loopCount = 1000000;
             Console.WriteLine("Loop count: {0}", loopCount);
             var sw = new Stopwatch();
@@ -104,7 +96,6 @@ namespace XstarS
             var rangeLoopTicks = sw.ElapsedTicks;
             Console.WriteLine("Range foreach-loop: {0}", sw.Elapsed);
             Assert.IsTrue(rangeLoopTicks < forLoopTicks / 4);
-#endif
         }
     }
 }
