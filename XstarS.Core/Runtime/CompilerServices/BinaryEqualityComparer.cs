@@ -1,4 +1,6 @@
-﻿namespace XstarS.Runtime.CompilerServices
+﻿using System.Runtime.CompilerServices;
+
+namespace XstarS.Runtime.CompilerServices
 {
     /// <summary>
     /// 提供二进制相等比较相关的帮助方法。
@@ -13,34 +15,34 @@
         /// <param name="size">指针指向的值以字节为单位的大小。</param>
         /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 指向的值二进制相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static bool Equals(void* value, void* other, int size)
         {
-            switch (size)
+            begin: switch (size)
             {
                 case 0:
                     return true;
                 case sizeof(byte):
-                    return *(byte*)value == *(byte*)other;
+                    return ((byte*)value)[0] == ((byte*)other)[0];
                 case sizeof(ushort):
-                    return *(ushort*)value == *(ushort*)other;
+                    return ((ushort*)value)[0] == ((ushort*)other)[0];
                 case sizeof(ushort) + sizeof(byte):
-                    return (*(ushort*)value == *(ushort*)other) &&
-                        (*(byte*)((ushort*)value + 1) == *(byte*)((ushort*)other + 1));
+                    return ((ushort*)value)[0] == ((ushort*)other)[0] &&
+                           ((byte*)value)[2] == ((byte*)other)[2];
                 case sizeof(uint):
-                    return *(uint*)value == *(uint*)other;
+                    return ((uint*)value)[0] == ((uint*)other)[0];
                 case sizeof(uint) + sizeof(byte):
-                    return (*(uint*)value == *(uint*)other) &&
-                        (*(byte*)((uint*)value + 1) == *(byte*)((uint*)other + 1));
+                    return ((uint*)value)[0] == ((uint*)other)[0] &&
+                           ((byte*)value)[4] == ((byte*)other)[4];
                 case sizeof(uint) + sizeof(ushort):
-                    return (*(uint*)value == *(uint*)other) &&
-                        (*(ushort*)((uint*)value + 1) == *(ushort*)((uint*)other + 1));
+                    return ((uint*)value)[0] == ((uint*)other)[0] &&
+                           ((ushort*)value)[2] == ((ushort*)other)[2];
                 case sizeof(uint) + sizeof(ushort) + sizeof(byte):
-                    return (*(uint*)value == *(uint*)other) &&
-                        (*(ushort*)((uint*)value + 1) == *(ushort*)((uint*)other + 1)) &&
-                        (*(byte*)((ushort*)((uint*)value + 1) + 1) ==
-                            *(byte*)((ushort*)((uint*)other + 1) + 1));
+                    return ((uint*)value)[0] == ((uint*)other)[0] &&
+                           ((ushort*)value)[2] == ((ushort*)other)[2] &&
+                           ((byte*)value)[6] == ((byte*)other)[6];
                 case sizeof(ulong):
-                    return *(ulong*)value == *(ulong*)other;
+                    return ((ulong*) value)[0] == ((ulong*) other)[0];
                 default:
                     var lValue = (ulong*)value;
                     var lOther = (ulong*)other;
@@ -52,8 +54,10 @@
                             return false;
                         }
                     }
-                    return (size % sizeof(ulong) == 0) ||
-                        BinaryEqualityComparer.Equals(lValue, lOther, size % sizeof(ulong));
+                    var rest = size % sizeof(ulong);
+                    if (rest == 0) { return true; }
+                    value = lValue; other = lOther; size = rest;
+                    goto begin;
             }
         }
 
@@ -63,40 +67,51 @@
         /// <param name="value">指向要获取基于二进制的哈希代码的值的指针。</param>
         /// <param name="size">指针指向的值以字节为单位的大小。</param>
         /// <returns><paramref name="value"/> 指向的值基于二进制的哈希代码。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static int GetHashCode(void* value, int size)
         {
-            switch (size)
+            var hashCode = 0;
+            begin: switch (size)
             {
                 case 0:
                     return 0;
                 case sizeof(byte):
-                    return *(byte*)value;
+                    return ((byte*)value)[0];
                 case sizeof(ushort):
-                    return *(ushort*)value;
+                    return ((ushort*)value)[0];
                 case sizeof(ushort) + sizeof(byte):
-                    return *(ushort*)value |
-                        (*(byte*)((ushort*)value + 1) << (sizeof(ushort) * 8));
+                    return ((ushort*)value)[0] | (((byte*)value)[2] << 16);
                 case sizeof(int):
-                    return *(int*)value;
+                    return ((int*)value)[0];
                 case sizeof(int) + sizeof(byte):
-                    return *(int*)value ^ *(byte*)((int*)value + 1);
+                    return ((int*)value)[0] ^ ((byte*)value)[4];
                 case sizeof(int) + sizeof(ushort):
-                    return *(int*)value ^ *(ushort*)((int*)value + 1);
+                    return ((int*)value)[0] ^ ((ushort*)value)[2];
                 case sizeof(int) + sizeof(ushort) + sizeof(byte):
-                    return *(int*)value ^ (*(ushort*)((int*)value + 1) |
-                        (*(byte*)((ushort*)((int*)value + 1) + 1) << (sizeof(ushort) * 8)));
-                case sizeof(int) * 2:
-                    return *(int*)value ^ *((int*)value + 1);
+                    return ((int*)value)[0] ^ (((ushort*)value)[2] |
+                                               (((byte*)value)[6] << 16));
+                case sizeof(int) + sizeof(int):
+                    return ((int*)value)[0] ^ ((int*)value)[1];
                 default:
-                    var hashCode = 0;
                     var iValue = (int*)value;
                     var pEnd = iValue + (size / sizeof(int));
                     while (iValue < pEnd)
                     {
                         hashCode ^= *iValue++;
                     }
-                    return (size % sizeof(int) == 0) ? hashCode : (hashCode ^
-                        BinaryEqualityComparer.GetHashCode(iValue, size % sizeof(int)));
+                    var rest = size % sizeof(int);
+                    if (rest == 0) { return hashCode; }
+                    value = iValue; size = -rest;
+                    goto begin;
+                case -(sizeof(byte)):
+                    return hashCode ^ ((byte*)value)[0];
+                case -(sizeof(ushort)):
+                    return hashCode ^ ((ushort*)value)[0];
+                case -(sizeof(ushort) + sizeof(byte)):
+                    return hashCode ^ (((ushort*)value)[0] |
+                                       (((byte*)value)[2] << 16));
+                case -(sizeof(int)):
+                    return hashCode ^ ((int*)value)[0];
             }
         }
     }
