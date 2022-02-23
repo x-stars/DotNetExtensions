@@ -81,7 +81,7 @@ namespace XstarS.ComponentModel
         public IEnumerable GetAllErrors()
         {
             var allErrors = this.ValidationErrors.Values;
-            return allErrors.SelectMany(Enumerable.Cast<object?>).ToList();
+            return allErrors.SelectMany(Enumerable.Cast<object>).ToList();
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace XstarS.ComponentModel
             if (this.IsEntityName(propertyName)) { throw new InvalidOperationException(); }
             var entityHadErrors = !this.ValidationErrors.IsEmpty;
             var hadErrors = this.ValidationErrors.ContainsKey(propertyName);
-            var hasErrors = !(errors is null) && errors.Cast<object?>().Any();
+            var hasErrors = !(errors is null) && errors.Cast<object>().Any();
             if (hasErrors) { this.ValidationErrors[propertyName] = errors!; }
             else { this.ValidationErrors.TryRemove(propertyName, out errors!); }
             var errorsChanged = hadErrors || hasErrors;
@@ -157,7 +157,7 @@ namespace XstarS.ComponentModel
             var context = new ValidationContext(this) { MemberName = propertyName };
             var results = new List<ValidationResult>();
             try { Validator.TryValidateProperty(value, context, results); } catch { }
-            var errors = new List<string?>(results.Count);
+            var errors = new List<string>(results.Count);
             foreach (var result in results) { errors.Add(result.ErrorMessage); }
             this.SetErrors(errors, propertyName);
         }
