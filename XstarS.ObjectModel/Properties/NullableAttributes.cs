@@ -9,7 +9,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// <summary>
     /// Specifies that null is allowed as an input even if the corresponding type disallows it.
     /// </summary>
-    [CompilerGenerated]
+    [CompilerGenerated, DebuggerNonUserCode]
     [AttributeUsage(
         AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property,
         Inherited = false)]
@@ -26,7 +26,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// <summary>
     /// Specifies that null is disallowed as an input even if the corresponding type allows it.
     /// </summary>
-    [CompilerGenerated]
+    [CompilerGenerated, DebuggerNonUserCode]
     [AttributeUsage(
         AttributeTargets.Field | AttributeTargets.Parameter | AttributeTargets.Property,
         Inherited = false)]
@@ -43,7 +43,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// <summary>
     /// Specifies that an output may be null even if the corresponding type disallows it.
     /// </summary>
-    [CompilerGenerated]
+    [CompilerGenerated, DebuggerNonUserCode]
     [AttributeUsage(
         AttributeTargets.Field | AttributeTargets.Parameter |
         AttributeTargets.Property | AttributeTargets.ReturnValue,
@@ -62,7 +62,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// Specifies that an output will not be null even if the corresponding type allows it.
     /// Specifies that an input argument was not null when the call returns.
     /// </summary>
-    [CompilerGenerated]
+    [CompilerGenerated, DebuggerNonUserCode]
     [AttributeUsage(
         AttributeTargets.Field | AttributeTargets.Parameter |
         AttributeTargets.Property | AttributeTargets.ReturnValue,
@@ -81,7 +81,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// Specifies that when a method returns <see cref="ReturnValue"/>,
     /// the parameter may be null even if the corresponding type disallows it.
     /// </summary>
-    [CompilerGenerated]
+    [CompilerGenerated, DebuggerNonUserCode]
     [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
     internal sealed class MaybeNullWhenAttribute : Attribute
     {
@@ -107,7 +107,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// Specifies that when a method returns <see cref="ReturnValue"/>,
     /// the parameter will not be null even if the corresponding type allows it.
     /// </summary>
-    [CompilerGenerated]
+    [CompilerGenerated, DebuggerNonUserCode]
     [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
     internal sealed class NotNullWhenAttribute : Attribute
     {
@@ -132,7 +132,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// <summary>
     /// Specifies that the output will be non-null if the named parameter is non-null.
     /// </summary>
-    [CompilerGenerated]
+    [CompilerGenerated, DebuggerNonUserCode]
     [AttributeUsage(
         AttributeTargets.Parameter | AttributeTargets.Property | AttributeTargets.ReturnValue,
         AllowMultiple = true, Inherited = false)]
@@ -159,7 +159,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// <summary>
     /// Applied to a method that will never return under any circumstance.
     /// </summary>
-    [CompilerGenerated]
+    [CompilerGenerated, DebuggerNonUserCode]
     [AttributeUsage(AttributeTargets.Method, Inherited = false)]
     internal sealed class DoesNotReturnAttribute : Attribute
     {
@@ -175,7 +175,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// Specifies that the method will not return
     /// if the associated Boolean parameter is passed the specified value.
     /// </summary>
-    [CompilerGenerated]
+    [CompilerGenerated, DebuggerNonUserCode]
     [AttributeUsage(AttributeTargets.Parameter, Inherited = false)]
     internal sealed class DoesNotReturnIfAttribute : Attribute
     {
@@ -210,7 +210,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// Specifies that the method or property will ensure
     /// that the listed field and property members have not-null values.
     /// </summary>
-    [CompilerGenerated]
+    [CompilerGenerated, DebuggerNonUserCode]
     [AttributeUsage(
         AttributeTargets.Method | AttributeTargets.Property,
         Inherited = false, AllowMultiple = true)]
@@ -249,7 +249,7 @@ namespace System.Diagnostics.CodeAnalysis
     /// that the listed field and property members have not-null values
     /// when returning with the specified return value condition.
     /// </summary>
-    [CompilerGenerated]
+    [CompilerGenerated, DebuggerNonUserCode]
     [AttributeUsage(
         AttributeTargets.Method | AttributeTargets.Property,
         Inherited = false, AllowMultiple = true)]
