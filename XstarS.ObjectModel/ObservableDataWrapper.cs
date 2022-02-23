@@ -23,6 +23,8 @@ namespace XstarS.ComponentModel
         /// 初始化 <see cref="ObservableDataWrapper{TData}"/> 类的新实例，
         /// 并使用默认构造函数初始化包装对象的值。
         /// </summary>
+        /// <exception cref="MissingMethodException">
+        /// <typeparamref name="TData"/> 类型没有无参数构造函数。</exception>
         protected ObservableDataWrapper()
         {
             this.DataObject = Activator.CreateInstance<TData>();
