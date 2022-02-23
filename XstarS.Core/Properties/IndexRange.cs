@@ -4,13 +4,12 @@
 #if !(NETCOREAPP3_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER)
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+using System.Diagnostics;
+#endif
 
 namespace System
 {
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-    using System.Diagnostics;
-#endif
-
     /// <summary>
     /// Represents a type that can be used to index a collection either from the start or the end.
     /// </summary>

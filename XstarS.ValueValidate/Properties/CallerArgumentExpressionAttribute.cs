@@ -2,12 +2,14 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 #if !NETCOREAPP3_0_OR_GREATER
+using System.Diagnostics;
+
 namespace System.Runtime.CompilerServices
 {
     /// <summary>
     /// Allows capturing of the expressions passed to a method.
     /// </summary>
-    [CompilerGenerated]
+    [CompilerGenerated, DebuggerNonUserCode]
     [AttributeUsage(AttributeTargets.Parameter, AllowMultiple = false, Inherited = false)]
     internal sealed class CallerArgumentExpressionAttribute : Attribute
     {
