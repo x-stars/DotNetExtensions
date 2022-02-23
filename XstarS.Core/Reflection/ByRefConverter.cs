@@ -32,7 +32,11 @@ namespace XstarS.Reflection
         /// <typeparam name="T">已装箱的值的类型。</typeparam>
         /// <param name="box">已装箱为 <see cref="object"/> 的值类型。</param>
         /// <returns>对 <paramref name="box"/> 中已装箱的 <typeparamref name="T"/> 类型的值的引用。</returns>
+        /// <exception cref="NullReferenceException">
+        /// <paramref name="box"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="InvalidCastException">
+        /// <paramref name="box"/> 不为装箱的 <typeparamref name="T"/> 类型的值。</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ref T RefBoxed<T>(object box) where T : struct => ref Unsafe.As<StrongBox<T>>(box).Value;
+        public static ref T RefBoxed<T>(object box) where T : struct => ref Unsafe.Unbox<T>(box);
     }
 }
