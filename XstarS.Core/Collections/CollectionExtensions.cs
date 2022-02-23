@@ -23,7 +23,7 @@ namespace XstarS.Collections
                 throw new ArgumentNullException(nameof(enumerator));
             }
 
-            return new EnumeratorWrapper(enumerator);
+            return new EnumeratorEnumerable(enumerator);
         }
 
         /// <summary>

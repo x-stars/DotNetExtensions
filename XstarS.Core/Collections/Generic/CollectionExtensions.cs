@@ -23,7 +23,7 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(enumerator));
             }
 
-            return new EnumeratorWrapper<T>(enumerator);
+            return new EnumeratorEnumerable<T>(enumerator);
         }
 
         /// <summary>
