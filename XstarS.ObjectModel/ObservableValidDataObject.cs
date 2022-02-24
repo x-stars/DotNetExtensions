@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace XstarS.ComponentModel
@@ -50,12 +51,13 @@ namespace XstarS.ComponentModel
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         /// <summary>
-        /// 获取当前实体类型的所有公共属性的名称。
+        /// 获取当前实体类型的所有公共实例属性的名称。
         /// </summary>
-        /// <returns>当前实体类型的所有公共属性的名称。</returns>
+        /// <returns>当前实体类型的所有公共实例属性的名称。</returns>
         private string[] GetAllPropertyNames()
         {
-            var properties = this.GetType().GetProperties();
+            var binding = BindingFlags.Instance | BindingFlags.Public;
+            var properties = this.GetType().GetProperties(binding);
             var propertyNames = new List<string>(properties.Length);
             foreach (var property in properties) { propertyNames.Add(property.Name); }
             return propertyNames.ToArray();
@@ -157,7 +159,7 @@ namespace XstarS.ComponentModel
             var context = new ValidationContext(this) { MemberName = propertyName };
             var results = new List<ValidationResult>();
             try { Validator.TryValidateProperty(value, context, results); } catch { }
-            var errors = new List<string>(results.Count);
+            var errors = new List<string?>(results.Count);
             foreach (var result in results) { errors.Add(result.ErrorMessage); }
             this.SetErrors(errors, propertyName);
         }

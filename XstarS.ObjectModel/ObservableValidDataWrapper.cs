@@ -74,6 +74,8 @@ namespace XstarS.ComponentModel
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="value">属性的新值。</param>
         /// <param name="propertyName">要设置值的属性的名称。</param>
+        /// <exception cref="InvalidCastException">
+        /// <typeparamref name="T"/> 类型的值无法转换为指定属性的类型。</exception>
         /// <exception cref="InvalidOperationException">
         /// <paramref name="propertyName"/> 为 <see langword="null"/> 或空字符串。</exception>
         /// <exception cref="MissingMemberException">
