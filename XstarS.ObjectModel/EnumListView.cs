@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading;
 
 namespace XstarS.ComponentModel
 {
@@ -71,9 +72,8 @@ namespace XstarS.ComponentModel
                 throw new ArgumentOutOfRangeException(nameof(index));
             }
 
-            if (this.ItemIndex != index)
+            if (Interlocked.Exchange(ref this.ItemIndex, index) != index)
             {
-                this.ItemIndex = index;
                 this.NotifyPropertyChanged(nameof(this.SelectedIndex));
                 this.NotifyPropertyChanged(nameof(this.SelectedItem));
             }
