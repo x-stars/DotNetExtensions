@@ -34,7 +34,7 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 在当前正在观察的属性更改时发生。
+        /// 在接收更改通知的属性更改时发生。
         /// </summary>
         public event EventHandler? ObservingPropertyChanged;
 

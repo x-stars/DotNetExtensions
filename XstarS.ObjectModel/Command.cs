@@ -10,23 +10,16 @@ namespace XstarS.Windows.Input
     public abstract class Command : ICommand
     {
         /// <summary>
-        /// 表示默认的同步上下文。
-        /// </summary>
-        private static readonly SynchronizationContext DefaultSyncContext =
-            new SynchronizationContext();
-
-        /// <summary>
         /// 表示创建当前命令的线程的同步上下文。
         /// </summary>
-        private readonly SynchronizationContext InitialSyncContext;
+        private readonly SynchronizationContext? InitialSyncContext;
 
         /// <summary>
         /// 初始化 <see cref="Command"/> 类的新实例。
         /// </summary>
         protected Command()
         {
-            this.InitialSyncContext = SynchronizationContext.Current ??
-                Command.DefaultSyncContext;
+            this.InitialSyncContext = SynchronizationContext.Current;
         }
 
         /// <summary>
@@ -62,7 +55,8 @@ namespace XstarS.Windows.Input
         /// <param name="e">包含事件数据的 <see cref="EventArgs"/>。</param>
         protected virtual void OnCanExecuteChanged(EventArgs e)
         {
-            this.InitialSyncContext.Post(this.OnCanExecuteChanged, e);
+            if (this.InitialSyncContext is null) { this.OnCanExecuteChanged((object)e); }
+            else { this.InitialSyncContext.Post(this.OnCanExecuteChanged, (object)e); }
         }
 
         /// <summary>
