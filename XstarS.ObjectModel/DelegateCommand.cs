@@ -8,7 +8,7 @@ namespace XstarS.Windows.Input
     /// <summary>
     /// 表示由委托 <see cref="Delegate"/> 定义的命令 <see cref="ICommand"/>。
     /// </summary>
-    public class DelegateCommand : CommandBase
+    public class DelegateCommand : Command
     {
         /// <summary>
         /// 表示 <see cref="DelegateCommand.Execute(object)"/> 方法的委托。
