@@ -3,7 +3,7 @@
   <Class Name="XstarS.Windows.Input.CommandBase">
     <Position X="14.5" Y="0.5" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAAAAACAAQAAEQAAAAACgAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>EAAAAAAAAAACAAQAAEQAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>CommandBase.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -19,7 +19,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="XstarS.ComponentModel.EnumFlagsVectorView&lt;TEnum&gt;">
-    <Position X="2.75" Y="9.25" Width="2.5" />
+    <Position X="2.75" Y="10.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
       <FileName>EnumFlagsVectorView.cs</FileName>
@@ -33,39 +33,39 @@
     </TypeIdentifier>
   </Class>
   <Class Name="XstarS.ComponentModel.EnumVectorView&lt;TEnum&gt;">
-    <Position X="2.75" Y="5.25" Width="2.5" />
+    <Position X="2.75" Y="6" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAEAAECBAAAAAAAEAQAAAAAAAgAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAEAAECBAAAiAAAEAQAIAAAAAgAAAIAAA=</HashCode>
       <FileName>EnumVectorView.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="XstarS.ComponentModel.ObservableDataObject">
     <Position X="6.5" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAACAiAAIQEIAAAAAAAgAEAAAAAAAAAAAACAAg=</HashCode>
+      <HashCode>EAAAAAAAKAiAAIQEIAAAAiAAgAEAAAAAAAAAAAAKAAg=</HashCode>
       <FileName>ObservableDataObject.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="XstarS.ComponentModel.ObservableValidDataObject">
-    <Position X="6.5" Y="5.25" Width="2.5" />
+    <Position X="6.5" Y="6" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>gAABAAAAAAgQAAABAAAAAAAAAAEAAAMIAQABAAABIAA=</HashCode>
+      <HashCode>gAABAAAAAAgQAAABAAAAgAAAAAEAAAMIAQAAAAABIAA=</HashCode>
       <FileName>ObservableValidDataObject.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="XstarS.ComponentModel.ObservableDataWrapper&lt;TData&gt;">
-    <Position X="10.25" Y="5.25" Width="2.75" />
+    <Position X="10.25" Y="6" Width="2.75" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAAABAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAiAAAACAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ObservableDataWrapper.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="XstarS.ComponentModel.ObservableValidDataWrapper&lt;TData&gt;">
-    <Position X="10.25" Y="8.5" Width="3" />
+    <Position X="10.25" Y="9.25" Width="3" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAAABAAAAAAAAAAAAAAAAGAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAABAAAAAAAAAAAiAAAACAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ObservableValidDataWrapper.cs</FileName>
     </TypeIdentifier>
   </Class>
