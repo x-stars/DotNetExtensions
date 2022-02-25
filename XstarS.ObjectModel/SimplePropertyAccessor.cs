@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Reflection
 {
-    using DynamicMethodDelegate = Func<object?, object?[]?, object?>;
+    using MethodDynamicDelegate = Func<object?, object?[]?, object?>;
 
     /// <summary>
     /// 提供通过反射访问对象的公共属性的方法。
@@ -15,14 +15,14 @@ namespace XstarS.Reflection
         /// <summary>
         /// 表示当前类型的所有公共实例属性的 <see langword="get"/> 访问器的动态调用委托。
         /// </summary>
-        private static readonly ConcurrentDictionary<string, DynamicMethodDelegate> GetDelegates =
-            new ConcurrentDictionary<string, DynamicMethodDelegate>();
+        private static readonly ConcurrentDictionary<string, MethodDynamicDelegate> GetDelegates =
+            new ConcurrentDictionary<string, MethodDynamicDelegate>();
 
         /// <summary>
         /// 表示当前类型的所有公共实例属性的 <see langword="set"/> 访问器的动态调用委托。
         /// </summary>
-        private static readonly ConcurrentDictionary<string, DynamicMethodDelegate> SetDelegates =
-            new ConcurrentDictionary<string, DynamicMethodDelegate>();
+        private static readonly ConcurrentDictionary<string, MethodDynamicDelegate> SetDelegates =
+            new ConcurrentDictionary<string, MethodDynamicDelegate>();
 
         /// <summary>
         /// 获取指定对象的指定公共属性的值。
@@ -65,7 +65,7 @@ namespace XstarS.Reflection
         /// 的属性的 <see langword="get"/> 访问器的动态调用委托。</returns>
         /// <exception cref="MissingMemberException">
         /// 无法找到名为 <paramref name="propertyName"/> 的 <see langword="get"/> 属性。</exception>
-        private static DynamicMethodDelegate CreateGetDelegate(string propertyName)
+        private static MethodDynamicDelegate CreateGetDelegate(string propertyName)
         {
             var property = typeof(T).GetProperty(propertyName, Type.EmptyTypes);
             if (property?.GetMethod is null) { throw new MissingMemberException(); }
@@ -82,7 +82,7 @@ namespace XstarS.Reflection
         /// 的属性的 <see langword="set"/> 访问器的动态调用委托。</returns>
         /// <exception cref="MissingMemberException">
         /// 无法访问名为 <paramref name="propertyName"/> 的 <see langword="set"/> 属性。</exception>
-        private static DynamicMethodDelegate CreateSetDelegate(string propertyName)
+        private static MethodDynamicDelegate CreateSetDelegate(string propertyName)
         {
             var property = typeof(T).GetProperty(propertyName, Type.EmptyTypes);
             if (property?.SetMethod is null) { throw new MissingMemberException(); }
