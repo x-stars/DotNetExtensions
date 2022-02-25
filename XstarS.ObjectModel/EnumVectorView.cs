@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using System.Threading;
 
 namespace XstarS.ComponentModel
 {
@@ -22,9 +23,17 @@ namespace XstarS.ComponentModel
             EnumVectorView<TEnum>.CreateEnumLookupTable();
 
         /// <summary>
+        /// 表示当前视图表示的枚举值。
+        /// </summary>
+        private volatile Enum EnumValue;
+
+        /// <summary>
         /// 初始化 <see cref="EnumVectorView{TEnum}"/> 类的新实例。
         /// </summary>
-        public EnumVectorView() { }
+        public EnumVectorView()
+        {
+            this.EnumValue = default(TEnum);
+        }
 
         /// <summary>
         /// 获取或设置当前视图表示的枚举值。
@@ -75,6 +84,45 @@ namespace XstarS.ComponentModel
             Array.Copy(enumNames, valueRelated, enumNames.Length);
             valueRelated[enumNames.Length] = ObservableDataObject.IndexerName;
             this.SetRelatedProperties(nameof(this.Value), valueRelated);
+        }
+
+        /// <summary>
+        /// 获取指定属性的值。
+        /// </summary>
+        /// <param name="propertyName">要获取值的属性的名称。</param>
+        /// <returns>名为 <paramref name="propertyName"/> 的属性的值。</returns>
+        protected override object? GetPropertyCore(string propertyName)
+        {
+            return (propertyName == nameof(this.Value)) ?
+                this.EnumValue : base.GetPropertyCore(propertyName);
+        }
+
+        /// <summary>
+        /// 设置指定属性的值。
+        /// </summary>
+        /// <param name="value">属性的新值。</param>
+        /// <param name="propertyName">要设置值的属性的名称。</param>
+        /// <exception cref="InvalidCastException">
+        /// <paramref name="value"/> 无法转换为指定属性的类型。</exception>
+        protected override void SetPropertyCore(string propertyName, object? value)
+        {
+            var isEnumValue = propertyName == nameof(this.Value);
+            if (isEnumValue) { this.EnumValue = (TEnum)value!; }
+            else { base.SetPropertyCore(propertyName, value); }
+        }
+
+        /// <summary>
+        /// 设置指定属性的值，并返回其原值。
+        /// 当属性为 <see cref="EnumVectorView{TEnum}.Value"/> 时为原子操作。
+        /// </summary>
+        /// <param name="value">属性的新值。</param>
+        /// <param name="propertyName">要设置值的属性的名称。</param>
+        /// <returns>名为 <paramref name="propertyName"/> 的属性的原值。</returns>
+        protected override object? ExchangeProperty(string propertyName, object? value)
+        {
+            return (propertyName == nameof(this.Value)) ?
+                Interlocked.Exchange(ref this.EnumValue, (TEnum)value!) :
+                base.ExchangeProperty(propertyName, value);
         }
 
         /// <summary>

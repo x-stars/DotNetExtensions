@@ -1,7 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics.CodeAnalysis;
-using System.Runtime.CompilerServices;
 using XstarS.Reflection;
 
 namespace XstarS.ComponentModel
@@ -51,43 +49,29 @@ namespace XstarS.ComponentModel
         public TData GetWrappedObject() => this.DataObject;
 
         /// <summary>
-        /// 获取包装对象的指定属性或实体的值。
+        /// 获取包装对象的指定属性的值。
         /// </summary>
-        /// <typeparam name="T">属性的类型。</typeparam>
-        /// <param name="propertyName">要获取值的属性的名称；
-        /// 如果要获取当前实体的值，则为 <see langword="null"/> 或空字符串。</param>
+        /// <param name="propertyName">要获取值的属性的名称。</param>
         /// <returns>包装对象中名为 <paramref name="propertyName"/> 的属性或实体的值。</returns>
-        /// <exception cref="InvalidCastException">
-        /// 指定属性或实体的值无法转换为 <typeparamref name="T"/> 类型。</exception>
         /// <exception cref="MissingMemberException">
         /// 无法找到名为 <paramref name="propertyName"/> 的 <see langword="get"/> 属性。</exception>
-        [return: MaybeNull]
-        protected override T GetProperty<T>([CallerMemberName] string? propertyName = null)
+        protected override object? GetPropertyCore(string propertyName)
         {
-            if (this.IsEntityName(propertyName)) { return (T)(object)this.DataObject; }
-            return SimplePropertyAccessor<TData>.GetValue<T>(this.DataObject, propertyName);
+            return SimplePropertyAccessor<TData>.GetValue(this.DataObject, propertyName);
         }
 
         /// <summary>
         /// 设置包装对象的指定属性的值。
         /// </summary>
-        /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="value">属性的新值。</param>
         /// <param name="propertyName">要设置值的属性的名称。</param>
         /// <exception cref="InvalidCastException">
-        /// <typeparamref name="T"/> 类型的值无法转换为指定属性的类型。</exception>
-        /// <exception cref="InvalidOperationException">
-        /// <paramref name="propertyName"/> 为 <see langword="null"/> 或空字符串。</exception>
+        /// <paramref name="value"/> 无法转换为指定属性的类型。</exception>
         /// <exception cref="MissingMemberException">
         /// 无法找到名为 <paramref name="propertyName"/> 的 <see langword="set"/> 属性。</exception>
-        protected override void SetProperty<T>(
-            [AllowNull] T value, [CallerMemberName] string? propertyName = null)
+        protected override void SetPropertyCore(string propertyName, object? value)
         {
-            if (this.IsEntityName(propertyName)) { throw new InvalidOperationException(); }
-            var property = this.GetProperty<T>(propertyName);
             SimplePropertyAccessor<TData>.SetValue(this.DataObject, propertyName, value);
-            var propertyChanged = !RuntimeHelpers.Equals(property, value);
-            if (propertyChanged) { this.RelatedNotifyPropertyChanged(propertyName); }
         }
     }
 }

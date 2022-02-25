@@ -19,9 +19,10 @@ namespace XstarS.ComponentModel
     public abstract class ObservableValidDataObject : ObservableDataObject, INotifyDataErrorInfo
     {
         /// <summary>
-        /// 表示所有属性的名称的延迟初始化值。
+        /// 表示指定实体类型的所有公共实例属性的名称。
         /// </summary>
-        private readonly Lazy<string[]> LazyPropertyNames;
+        private static readonly ConcurrentDictionary<Type, string[]> PropertyNames =
+            new ConcurrentDictionary<Type, string[]>();
 
         /// <summary>
         /// 表示所有属性的验证错误。
@@ -33,7 +34,6 @@ namespace XstarS.ComponentModel
         /// </summary>
         protected ObservableValidDataObject()
         {
-            this.LazyPropertyNames = new Lazy<string[]>(this.GetAllPropertyNames);
             this.ValidationErrors = new ConcurrentDictionary<string, IEnumerable>();
         }
 
@@ -51,13 +51,13 @@ namespace XstarS.ComponentModel
         public event EventHandler<DataErrorsChangedEventArgs>? ErrorsChanged;
 
         /// <summary>
-        /// 获取当前实体类型的所有公共实例属性的名称。
+        /// 获取指定实体类型的所有公共实例属性的名称。
         /// </summary>
-        /// <returns>当前实体类型的所有公共实例属性的名称。</returns>
-        private string[] GetAllPropertyNames()
+        /// <returns>指定实体类型的所有公共实例属性的名称。</returns>
+        private static string[] GetAllPropertyNames(Type entityType)
         {
             var binding = BindingFlags.Instance | BindingFlags.Public;
-            var properties = this.GetType().GetProperties(binding);
+            var properties = entityType.GetProperties(binding);
             var propertyNames = new List<string>(properties.Length);
             foreach (var property in properties) { propertyNames.Add(property.Name); }
             return propertyNames.ToArray();
@@ -133,7 +133,7 @@ namespace XstarS.ComponentModel
             [AllowNull] T value, [CallerMemberName] string? propertyName = null)
         {
             base.SetProperty(value, propertyName);
-            this.RelatedValidateProperty<T>(propertyName);
+            this.RelatedValidateProperty(propertyName);
         }
 
         /// <summary>
@@ -141,20 +141,20 @@ namespace XstarS.ComponentModel
         /// </summary>
         protected void ValidateAllProperties()
         {
-            var propertyNames = this.LazyPropertyNames.Value;
-            Array.ForEach(propertyNames, this.ValidateProperty<object?>);
+            var propertyNames = ObservableValidDataObject.PropertyNames.GetOrAdd(
+                this.GetType(), ObservableValidDataObject.GetAllPropertyNames);
+            Array.ForEach(propertyNames, this.ValidateProperty);
         }
 
         /// <summary>
         /// 验证指定属性或整个实体的错误。
         /// </summary>
-        /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="propertyName">要验证错误的属性的名称；
         /// 如果要验证当前实体的错误，则为 <see langword="null"/> 或空字符串。</param>
         [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
-        protected virtual void ValidateProperty<T>([CallerMemberName] string? propertyName = null)
+        protected virtual void ValidateProperty([CallerMemberName] string? propertyName = null)
         {
-            if (this.IsEntityName(propertyName)) { this.ValidateAllProperties(); }
+            if (this.IsEntityName(propertyName)) { this.ValidateAllProperties(); return; }
             var value = this.GetProperty<object?>(propertyName);
             var context = new ValidationContext(this) { MemberName = propertyName };
             var results = new List<ValidationResult>();
@@ -167,14 +167,13 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 验证指定属性的错误，并验证其关联属性的错误。
         /// </summary>
-        /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="propertyName">要验证错误的属性的名称。</param>
-        protected void RelatedValidateProperty<T>([CallerMemberName] string? propertyName = null)
+        protected void RelatedValidateProperty([CallerMemberName] string? propertyName = null)
         {
-            this.ValidateProperty<T>(propertyName);
+            this.ValidateProperty(propertyName);
             if (this.IsEntityName(propertyName)) { return; }
             var relatedProperties = this.GetRelatedProperties(propertyName);
-            Array.ForEach(relatedProperties, this.ValidateProperty<object?>);
+            Array.ForEach(relatedProperties, this.ValidateProperty);
         }
 
         /// <summary>

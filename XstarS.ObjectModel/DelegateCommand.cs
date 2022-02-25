@@ -6,7 +6,7 @@ using XstarS.ComponentModel;
 namespace XstarS.Windows.Input
 {
     /// <summary>
-    /// 表示由委托 <see cref="Delegate"/> 定义的命令 <see cref="ICommand"/>。
+    /// 表示由委托定义的命令 <see cref="ICommand"/>。
     /// </summary>
     public class DelegateCommand : Command
     {

@@ -18,6 +18,11 @@ namespace XstarS.ComponentModel
         protected const string IndexerName = "Item[]";
 
         /// <summary>
+        /// 表示不存在的值，用于区别 <see langword="null"/> 值。
+        /// </summary>
+        private static readonly object? Missing = new object();
+
+        /// <summary>
         /// 表示所有属性的值。
         /// </summary>
         private readonly ConcurrentDictionary<string, object?> Properties;
@@ -70,10 +75,11 @@ namespace XstarS.ComponentModel
         /// <exception cref="InvalidCastException">
         /// 指定属性或实体的值无法转换为 <typeparamref name="T"/> 类型。</exception>
         [return: MaybeNull]
-        protected virtual T GetProperty<T>([CallerMemberName] string? propertyName = null)
+        protected T GetProperty<T>([CallerMemberName] string? propertyName = null)
         {
             if (this.IsEntityName(propertyName)) { return (T)(object)this; }
-            var hasValue = this.Properties.TryGetValue(propertyName, out var value);
+            var value = this.GetPropertyCore(propertyName);
+            var hasValue = value != ObservableDataObject.Missing;
             return hasValue ? (T?)value : default(T);
         }
 
@@ -83,16 +89,53 @@ namespace XstarS.ComponentModel
         /// <typeparam name="T">属性的类型。</typeparam>
         /// <param name="value">属性的新值。</param>
         /// <param name="propertyName">要设置值的属性的名称。</param>
+        /// <exception cref="InvalidCastException">
+        /// <paramref name="value"/> 无法转换为指定属性的类型。</exception>
         /// <exception cref="InvalidOperationException">
         /// <paramref name="propertyName"/> 为 <see langword="null"/> 或空字符串。</exception>
         protected virtual void SetProperty<T>(
             [AllowNull] T value, [CallerMemberName] string? propertyName = null)
         {
             if (this.IsEntityName(propertyName)) { throw new InvalidOperationException(); }
-            var property = this.GetProperty<T>(propertyName);
-            this.Properties[propertyName] = (object?)value;
+            var property = this.ExchangeProperty(propertyName, value);
             var propertyChanged = !RuntimeHelpers.Equals(property, value);
             if (propertyChanged) { this.RelatedNotifyPropertyChanged(propertyName); }
+        }
+
+        /// <summary>
+        /// 获取指定属性的值。
+        /// </summary>
+        /// <param name="propertyName">要获取值的属性的名称。</param>
+        /// <returns>名为 <paramref name="propertyName"/> 的属性的值。</returns>
+        protected virtual object? GetPropertyCore(string propertyName)
+        {
+            var hasValue = this.Properties.TryGetValue(propertyName, out var value);
+            return hasValue ? value : ObservableDataObject.Missing;
+        }
+
+        /// <summary>
+        /// 设置指定属性的值。
+        /// </summary>
+        /// <param name="value">属性的新值。</param>
+        /// <param name="propertyName">要设置值的属性的名称。</param>
+        /// <exception cref="InvalidCastException">
+        /// <paramref name="value"/> 无法转换为指定属性的类型。</exception>
+        protected virtual void SetPropertyCore(string propertyName, object? value)
+        {
+            this.Properties[propertyName] = value;
+        }
+
+        /// <summary>
+        /// 设置指定属性的值，并返回其原值。
+        /// </summary>
+        /// <param name="value">属性的新值。</param>
+        /// <param name="propertyName">要设置值的属性的名称。</param>
+        /// <returns>名为 <paramref name="propertyName"/> 的属性的原值。</returns>
+        protected virtual object? ExchangeProperty(string propertyName, object? value)
+        {
+            var property = this.GetPropertyCore(propertyName);
+            this.SetPropertyCore(propertyName, value);
+            return property;
         }
 
         /// <summary>
