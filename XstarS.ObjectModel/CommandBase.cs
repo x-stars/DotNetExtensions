@@ -7,7 +7,7 @@ namespace XstarS.Windows.Input
     /// <summary>
     /// 提供命令 <see cref="ICommand"/> 的抽象基类。
     /// </summary>
-    public abstract class Command : ICommand
+    public abstract class CommandBase : ICommand
     {
         /// <summary>
         /// 表示创建当前命令的线程的同步上下文。
@@ -15,9 +15,9 @@ namespace XstarS.Windows.Input
         private readonly SynchronizationContext? InitialSyncContext;
 
         /// <summary>
-        /// 初始化 <see cref="Command"/> 类的新实例。
+        /// 初始化 <see cref="CommandBase"/> 类的新实例。
         /// </summary>
-        protected Command()
+        protected CommandBase()
         {
             this.InitialSyncContext = SynchronizationContext.Current;
         }
@@ -50,7 +50,7 @@ namespace XstarS.Windows.Input
         }
 
         /// <summary>
-        /// 使用指定的事件数据引发 <see cref="Command.CanExecuteChanged"/> 事件。
+        /// 使用指定的事件数据引发 <see cref="CommandBase.CanExecuteChanged"/> 事件。
         /// </summary>
         /// <param name="e">包含事件数据的 <see cref="EventArgs"/>。</param>
         protected virtual void OnCanExecuteChanged(EventArgs e)
@@ -60,7 +60,7 @@ namespace XstarS.Windows.Input
         }
 
         /// <summary>
-        /// 使用指定的事件数据引发 <see cref="Command.CanExecuteChanged"/> 事件。
+        /// 使用指定的事件数据引发 <see cref="CommandBase.CanExecuteChanged"/> 事件。
         /// </summary>
         /// <param name="e">包含事件数据的 <see cref="EventArgs"/>。</param>
         private void OnCanExecuteChanged(object? e)
