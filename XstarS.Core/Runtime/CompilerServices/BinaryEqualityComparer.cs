@@ -18,7 +18,8 @@ namespace XstarS.Runtime.CompilerServices
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         internal static bool Equals(void* value, void* other, int size)
         {
-            begin: switch (size)
+        Begin:
+            switch (size)
             {
                 case 0:
                     return true;
@@ -42,7 +43,7 @@ namespace XstarS.Runtime.CompilerServices
                            ((ushort*)value)[2] == ((ushort*)other)[2] &&
                            ((byte*)value)[6] == ((byte*)other)[6];
                 case sizeof(ulong):
-                    return ((ulong*) value)[0] == ((ulong*) other)[0];
+                    return ((ulong*)value)[0] == ((ulong*)other)[0];
                 default:
                     var lValue = (ulong*)value;
                     var lOther = (ulong*)other;
@@ -57,7 +58,7 @@ namespace XstarS.Runtime.CompilerServices
                     var rest = size % sizeof(ulong);
                     if (rest == 0) { return true; }
                     value = lValue; other = lOther; size = rest;
-                    goto begin;
+                    goto Begin;
             }
         }
 
@@ -71,7 +72,8 @@ namespace XstarS.Runtime.CompilerServices
         internal static int GetHashCode(void* value, int size)
         {
             var hashCode = 0;
-            begin: switch (size)
+        Begin:
+            switch (size)
             {
                 case 0:
                     return 0;
@@ -102,7 +104,7 @@ namespace XstarS.Runtime.CompilerServices
                     var rest = size % sizeof(int);
                     if (rest == 0) { return hashCode; }
                     value = iValue; size = -rest;
-                    goto begin;
+                    goto Begin;
                 case -(sizeof(byte)):
                     return hashCode ^ ((byte*)value)[0];
                 case -(sizeof(ushort)):
