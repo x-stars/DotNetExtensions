@@ -20,7 +20,7 @@ namespace XstarS.ComponentModel
         /// <summary>
         /// 表示不存在的值，用于区别 <see langword="null"/> 值。
         /// </summary>
-        private static readonly object? Missing = new object();
+        private static readonly object Missing = new object();
 
         /// <summary>
         /// 表示所有属性的值。
@@ -131,6 +131,8 @@ namespace XstarS.ComponentModel
         /// <param name="value">属性的新值。</param>
         /// <param name="propertyName">要设置值的属性的名称。</param>
         /// <returns>名为 <paramref name="propertyName"/> 的属性的原值。</returns>
+        /// <exception cref="InvalidCastException">
+        /// <paramref name="value"/> 无法转换为指定属性的类型。</exception>
         protected virtual object? ExchangeProperty(string propertyName, object? value)
         {
             var property = this.GetPropertyCore(propertyName);
