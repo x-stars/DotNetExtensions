@@ -9,7 +9,7 @@ namespace XstarS.Collections.Generic
     public static partial class CollectionExtensions
     {
         /// <summary>
-        /// 返回 <see cref="IEnumerator{T}"/> 的公开枚举数包装。
+        /// 返回 <see cref="IEnumerator{T}"/> 的 <see cref="IEnumerable{T}"/> 包装。
         /// </summary>
         /// <typeparam name="T">要枚举的对象的类型。</typeparam>
         /// <param name="enumerator">要包装的 <see cref="IEnumerator{T}"/> 对象。</param>
@@ -18,11 +18,6 @@ namespace XstarS.Collections.Generic
         /// <paramref name="enumerator"/> 为 <see langword="null"/>。</exception>
         public static IEnumerable<T> AsEnumerable<T>(IEnumerator<T> enumerator)
         {
-            if (enumerator is null)
-            {
-                throw new ArgumentNullException(nameof(enumerator));
-            }
-
             return new EnumeratorEnumerable<T>(enumerator);
         }
 
@@ -51,11 +46,6 @@ namespace XstarS.Collections.Generic
         /// <paramref name="comparer"/> 为 <see langword="null"/>。</exception>
         public static IComparer<T> Reverse<T>(this IComparer<T> comparer)
         {
-            if (comparer is null)
-            {
-                throw new ArgumentNullException(nameof(comparer));
-            }
-
             return (comparer is ReversedComparer<T> reversedComparer) ?
                 reversedComparer.BaseComparer : new ReversedComparer<T>(comparer);
         }
