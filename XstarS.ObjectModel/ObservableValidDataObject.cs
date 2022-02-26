@@ -133,7 +133,7 @@ namespace XstarS.ComponentModel
             [AllowNull] T value, [CallerMemberName] string? propertyName = null)
         {
             try { base.SetProperty(value, propertyName); }
-            catch (Exception e) { this.OnSetPropertyException(propertyName, e); }
+            catch (Exception e) { this.OnSetPropertyException(propertyName, e); return; }
             this.RelatedValidateProperty(propertyName);
         }
 
@@ -181,6 +181,7 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="propertyName">正在设置值的属性的名称。</param>
         /// <param name="exception">在设置属性的值时引发的异常。</param>
+        /// <exception cref="Exception">无法处理输入的异常。</exception>
         protected virtual void OnSetPropertyException(string? propertyName, Exception exception)
         {
             if (exception is SystemException) { throw exception; }
