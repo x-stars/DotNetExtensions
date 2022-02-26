@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 
 namespace XstarS.Reflection
 {
@@ -10,7 +9,7 @@ namespace XstarS.Reflection
     /// 提供通过反射访问对象的公共属性的方法。
     /// </summary>
     /// <typeparam name="T">对象的类型。</typeparam>
-    internal static class SimplePropertyAccessor<T>
+    internal static class SimplePropertyAccessor<T> where T : notnull
     {
         /// <summary>
         /// 表示当前类型的所有公共实例属性的 <see langword="get"/> 访问器的动态调用委托。
@@ -33,7 +32,7 @@ namespace XstarS.Reflection
         /// 中名为 <paramref name="propertyName"/> 的属性的值。</returns>
         /// <exception cref="MissingMemberException">
         /// 无法找到名为 <paramref name="propertyName"/> 的 <see langword="get"/> 属性。</exception>
-        public static object? GetValue([DisallowNull] T instance, string propertyName)
+        public static object? GetValue(T instance, string propertyName)
         {
             var getDelegate = SimplePropertyAccessor<T>.GetDelegates.GetOrAdd(
                 propertyName, SimplePropertyAccessor<T>.CreateGetDelegate);
@@ -50,7 +49,7 @@ namespace XstarS.Reflection
         /// <paramref name="value"/> 无法转换为指定属性的类型。</exception>
         /// <exception cref="MissingMemberException">
         /// 无法找到名为 <paramref name="propertyName"/> 的 <see langword="set"/> 属性。</exception>
-        public static void SetValue([DisallowNull] T instance, string propertyName, object? value)
+        public static void SetValue(T instance, string propertyName, object? value)
         {
             var setDelegate = SimplePropertyAccessor<T>.SetDelegates.GetOrAdd(
                 propertyName, SimplePropertyAccessor<T>.CreateSetDelegate);
