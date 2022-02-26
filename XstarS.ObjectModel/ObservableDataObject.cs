@@ -49,7 +49,7 @@ namespace XstarS.ComponentModel
         public event PropertyChangedEventHandler? PropertyChanged;
 
         /// <summary>
-        /// 在派生类中重写，初始化所有属性的关联属性的名称。
+        /// 在派生类中重写时，初始化所有属性的关联属性的名称。
         /// </summary>
         protected virtual void InitializeRelatedProperties() { }
 
@@ -168,15 +168,6 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 通知指定属性的值已更改。
-        /// </summary>
-        /// <param name="propertyName">已更改属性的名称。</param>
-        protected void NotifyPropertyChanged([CallerMemberName] string? propertyName = null)
-        {
-            this.OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
-        }
-
-        /// <summary>
         /// 通知指定属性的值已更改，并通知其关联属性的值已更改。
         /// </summary>
         /// <param name="propertyName">已更改属性的名称。</param>
@@ -185,7 +176,17 @@ namespace XstarS.ComponentModel
             this.NotifyPropertyChanged(propertyName);
             if (this.IsEntityName(propertyName)) { return; }
             var relatedProperties = this.GetRelatedProperties(propertyName);
+            if (relatedProperties.Length == 0) { return; }
             Array.ForEach(relatedProperties, this.NotifyPropertyChanged);
+        }
+
+        /// <summary>
+        /// 通知指定属性的值已更改。
+        /// </summary>
+        /// <param name="propertyName">已更改属性的名称。</param>
+        protected void NotifyPropertyChanged([CallerMemberName] string? propertyName = null)
+        {
+            this.OnPropertyChanged(new PropertyChangedEventArgs(propertyName));
         }
 
         /// <summary>

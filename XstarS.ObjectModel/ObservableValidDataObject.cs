@@ -148,6 +148,19 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
+        /// 验证指定属性的错误，并验证其关联属性的错误。
+        /// </summary>
+        /// <param name="propertyName">要验证错误的属性的名称。</param>
+        protected void RelatedValidateProperty([CallerMemberName] string? propertyName = null)
+        {
+            this.ValidateProperty(propertyName);
+            if (this.IsEntityName(propertyName)) { return; }
+            var relatedProperties = this.GetRelatedProperties(propertyName);
+            if (relatedProperties.Length == 0) { return; }
+            Array.ForEach(relatedProperties, this.ValidateProperty);
+        }
+
+        /// <summary>
         /// 验证指定属性或整个实体的错误。
         /// </summary>
         /// <param name="propertyName">要验证错误的属性的名称；
@@ -158,21 +171,9 @@ namespace XstarS.ComponentModel
             if (this.IsEntityName(propertyName)) { this.ValidateAllProperties(); return; }
             var value = this.GetProperty<object?>(propertyName);
             var context = new ValidationContext(this) { MemberName = propertyName };
-            var results = new List<ValidationResult>();
-            try { Validator.TryValidateProperty(value, context, results); } catch { }
-            this.SetErrors(results, propertyName);
-        }
-
-        /// <summary>
-        /// 验证指定属性的错误，并验证其关联属性的错误。
-        /// </summary>
-        /// <param name="propertyName">要验证错误的属性的名称。</param>
-        protected void RelatedValidateProperty([CallerMemberName] string? propertyName = null)
-        {
-            this.ValidateProperty(propertyName);
-            if (this.IsEntityName(propertyName)) { return; }
-            var relatedProperties = this.GetRelatedProperties(propertyName);
-            Array.ForEach(relatedProperties, this.ValidateProperty);
+            var errors = new List<ValidationResult>();
+            try { Validator.TryValidateProperty(value, context, errors); } catch { }
+            this.SetErrors(errors, propertyName);
         }
 
         /// <summary>
