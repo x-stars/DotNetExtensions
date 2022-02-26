@@ -132,7 +132,8 @@ namespace XstarS.ComponentModel
         protected override void SetProperty<T>(
             [AllowNull] T value, [CallerMemberName] string? propertyName = null)
         {
-            base.SetProperty(value, propertyName);
+            try { base.SetProperty(value, propertyName); }
+            catch (Exception e) { this.OnSetPropertyException(propertyName, e); }
             this.RelatedValidateProperty(propertyName);
         }
 
@@ -159,9 +160,7 @@ namespace XstarS.ComponentModel
             var context = new ValidationContext(this) { MemberName = propertyName };
             var results = new List<ValidationResult>();
             try { Validator.TryValidateProperty(value, context, results); } catch { }
-            var errors = new List<string?>(results.Count);
-            foreach (var result in results) { errors.Add(result.ErrorMessage); }
-            this.SetErrors(errors, propertyName);
+            this.SetErrors(results, propertyName);
         }
 
         /// <summary>
@@ -174,6 +173,17 @@ namespace XstarS.ComponentModel
             if (this.IsEntityName(propertyName)) { return; }
             var relatedProperties = this.GetRelatedProperties(propertyName);
             Array.ForEach(relatedProperties, this.ValidateProperty);
+        }
+
+        /// <summary>
+        /// 当 <see cref="ObservableDataObject.SetProperty{T}(T, string?)"/> 方法引发异常时调用。
+        /// </summary>
+        /// <param name="propertyName">正在设置值的属性的名称。</param>
+        /// <param name="exception">在设置属性的值时引发的异常。</param>
+        protected virtual void OnSetPropertyException(string? propertyName, Exception exception)
+        {
+            if (exception is SystemException) { throw exception; }
+            else { this.SetErrors(new[] { exception }, propertyName); }
         }
 
         /// <summary>
