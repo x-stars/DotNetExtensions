@@ -13,8 +13,20 @@
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
+    <NestedTypes>
+      <Class Name="XstarS.Windows.Input.DelegateCommand.Parameterless">
+        <TypeIdentifier>
+          <NewMemberFileName>DelegateCommand.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="XstarS.Windows.Input.DelegateCommand.Parameter&lt;T&gt;">
+        <TypeIdentifier>
+          <NewMemberFileName>DelegateCommand.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAQAFEAAAAAACAAAAAAAAAAEAAAQAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAQAFEAAAAAACAAAAEAAAAAEAAAQAAA=</HashCode>
       <FileName>DelegateCommand.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -42,7 +54,7 @@
   <Class Name="XstarS.ComponentModel.ObservableDataObject">
     <Position X="6.5" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAAKAiAAIQEIAAAAiAAgAEAAAAAAAAAAAAKAAg=</HashCode>
+      <HashCode>EAAAAAAAKAmAAIQEIAAAAiAAgAEAAAAAAAAAAAAIAAg=</HashCode>
       <FileName>ObservableDataObject.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
@@ -50,7 +62,7 @@
   <Class Name="XstarS.ComponentModel.ObservableValidDataObject">
     <Position X="6.5" Y="6" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>gAABAAAAAAgQAAABAAAAgAAAAAEAAAMIAQAAAAABIAA=</HashCode>
+      <HashCode>gAABAAAAAAgQAAABAAAAgAAAAAEAAAMIAQAAAAABIgA=</HashCode>
       <FileName>ObservableValidDataObject.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
