@@ -4,6 +4,8 @@ using System.Reflection;
 
 namespace XstarS.Reflection
 {
+    using MethodDynamicDelegate = Func<object?, object?[]?, object?>;
+
     /// <summary>
     /// 提供代理类型 <see cref="DispatchProxy{TInterface}"/> 相关的服务方法。
     /// </summary>
@@ -14,7 +16,7 @@ namespace XstarS.Reflection
         /// 此代理委托仅调用被代理方法并返回。
         /// </summary>
         public static readonly InvocationHandler DefaultHandler =
-            (instance, method, arguments) => method.GetDynamicDelegate().Invoke(instance, arguments);
+            (instance, method, arguments) => method.InvokeFast(instance, arguments);
 
         /// <summary>
         /// 表示类型对应的代理创建方法的委托。
@@ -25,8 +27,8 @@ namespace XstarS.Reflection
         /// <summary>
         /// 表示方法对应的动态调用委托。
         /// </summary>
-        private static readonly ConcurrentDictionary<MethodInfo, Func<object, object?[]?, object?>> MethodDelegates =
-            new ConcurrentDictionary<MethodInfo, Func<object, object?[]?, object?>>();
+        private static readonly ConcurrentDictionary<MethodInfo, MethodDynamicDelegate> MethodDelegates =
+            new ConcurrentDictionary<MethodInfo, MethodDynamicDelegate>();
 
         /// <summary>
         /// 使用指定的代理对象和代理委托创建 <see cref="DispatchProxy{TInterface}"/> 类的实例。
@@ -65,21 +67,20 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 获取当前方法的动态调用委托。
+        /// 使用指定的实例和参数快速调用当前方法。
+        /// 以委托实现，较 <see cref="MethodBase.Invoke(object, object[])"/> 更快。
         /// </summary>
-        /// <param name="method">要获取动态调用委托的 <see cref="MethodInfo"/>。</param>
-        /// <returns><paramref name="method"/> 方法的动态调用委托。</returns>
+        /// <param name="method">要调用的 <see cref="MethodInfo"/>。</param>
+        /// <param name="instance">在其上调用方法的对象。</param>
+        /// <param name="arguments">调用方法的参数列表。</param>
+        /// <returns>调用方法得到的的返回值；若方法无返回值，则为 <see langword="null"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-        public static Func<object, object?[]?, object?> GetDynamicDelegate(this MethodInfo method)
+        public static object? InvokeFast(this MethodInfo method, object instance, object?[]? arguments)
         {
-            if (method is null)
-            {
-                throw new ArgumentNullException(nameof(method));
-            }
-
-            return DispatchProxyServices.MethodDelegates.GetOrAdd(method,
-                newMethod => newMethod.CreateDynamicDelegate());
+            var invokeMethod = DispatchProxyServices.MethodDelegates.GetOrAdd(
+                method, newMethod => newMethod.CreateDynamicDelegate());
+            return invokeMethod.Invoke(instance, arguments);
         }
     }
 }
