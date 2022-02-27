@@ -9,12 +9,6 @@ namespace XstarS.Reflection
     public static partial class MemberDelegateExtensions
     {
         /// <summary>
-        /// 表示构造函数对应的动态调用方法。
-        /// </summary>
-        private readonly static ConcurrentDictionary<ConstructorInfo, DynamicMethod> DynamicCreateMethods =
-            new ConcurrentDictionary<ConstructorInfo, DynamicMethod>();
-
-        /// <summary>
         /// 表示字段对应的获取值的动态调用方法。
         /// </summary>
         private readonly static ConcurrentDictionary<FieldInfo, DynamicMethod> DynamicGetMethods =
@@ -27,77 +21,16 @@ namespace XstarS.Reflection
             new ConcurrentDictionary<FieldInfo, DynamicMethod>();
 
         /// <summary>
+        /// 表示构造函数对应的动态调用方法。
+        /// </summary>
+        private readonly static ConcurrentDictionary<ConstructorInfo, DynamicMethod> DynamicCreateMethods =
+            new ConcurrentDictionary<ConstructorInfo, DynamicMethod>();
+
+        /// <summary>
         /// 表示方法对应的动态调用方法。
         /// </summary>
         private readonly static ConcurrentDictionary<MethodInfo, DynamicMethod> DynamicInvokeMethods =
             new ConcurrentDictionary<MethodInfo, DynamicMethod>();
-
-        /// <summary>
-        /// 从当前构造函数创建动态调用委托。
-        /// </summary>
-        /// <param name="constructor">要创建委托的 <see cref="ConstructorInfo"/>。</param>
-        /// <returns><paramref name="constructor"/> 构造函数的动态调用委托。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="constructor"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）。</exception>
-        public static Func<object?[]?, object> CreateDynamicDelegate(this ConstructorInfo constructor)
-        {
-            if (constructor is null)
-            {
-                throw new ArgumentNullException(nameof(constructor));
-            }
-            if (constructor.IsStatic)
-            {
-                var inner = new InvalidOperationException();
-                throw new ArgumentException(inner.Message, nameof(constructor), inner);
-            }
-
-            var createMethod = MemberDelegateExtensions.DynamicCreateMethods.GetOrAdd(
-                constructor, MemberDelegateExtensions.CreateDynamicInvokeMethod);
-            return createMethod.CreateDelegate<Func<object?[]?, object>>();
-        }
-
-        /// <summary>
-        /// 从当前构造函数创建动态调用方法。
-        /// 方法签名类似于 <see cref="ConstructorInfo.Invoke(object[])"/>。
-        /// </summary>
-        /// <param name="constructor">要创建动态调用方法的 <see cref="ConstructorInfo"/>。</param>
-        /// <returns><paramref name="constructor"/> 的动态调用方法。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="constructor"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）。</exception>
-        private static DynamicMethod CreateDynamicInvokeMethod(this ConstructorInfo constructor)
-        {
-            if (constructor is null)
-            {
-                throw new ArgumentNullException(nameof(constructor));
-            }
-            if (constructor.IsStatic)
-            {
-                var inner = new InvalidOperationException();
-                throw new ArgumentException(inner.Message, nameof(constructor), inner);
-            }
-
-            var paramInfos = constructor.GetParameters();
-            var createMethod = new DynamicMethod("DynamicCreateInstance",
-                typeof(object), new[] { typeof(object?[]) }, restrictedSkipVisibility: true);
-            createMethod.DefineParameter(1, ParameterAttributes.None, "arguments");
-            var ilGen = createMethod.GetILGenerator();
-            for (int index = 0; index < paramInfos.Length; index++)
-            {
-                ilGen.Emit(OpCodes.Ldarg_0);
-                ilGen.EmitLdcI4(index);
-                ilGen.Emit(OpCodes.Ldelem_Ref);
-                var param = paramInfos[index];
-                ilGen.EmitUnbox(param.ParameterType);
-            }
-            ilGen.Emit(OpCodes.Newobj, constructor);
-            ilGen.EmitBox(constructor.DeclaringType!);
-            ilGen.Emit(OpCodes.Ret);
-            return createMethod;
-        }
 
         /// <summary>
         /// 从当前字段创建指定类型的获取值的动态调用委托。
@@ -238,6 +171,73 @@ namespace XstarS.Reflection
             ilGen.Emit(field.IsStatic ? OpCodes.Stsfld : OpCodes.Stfld, field);
             ilGen.Emit(OpCodes.Ret);
             return setMethod;
+        }
+
+        /// <summary>
+        /// 从当前构造函数创建动态调用委托。
+        /// </summary>
+        /// <param name="constructor">要创建委托的 <see cref="ConstructorInfo"/>。</param>
+        /// <returns><paramref name="constructor"/> 构造函数的动态调用委托。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constructor"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）。</exception>
+        public static Func<object?[]?, object> CreateDynamicDelegate(this ConstructorInfo constructor)
+        {
+            if (constructor is null)
+            {
+                throw new ArgumentNullException(nameof(constructor));
+            }
+            if (constructor.IsStatic)
+            {
+                var inner = new InvalidOperationException();
+                throw new ArgumentException(inner.Message, nameof(constructor), inner);
+            }
+
+            var createMethod = MemberDelegateExtensions.DynamicCreateMethods.GetOrAdd(
+                constructor, MemberDelegateExtensions.CreateDynamicInvokeMethod);
+            return createMethod.CreateDelegate<Func<object?[]?, object>>();
+        }
+
+        /// <summary>
+        /// 从当前构造函数创建动态调用方法。
+        /// 方法签名类似于 <see cref="ConstructorInfo.Invoke(object[])"/>。
+        /// </summary>
+        /// <param name="constructor">要创建动态调用方法的 <see cref="ConstructorInfo"/>。</param>
+        /// <returns><paramref name="constructor"/> 的动态调用方法。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constructor"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）。</exception>
+        private static DynamicMethod CreateDynamicInvokeMethod(this ConstructorInfo constructor)
+        {
+            if (constructor is null)
+            {
+                throw new ArgumentNullException(nameof(constructor));
+            }
+            if (constructor.IsStatic)
+            {
+                var inner = new InvalidOperationException();
+                throw new ArgumentException(inner.Message, nameof(constructor), inner);
+            }
+
+            var paramInfos = constructor.GetParameters();
+            var createMethod = new DynamicMethod("DynamicCreateInstance",
+                typeof(object), new[] { typeof(object?[]) }, restrictedSkipVisibility: true);
+            createMethod.DefineParameter(1, ParameterAttributes.None, "arguments");
+            var ilGen = createMethod.GetILGenerator();
+            for (int index = 0; index < paramInfos.Length; index++)
+            {
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.EmitLdcI4(index);
+                ilGen.Emit(OpCodes.Ldelem_Ref);
+                var param = paramInfos[index];
+                ilGen.EmitUnbox(param.ParameterType);
+            }
+            ilGen.Emit(OpCodes.Newobj, constructor);
+            ilGen.EmitBox(constructor.DeclaringType!);
+            ilGen.Emit(OpCodes.Ret);
+            return createMethod;
         }
 
         /// <summary>

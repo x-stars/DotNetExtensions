@@ -12,12 +12,6 @@ namespace XstarS.Reflection
     public static partial class MemberDelegateExtensions
     {
         /// <summary>
-        /// 表示构造函数对应的调用方法。
-        /// </summary>
-        private readonly static ConcurrentDictionary<ConstructorInfo, DynamicMethod> CreateMethods =
-            new ConcurrentDictionary<ConstructorInfo, DynamicMethod>();
-
-        /// <summary>
         /// 表示字段对应的获取值的方法。
         /// </summary>
         private readonly static ConcurrentDictionary<FieldInfo, DynamicMethod> GetMethods =
@@ -30,94 +24,10 @@ namespace XstarS.Reflection
             new ConcurrentDictionary<FieldInfo, DynamicMethod>();
 
         /// <summary>
-        /// 从当前构造函数创建指定类型的委托。
+        /// 表示构造函数对应的调用方法。
         /// </summary>
-        /// <typeparam name="TDelegate">要创建的委托的类型。</typeparam>
-        /// <param name="constructor">要创建委托的 <see cref="ConstructorInfo"/>。</param>
-        /// <returns><paramref name="constructor"/> 构造函数的委托。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="constructor"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）。</exception>
-        public static TDelegate CreateDelegate<TDelegate>(this ConstructorInfo constructor)
-            where TDelegate : Delegate
-        {
-            return (TDelegate)constructor.CreateDelegate(typeof(TDelegate));
-        }
-
-        /// <summary>
-        /// 从当前构造函数创建指定类型的委托。
-        /// </summary>
-        /// <param name="constructor">要创建委托的 <see cref="ConstructorInfo"/>。</param>
-        /// <param name="delegateType">要创建的委托的类型。</param>
-        /// <returns><paramref name="constructor"/> 构造函数的委托。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="constructor"/>
-        /// 或 <paramref name="delegateType"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）；或
-        /// <paramref name="delegateType"/> 表示的类型不从 <see cref="Delegate"/> 派生。</exception>
-        public static Delegate CreateDelegate(this ConstructorInfo constructor, Type delegateType)
-        {
-            if (constructor is null)
-            {
-                throw new ArgumentNullException(nameof(constructor));
-            }
-            if (constructor.IsStatic)
-            {
-                var inner = new InvalidOperationException();
-                throw new ArgumentException(inner.Message, nameof(constructor), inner);
-            }
-            if (delegateType is null)
-            {
-                throw new ArgumentNullException(nameof(delegateType));
-            }
-            if (!typeof(Delegate).IsAssignableFrom(delegateType))
-            {
-                var inner = new InvalidCastException();
-                throw new ArgumentException(inner.Message, nameof(delegateType), inner);
-            }
-
-            var createMethod = MemberDelegateExtensions.CreateMethods.GetOrAdd(
-                constructor, MemberDelegateExtensions.CreateInvokeMethod);
-            return createMethod.CreateDelegate(delegateType);
-        }
-
-        /// <summary>
-        /// 从当前构造函数创建调用方法。
-        /// </summary>
-        /// <param name="constructor">要创建调用方法的 <see cref="ConstructorInfo"/>。</param>
-        /// <returns><paramref name="constructor"/> 的调用方法。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="constructor"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）。</exception>
-        private static DynamicMethod CreateInvokeMethod(this ConstructorInfo constructor)
-        {
-            if (constructor is null)
-            {
-                throw new ArgumentNullException(nameof(constructor));
-            }
-            if (constructor.IsStatic)
-            {
-                var inner = new InvalidOperationException();
-                throw new ArgumentException(inner.Message, nameof(constructor), inner);
-            }
-
-            var paramInfos = constructor.GetParameters();
-            var paramTypes = Array.ConvertAll(paramInfos, param => param.ParameterType);
-            var createMethod = new DynamicMethod("CreateInstance",
-                constructor.DeclaringType!, paramTypes, restrictedSkipVisibility: true);
-            var ilGen = createMethod.GetILGenerator();
-            for (int index = 0; index < paramInfos.Length; index++)
-            {
-                var param = paramInfos[index];
-                createMethod.DefineParameter(index + 1, param.Attributes, param.Name);
-                ilGen.EmitLdarg(index);
-            }
-            ilGen.Emit(OpCodes.Newobj, constructor);
-            ilGen.Emit(OpCodes.Ret);
-            return createMethod;
-        }
+        private readonly static ConcurrentDictionary<ConstructorInfo, DynamicMethod> CreateMethods =
+            new ConcurrentDictionary<ConstructorInfo, DynamicMethod>();
 
         /// <summary>
         /// 从当前字段创建指定类型的获取值的委托。
@@ -343,6 +253,96 @@ namespace XstarS.Reflection
             }
             ilGen.Emit(OpCodes.Ret);
             return setMethod;
+        }
+
+        /// <summary>
+        /// 从当前构造函数创建指定类型的委托。
+        /// </summary>
+        /// <typeparam name="TDelegate">要创建的委托的类型。</typeparam>
+        /// <param name="constructor">要创建委托的 <see cref="ConstructorInfo"/>。</param>
+        /// <returns><paramref name="constructor"/> 构造函数的委托。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constructor"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）。</exception>
+        public static TDelegate CreateDelegate<TDelegate>(this ConstructorInfo constructor)
+            where TDelegate : Delegate
+        {
+            return (TDelegate)constructor.CreateDelegate(typeof(TDelegate));
+        }
+
+        /// <summary>
+        /// 从当前构造函数创建指定类型的委托。
+        /// </summary>
+        /// <param name="constructor">要创建委托的 <see cref="ConstructorInfo"/>。</param>
+        /// <param name="delegateType">要创建的委托的类型。</param>
+        /// <returns><paramref name="constructor"/> 构造函数的委托。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="constructor"/>
+        /// 或 <paramref name="delegateType"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）；或
+        /// <paramref name="delegateType"/> 表示的类型不从 <see cref="Delegate"/> 派生。</exception>
+        public static Delegate CreateDelegate(this ConstructorInfo constructor, Type delegateType)
+        {
+            if (constructor is null)
+            {
+                throw new ArgumentNullException(nameof(constructor));
+            }
+            if (constructor.IsStatic)
+            {
+                var inner = new InvalidOperationException();
+                throw new ArgumentException(inner.Message, nameof(constructor), inner);
+            }
+            if (delegateType is null)
+            {
+                throw new ArgumentNullException(nameof(delegateType));
+            }
+            if (!typeof(Delegate).IsAssignableFrom(delegateType))
+            {
+                var inner = new InvalidCastException();
+                throw new ArgumentException(inner.Message, nameof(delegateType), inner);
+            }
+
+            var createMethod = MemberDelegateExtensions.CreateMethods.GetOrAdd(
+                constructor, MemberDelegateExtensions.CreateInvokeMethod);
+            return createMethod.CreateDelegate(delegateType);
+        }
+
+        /// <summary>
+        /// 从当前构造函数创建调用方法。
+        /// </summary>
+        /// <param name="constructor">要创建调用方法的 <see cref="ConstructorInfo"/>。</param>
+        /// <returns><paramref name="constructor"/> 的调用方法。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constructor"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）。</exception>
+        private static DynamicMethod CreateInvokeMethod(this ConstructorInfo constructor)
+        {
+            if (constructor is null)
+            {
+                throw new ArgumentNullException(nameof(constructor));
+            }
+            if (constructor.IsStatic)
+            {
+                var inner = new InvalidOperationException();
+                throw new ArgumentException(inner.Message, nameof(constructor), inner);
+            }
+
+            var paramInfos = constructor.GetParameters();
+            var paramTypes = Array.ConvertAll(paramInfos, param => param.ParameterType);
+            var createMethod = new DynamicMethod("CreateInstance",
+                constructor.DeclaringType!, paramTypes, restrictedSkipVisibility: true);
+            var ilGen = createMethod.GetILGenerator();
+            for (int index = 0; index < paramInfos.Length; index++)
+            {
+                var param = paramInfos[index];
+                createMethod.DefineParameter(index + 1, param.Attributes, param.Name);
+                ilGen.EmitLdarg(index);
+            }
+            ilGen.Emit(OpCodes.Newobj, constructor);
+            ilGen.Emit(OpCodes.Ret);
+            return createMethod;
         }
 
         /// <summary>
