@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Reflection.Emit;
 using XstarS.Reflection.Emit;
@@ -7,6 +8,30 @@ namespace XstarS.Reflection
 {
     public static partial class MemberDelegateExtensions
     {
+        /// <summary>
+        /// 表示构造函数对应的动态调用方法。
+        /// </summary>
+        private readonly static ConcurrentDictionary<ConstructorInfo, DynamicMethod> DynamicCreateMethods =
+            new ConcurrentDictionary<ConstructorInfo, DynamicMethod>();
+
+        /// <summary>
+        /// 表示字段对应的获取值的动态调用方法。
+        /// </summary>
+        private readonly static ConcurrentDictionary<FieldInfo, DynamicMethod> DynamicGetMethods =
+            new ConcurrentDictionary<FieldInfo, DynamicMethod>();
+
+        /// <summary>
+        /// 表示字段对应的设置值的动态调用方法。
+        /// </summary>
+        private readonly static ConcurrentDictionary<FieldInfo, DynamicMethod> DynamicSetMethods =
+            new ConcurrentDictionary<FieldInfo, DynamicMethod>();
+
+        /// <summary>
+        /// 表示方法对应的动态调用方法。
+        /// </summary>
+        private readonly static ConcurrentDictionary<MethodInfo, DynamicMethod> DynamicInvokeMethods =
+            new ConcurrentDictionary<MethodInfo, DynamicMethod>();
+
         /// <summary>
         /// 从当前构造函数创建动态调用委托。
         /// </summary>
@@ -28,8 +53,35 @@ namespace XstarS.Reflection
                 throw new ArgumentException(inner.Message, nameof(constructor), inner);
             }
 
+            var createMethod = MemberDelegateExtensions.DynamicCreateMethods.GetOrAdd(
+                constructor, MemberDelegateExtensions.CreateDynamicInvokeMethod);
+            return createMethod.CreateDelegate<Func<object?[]?, object>>();
+        }
+
+        /// <summary>
+        /// 从当前构造函数创建动态调用方法。
+        /// 方法签名类似于 <see cref="ConstructorInfo.Invoke(object[])"/>。
+        /// </summary>
+        /// <param name="constructor">要创建动态调用方法的 <see cref="ConstructorInfo"/>。</param>
+        /// <returns><paramref name="constructor"/> 的动态调用方法。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constructor"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）。</exception>
+        private static DynamicMethod CreateDynamicInvokeMethod(this ConstructorInfo constructor)
+        {
+            if (constructor is null)
+            {
+                throw new ArgumentNullException(nameof(constructor));
+            }
+            if (constructor.IsStatic)
+            {
+                var inner = new InvalidOperationException();
+                throw new ArgumentException(inner.Message, nameof(constructor), inner);
+            }
+
             var paramInfos = constructor.GetParameters();
-            var createMethod = new DynamicMethod("CreateInstance",
+            var createMethod = new DynamicMethod("DynamicCreateInstance",
                 typeof(object), new[] { typeof(object?[]) }, restrictedSkipVisibility: true);
             createMethod.DefineParameter(1, ParameterAttributes.None, "arguments");
             var ilGen = createMethod.GetILGenerator();
@@ -44,7 +96,7 @@ namespace XstarS.Reflection
             ilGen.Emit(OpCodes.Newobj, constructor);
             ilGen.EmitBox(constructor.DeclaringType!);
             ilGen.Emit(OpCodes.Ret);
-            return createMethod.CreateDelegate<Func<object?[]?, object>>();
+            return createMethod;
         }
 
         /// <summary>
@@ -56,7 +108,14 @@ namespace XstarS.Reflection
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
         public static Func<object?, object?> CreateDynamicGetDelegate(this FieldInfo field)
         {
-            return field.CreateDynamicGetMethod().CreateDelegate<Func<object?, object?>>();
+            if (field is null)
+            {
+                throw new ArgumentNullException(nameof(field));
+            }
+
+            var getMethod = MemberDelegateExtensions.DynamicGetMethods.GetOrAdd(
+                field, MemberDelegateExtensions.CreateDynamicGetMethod);
+            return getMethod.CreateDelegate<Func<object?, object?>>();
         }
 
         /// <summary>
@@ -69,7 +128,14 @@ namespace XstarS.Reflection
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
         public static Func<object?> CreateDynamicGetDelegate(this FieldInfo field, object? target)
         {
-            return field.CreateDynamicGetMethod().CreateDelegate<Func<object?>>(target);
+            if (field is null)
+            {
+                throw new ArgumentNullException(nameof(field));
+            }
+
+            var getMethod = MemberDelegateExtensions.DynamicGetMethods.GetOrAdd(
+                field, MemberDelegateExtensions.CreateDynamicGetMethod);
+            return getMethod.CreateDelegate<Func<object?>>(target);
         }
 
         /// <summary>
@@ -87,7 +153,7 @@ namespace XstarS.Reflection
                 throw new ArgumentNullException(nameof(field));
             }
 
-            var getMethod = new DynamicMethod($"{field.Name}.GetValue",
+            var getMethod = new DynamicMethod($"{field.Name}.DynamicGetValue",
                 typeof(object), new[] { typeof(object) }, restrictedSkipVisibility: true);
             getMethod.DefineParameter(1, ParameterAttributes.None, "instance");
             var ilGen = getMethod.GetILGenerator();
@@ -111,7 +177,14 @@ namespace XstarS.Reflection
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
         public static Action<object?, object?> CreateDynamicSetDelegate(this FieldInfo field)
         {
-            return field.CreateDynamicSetMethod().CreateDelegate<Action<object?, object?>>();
+            if (field is null)
+            {
+                throw new ArgumentNullException(nameof(field));
+            }
+
+            var setMethod = MemberDelegateExtensions.DynamicSetMethods.GetOrAdd(
+                field, MemberDelegateExtensions.CreateDynamicSetMethod);
+            return setMethod.CreateDelegate<Action<object?, object?>>();
         }
 
         /// <summary>
@@ -124,7 +197,14 @@ namespace XstarS.Reflection
         /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
         public static Action<object?> CreateDynamicSetDelegate(this FieldInfo field, object? target)
         {
-            return field.CreateDynamicSetMethod().CreateDelegate<Action<object?>>(target);
+            if (field is null)
+            {
+                throw new ArgumentNullException(nameof(field));
+            }
+
+            var setMethod = MemberDelegateExtensions.DynamicSetMethods.GetOrAdd(
+                field, MemberDelegateExtensions.CreateDynamicSetMethod);
+            return setMethod.CreateDelegate<Action<object?>>(target);
         }
 
         /// <summary>
@@ -142,7 +222,7 @@ namespace XstarS.Reflection
                 throw new ArgumentNullException(nameof(field));
             }
 
-            var setMethod = new DynamicMethod($"{field.Name}.SetValue",
+            var setMethod = new DynamicMethod($"{field.Name}.DynamicSetValue",
                 typeof(void), new[] { typeof(object), typeof(object) },
                 restrictedSkipVisibility: true);
             setMethod.DefineParameter(1, ParameterAttributes.None, "instance");
@@ -169,7 +249,14 @@ namespace XstarS.Reflection
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
         public static Func<object?, object?[]?, object?> CreateDynamicDelegate(this MethodInfo method)
         {
-            return method.CreateDynamicMethod().CreateDelegate<Func<object?, object?[]?, object?>>();
+            if (method is null)
+            {
+                throw new ArgumentNullException(nameof(method));
+            }
+
+            var invokeMethod = MemberDelegateExtensions.DynamicInvokeMethods.GetOrAdd(
+                method, MemberDelegateExtensions.CreateDynamicInvokeMethod);
+            return invokeMethod.CreateDelegate<Func<object?, object?[]?, object?>>();
         }
 
         /// <summary>
@@ -182,18 +269,25 @@ namespace XstarS.Reflection
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
         public static Func<object?[]?, object?> CreateDynamicDelegate(this MethodInfo method, object? target)
         {
-            return method.CreateDynamicMethod().CreateDelegate<Func<object?[]?, object?>>(target);
+            if (method is null)
+            {
+                throw new ArgumentNullException(nameof(method));
+            }
+
+            var invokeMethod = MemberDelegateExtensions.DynamicInvokeMethods.GetOrAdd(
+                method, MemberDelegateExtensions.CreateDynamicInvokeMethod);
+            return invokeMethod.CreateDelegate<Func<object?[]?, object?>>(target);
         }
 
         /// <summary>
-        /// 从当前方法创建指定类型的动态调用方法。
+        /// 从当前方法创建动态调用方法。
         /// 方法签名类似于 <see cref="MethodBase.Invoke(object, object[])"/>。
         /// </summary>
         /// <param name="method">要创建方法的 <see cref="MethodInfo"/>。</param>
         /// <returns><paramref name="method"/> 方法的动态调用方法。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-        private static DynamicMethod CreateDynamicMethod(this MethodInfo method)
+        private static DynamicMethod CreateDynamicInvokeMethod(this MethodInfo method)
         {
             if (method is null)
             {
@@ -201,7 +295,7 @@ namespace XstarS.Reflection
             }
 
             var paramInfos = method.GetParameters();
-            var invokeMethod = new DynamicMethod($"{method.Name}.Invoke",
+            var invokeMethod = new DynamicMethod($"{method.Name}.DynamicInvoke",
                 typeof(object), new[] { typeof(object), typeof(object?[]) },
                 restrictedSkipVisibility: true);
             invokeMethod.DefineParameter(1, ParameterAttributes.None, "instance");

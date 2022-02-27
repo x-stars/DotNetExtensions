@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Reflection.Emit;
 using XstarS.Reflection.Emit;
@@ -10,6 +11,24 @@ namespace XstarS.Reflection
     /// </summary>
     public static partial class MemberDelegateExtensions
     {
+        /// <summary>
+        /// 表示构造函数对应的调用方法。
+        /// </summary>
+        private readonly static ConcurrentDictionary<ConstructorInfo, DynamicMethod> CreateMethods =
+            new ConcurrentDictionary<ConstructorInfo, DynamicMethod>();
+
+        /// <summary>
+        /// 表示字段对应的获取值的方法。
+        /// </summary>
+        private readonly static ConcurrentDictionary<FieldInfo, DynamicMethod> GetMethods =
+            new ConcurrentDictionary<FieldInfo, DynamicMethod>();
+
+        /// <summary>
+        /// 表示字段对应的设置值的方法。
+        /// </summary>
+        private readonly static ConcurrentDictionary<FieldInfo, DynamicMethod> SetMethods =
+            new ConcurrentDictionary<FieldInfo, DynamicMethod>();
+
         /// <summary>
         /// 从当前构造函数创建指定类型的委托。
         /// </summary>
@@ -58,6 +77,32 @@ namespace XstarS.Reflection
                 throw new ArgumentException(inner.Message, nameof(delegateType), inner);
             }
 
+            var createMethod = MemberDelegateExtensions.CreateMethods.GetOrAdd(
+                constructor, MemberDelegateExtensions.CreateInvokeMethod);
+            return createMethod.CreateDelegate(delegateType);
+        }
+
+        /// <summary>
+        /// 从当前构造函数创建调用方法。
+        /// </summary>
+        /// <param name="constructor">要创建调用方法的 <see cref="ConstructorInfo"/>。</param>
+        /// <returns><paramref name="constructor"/> 的调用方法。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="constructor"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="constructor"/> 表示一个类构造函数（或称类初始化器）。</exception>
+        private static DynamicMethod CreateInvokeMethod(this ConstructorInfo constructor)
+        {
+            if (constructor is null)
+            {
+                throw new ArgumentNullException(nameof(constructor));
+            }
+            if (constructor.IsStatic)
+            {
+                var inner = new InvalidOperationException();
+                throw new ArgumentException(inner.Message, nameof(constructor), inner);
+            }
+
             var paramInfos = constructor.GetParameters();
             var paramTypes = Array.ConvertAll(paramInfos, param => param.ParameterType);
             var createMethod = new DynamicMethod("CreateInstance",
@@ -71,7 +116,7 @@ namespace XstarS.Reflection
             }
             ilGen.Emit(OpCodes.Newobj, constructor);
             ilGen.Emit(OpCodes.Ret);
-            return createMethod.CreateDelegate(delegateType);
+            return createMethod;
         }
 
         /// <summary>
@@ -145,6 +190,25 @@ namespace XstarS.Reflection
                 throw new ArgumentException(inner.Message, nameof(delegateType), inner);
             }
 
+            var getMethod = MemberDelegateExtensions.GetMethods.GetOrAdd(
+                field, MemberDelegateExtensions.CreateGetMethod);
+            return getMethod.CreateDelegate(delegateType, target);
+        }
+
+        /// <summary>
+        /// 从当前字段创建获取值的方法。
+        /// </summary>
+        /// <param name="field">要创建获取值方法的 <see cref="FieldInfo"/>。</param>
+        /// <returns>获取 <paramref name="field"/> 字段值的方法。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
+        private static DynamicMethod CreateGetMethod(this FieldInfo field)
+        {
+            if (field is null)
+            {
+                throw new ArgumentNullException(nameof(field));
+            }
+
             var paramTypes = field.IsStatic ?
                 Type.EmptyTypes : new[] { field.DeclaringType! };
             var getMethod = new DynamicMethod($"{field.Name}.GetValue",
@@ -162,7 +226,7 @@ namespace XstarS.Reflection
                 ilGen.Emit(OpCodes.Ldfld, field);
             }
             ilGen.Emit(OpCodes.Ret);
-            return getMethod.CreateDelegate(delegateType, target);
+            return getMethod;
         }
 
         /// <summary>
@@ -236,6 +300,25 @@ namespace XstarS.Reflection
                 throw new ArgumentException(inner.Message, nameof(delegateType), inner);
             }
 
+            var setMethod = MemberDelegateExtensions.SetMethods.GetOrAdd(
+                field, MemberDelegateExtensions.CreateSetMethod);
+            return setMethod.CreateDelegate(delegateType, target);
+        }
+
+        /// <summary>
+        /// 从当前字段创建设置值的方法。
+        /// </summary>
+        /// <param name="field">要创建获取值方法的 <see cref="FieldInfo"/>。</param>
+        /// <returns>设置 <paramref name="field"/> 字段值的方法。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="field"/> 为 <see langword="null"/>。</exception>
+        private static DynamicMethod CreateSetMethod(this FieldInfo field)
+        {
+            if (field is null)
+            {
+                throw new ArgumentNullException(nameof(field));
+            }
+
             var paramTypes = field.IsStatic ?
                 new[] { field.FieldType } :
                 new[] { field.DeclaringType!, field.FieldType };
@@ -259,7 +342,7 @@ namespace XstarS.Reflection
                 ilGen.Emit(OpCodes.Stfld, field);
             }
             ilGen.Emit(OpCodes.Ret);
-            return setMethod.CreateDelegate(delegateType, target);
+            return setMethod;
         }
 
         /// <summary>
