@@ -110,8 +110,8 @@ namespace XstarS.ComponentModel
             IEnumerable? errors, [CallerMemberName] string? propertyName = null)
         {
             if (this.IsEntityName(propertyName)) { throw new InvalidOperationException(); }
-            var entityHadErrors = !this.ValidationErrors.IsEmpty;
-            var hadErrors = this.ValidationErrors.ContainsKey(propertyName);
+            var entityHadErrors = this.HasErrors;
+            var hadErrors = this.ContainsErrors(propertyName);
             var hasErrors = !(errors is null) && errors.Cast<object>().Any();
             if (hasErrors) { this.ValidationErrors[propertyName] = errors!; }
             else { this.ValidationErrors.TryRemove(propertyName, out errors!); }
