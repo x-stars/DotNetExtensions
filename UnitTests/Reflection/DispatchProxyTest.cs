@@ -28,7 +28,7 @@ namespace XstarS.Reflection
             var handler = (InvocationHandler)((instance, method, arguments) =>
             {
                 callCounts[method] = callCounts.GetOrAdd(method, 0) + 1;
-                return method.InvokeFast(instance, arguments);
+                return method.GetDynamicDelegate().Invoke(instance, arguments);
             });
             var pList = DispatchProxy<IList<object?>>.Create(list, handler);
             Assert.AreEqual(0, callCounts.Count);

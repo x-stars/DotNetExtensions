@@ -16,7 +16,7 @@ namespace XstarS.Reflection
         /// 此代理委托仅调用被代理方法并返回。
         /// </summary>
         public static readonly InvocationHandler DefaultHandler =
-            (instance, method, arguments) => method.InvokeFast(instance, arguments);
+            (instance, method, arguments) => method.GetDynamicDelegate().Invoke(instance, arguments);
 
         /// <summary>
         /// 表示类型对应的代理创建方法的委托。
@@ -67,20 +67,21 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 使用指定的实例和参数快速调用当前方法。
-        /// 以委托实现，较 <see cref="MethodBase.Invoke(object, object[])"/> 更快。
+        /// 获取当前方法的动态调用委托。
         /// </summary>
-        /// <param name="method">要调用的 <see cref="MethodInfo"/>。</param>
-        /// <param name="instance">在其上调用方法的对象。</param>
-        /// <param name="arguments">调用方法的参数列表。</param>
-        /// <returns>调用方法得到的的返回值；若方法无返回值，则为 <see langword="null"/>。</returns>
+        /// <param name="method">要获取动态调用委托的 <see cref="MethodInfo"/>。</param>
+        /// <returns><paramref name="method"/> 方法的动态调用委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-        public static object? InvokeFast(this MethodInfo method, object instance, object?[]? arguments)
+        public static Func<object, object?[]?, object?> GetDynamicDelegate(this MethodInfo method)
         {
-            var invokeMethod = DispatchProxyServices.MethodDelegates.GetOrAdd(
+            if (method is null)
+            {
+                throw new ArgumentNullException(nameof(method));
+            }
+
+            return DispatchProxyServices.MethodDelegates.GetOrAdd(
                 method, newMethod => newMethod.CreateDynamicDelegate());
-            return invokeMethod.Invoke(instance, arguments);
         }
     }
 }
