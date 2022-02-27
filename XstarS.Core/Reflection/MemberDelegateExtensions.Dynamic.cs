@@ -29,9 +29,8 @@ namespace XstarS.Reflection
             }
 
             var paramInfos = constructor.GetParameters();
-            var createMethod = new DynamicMethod(
-                "CreateInstance", typeof(object), new[] { typeof(object?[]) },
-                restrictedSkipVisibility: true);
+            var createMethod = new DynamicMethod("CreateInstance",
+                typeof(object), new[] { typeof(object?[]) }, restrictedSkipVisibility: true);
             createMethod.DefineParameter(1, ParameterAttributes.None, "arguments");
             var ilGen = createMethod.GetILGenerator();
             for (int index = 0; index < paramInfos.Length; index++)
@@ -88,9 +87,8 @@ namespace XstarS.Reflection
                 throw new ArgumentNullException(nameof(field));
             }
 
-            var getMethod = new DynamicMethod(
-                "GetValue", typeof(object), new[] { typeof(object) },
-                restrictedSkipVisibility: true);
+            var getMethod = new DynamicMethod($"{field.Name}.GetValue",
+                typeof(object), new[] { typeof(object) }, restrictedSkipVisibility: true);
             getMethod.DefineParameter(1, ParameterAttributes.None, "instance");
             var ilGen = getMethod.GetILGenerator();
             if (!field.IsStatic)
@@ -144,8 +142,8 @@ namespace XstarS.Reflection
                 throw new ArgumentNullException(nameof(field));
             }
 
-            var setMethod = new DynamicMethod(
-                "SetValue", typeof(void), new[] { typeof(object), typeof(object) },
+            var setMethod = new DynamicMethod($"{field.Name}.SetValue",
+                typeof(void), new[] { typeof(object), typeof(object) },
                 restrictedSkipVisibility: true);
             setMethod.DefineParameter(1, ParameterAttributes.None, "instance");
             setMethod.DefineParameter(2, ParameterAttributes.None, "value");
@@ -203,8 +201,8 @@ namespace XstarS.Reflection
             }
 
             var paramInfos = method.GetParameters();
-            var invokeMethod = new DynamicMethod(
-                "Invoke", typeof(object), new[] { typeof(object), typeof(object?[]) },
+            var invokeMethod = new DynamicMethod($"{method.Name}.Invoke",
+                typeof(object), new[] { typeof(object), typeof(object?[]) },
                 restrictedSkipVisibility: true);
             invokeMethod.DefineParameter(1, ParameterAttributes.None, "instance");
             invokeMethod.DefineParameter(2, ParameterAttributes.None, "arguments");
@@ -223,14 +221,9 @@ namespace XstarS.Reflection
                 ilGen.EmitUnbox(param.ParameterType);
             }
             ilGen.Emit(method.IsVirtual ? OpCodes.Callvirt : OpCodes.Call, method);
-            if (method.ReturnType == typeof(void))
-            {
-                ilGen.Emit(OpCodes.Ldnull);
-            }
-            else
-            {
-                ilGen.EmitBox(method.ReturnType);
-            }
+            var noReturns = method.ReturnType == typeof(void);
+            if (noReturns) { ilGen.Emit(OpCodes.Ldnull); }
+            else { ilGen.EmitBox(method.ReturnType); }
             ilGen.Emit(OpCodes.Ret);
             return invokeMethod;
         }

@@ -90,8 +90,8 @@ namespace XstarS.Reflection
             }
 
             var paramInfos = method.GetParameters();
-            var invokeMethod = new DynamicMethod(
-                "Invoke", typeof(object), new[] { typeof(object), typeof(object?[]) },
+            var invokeMethod = new DynamicMethod($"{method.Name}.Invoke",
+                typeof(object), new[] { typeof(object), typeof(object?[]) },
                 restrictedSkipVisibility: true);
             invokeMethod.DefineParameter(1, ParameterAttributes.None, "instance");
             invokeMethod.DefineParameter(2, ParameterAttributes.None, "arguments");
@@ -110,14 +110,9 @@ namespace XstarS.Reflection
                 ilGen.EmitUnbox(param.ParameterType);
             }
             ilGen.Emit(method.IsVirtual ? OpCodes.Callvirt : OpCodes.Call, method);
-            if (method.ReturnType == typeof(void))
-            {
-                ilGen.Emit(OpCodes.Ldnull);
-            }
-            else
-            {
-                ilGen.EmitBox(method.ReturnType);
-            }
+            var noReturns = method.ReturnType == typeof(void);
+            if (noReturns) { ilGen.Emit(OpCodes.Ldnull); }
+            else { ilGen.EmitBox(method.ReturnType); }
             ilGen.Emit(OpCodes.Ret);
             return invokeMethod;
         }
