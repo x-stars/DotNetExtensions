@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Reflection;
 using System.Reflection.Emit;
 using XstarS.Reflection.Emit;
@@ -10,6 +11,12 @@ namespace XstarS.Reflection
     /// </summary>
     internal static class MemberDelegateExtensions
     {
+        /// <summary>
+        /// 表示方法对应的动态调用方法。
+        /// </summary>
+        private readonly static ConcurrentDictionary<MethodInfo, DynamicMethod> DynamicInvokeMethods =
+            new ConcurrentDictionary<MethodInfo, DynamicMethod>();
+
         /// <summary>
         /// 从当前方法创建指定类型的委托。
         /// </summary>
@@ -58,7 +65,14 @@ namespace XstarS.Reflection
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
         public static Func<object?, object?[]?, object?> CreateDynamicDelegate(this MethodInfo method)
         {
-            return method.CreateDynamicMethod().CreateDelegate<Func<object?, object?[]?, object?>>();
+            if (method is null)
+            {
+                throw new ArgumentNullException(nameof(method));
+            }
+
+            var invokeMethod = MemberDelegateExtensions.DynamicInvokeMethods.GetOrAdd(
+                method, MemberDelegateExtensions.CreateDynamicInvokeMethod);
+            return invokeMethod.CreateDelegate<Func<object?, object?[]?, object?>>();
         }
 
         /// <summary>
@@ -71,18 +85,25 @@ namespace XstarS.Reflection
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
         public static Func<object?[]?, object?> CreateDynamicDelegate(this MethodInfo method, object? target)
         {
-            return method.CreateDynamicMethod().CreateDelegate<Func<object?[]?, object?>>(target);
+            if (method is null)
+            {
+                throw new ArgumentNullException(nameof(method));
+            }
+
+            var invokeMethod = MemberDelegateExtensions.DynamicInvokeMethods.GetOrAdd(
+                method, MemberDelegateExtensions.CreateDynamicInvokeMethod);
+            return invokeMethod.CreateDelegate<Func<object?[]?, object?>>(target);
         }
 
         /// <summary>
-        /// 从当前方法创建指定类型的动态调用方法。
+        /// 从当前方法创建动态调用方法。
         /// 方法签名类似于 <see cref="MethodBase.Invoke(object, object[])"/>。
         /// </summary>
         /// <param name="method">要创建方法的 <see cref="MethodInfo"/>。</param>
         /// <returns><paramref name="method"/> 方法的动态调用方法。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-        private static DynamicMethod CreateDynamicMethod(this MethodInfo method)
+        private static DynamicMethod CreateDynamicInvokeMethod(this MethodInfo method)
         {
             if (method is null)
             {
@@ -90,7 +111,7 @@ namespace XstarS.Reflection
             }
 
             var paramInfos = method.GetParameters();
-            var invokeMethod = new DynamicMethod($"{method.Name}.Invoke",
+            var invokeMethod = new DynamicMethod($"{method.Name}.DynamicInvoke",
                 typeof(object), new[] { typeof(object), typeof(object?[]) },
                 restrictedSkipVisibility: true);
             invokeMethod.DefineParameter(1, ParameterAttributes.None, "instance");
