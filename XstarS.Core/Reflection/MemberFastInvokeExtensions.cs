@@ -188,7 +188,7 @@ namespace XstarS.Reflection
 
         /// <summary>
         /// 快速设置指定对象的索引化属性的值。
-        /// 以委托实现，较 <see cref="PropertyInfo.SetValue(object, object)"/> 更快。
+        /// 以委托实现，较 <see cref="PropertyInfo.SetValue(object, object, object[])"/> 更快。
         /// </summary>
         /// <param name="property">要设置值的 <see cref="PropertyInfo"/>。</param>
         /// <param name="instance">要设置属性的值的对象。</param>
