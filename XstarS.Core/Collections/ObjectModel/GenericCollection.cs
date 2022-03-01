@@ -3,21 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace XstarS.Collections
+namespace XstarS.Collections.ObjectModel
 {
     /// <summary>
-    /// 提供非泛型集合集合的泛型包装。
+    /// 提供非泛型集合的泛型包装。
     /// </summary>
     /// <typeparam name="T">集合中元素的类型。</typeparam>
     [Serializable]
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
-    public sealed class GenericCollection<T> : IList, IList<T?>, IReadOnlyList<T?>
+    [DebuggerTypeProxy(typeof(GenericCollection<>.DebugView))]
+    public class GenericCollection<T> : IList, IList<T?>, IReadOnlyList<T?>
     {
         /// <summary>
         /// 表示当前实例包装的列表。
         /// </summary>
-        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        private readonly IList Collection;
+        protected readonly IList Collection;
 
         /// <summary>
         /// 将 <see cref="GenericCollection{T}"/> 类的新实例初始化为指定列表的包装。
@@ -122,5 +122,28 @@ namespace XstarS.Collections
 
         /// <inheritdoc/>
         void IList.Remove(object? value) => this.Collection.Remove(value);
+
+        /// <summary>
+        /// 提供 <see cref="GenericCollection{T}"/> 的调试器视图。
+        /// </summary>
+        private sealed class DebugView
+        {
+            /// <summary>
+            /// 表示 <see cref="GenericCollection{T}"/> 包装的列表。
+            /// </summary>
+            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+            public readonly IList Collection;
+
+            /// <summary>
+            /// 以指定的 <see cref="GenericCollection{T}"/>
+            /// 初始化 <see cref="DebugView"/> 类的新实例。
+            /// </summary>
+            /// <param name="collection">
+            /// 要获取调试器视图的 <see cref="GenericCollection{T}"/>。</param>
+            internal DebugView(GenericCollection<T> collection)
+            {
+                this.Collection = collection.Collection;
+            }
+        }
     }
 }

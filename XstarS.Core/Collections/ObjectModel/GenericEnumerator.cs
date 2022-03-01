@@ -1,21 +1,18 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 
-namespace XstarS.Collections
+namespace XstarS.Collections.ObjectModel
 {
     /// <summary>
     /// 提供非泛型集合的枚举数的泛型包装。
     /// </summary>
     /// <typeparam name="T">要枚举的对象的类型。</typeparam>
-    [Serializable]
     public sealed class GenericEnumerator<T> : IEnumerator, IEnumerator<T?>
     {
         /// <summary>
         /// 表示当前实例包装的枚举数。
         /// </summary>
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly IEnumerator Enumerator;
 
         /// <summary>
@@ -24,7 +21,7 @@ namespace XstarS.Collections
         /// <param name="enumerator">要包装的枚举数。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="enumerator"/> 为 <see langword="null"/>。</exception>
-        public GenericEnumerator(IEnumerator enumerator)
+        internal GenericEnumerator(IEnumerator enumerator)
         {
             this.Enumerator = enumerator ??
                 throw new ArgumentNullException(nameof(enumerator));

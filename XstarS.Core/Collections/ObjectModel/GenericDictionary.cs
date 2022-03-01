@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace XstarS.Collections
+namespace XstarS.Collections.ObjectModel
 {
     /// <summary>
     /// 提供非泛型键值对集合的泛型包装。
@@ -12,26 +12,24 @@ namespace XstarS.Collections
     /// <typeparam name="TValue">字典中值的类型。</typeparam>
     [Serializable]
     [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
-    public sealed class GenericDictionary<TKey, TValue>
+    [DebuggerTypeProxy(typeof(GenericDictionary<,>.DebugView))]
+    public class GenericDictionary<TKey, TValue>
         : IDictionary, IDictionary<TKey, TValue?>, IReadOnlyDictionary<TKey, TValue?>
         where TKey : notnull
     {
         /// <summary>
         /// 表示当前实例包装的字典。
         /// </summary>
-        [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
-        private readonly IDictionary Dictionary;
+        protected readonly IDictionary Dictionary;
 
         /// <summary>
         /// 表示实例包装的字典的键的集合的泛型包装。
         /// </summary>
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly KeyCollection GenericKeys;
 
         /// <summary>
         /// 表示实例包装的字典的值的集合的泛型包装。
         /// </summary>
-        [DebuggerBrowsable(DebuggerBrowsableState.Never)]
         private readonly ValueCollection GenericValues;
 
         /// <summary>
@@ -142,9 +140,8 @@ namespace XstarS.Collections
         /// <summary>
         /// 返回一个循环访问集合的枚举器。
         /// </summary>
-        /// <returns>用于循环访问集合的 <see cref="GenericDictionaryEnumerator{TKey, TValue}"/>。</returns>
-        public GenericDictionaryEnumerator<TKey, TValue> GetEnumerator() =>
-            new GenericDictionaryEnumerator<TKey, TValue>(this.Dictionary.GetEnumerator());
+        /// <returns>用于循环访问集合的 <see cref="Enumerator"/>。</returns>
+        public Enumerator GetEnumerator() => new Enumerator(this.Dictionary.GetEnumerator());
 
         /// <inheritdoc/>
         public bool Remove(TKey key)
@@ -192,10 +189,63 @@ namespace XstarS.Collections
         void IDictionary.Remove(object key) => this.Dictionary.Remove(key);
 
         /// <summary>
+        /// 提供非泛型键值对集合的枚举器的泛型包装。
+        /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
+        public sealed class Enumerator
+            : IEnumerator, IDictionaryEnumerator, IEnumerator<KeyValuePair<TKey, TValue?>>
+        {
+            /// <summary>
+            /// 表示当前实例包装的字典的枚举器。
+            /// </summary>
+            private readonly IDictionaryEnumerator DictionaryEnumerator;
+
+            /// <summary>
+            /// 将 <see cref="Enumerator"/> 类的新实例初始化为指定字典的枚举器的包装。
+            /// </summary>
+            /// <param name="enumerator">要包装的字典的枚举器。</param>
+            /// <exception cref="ArgumentNullException">
+            /// <paramref name="enumerator"/> 为 <see langword="null"/>。</exception>
+            internal Enumerator(IDictionaryEnumerator enumerator)
+            {
+                this.DictionaryEnumerator = enumerator ??
+                    throw new ArgumentNullException(nameof(enumerator));
+            }
+
+            /// <inheritdoc/>
+            public KeyValuePair<TKey, TValue?> Current =>
+                new KeyValuePair<TKey, TValue?>(
+                    (TKey)this.DictionaryEnumerator.Key, (TValue?)this.DictionaryEnumerator.Value);
+
+            /// <inheritdoc/>
+            object? IEnumerator.Current => this.DictionaryEnumerator.Current;
+
+            /// <inheritdoc/>
+            object IDictionaryEnumerator.Key => this.DictionaryEnumerator.Key;
+
+            /// <inheritdoc/>
+            object? IDictionaryEnumerator.Value => this.DictionaryEnumerator.Value;
+
+            /// <inheritdoc/>
+            DictionaryEntry IDictionaryEnumerator.Entry => this.DictionaryEnumerator.Entry;
+
+            /// <inheritdoc/>
+            public void Dispose() => (this.DictionaryEnumerator as IDisposable)?.Dispose();
+
+            /// <inheritdoc/>
+            public bool MoveNext() => this.DictionaryEnumerator.MoveNext();
+
+            /// <inheritdoc/>
+            public void Reset() => this.DictionaryEnumerator.Reset();
+        }
+
+        /// <summary>
         /// 提供非泛型字典的键的集合的泛型包装。
         /// </summary>
         [Serializable]
         [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
+        [DebuggerTypeProxy(typeof(GenericDictionary<,>.KeyCollection.DebugView))]
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public sealed class KeyCollection : ICollection, ICollection<TKey>, IReadOnlyCollection<TKey>
@@ -203,13 +253,11 @@ namespace XstarS.Collections
             /// <summary>
             /// 表示当前实例包装的字典。
             /// </summary>
-            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             private readonly IDictionary Dictionary;
 
             /// <summary>
             /// 表示当前实例包装的字典的键的集合。
             /// </summary>
-            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
             private readonly ICollection DictionaryKeys;
 
             /// <summary>
@@ -244,7 +292,7 @@ namespace XstarS.Collections
             public void CopyTo(TKey[] array, int index) => this.DictionaryKeys.CopyTo(array, index);
 
             /// <summary>
-            /// 返回循环访问字典的键的集合的枚举数。
+            /// 返回循环访问字典的键的集合的枚举器。
             /// </summary>
             /// <returns>用于循环访问字典的键的集合的 <see cref="GenericEnumerator{T}"/>。</returns>
             public GenericEnumerator<TKey> GetEnumerator() =>
@@ -270,6 +318,29 @@ namespace XstarS.Collections
 
             /// <inheritdoc/>
             IEnumerator IEnumerable.GetEnumerator() => this.DictionaryKeys.GetEnumerator();
+
+            /// <summary>
+            /// 提供 <see cref="ValueCollection"/> 的调试器视图。
+            /// </summary>
+            private sealed class DebugView
+            {
+                /// <summary>
+                /// 表示 <see cref="KeyCollection"/> 包装的字典的键的集合。
+                /// </summary>
+                [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+                public readonly ICollection DictionaryKeys;
+
+                /// <summary>
+                /// 以指定的 <see cref="KeyCollection"/>
+                /// 初始化 <see cref="DebugView"/> 类的新实例。
+                /// </summary>
+                /// <param name="dictionaryKeys">
+                /// 要获取调试器视图的 <see cref="KeyCollection"/>。</param>
+                internal DebugView(KeyCollection dictionaryKeys)
+                {
+                    this.DictionaryKeys = dictionaryKeys.DictionaryKeys;
+                }
+            }
         }
 
         /// <summary>
@@ -277,6 +348,7 @@ namespace XstarS.Collections
         /// </summary>
         [Serializable]
         [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
+        [DebuggerTypeProxy(typeof(GenericDictionary<,>.ValueCollection.DebugView))]
         [System.Diagnostics.CodeAnalysis.SuppressMessage(
             "Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public sealed class ValueCollection : ICollection, ICollection<TValue?>, IReadOnlyCollection<TValue?>
@@ -290,13 +362,11 @@ namespace XstarS.Collections
             /// <summary>
             /// 表示当前实例包装的字典。
             /// </summary>
-            [DebuggerBrowsable(DebuggerBrowsableState.Never)]
             private readonly IDictionary Dictionary;
 
             /// <summary>
             /// 表示当前实例包装的字典的值的集合。
             /// </summary>
-            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
             private readonly ICollection DictionaryValues;
 
             /// <summary>
@@ -328,7 +398,7 @@ namespace XstarS.Collections
             public void CopyTo(TValue?[] array, int index) => this.DictionaryValues.CopyTo(array, index);
 
             /// <summary>
-            /// 返回循环访问字典的值的集合的枚举数。
+            /// 返回循环访问字典的值的集合的枚举器。
             /// </summary>
             /// <returns>用于循环访问字典的值的集合的 <see cref="GenericEnumerator{T}"/>。</returns>
             public GenericEnumerator<TValue> GetEnumerator() =>
@@ -365,6 +435,52 @@ namespace XstarS.Collections
 
             /// <inheritdoc/>
             IEnumerator IEnumerable.GetEnumerator() => this.DictionaryValues.GetEnumerator();
+
+            /// <summary>
+            /// 提供 <see cref="ValueCollection"/> 的调试器视图。
+            /// </summary>
+            private sealed class DebugView
+            {
+                /// <summary>
+                /// 表示 <see cref="ValueCollection"/> 包装的字典的值的集合。
+                /// </summary>
+                [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+                public readonly ICollection DictionaryValues;
+
+                /// <summary>
+                /// 以指定的 <see cref="ValueCollection"/>
+                /// 初始化 <see cref="DebugView"/> 类的新实例。
+                /// </summary>
+                /// <param name="dictionaryValues">
+                /// 要获取调试器视图的 <see cref="ValueCollection"/>。</param>
+                internal DebugView(ValueCollection dictionaryValues)
+                {
+                    this.DictionaryValues = dictionaryValues.DictionaryValues;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 提供 <see cref="GenericDictionary{TKey, TValue}"/> 的调试器视图。
+        /// </summary>
+        private sealed class DebugView
+        {
+            /// <summary>
+            /// 表示 <see cref="GenericDictionary{TKey, TValue}"/> 包装的字典。
+            /// </summary>
+            [DebuggerBrowsable(DebuggerBrowsableState.RootHidden)]
+            public readonly IDictionary Dictionary;
+
+            /// <summary>
+            /// 以指定的 <see cref="GenericDictionary{TKey, TValue}"/>
+            /// 初始化 <see cref="DebugView"/> 类的新实例。
+            /// </summary>
+            /// <param name="dictioanry">
+            /// 要获取调试器视图的 <see cref="GenericDictionary{TKey, TValue}"/>。</param>
+            internal DebugView(GenericDictionary<TKey, TValue> dictioanry)
+            {
+                this.Dictionary = dictioanry.Dictionary;
+            }
         }
     }
 }
