@@ -5,20 +5,20 @@ using System.Collections.Generic;
 namespace XstarS.Collections.ObjectModel
 {
     /// <summary>
-    /// 提供非泛型集合的枚举数的泛型包装。
+    /// 提供非泛型集合的枚举器的泛型包装。
     /// </summary>
     /// <typeparam name="T">要枚举的对象的类型。</typeparam>
     public sealed class GenericEnumerator<T> : IEnumerator, IEnumerator<T?>
     {
         /// <summary>
-        /// 表示当前实例包装的枚举数。
+        /// 表示当前实例包装的枚举器。
         /// </summary>
         private readonly IEnumerator Enumerator;
 
         /// <summary>
-        /// 将 <see cref="GenericEnumerator{T}"/> 类的新实例初始化为指定枚举数的包装。
+        /// 将 <see cref="GenericEnumerator{T}"/> 类的新实例初始化为指定枚举器的包装。
         /// </summary>
-        /// <param name="enumerator">要包装的枚举数。</param>
+        /// <param name="enumerator">要包装的枚举器。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="enumerator"/> 为 <see langword="null"/>。</exception>
         internal GenericEnumerator(IEnumerator enumerator)

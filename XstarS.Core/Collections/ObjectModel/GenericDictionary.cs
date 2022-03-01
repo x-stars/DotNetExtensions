@@ -128,11 +128,21 @@ namespace XstarS.Collections.ObjectModel
         /// <inheritdoc/>
         public void CopyTo(KeyValuePair<TKey, TValue?>[] array, int index)
         {
-            var entries = new DictionaryEntry[array.Length];
-            this.Dictionary.CopyTo(entries, index);
-            for (int offset = index; offset < array.Length; offset++)
+            if (array is null)
             {
-                array[offset] = new KeyValuePair<TKey, TValue?>(
+                throw new ArgumentNullException(nameof(array));
+            }
+            if (index > array.Length)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            var length = array.Length - index;
+            var entries = new DictionaryEntry[length];
+            this.Dictionary.CopyTo(entries, 0);
+            for (int offset = 0; offset < length; offset++)
+            {
+                array[offset + index] = new KeyValuePair<TKey, TValue?>(
                     (TKey)entries[offset].Key, (TValue?)entries[offset].Value);
             }
         }
@@ -214,9 +224,8 @@ namespace XstarS.Collections.ObjectModel
             }
 
             /// <inheritdoc/>
-            public KeyValuePair<TKey, TValue?> Current =>
-                new KeyValuePair<TKey, TValue?>(
-                    (TKey)this.DictionaryEnumerator.Key, (TValue?)this.DictionaryEnumerator.Value);
+            public KeyValuePair<TKey, TValue?> Current => new KeyValuePair<TKey, TValue?>(
+                (TKey)this.DictionaryEnumerator.Key, (TValue?)this.DictionaryEnumerator.Value);
 
             /// <inheritdoc/>
             object? IEnumerator.Current => this.DictionaryEnumerator.Current;
@@ -261,7 +270,7 @@ namespace XstarS.Collections.ObjectModel
             private readonly ICollection DictionaryKeys;
 
             /// <summary>
-            /// 将 <see cref="ValueCollection"/> 类的新实例初始化为指定字典的值的集合的包装。
+            /// 将 <see cref="KeyCollection"/> 类的新实例初始化为指定字典的值的集合的包装。
             /// </summary>
             /// <param name="dictionary">要包装键的集合的字典。</param>
             /// <exception cref="ArgumentNullException">
@@ -320,7 +329,7 @@ namespace XstarS.Collections.ObjectModel
             IEnumerator IEnumerable.GetEnumerator() => this.DictionaryKeys.GetEnumerator();
 
             /// <summary>
-            /// 提供 <see cref="ValueCollection"/> 的调试器视图。
+            /// 提供 <see cref="KeyCollection"/> 的调试器视图。
             /// </summary>
             private sealed class DebugView
             {
