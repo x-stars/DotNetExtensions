@@ -30,8 +30,20 @@ namespace XstarS.Windows.Input
         /// <summary>
         /// 在当前状态下执行此命令。
         /// </summary>
+        public void Execute() => this.Execute(null);
+
+        /// <summary>
+        /// 在当前状态下执行此命令。
+        /// </summary>
         /// <param name="parameter">此命令使用的数据。</param>
         public abstract void Execute(object? parameter);
+
+        /// <summary>
+        /// 确定此命令是否可在其当前状态下执行。
+        /// </summary>
+        /// <returns>如果可执行此命令，则为 <see langword="true"/>；
+        /// 否则为 <see langword="false"/>。</returns>
+        public bool CanExecute() => this.CanExecute(null);
 
         /// <summary>
         /// 确定此命令是否可在其当前状态下执行。

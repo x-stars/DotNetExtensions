@@ -25,8 +25,8 @@ namespace XstarS.Windows.Input
                 },
                 _ => canExecute);
             command.CanExecuteChanged += (sender, e) => Console.WriteLine(
-                $"{nameof(command.CanExecuteChanged)}: {command.CanExecute(null)}");
-            command.Execute(null);
+                $"{nameof(command.CanExecuteChanged)}: {command.CanExecute()}");
+            command.Execute();
         }
     }
 }
