@@ -56,8 +56,8 @@ namespace XstarS.ComponentModel
         /// <returns>指定实体类型的所有公共实例属性的名称。</returns>
         private static string[] GetAllPropertyNames(Type entityType)
         {
-            var binding = BindingFlags.Instance | BindingFlags.Public;
-            var properties = entityType.GetProperties(binding);
+            var pubInst = BindingFlags.Public | BindingFlags.Instance;
+            var properties = entityType.GetProperties(pubInst);
             var propertyNames = new List<string>(properties.Length);
             foreach (var property in properties) { propertyNames.Add(property.Name); }
             return propertyNames.ToArray();

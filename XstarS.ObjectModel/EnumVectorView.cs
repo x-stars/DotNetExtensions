@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 
 namespace XstarS.ComponentModel
@@ -65,12 +66,26 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
+        /// 确定是否应当在当前视图表示的枚举值更改时通知枚举属性的值更改。
+        /// </summary>
+        /// <returns>如果当前视图类型定义了额外的公共实例属性，
+        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        private bool ShouldNotifyEnumProperties()
+        {
+            var pubInst = BindingFlags.Public | BindingFlags.Instance;
+            var properties = this.GetType().GetProperties(pubInst);
+            var baseProps = typeof(EnumVectorView<TEnum>).GetProperties(pubInst);
+            return properties.Length > baseProps.Length;
+        }
+
+        /// <summary>
         /// 初始化 <see cref="EnumVectorView{TEnum}.Value"/> 属性的关联枚举属性的名称。
         /// </summary>
         protected override void InitializeRelatedProperties()
         {
             base.InitializeRelatedProperties();
-            var enumNames = Enum.GetNames(typeof(TEnum));
+            var enumNames = this.ShouldNotifyEnumProperties() ?
+                Enum.GetNames(typeof(TEnum)) : Array.Empty<string>();
             var valueRelated = new string[enumNames.Length + 1];
             Array.Copy(enumNames, valueRelated, enumNames.Length);
             valueRelated[enumNames.Length] = ObservableDataObject.IndexerName;
