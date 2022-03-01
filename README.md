@@ -19,6 +19,7 @@
 * `XstarS`
 * `XstarS.Collections`
 * `XstarS.Collections.Generic`
+* `XstarS.Collections.ObjectModel`
 * `XstarS.Collections.Specialized`
 * `XstarS.Diagnostics`
 * `XstarS.IO`
