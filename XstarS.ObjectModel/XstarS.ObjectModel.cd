@@ -31,7 +31,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="XstarS.ComponentModel.EnumFlagsVectorView&lt;TEnum&gt;">
-    <Position X="2.75" Y="10.5" Width="2.5" />
+    <Position X="2.75" Y="10" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
       <FileName>EnumFlagsVectorView.cs</FileName>
@@ -47,14 +47,14 @@
   <Class Name="XstarS.ComponentModel.EnumVectorView&lt;TEnum&gt;">
     <Position X="2.75" Y="6" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAEAAECBAAAiAAAEAQAIAAAAAgAAAIAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAEAAECBAAAAAAAEAQAAAAAAAgAAAAAAA=</HashCode>
       <FileName>EnumVectorView.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="XstarS.ComponentModel.ObservableDataObject">
     <Position X="6.5" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>EAAAAAAAKAmAAIQEIAAAAiAAgAEAAAAAAAAAAAAIAAg=</HashCode>
+      <HashCode>EAAAAAAACAiAAIQEIAAAAiAAgAEAAAQAAAgAAAAIAAg=</HashCode>
       <FileName>ObservableDataObject.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
