@@ -67,17 +67,12 @@ namespace XstarS.Windows.Input
         /// <param name="e">包含事件数据的 <see cref="EventArgs"/>。</param>
         protected virtual void OnCanExecuteChanged(EventArgs e)
         {
-            if (this.InitialSyncContext is null) { this.OnCanExecuteChanged((object)e); }
-            else { this.InitialSyncContext.Post(this.OnCanExecuteChanged, (object)e); }
-        }
-
-        /// <summary>
-        /// 使用指定的事件数据引发 <see cref="CommandBase.CanExecuteChanged"/> 事件。
-        /// </summary>
-        /// <param name="e">包含事件数据的 <see cref="EventArgs"/>。</param>
-        private void OnCanExecuteChanged(object? e)
-        {
-            this.CanExecuteChanged?.Invoke(this, (EventArgs)e!);
+            void RaiseCurrentEvent(object? e) =>
+                this.CanExecuteChanged?.Invoke(this, (EventArgs)e!);
+            var synchronized = (this.InitialSyncContext == null) ||
+                (this.InitialSyncContext == SynchronizationContext.Current);
+            if (synchronized) { RaiseCurrentEvent(e); }
+            else { this.InitialSyncContext!.Post(RaiseCurrentEvent, e); }
         }
     }
 }
