@@ -11,12 +11,12 @@ namespace XstarS.Windows.Input
     public class DelegateCommand : CommandBase
     {
         /// <summary>
-        /// 表示 <see cref="DelegateCommand.Execute(object?)"/> 方法调用的委托。
+        /// 表示 <see cref="DelegateCommand.Execute(object)"/> 方法调用的委托。
         /// </summary>
         private readonly Action<object?> ExecuteDelegate;
 
         /// <summary>
-        /// 表示 <see cref="DelegateCommand.CanExecute(object?)"/> 方法调用的委托。
+        /// 表示 <see cref="DelegateCommand.CanExecute(object)"/> 方法调用的委托。
         /// </summary>
         private readonly Predicate<object?> CanExecuteDelegate;
 
@@ -24,9 +24,9 @@ namespace XstarS.Windows.Input
         /// 使用指定的委托初始化 <see cref="DelegateCommand"/> 类的新实例。
         /// </summary>
         /// <param name="executeDelegate">
-        /// <see cref="DelegateCommand.Execute(object?)"/> 方法调用的委托。</param>
+        /// <see cref="DelegateCommand.Execute(object)"/> 方法调用的委托。</param>
         /// <param name="canExecuteDelegate">
-        /// <see cref="DelegateCommand.CanExecute(object?)"/> 方法调用的委托。</param>
+        /// <see cref="DelegateCommand.CanExecute(object)"/> 方法调用的委托。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="executeDelegate"/> 为 <see langword="null"/>。</exception>
         public DelegateCommand(Action<object?> executeDelegate,
@@ -41,9 +41,9 @@ namespace XstarS.Windows.Input
         /// 使用指定的无参数委托创建 <see cref="DelegateCommand"/> 类的实例。
         /// </summary>
         /// <param name="executeDelegate">
-        /// <see cref="DelegateCommand.Execute(object?)"/> 方法调用的委托。</param>
+        /// <see cref="DelegateCommand.Execute(object)"/> 方法调用的委托。</param>
         /// <param name="canExecuteDelegate">
-        /// <see cref="DelegateCommand.CanExecute(object?)"/> 方法调用的委托。</param>
+        /// <see cref="DelegateCommand.CanExecute(object)"/> 方法调用的委托。</param>
         /// <returns>一个执行输入的委托的 <see cref="DelegateCommand"/> 对象。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="executeDelegate"/> 为 <see langword="null"/>。</exception>
@@ -58,9 +58,9 @@ namespace XstarS.Windows.Input
         /// 使用指定的泛型参数委托创建 <see cref="DelegateCommand"/> 类的实例。
         /// </summary>
         /// <param name="executeDelegate">
-        /// <see cref="DelegateCommand.Execute(object?)"/> 方法调用的委托。</param>
+        /// <see cref="DelegateCommand.Execute(object)"/> 方法调用的委托。</param>
         /// <param name="canExecuteDelegate">
-        /// <see cref="DelegateCommand.CanExecute(object?)"/> 方法调用的委托。</param>
+        /// <see cref="DelegateCommand.CanExecute(object)"/> 方法调用的委托。</param>
         /// <returns>一个执行输入的委托的 <see cref="DelegateCommand"/> 对象。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="executeDelegate"/> 为 <see langword="null"/>。</exception>
@@ -132,12 +132,12 @@ namespace XstarS.Windows.Input
         private sealed class Parameterless : CommandBase
         {
             /// <summary>
-            /// 表示 <see cref="Parameterless.Execute(object?)"/> 方法调用的委托。
+            /// 表示 <see cref="Parameterless.Execute(object)"/> 方法调用的委托。
             /// </summary>
             private readonly Action ExecuteDelegate;
 
             /// <summary>
-            /// 表示 <see cref="Parameterless.CanExecute(object?)"/> 方法调用的委托。
+            /// 表示 <see cref="Parameterless.CanExecute(object)"/> 方法调用的委托。
             /// </summary>
             private readonly Func<bool> CanExecuteDelegate;
 
@@ -145,9 +145,9 @@ namespace XstarS.Windows.Input
             /// 使用指定的委托初始化 <see cref="Parameterless"/> 类的新实例。
             /// </summary>
             /// <param name="executeDelegate">
-            /// <see cref="Parameterless.Execute(object?)"/> 方法调用的委托。</param>
+            /// <see cref="Parameterless.Execute(object)"/> 方法调用的委托。</param>
             /// <param name="canExecuteDelegate">
-            /// <see cref="Parameterless.CanExecute(object?)"/> 方法调用的委托。</param>
+            /// <see cref="Parameterless.CanExecute(object)"/> 方法调用的委托。</param>
             /// <exception cref="ArgumentNullException">
             /// <paramref name="executeDelegate"/> 为 <see langword="null"/>。</exception>
             internal Parameterless(Action executeDelegate,
@@ -187,12 +187,12 @@ namespace XstarS.Windows.Input
         private sealed class Parameter<T> : CommandBase
         {
             /// <summary>
-            /// 表示 <see cref="Parameter{T}.Execute(object?)"/> 方法调用的委托。
+            /// 表示 <see cref="Parameter{T}.Execute(object)"/> 方法调用的委托。
             /// </summary>
             private readonly Action<T?> ExecuteDelegate;
 
             /// <summary>
-            /// 表示 <see cref="Parameter{T}.CanExecute(object?)"/> 方法调用的委托。
+            /// 表示 <see cref="Parameter{T}.CanExecute(object)"/> 方法调用的委托。
             /// </summary>
             private readonly Predicate<T?> CanExecuteDelegate;
 
@@ -200,9 +200,9 @@ namespace XstarS.Windows.Input
             /// 使用指定的委托初始化 <see cref="Parameter{T}"/> 类的新实例。
             /// </summary>
             /// <param name="executeDelegate">
-            /// <see cref="Parameter{T}.Execute(object?)"/> 方法调用的委托。</param>
+            /// <see cref="Parameter{T}.Execute(object)"/> 方法调用的委托。</param>
             /// <param name="canExecuteDelegate">
-            /// <see cref="Parameter{T}.CanExecute(object?)"/> 方法调用的委托。</param>
+            /// <see cref="Parameter{T}.CanExecute(object)"/> 方法调用的委托。</param>
             /// <exception cref="ArgumentNullException">
             /// <paramref name="executeDelegate"/> 为 <see langword="null"/>。</exception>
             internal Parameter(Action<T?> executeDelegate,

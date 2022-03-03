@@ -177,7 +177,7 @@ namespace XstarS.ComponentModel
         }
 
         /// <summary>
-        /// 当 <see cref="ObservableDataObject.SetProperty{T}(T, string?)"/> 方法引发异常时调用。
+        /// 当 <see cref="ObservableDataObject.SetProperty{T}(T, string)"/> 方法引发异常时调用。
         /// </summary>
         /// <param name="propertyName">正在设置值的属性的名称。</param>
         /// <param name="exception">在设置属性的值时引发的异常。</param>
