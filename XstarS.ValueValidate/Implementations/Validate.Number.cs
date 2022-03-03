@@ -2,7 +2,7 @@
 
 namespace XstarS
 {
-    partial class Validate
+    static partial class Validate
     {
         /// <summary>
         /// 验证整数是否在索引的有效范围内。

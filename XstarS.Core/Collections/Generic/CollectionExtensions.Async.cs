@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace XstarS.Collections.Generic
 {
-    partial class CollectionExtensions
+    static partial class CollectionExtensions
     {
         /// <summary>
         /// 返回 <see cref="IEnumerable{T}"/> 的 <see cref="IAsyncEnumerable{T}"/> 包装。

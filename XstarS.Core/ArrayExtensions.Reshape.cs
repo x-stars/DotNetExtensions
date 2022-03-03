@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace XstarS
 {
-    partial class ArrayExtensions
+    static partial class ArrayExtensions
     {
         /// <summary>
         /// 枚举数组中的每个元素。对于交错数组，将递归枚举至元素的声明类型不为数组。

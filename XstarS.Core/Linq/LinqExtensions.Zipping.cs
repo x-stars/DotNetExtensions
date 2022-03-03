@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace XstarS.Linq
 {
-    partial class LinqExtensions
+    static partial class LinqExtensions
     {
         /// <summary>
         /// 将当前序列与另一序列的元素对应连接，得到 2 元组的结果序列。

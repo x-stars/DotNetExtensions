@@ -7,7 +7,7 @@ using ReferenceEqualityComparer =
 
 namespace XstarS.Runtime.CompilerServices
 {
-    partial class ObjectRuntimeValue
+    static partial class ObjectRuntimeValue
     {
         /// <summary>
         /// 获取指定对象递归包含的值的哈希代码。

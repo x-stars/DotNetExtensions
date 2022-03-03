@@ -9,7 +9,7 @@ namespace XstarS.Runtime.CompilerServices
 {
     using ObjectPair = KeyValuePair<object, object>;
 
-    partial class ObjectRuntimeValue
+    static partial class ObjectRuntimeValue
     {
         /// <summary>
         /// 确定指定的两个对象包含的值是否递归相等。

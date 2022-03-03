@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace XstarS.Collections.Generic
 {
-    partial class CollectionExtensions
+    static partial class CollectionExtensions
     {
         /// <summary>
         /// 顺序连接 <see cref="IEnumerable{T}"/> 中包含的序列。

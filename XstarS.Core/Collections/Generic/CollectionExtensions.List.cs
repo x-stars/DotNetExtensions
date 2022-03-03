@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 
 namespace XstarS.Collections.Generic
 {
-    partial class CollectionExtensions
+    static partial class CollectionExtensions
     {
         /// <summary>
         /// 返回 <see cref="IList{T}"/> 的只读包装。

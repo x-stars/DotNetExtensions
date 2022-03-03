@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace XstarS.Collections.Generic
 {
-    partial class CollectionExtensions
+    static partial class CollectionExtensions
     {
         /// <summary>
         /// 将指定集合的元素添加到 <see cref="ISet{T}"/> 中。

@@ -5,7 +5,7 @@ using System.Security;
 
 namespace XstarS
 {
-    partial class ConsoleEx
+    static partial class ConsoleEx
     {
         /// <summary>
         /// 将指定的字符串值以指定的前景色和背景色写入标准输出流。

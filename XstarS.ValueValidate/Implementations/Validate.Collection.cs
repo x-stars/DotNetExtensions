@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace XstarS
 {
-    partial class Validate
+    static partial class Validate
     {
         /// <summary>
         /// 验证集合是否为空集合。

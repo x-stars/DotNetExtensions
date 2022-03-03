@@ -6,7 +6,7 @@ using XstarS.Reflection.Emit;
 
 namespace XstarS.Reflection
 {
-    public static partial class MemberDelegateExtensions
+    static partial class MemberDelegateExtensions
     {
         /// <summary>
         /// 表示字段对应的获取值的动态调用方法。

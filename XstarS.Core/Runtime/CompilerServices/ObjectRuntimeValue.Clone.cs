@@ -15,7 +15,7 @@ using ReferenceEqualityComparer =
 
 namespace XstarS.Runtime.CompilerServices
 {
-    partial class ObjectRuntimeValue
+    static partial class ObjectRuntimeValue
     {
         /// <summary>
         /// 表示 <see cref="object.MemberwiseClone()"/> 方法的静态调用委托。

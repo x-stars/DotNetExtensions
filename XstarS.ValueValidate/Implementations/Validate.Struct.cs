@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace XstarS
 {
-    partial class Validate
+    static partial class Validate
     {
         /// <summary>
         /// 验证对象是否不是默认值。

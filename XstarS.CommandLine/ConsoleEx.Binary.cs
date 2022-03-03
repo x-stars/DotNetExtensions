@@ -5,7 +5,7 @@ using XstarS.IO;
 
 namespace XstarS
 {
-    partial class ConsoleEx
+    static partial class ConsoleEx
     {
         /// <summary>
         /// 提供控制台使用的标准输入输出流。

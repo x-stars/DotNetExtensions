@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 
 namespace XstarS.Collections.Generic
 {
-    partial class CollectionExtensions
+    static partial class CollectionExtensions
     {
         /// <summary>
         /// 返回 <see cref="IDictionary{TKey, TValue}"/> 的只读包装。

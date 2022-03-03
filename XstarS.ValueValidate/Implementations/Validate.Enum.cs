@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace XstarS
 {
-    partial class Validate
+    static partial class Validate
     {
         /// <summary>
         /// 提供用于验证枚举值的信息。

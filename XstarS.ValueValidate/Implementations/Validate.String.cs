@@ -4,7 +4,7 @@ using System.Text.RegularExpressions;
 
 namespace XstarS
 {
-    partial class Validate
+    static partial class Validate
     {
         /// <summary>
         /// 验证字符串是否不是空字符串 <see cref="string.Empty"/>。
