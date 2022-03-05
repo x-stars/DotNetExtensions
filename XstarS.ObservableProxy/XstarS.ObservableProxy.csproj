@@ -50,6 +50,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\Common\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\XstarS.Core\XstarS.Core.csproj" />
   </ItemGroup>
 

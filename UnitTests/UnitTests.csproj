@@ -30,9 +30,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.2.7" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.7" />
+    <Compile Include="..\Common\**\*.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,6 +45,12 @@
     <ProjectReference Include="..\XstarS.Primitives\XstarS.Primitives.csproj" />
     <ProjectReference Include="..\XstarS.Unions\XstarS.Unions.csproj" />
     <ProjectReference Include="..\XstarS.ValueValidate\XstarS.ValueValidate.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.7" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.7" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.Split(`-`)[0].TrimEnd(`.0123456789`))'=='net' And
