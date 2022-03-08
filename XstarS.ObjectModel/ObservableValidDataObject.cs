@@ -132,8 +132,7 @@ namespace XstarS.ComponentModel
         protected override void SetProperty<T>(
             [AllowNull] T value, [CallerMemberName] string? propertyName = null)
         {
-            try { base.SetProperty(value, propertyName); }
-            catch (Exception e) { this.OnSetPropertyException(propertyName, e); return; }
+            base.SetProperty(value, propertyName);
             this.RelatedValidateProperty(propertyName);
         }
 
@@ -174,18 +173,6 @@ namespace XstarS.ComponentModel
             var errors = new List<ValidationResult>();
             try { Validator.TryValidateProperty(value, context, errors); } catch { }
             this.SetErrors(errors, propertyName);
-        }
-
-        /// <summary>
-        /// 当 <see cref="ObservableDataObject.SetProperty{T}(T, string)"/> 方法引发异常时调用。
-        /// </summary>
-        /// <param name="propertyName">正在设置值的属性的名称。</param>
-        /// <param name="exception">在设置属性的值时引发的异常。</param>
-        /// <exception cref="Exception">无法处理输入的异常。</exception>
-        protected virtual void OnSetPropertyException(string? propertyName, Exception exception)
-        {
-            if (exception is SystemException) { throw exception; }
-            else { this.SetErrors(new[] { exception }, propertyName); }
         }
 
         /// <summary>
