@@ -4,10 +4,10 @@ using System.Reflection;
 
 namespace XstarS.Reflection
 {
-    using DynamicGetDelegate = Func<object?, object?>;
-    using DynamicSetDelegate = Action<object?, object?>;
     using DynamicCreateDelegate = Func<object?[]?, object>;
+    using DynamicGetDelegate = Func<object?, object?>;
     using DynamicInvokeDelegate = Func<object?, object?[]?, object?>;
+    using DynamicSetDelegate = Action<object?, object?>;
 
     /// <summary>
     /// 提供以委托快速调用类型成员的扩展方法。

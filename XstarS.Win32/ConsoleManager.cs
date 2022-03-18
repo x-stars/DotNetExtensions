@@ -44,9 +44,9 @@ namespace XstarS.Win32
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         public static bool HasWindow => NativeMethods.GetConsoleWindow() != (nint)0;
 
-        /// <summary>  
+        /// <summary>
         /// 为当前应用程序分配控制台窗口。
-        /// </summary>  
+        /// </summary>
         /// <exception cref="NotSupportedException">不支持当前操作。</exception>
         public static void ShowWindow()
         {
@@ -60,9 +60,9 @@ namespace XstarS.Win32
             }
         }
 
-        /// <summary>  
+        /// <summary>
         /// 释放当前已经分配的控制台窗口。
-        /// </summary>  
+        /// </summary>
         /// <exception cref="NotSupportedException">不支持当前操作。</exception>
         public static void CloseWindow()
         {

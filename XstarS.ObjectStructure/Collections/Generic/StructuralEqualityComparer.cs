@@ -13,7 +13,7 @@ namespace XstarS.Collections.Generic
     public abstract class StructuralEqualityComparer<T> : SimpleAcyclicEqualityComparer<T>
     {
         /// <summary>
-        /// 表示 <see cref="StructuralEqualityComparer{T}.Default"/> 的延迟初始化值。 
+        /// 表示 <see cref="StructuralEqualityComparer{T}.Default"/> 的延迟初始化值。
         /// </summary>
         private static readonly Lazy<StructuralEqualityComparer<T>> LazyDefault =
             new Lazy<StructuralEqualityComparer<T>>(
