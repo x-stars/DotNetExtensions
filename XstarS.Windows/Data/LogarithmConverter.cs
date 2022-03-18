@@ -26,8 +26,6 @@ namespace XstarS.Windows.Data
         /// <param name="parameter">表示对数的底的转换器参数。默认为常数 <see langword="e"/>。</param>
         /// <param name="culture">要用在转换器中的区域性。</param>
         /// <returns><paramref name="value"/> 的底为 <paramref name="parameter"/> 的对数。</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try
@@ -48,8 +46,6 @@ namespace XstarS.Windows.Data
         /// <param name="parameter">表示指数的底的转换器参数。默认为常数 <see langword="e"/>。</param>
         /// <param name="culture">要用在转换器中的区域性。</param>
         /// <returns><paramref name="value"/> 的底为 <paramref name="parameter"/> 的指数。</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             try

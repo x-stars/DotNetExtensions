@@ -89,8 +89,6 @@ namespace XstarS.Collections.Generic
         /// <param name="nextHashCode">新的哈希代码。</param>
         /// <returns><paramref name="hashCode"/> 与
         /// <paramref name="nextHashCode"/> 组合得到的哈希代码。</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Performance", "CA1822: MarkMembersAsStatic")]
         protected int CombineHashCode(int hashCode, int nextHashCode)
         {
             return hashCode * -1521134295 + nextHashCode;

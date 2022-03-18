@@ -144,7 +144,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
         private static void ObjectRecursiveClone(object value, Dictionary<object, object> cloned)
         {
-            for (var type = value.GetType(); !(type is null); type = type.BaseType)
+            for (var type = value.GetType(); type is not null; type = type.BaseType)
             {
                 var fields = type.GetFields(BindingFlags.DeclaredOnly |
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);

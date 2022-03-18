@@ -50,7 +50,7 @@ namespace XstarS.CommandLine.Specialized
                 if (argument.Contains(':') && this.NameComparer.Equals(
                     argument.Remove(argument.IndexOf(':')), name))
                 {
-                    return argument.Substring(argument.IndexOf(':') + 1);
+                    return argument[(argument.IndexOf(':') + 1)..];
                 }
             }
 
@@ -116,7 +116,7 @@ namespace XstarS.CommandLine.Specialized
                 if (argument.Contains(':') && this.NameComparer.Equals(
                     argument.Remove(argument.IndexOf(':')), name))
                 {
-                    values.Add(argument.Substring(argument.IndexOf(':') + 1));
+                    values.Add(argument[(argument.IndexOf(':') + 1)..]);
                 }
             }
 

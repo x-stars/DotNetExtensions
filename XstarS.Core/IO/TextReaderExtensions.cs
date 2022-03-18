@@ -111,7 +111,7 @@ namespace XstarS.IO
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            string? ReadCore(TextReader reader)
+            static string? ReadCore(TextReader reader)
             {
                 var iChar = -1;
                 while ((iChar = reader.Read()) != -1)

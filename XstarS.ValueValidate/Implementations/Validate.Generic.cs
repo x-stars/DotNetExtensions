@@ -80,7 +80,7 @@ namespace XstarS
         public static IValueInfo<object> IsInstanceOf<T>(
             this IValueInfo<object> valueInfo, string? message = null)
         {
-            if (!(valueInfo.Value is T))
+            if (valueInfo.Value is not T)
             {
                 ThrowHelper.ThrowArgumentException(valueInfo.Name, message,
                     new InvalidCastException());

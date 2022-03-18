@@ -23,7 +23,7 @@ namespace XstarS.Collections.Generic
 
             foreach (var enumerable in enumerables)
             {
-                if (!(enumerable is null))
+                if (enumerable is not null)
                 {
                     foreach (var item in enumerable)
                     {

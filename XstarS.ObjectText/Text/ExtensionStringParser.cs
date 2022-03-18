@@ -30,7 +30,7 @@ namespace XstarS.Text
         internal static bool CanParse
         {
             [MethodImpl(MethodImplOptions.NoInlining)]
-            get => !(ParseMethod.Delegate is null);
+            get => ParseMethod.Delegate is not null;
         }
 
         /// <summary>
@@ -60,8 +60,6 @@ namespace XstarS.Text
             /// 创建 <typeparamref name="T"/> 类型的扩展字符串解析方法的委托。
             /// </summary>
             /// <returns><typeparamref name="T"/> 类型的扩展字符串解析方法的委托。</returns>
-            [System.Diagnostics.CodeAnalysis.SuppressMessage(
-                "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
             private static Converter<string, T>? CreateDelegate()
             {
                 try

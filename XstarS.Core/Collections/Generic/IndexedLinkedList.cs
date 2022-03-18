@@ -106,7 +106,7 @@ namespace XstarS.Collections.Generic
             var comparer = EqualityComparer<T>.Default;
             var node = this.First;
             int index = 0;
-            while (!(node is null))
+            while (node is not null)
             {
                 if (comparer.Equals(node.Value, item))
                 {
@@ -154,7 +154,7 @@ namespace XstarS.Collections.Generic
             var comparer = EqualityComparer<T>.Default;
             var node = this.Last;
             int index = this.Count - 1;
-            while (!(node is null))
+            while (node is not null)
             {
                 if (comparer.Equals(node.Value, item))
                 {

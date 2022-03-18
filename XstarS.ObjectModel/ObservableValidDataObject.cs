@@ -112,7 +112,7 @@ namespace XstarS.ComponentModel
             if (this.IsEntityName(propertyName)) { throw new InvalidOperationException(); }
             var entityHadErrors = this.HasErrors;
             var hadErrors = this.ContainsErrors(propertyName);
-            var hasErrors = !(errors is null) && errors.Cast<object>().Any();
+            var hasErrors = errors?.Cast<object>().Any() ?? false;
             if (hasErrors) { this.ValidationErrors[propertyName] = errors!; }
             else { this.ValidationErrors.TryRemove(propertyName, out errors!); }
             var errorsChanged = hadErrors || hasErrors;
@@ -164,7 +164,6 @@ namespace XstarS.ComponentModel
         /// </summary>
         /// <param name="propertyName">要验证错误的属性的名称；
         /// 如果要验证当前实体的错误，则为 <see langword="null"/> 或空字符串。</param>
-        [SuppressMessage("Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         protected virtual void ValidateProperty([CallerMemberName] string? propertyName = null)
         {
             if (this.IsEntityName(propertyName)) { this.ValidateAllProperties(); return; }

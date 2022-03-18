@@ -159,7 +159,7 @@ namespace XstarS
             }
             else
             {
-                int ProductOf(params int[] values)
+                static int ProductOf(params int[] values)
                 {
                     int product = 1;
                     foreach (var value in values)
@@ -180,8 +180,7 @@ namespace XstarS
                     result = Array.CreateInstance(itemType.MakeArrayType(), ProductOf(restLengths));
                     for (int index = 0; index < result.Length; index++)
                     {
-                        var innerArray = Array.CreateInstance(
-                            itemType, lastLengths[lastLengths.Length - 1]);
+                        var innerArray = Array.CreateInstance(itemType, lastLengths[^1]);
                         for (int innerIndex = 0; innerIndex < innerArray.Length; innerIndex++)
                         {
                             if (items.MoveNext())

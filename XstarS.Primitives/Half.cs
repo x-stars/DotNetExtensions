@@ -208,8 +208,6 @@ namespace XstarS
         /// 中所包含的数字等效的 24 位无符号整数值；如果转换失败，则包含零。</param>
         /// <returns>如果 <paramref name="s"/> 成功转换，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static bool TryParse(string s, NumberStyles style, IFormatProvider? provider, out Half result)
         {
             try { result = Half.Parse(s, style, provider); return true; }

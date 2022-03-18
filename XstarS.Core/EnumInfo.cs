@@ -19,16 +19,12 @@ namespace XstarS
         /// 检索当前枚举中常数名称的数组。
         /// </summary>
         /// <returns>当前枚举的常数名称的字符串数组。</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public static string[] Names => Enum.GetNames(typeof(TEnum));
 
         /// <summary>
         /// 检索当前枚举中常数值的数组。
         /// </summary>
         /// <returns>当前枚举的常数值的数组。</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public static TEnum[] Values => (TEnum[])Enum.GetValues(typeof(TEnum));
 
         /// <summary>

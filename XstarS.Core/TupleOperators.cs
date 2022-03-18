@@ -15,8 +15,6 @@ namespace XstarS
         /// <param name="item1">要附加到当前空值元组末尾的值。</param>
         /// <returns>将 <paramref name="item1"/> 附加到
         /// <paramref name="tuple"/> 末尾得到的新的 1 值元组。</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Style", "IDE0060:RemoveUnusedParameter")]
         public static ValueTuple<T1> Append<T1>(
             this ValueTuple tuple, T1 item1)
         {

@@ -201,8 +201,6 @@ namespace XstarS.Collections.ObjectModel
         /// <summary>
         /// 提供非泛型键值对集合的枚举器的泛型包装。
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public sealed class Enumerator
             : IEnumerator, IDictionaryEnumerator, IEnumerator<KeyValuePair<TKey, TValue?>>
         {
@@ -255,8 +253,6 @@ namespace XstarS.Collections.ObjectModel
         [Serializable]
         [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
         [DebuggerTypeProxy(typeof(GenericDictionary<,>.KeyCollection.DebugView))]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public sealed class KeyCollection : ICollection, ICollection<TKey>, IReadOnlyCollection<TKey>
         {
             /// <summary>
@@ -358,8 +354,6 @@ namespace XstarS.Collections.ObjectModel
         [Serializable]
         [DebuggerDisplay("Count = {" + nameof(Count) + "}")]
         [DebuggerTypeProxy(typeof(GenericDictionary<,>.ValueCollection.DebugView))]
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
         public sealed class ValueCollection : ICollection, ICollection<TValue?>, IReadOnlyCollection<TValue?>
         {
             /// <summary>

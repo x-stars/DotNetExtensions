@@ -128,7 +128,7 @@ namespace XstarS.Reflection.Emit
 
                 genericParam.SetGenericParameterAttributes(
                     baseGenericParam.GenericParameterAttributes);
-                if (!(baseTypeConstraint is null))
+                if (baseTypeConstraint is not null)
                 {
                     genericParam.SetBaseTypeConstraint(baseTypeConstraint);
                 }
@@ -328,7 +328,7 @@ namespace XstarS.Reflection.Emit
             il.Emit(OpCodes.Ldarg_0);
             il.Emit(OpCodes.Ldfld, methodInvokeHandlerField);
             il.Emit(OpCodes.Ldarg_0);
-            if (!(instanceField is null))
+            if (instanceField is not null)
             {
                 il.Emit(OpCodes.Ldfld, instanceField);
             }
@@ -423,7 +423,7 @@ namespace XstarS.Reflection.Emit
 
             var il = method.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0);
-            if (!(instanceField is null))
+            if (instanceField is not null)
             {
                 il.Emit(OpCodes.Ldfld, instanceField);
             }

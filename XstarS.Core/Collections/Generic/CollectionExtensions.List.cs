@@ -173,9 +173,7 @@ namespace XstarS.Collections.Generic
             for (int index = 0; index < list.Count; index++)
             {
                 int rIndex = random.Next(list.Count);
-                var temp = list[index];
-                list[index] = list[rIndex];
-                list[rIndex] = temp;
+                (list[rIndex], list[index]) = (list[index], list[rIndex]);
             }
         }
 

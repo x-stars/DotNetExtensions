@@ -58,7 +58,7 @@ namespace XstarS.IO
                 throw new ArgumentNullException(nameof(reader));
             }
 
-            string? ReadCore(BinaryReader reader)
+            static string? ReadCore(BinaryReader reader)
             {
                 var iChar = -1;
                 var result = new mstring();

@@ -153,7 +153,7 @@ namespace XstarS.Windows.Input
             internal Parameterless(Action executeDelegate,
                 Func<bool>? canExecuteDelegate = null)
             {
-                bool DefaultCanExecute() => true;
+                static bool DefaultCanExecute() => true;
                 this.ExecuteDelegate = executeDelegate ??
                     throw new ArgumentNullException(nameof(executeDelegate));
                 this.CanExecuteDelegate = canExecuteDelegate ?? DefaultCanExecute;
@@ -208,7 +208,7 @@ namespace XstarS.Windows.Input
             internal Parameter(Action<T?> executeDelegate,
                 Predicate<T?>? canExecuteDelegate = null)
             {
-                bool DefaultCanExecute(T? parameter) => true;
+                static bool DefaultCanExecute(T? parameter) => true;
                 this.ExecuteDelegate = executeDelegate ??
                     throw new ArgumentNullException(nameof(executeDelegate));
                 this.CanExecuteDelegate = canExecuteDelegate ?? DefaultCanExecute;

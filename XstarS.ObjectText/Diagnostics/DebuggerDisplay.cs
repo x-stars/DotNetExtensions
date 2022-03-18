@@ -109,7 +109,7 @@ namespace XstarS.Diagnostics
             if (!name.EndsWith("()"))
             {
                 var field = type.GetField(name, instFlags);
-                if (!(field is null))
+                if (field is not null)
                 {
                     return instance => field.GetValue(instance);
                 }
@@ -119,7 +119,7 @@ namespace XstarS.Diagnostics
                     .Where(property => property.GetIndexParameters().Length == 0)
                     .Where(property => property.CanRead)
                     .SingleOrDefault();
-                if (!(property is null))
+                if (property is not null)
                 {
                     return instance => property.GetValue(instance);
                 }
@@ -130,7 +130,7 @@ namespace XstarS.Diagnostics
                     .Where(method => method.Name == name)
                     .Where(method => method.GetParameters().Length == 0)
                     .SingleOrDefault();
-                if (!(method is null))
+                if (method is not null)
                 {
                     return instance => method.Invoke(instance, Array.Empty<object>());
                 }

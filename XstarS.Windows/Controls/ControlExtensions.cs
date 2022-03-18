@@ -17,8 +17,6 @@ namespace XstarS.Windows.Controls
         /// <returns>若设定成功，则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="browser"/> 为 <see langword="null"/>。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static bool TrySuppressScriptErrors(this WebBrowser browser, bool suppresses = true)
         {
             if (browser is null)

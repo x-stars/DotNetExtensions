@@ -42,8 +42,6 @@ namespace XstarS.CommandLine
         /// 获取待解析的参数列表。
         /// </summary>
         /// <returns>待解析的参数列表。</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Performance", "CA1819:PropertiesShouldNotReturnArrays")]
         public string[] Arguments { get; }
 
         /// <summary>

@@ -156,7 +156,7 @@ namespace XstarS.Runtime.CompilerServices
         private static bool ObjectRecursiveEquals(
             object value, object other, HashSet<ObjectPair> compared)
         {
-            for (var type = value.GetType(); !(type is null); type = type.BaseType)
+            for (var type = value.GetType(); type is not null; type = type.BaseType)
             {
                 var fields = type.GetFields(BindingFlags.DeclaredOnly |
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);

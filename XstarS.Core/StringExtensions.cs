@@ -119,7 +119,7 @@ namespace XstarS
             }
 
             var lines = text.Split(Separators.NewLines, StringSplitOptions.None);
-            if (lines[lines.Length - 1].Length == 0)
+            if (lines[^1].Length == 0)
             {
                 var result = new string[lines.Length - 1];
                 Array.Copy(lines, result, lines.Length - 1);

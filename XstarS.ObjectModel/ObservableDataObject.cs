@@ -162,7 +162,7 @@ namespace XstarS.ComponentModel
         protected void SetRelatedProperties(string propertyName, params string[] relatedProperties)
         {
             if (this.IsEntityName(propertyName)) { throw new InvalidOperationException(); }
-            var hasRelated = !(relatedProperties is null) && (relatedProperties.Length != 0);
+            var hasRelated = (relatedProperties is not null) && (relatedProperties.Length != 0);
             if (hasRelated) { this.RelatedProperties[propertyName] = relatedProperties!; }
             else { this.RelatedProperties.TryRemove(propertyName, out relatedProperties!); }
         }

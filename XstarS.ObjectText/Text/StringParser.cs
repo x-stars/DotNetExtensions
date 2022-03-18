@@ -89,8 +89,6 @@ namespace XstarS.Text
         /// <param name="result">与 <paramref name="text"/> 中的内容等效的对象。</param>
         /// <returns>若 <paramref name="text"/> 成功转换，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1031:DoNot$1neralExceptionTypes")]
         public bool TryParse(string text, out T? result)
         {
             try { result = this.Parse(text); return true; }

@@ -74,8 +74,6 @@ namespace XstarS.IO
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="searchOption"/> 不为有效的枚举值。</exception>
         /// <exception cref="ArgumentException"><paramref name="searchPattern"/> 包含无效路径字符。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         private static TFileSystemInfo[] TryGetFileSystemInfos<TFileSystemInfo>(
             this DirectoryInfo directory, Func<DirectoryInfo, string, TFileSystemInfo[]> fsInfosFinder,
             string searchPattern = "*", SearchOption searchOption = SearchOption.TopDirectoryOnly)

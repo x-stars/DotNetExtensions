@@ -163,9 +163,9 @@ namespace XstarS.ComponentModel
             var module = ModuleProvider.ObservableTypesModule;
 
             var baseNamespace = baseType.Namespace;
-            var @namespace = !(baseNamespace is null) ? $"{baseNamespace}." : "";
+            var @namespace = (baseNamespace is not null) ? $"{baseNamespace}." : "";
             var baseTypeNames = new List<string>();
-            for (var nestedType = baseType; !(nestedType is null); nestedType = nestedType.DeclaringType)
+            for (var nestedType = baseType; nestedType is not null; nestedType = nestedType.DeclaringType)
             {
                 baseTypeNames.Insert(0, nestedType.Name);
             }

@@ -11,12 +11,8 @@ namespace XstarS.ComponentModel.TestTypes
         void Deconstruct(out int height, out int width);
     }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Microsoft.Design", "CA1040:AvoidEmptyInterfaces")]
     internal interface IInternalMutableRectangle : IMutableRectangle { }
 
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Microsoft.Design", "CA1012:AbstractTypesShouldNotHaveConstructors")]
     public abstract class ObservableRectangleBase : IMutableRectangle, INotifyPropertyChanged
     {
         public ObservableRectangleBase() { }

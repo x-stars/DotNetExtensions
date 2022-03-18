@@ -136,7 +136,7 @@ namespace XstarS.Runtime.CompilerServices
         {
             var hashCode = value.GetType().GetHashCode();
 
-            for (var type = value.GetType(); !(type is null); type = type.BaseType)
+            for (var type = value.GetType(); type is not null; type = type.BaseType)
             {
                 var fields = type.GetFields(BindingFlags.DeclaredOnly |
                     BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);

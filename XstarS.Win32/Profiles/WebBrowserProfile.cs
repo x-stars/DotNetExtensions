@@ -7,8 +7,6 @@ namespace XstarS.Win32.Profiles
     /// <summary>
     /// 表示当前程序的内置网络浏览器组件的相关配置。
     /// </summary>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage(
-        "Microsoft.Design", "CA1034:NestedTypesShouldNotBeVisible")]
     public static class WebBrowserProfile
     {
         /// <summary>

@@ -13,8 +13,6 @@ namespace XstarS
         /// <returns><paramref name="valueInfo"/> 本身。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="valueInfo"/> 的值不为一个合法路径。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public static IValueInfo<string> IsValidPath(
             this IValueInfo<string> valueInfo, string? message = null)
         {

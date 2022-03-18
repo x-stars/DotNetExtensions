@@ -22,8 +22,6 @@ namespace XstarS.Text
         /// <paramref name="text"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentException">
         /// 在当前应用程序域中无法找到名为 <paramref name="text"/> 的类型。</exception>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Design", "CA1031:DoNotCatchGeneralExceptionTypes")]
         public override Type Parse(string text)
         {
             if (text is null) { throw new ArgumentNullException(nameof(text)); }
@@ -72,7 +70,7 @@ namespace XstarS.Text
             {
                 var type = assembly.GetType(typeName,
                     throwOnError: false, ignoreCase);
-                if (!(type is null)) { return type; }
+                if (type is not null) { return type; }
             }
             return null;
         }
