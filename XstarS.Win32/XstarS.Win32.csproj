@@ -49,7 +49,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Common\**\*.cs" />
+    <Compile Include="..\SharedItems\Common\**\*.cs" />
   </ItemGroup>
 
   <ItemGroup Condition="('$(TargetFramework.TrimEnd(`.0123456789`))'=='netcoreapp') Or

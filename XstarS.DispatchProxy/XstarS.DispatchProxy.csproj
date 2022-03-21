@@ -51,7 +51,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Common\**\*.cs" />
+    <Compile Include="..\SharedItems\Common\**\*.cs" />
+    <Compile Include="..\SharedItems\DynamicDelegate\**\*.cs" />
   </ItemGroup>
 
   <ItemGroup Condition="('$(TargetFramework.Split(`-`)[0].TrimEnd(`.0123456789`))'=='net' And

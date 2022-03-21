@@ -52,7 +52,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="..\Common\**\*.cs" />
+    <Compile Include="..\SharedItems\Common\**\*.cs" />
+    <Compile Include="..\SharedItems\PairRefComparing\**\*.cs" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.01234567890`))'=='net' And
