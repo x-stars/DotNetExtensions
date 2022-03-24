@@ -6,23 +6,6 @@ namespace XstarS
     public class ArrayExtensionsTest
     {
         [TestMethod]
-        public void InitializeArray_FiveLayers_ValueEqualsIndices()
-        {
-            var length = 10;
-            var array = length.InitializeArray(
-                index1 => length.InitializeArray(
-                    index2 => length.InitializeArray(
-                        index3 => length.InitializeArray(
-                            index4 => length.InitializeArray(
-                                index5 => new[] {
-                                    index1, index2, index3, index4, index5 })))));
-            for (int index = 0; index < 5; index++)
-            {
-                Assert.AreEqual(index, array[0][1][2][3][4][index]);
-            }
-        }
-
-        [TestMethod]
         public void Reshape_Rank5Array_GetsRank2Array()
         {
             var array = new int[10, 10, 10, 10, 10];

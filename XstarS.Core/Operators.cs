@@ -10,7 +10,7 @@ namespace XstarS
     /// 提供常用的运算符。
     /// </summary>
     /// <remarks>建议静态引入后直接以函数名称调用。</remarks>
-    public static class Operators
+    public static partial class Operators
     {
         /// <summary>
         /// 原样返回当前对象。
