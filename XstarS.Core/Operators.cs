@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace XstarS
@@ -13,13 +15,31 @@ namespace XstarS
     public static partial class Operators
     {
         /// <summary>
-        /// 原样返回当前对象。
+        /// 原样返回指定对象。
         /// </summary>
-        /// <typeparam name="T">当前对象的类型。</typeparam>
+        /// <typeparam name="T">对象的类型。</typeparam>
         /// <param name="value">要原样返回的对象。</param>
         /// <returns><paramref name="value"/> 本身。</returns>
         [return: NotNullIfNotNull("value")]
         public static T Self<T>(T value) => value;
+
+        /// <summary>
+        /// 返回指定序列中的元素数。
+        /// </summary>
+        /// <param name="items">包含要计数的元素的序列。</param>
+        /// <returns>输入序列中的元素数量。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="items"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="OverflowException">
+        /// <paramref name="items"/> 中的元素数大于 <see cref="int.MaxValue"/>。</exception>
+        public static int Count(IEnumerable items) => items switch
+        {
+            null => throw new ArgumentNullException(nameof(items)),
+            Array array => array.Length,
+            string text => text.Length,
+            ICollection collection => collection.Count,
+            _ => items.Cast<object>().Count()
+        };
 
         /// <summary>
         /// 创建一个包含指定元素的数组。
@@ -30,7 +50,7 @@ namespace XstarS
         /// <exception cref="ArgumentNullException">
         /// <paramref name="items"/> 为 <see langword="null"/>。</exception>
         public static T[] ArrayOf<T>(params T[] items) =>
-            (T[])(items ?? throw new ArgumentNullException(nameof(items))).Clone();
+            items ?? throw new ArgumentNullException(nameof(items));
 
         /// <summary>
         /// 创建一个包含指定值的 <see cref="StrongBox{T}"/>。
