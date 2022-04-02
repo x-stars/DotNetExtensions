@@ -9,7 +9,7 @@ namespace XstarS.Reflection
     /// 提供通过反射访问对象的公共属性的方法。
     /// </summary>
     /// <typeparam name="T">对象的类型。</typeparam>
-    internal static class SimplePropertyAccessor<T> where T : notnull
+    internal static class SimplePropertyAccessor<T> where T : class
     {
         /// <summary>
         /// 表示当前类型的所有公共实例属性的 <see langword="get"/> 访问器的动态调用委托。
