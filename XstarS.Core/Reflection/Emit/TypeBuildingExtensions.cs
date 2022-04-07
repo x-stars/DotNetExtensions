@@ -118,14 +118,14 @@ namespace XstarS.Reflection.Emit
 
             var constructor = type.DefineConstructorLike(baseConstructor);
 
-            var il = constructor.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0);
+            var ilGen = constructor.GetILGenerator();
+            ilGen.Emit(OpCodes.Ldarg_0);
             for (int index = 0; index < baseConstructor.GetParameters().Length; index++)
             {
-                il.EmitLdarg(index + 1);
+                ilGen.EmitLdarg(index + 1);
             }
-            il.Emit(OpCodes.Call, baseConstructor);
-            il.Emit(OpCodes.Ret);
+            ilGen.Emit(OpCodes.Call, baseConstructor);
+            ilGen.Emit(OpCodes.Ret);
 
             return constructor;
         }
@@ -234,10 +234,10 @@ namespace XstarS.Reflection.Emit
 
             var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
-            var il = method.GetILGenerator();
-            il.Emit(OpCodes.Newobj,
+            var ilGen = method.GetILGenerator();
+            ilGen.Emit(OpCodes.Newobj,
                 typeof(NotImplementedException).GetConstructor(Type.EmptyTypes)!);
-            il.Emit(OpCodes.Throw);
+            ilGen.Emit(OpCodes.Throw);
 
             return method;
         }
@@ -347,10 +347,10 @@ namespace XstarS.Reflection.Emit
 
                 var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
-                var il = method.GetILGenerator();
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldfld, field);
-                il.Emit(OpCodes.Ret);
+                var ilGen = method.GetILGenerator();
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldfld, field);
+                ilGen.Emit(OpCodes.Ret);
 
                 property.SetGetMethod(method);
             }
@@ -361,11 +361,11 @@ namespace XstarS.Reflection.Emit
 
                 var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
-                var il = method.GetILGenerator();
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Stfld, field);
-                il.Emit(OpCodes.Ret);
+                var ilGen = method.GetILGenerator();
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldarg_1);
+                ilGen.Emit(OpCodes.Stfld, field);
+                ilGen.Emit(OpCodes.Ret);
 
                 property.SetSetMethod(method);
             }
@@ -470,38 +470,38 @@ namespace XstarS.Reflection.Emit
 
                 var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
-                var il = method.GetILGenerator();
+                var ilGen = method.GetILGenerator();
                 var eventType = baseEvent.EventHandlerType!;
-                var local0 = il.DeclareLocal(eventType);
-                var local1 = il.DeclareLocal(eventType);
-                var local2 = il.DeclareLocal(eventType);
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldfld, field);
-                il.Emit(OpCodes.Stloc_0);
-                var startLabel = il.DefineLabel();
-                il.MarkLabel(startLabel);
-                il.Emit(OpCodes.Ldloc_0);
-                il.Emit(OpCodes.Stloc_1);
-                il.Emit(OpCodes.Ldloc_1);
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Call,
+                var local0 = ilGen.DeclareLocal(eventType);
+                var local1 = ilGen.DeclareLocal(eventType);
+                var local2 = ilGen.DeclareLocal(eventType);
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldfld, field);
+                ilGen.Emit(OpCodes.Stloc_0);
+                var startLabel = ilGen.DefineLabel();
+                ilGen.MarkLabel(startLabel);
+                ilGen.Emit(OpCodes.Ldloc_0);
+                ilGen.Emit(OpCodes.Stloc_1);
+                ilGen.Emit(OpCodes.Ldloc_1);
+                ilGen.Emit(OpCodes.Ldarg_1);
+                ilGen.Emit(OpCodes.Call,
                     typeof(Delegate).GetMethod(
                         nameof(Delegate.Combine),
                         new[] { typeof(Delegate), typeof(Delegate) })!);
-                il.Emit(OpCodes.Castclass, eventType);
-                il.Emit(OpCodes.Stloc_2);
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldflda, field);
-                il.Emit(OpCodes.Ldloc_2);
-                il.Emit(OpCodes.Ldloc_1);
-                il.Emit(OpCodes.Call, typeof(Interlocked).GetMethods().Where(
+                ilGen.Emit(OpCodes.Castclass, eventType);
+                ilGen.Emit(OpCodes.Stloc_2);
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldflda, field);
+                ilGen.Emit(OpCodes.Ldloc_2);
+                ilGen.Emit(OpCodes.Ldloc_1);
+                ilGen.Emit(OpCodes.Call, typeof(Interlocked).GetMethods().Where(
                     iMethod => iMethod.Name == nameof(Interlocked.CompareExchange) &&
                     iMethod.IsGenericMethod).Single().MakeGenericMethod(eventType));
-                il.Emit(OpCodes.Stloc_0);
-                il.Emit(OpCodes.Ldloc_0);
-                il.Emit(OpCodes.Ldloc_1);
-                il.Emit(OpCodes.Bne_Un_S, startLabel);
-                il.Emit(OpCodes.Ret);
+                ilGen.Emit(OpCodes.Stloc_0);
+                ilGen.Emit(OpCodes.Ldloc_0);
+                ilGen.Emit(OpCodes.Ldloc_1);
+                ilGen.Emit(OpCodes.Bne_Un_S, startLabel);
+                ilGen.Emit(OpCodes.Ret);
 
                 @event.SetAddOnMethod(method);
             }
@@ -511,38 +511,38 @@ namespace XstarS.Reflection.Emit
 
                 var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
-                var il = method.GetILGenerator();
+                var ilGen = method.GetILGenerator();
                 var eventType = baseEvent.EventHandlerType!;
-                var local0 = il.DeclareLocal(eventType);
-                var local1 = il.DeclareLocal(eventType);
-                var local2 = il.DeclareLocal(eventType);
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldfld, field);
-                il.Emit(OpCodes.Stloc_0);
-                var startLabel = il.DefineLabel();
-                il.MarkLabel(startLabel);
-                il.Emit(OpCodes.Ldloc_0);
-                il.Emit(OpCodes.Stloc_1);
-                il.Emit(OpCodes.Ldloc_1);
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Call,
+                var local0 = ilGen.DeclareLocal(eventType);
+                var local1 = ilGen.DeclareLocal(eventType);
+                var local2 = ilGen.DeclareLocal(eventType);
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldfld, field);
+                ilGen.Emit(OpCodes.Stloc_0);
+                var startLabel = ilGen.DefineLabel();
+                ilGen.MarkLabel(startLabel);
+                ilGen.Emit(OpCodes.Ldloc_0);
+                ilGen.Emit(OpCodes.Stloc_1);
+                ilGen.Emit(OpCodes.Ldloc_1);
+                ilGen.Emit(OpCodes.Ldarg_1);
+                ilGen.Emit(OpCodes.Call,
                     typeof(Delegate).GetMethod(
                         nameof(Delegate.Remove),
                         new[] { typeof(Delegate), typeof(Delegate) })!);
-                il.Emit(OpCodes.Castclass, eventType);
-                il.Emit(OpCodes.Stloc_2);
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldflda, field);
-                il.Emit(OpCodes.Ldloc_2);
-                il.Emit(OpCodes.Ldloc_1);
-                il.Emit(OpCodes.Call, typeof(Interlocked).GetMethods().Where(
+                ilGen.Emit(OpCodes.Castclass, eventType);
+                ilGen.Emit(OpCodes.Stloc_2);
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldflda, field);
+                ilGen.Emit(OpCodes.Ldloc_2);
+                ilGen.Emit(OpCodes.Ldloc_1);
+                ilGen.Emit(OpCodes.Call, typeof(Interlocked).GetMethods().Where(
                     iMethod => iMethod.Name == nameof(Interlocked.CompareExchange) &&
                     iMethod.IsGenericMethod).Single().MakeGenericMethod(eventType));
-                il.Emit(OpCodes.Stloc_0);
-                il.Emit(OpCodes.Ldloc_0);
-                il.Emit(OpCodes.Ldloc_1);
-                il.Emit(OpCodes.Bne_Un_S, startLabel);
-                il.Emit(OpCodes.Ret);
+                ilGen.Emit(OpCodes.Stloc_0);
+                ilGen.Emit(OpCodes.Ldloc_0);
+                ilGen.Emit(OpCodes.Ldloc_1);
+                ilGen.Emit(OpCodes.Bne_Un_S, startLabel);
+                ilGen.Emit(OpCodes.Ret);
 
                 @event.SetRemoveOnMethod(method);
             }

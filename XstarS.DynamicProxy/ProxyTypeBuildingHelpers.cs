@@ -194,9 +194,9 @@ namespace XstarS.Reflection.Emit
                 delegateMethod.DefineParameter(1, ParameterAttributes.None, "instance");
                 delegateMethod.DefineParameter(2, ParameterAttributes.None, "arguments");
 
-                var il = delegateMethod.GetILGenerator();
-                il.Emit(OpCodes.Ldarg_0);
-                il.EmitUnbox(baseType);
+                var ilGen = delegateMethod.GetILGenerator();
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.EmitUnbox(baseType);
                 for (int pIndex = 0; pIndex < baseParameters.Length; pIndex++)
                 {
                     var baseParameter = baseParameters[pIndex];
@@ -204,12 +204,12 @@ namespace XstarS.Reflection.Emit
                         baseGenericParams, baseParameter.ParameterType);
                     var parameterType = (gIndex == -1) ?
                         baseParameter.ParameterType : genericParams[gIndex];
-                    il.Emit(OpCodes.Ldarg_1);
-                    il.EmitLdcI4(pIndex);
-                    il.Emit(OpCodes.Ldelem_Ref);
-                    il.EmitUnbox(parameterType);
+                    ilGen.Emit(OpCodes.Ldarg_1);
+                    ilGen.EmitLdcI4(pIndex);
+                    ilGen.Emit(OpCodes.Ldelem_Ref);
+                    ilGen.EmitUnbox(parameterType);
                 }
-                il.Emit((instanceField is null) ? OpCodes.Call : OpCodes.Callvirt,
+                ilGen.Emit((instanceField is null) ? OpCodes.Call : OpCodes.Callvirt,
                     !baseMethod.IsGenericMethod ? baseMethod :
                         baseMethod.MakeGenericMethod(nestedType.GetGenericArguments()));
                 if (baseMethod.ReturnType != typeof(void))
@@ -218,13 +218,13 @@ namespace XstarS.Reflection.Emit
                         baseGenericParams, baseReturnParam.ParameterType);
                     var returnType = (gIndex == -1) ?
                         baseReturnParam.ParameterType : genericParams[gIndex];
-                    il.EmitBox(returnType);
+                    ilGen.EmitBox(returnType);
                 }
                 else
                 {
-                    il.Emit(OpCodes.Ldnull);
+                    ilGen.Emit(OpCodes.Ldnull);
                 }
-                il.Emit(OpCodes.Ret);
+                ilGen.Emit(OpCodes.Ret);
             }
 
             var infoField = nestedType.DefineField(nameof(MethodInfo), typeof(MethodInfo),
@@ -235,22 +235,22 @@ namespace XstarS.Reflection.Emit
 
             var constructor = nestedType.DefineTypeInitializer();
             {
-                var il = constructor.GetILGenerator();
-                il.Emit(OpCodes.Ldtoken,
+                var ilGen = constructor.GetILGenerator();
+                ilGen.Emit(OpCodes.Ldtoken,
                     !baseMethod.IsGenericMethod ? baseMethod :
                         baseMethod.MakeGenericMethod(nestedType.GetGenericArguments()));
-                il.Emit(OpCodes.Ldtoken, baseMethod.DeclaringType!);
-                il.Emit(OpCodes.Call,
+                ilGen.Emit(OpCodes.Ldtoken, baseMethod.DeclaringType!);
+                ilGen.Emit(OpCodes.Call,
                     typeof(MethodBase).GetMethod(
                         nameof(MethodBase.GetMethodFromHandle),
                         new[] { typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle) })!);
-                il.Emit(OpCodes.Castclass, typeof(MethodInfo));
-                il.Emit(OpCodes.Stsfld, infoField);
-                il.Emit(OpCodes.Ldnull);
-                il.Emit(OpCodes.Ldftn, delegateMethod);
-                il.Emit(OpCodes.Newobj, typeof(MethodDelegate).GetConstructors()[0]);
-                il.Emit(OpCodes.Stsfld, delegateField);
-                il.Emit(OpCodes.Ret);
+                ilGen.Emit(OpCodes.Castclass, typeof(MethodInfo));
+                ilGen.Emit(OpCodes.Stsfld, infoField);
+                ilGen.Emit(OpCodes.Ldnull);
+                ilGen.Emit(OpCodes.Ldftn, delegateMethod);
+                ilGen.Emit(OpCodes.Newobj, typeof(MethodDelegate).GetConstructors()[0]);
+                ilGen.Emit(OpCodes.Stsfld, delegateField);
+                ilGen.Emit(OpCodes.Ret);
             }
 
             nestedType.CreateTypeInfo();
@@ -324,68 +324,68 @@ namespace XstarS.Reflection.Emit
             var baseHasGenericConstraints = baseMethod.GetGenericArguments().Any(
                 param => param.GetGenericParameterConstraints().Length != 0);
 
-            var il = method.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldfld, methodInvokeHandlerField);
-            il.Emit(OpCodes.Ldarg_0);
+            var ilGen = method.GetILGenerator();
+            ilGen.Emit(OpCodes.Ldarg_0);
+            ilGen.Emit(OpCodes.Ldfld, methodInvokeHandlerField);
+            ilGen.Emit(OpCodes.Ldarg_0);
             if (instanceField is not null)
             {
-                il.Emit(OpCodes.Ldfld, instanceField);
+                ilGen.Emit(OpCodes.Ldfld, instanceField);
             }
-            il.EmitBox(baseType);
+            ilGen.EmitBox(baseType);
             if (baseHasGenericConstraints)
             {
-                il.Emit(OpCodes.Ldtoken, baseMethodInfoField);
-                il.Emit(OpCodes.Ldtoken, baseMethodInfoField.DeclaringType!);
-                il.Emit(OpCodes.Call,
+                ilGen.Emit(OpCodes.Ldtoken, baseMethodInfoField);
+                ilGen.Emit(OpCodes.Ldtoken, baseMethodInfoField.DeclaringType!);
+                ilGen.Emit(OpCodes.Call,
                     typeof(FieldInfo).GetMethod(
                         nameof(FieldInfo.GetFieldFromHandle),
                         new[] { typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle) })!);
-                il.Emit(OpCodes.Ldnull);
-                il.Emit(OpCodes.Callvirt, typeof(FieldInfo).GetMethod(nameof(FieldInfo.GetValue))!);
+                ilGen.Emit(OpCodes.Ldnull);
+                ilGen.Emit(OpCodes.Callvirt, typeof(FieldInfo).GetMethod(nameof(FieldInfo.GetValue))!);
             }
             else
             {
-                il.Emit(OpCodes.Ldsfld, baseMethodInfoField);
+                ilGen.Emit(OpCodes.Ldsfld, baseMethodInfoField);
             }
             if (baseHasGenericConstraints)
             {
-                il.Emit(OpCodes.Ldtoken, baseMethodDelegateField);
-                il.Emit(OpCodes.Ldtoken, baseMethodDelegateField.DeclaringType!);
-                il.Emit(OpCodes.Call,
+                ilGen.Emit(OpCodes.Ldtoken, baseMethodDelegateField);
+                ilGen.Emit(OpCodes.Ldtoken, baseMethodDelegateField.DeclaringType!);
+                ilGen.Emit(OpCodes.Call,
                     typeof(FieldInfo).GetMethod(
                         nameof(FieldInfo.GetFieldFromHandle),
                         new[] { typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle) })!);
-                il.Emit(OpCodes.Ldnull);
-                il.Emit(OpCodes.Callvirt, typeof(FieldInfo).GetMethod(nameof(FieldInfo.GetValue))!);
+                ilGen.Emit(OpCodes.Ldnull);
+                ilGen.Emit(OpCodes.Callvirt, typeof(FieldInfo).GetMethod(nameof(FieldInfo.GetValue))!);
             }
             else
             {
-                il.Emit(OpCodes.Ldsfld, baseMethodDelegateField);
+                ilGen.Emit(OpCodes.Ldsfld, baseMethodDelegateField);
             }
             var baseParameters = baseMethod.GetParameters();
-            il.EmitLdcI4(baseParameters.Length);
-            il.Emit(OpCodes.Newarr, typeof(object));
+            ilGen.EmitLdcI4(baseParameters.Length);
+            ilGen.Emit(OpCodes.Newarr, typeof(object));
             for (int index = 0; index < baseParameters.Length; index++)
             {
                 var baseParameter = baseParameters[index];
-                il.Emit(OpCodes.Dup);
-                il.EmitLdcI4(index);
-                il.EmitLdarg(index + 1);
-                il.EmitBox(baseParameter.ParameterType);
-                il.Emit(OpCodes.Stelem_Ref);
+                ilGen.Emit(OpCodes.Dup);
+                ilGen.EmitLdcI4(index);
+                ilGen.EmitLdarg(index + 1);
+                ilGen.EmitBox(baseParameter.ParameterType);
+                ilGen.Emit(OpCodes.Stelem_Ref);
             }
-            il.Emit(OpCodes.Callvirt,
+            ilGen.Emit(OpCodes.Callvirt,
                 typeof(MethodInvokeHandler).GetMethod(nameof(MethodInvokeHandler.Invoke))!);
             if (baseMethod.ReturnType != typeof(void))
             {
-                il.EmitUnbox(baseMethod.ReturnType);
+                ilGen.EmitUnbox(baseMethod.ReturnType);
             }
             else
             {
-                il.Emit(OpCodes.Pop);
+                ilGen.Emit(OpCodes.Pop);
             }
-            il.Emit(OpCodes.Ret);
+            ilGen.Emit(OpCodes.Ret);
 
             return method;
         }
@@ -421,20 +421,20 @@ namespace XstarS.Reflection.Emit
 
             var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
-            var il = method.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0);
+            var ilGen = method.GetILGenerator();
+            ilGen.Emit(OpCodes.Ldarg_0);
             if (instanceField is not null)
             {
-                il.Emit(OpCodes.Ldfld, instanceField);
+                ilGen.Emit(OpCodes.Ldfld, instanceField);
             }
             for (int index = 0; index < baseMethod.GetParameters().Length; index++)
             {
-                il.EmitLdarg(index + 1);
+                ilGen.EmitLdarg(index + 1);
             }
-            il.Emit((instanceField is null) ? OpCodes.Call : OpCodes.Callvirt,
+            ilGen.Emit((instanceField is null) ? OpCodes.Call : OpCodes.Callvirt,
                 (baseMethod.GetGenericArguments().Length == 0) ? baseMethod :
                     baseMethod.MakeGenericMethod(method.GetGenericArguments()));
-            il.Emit(OpCodes.Ret);
+            ilGen.Emit(OpCodes.Ret);
 
             type.DefineMethodOverride(method, baseMethod);
 

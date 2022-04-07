@@ -47,22 +47,22 @@ namespace XstarS.Reflection.Emit
 
             method.DefineParameter(1, ParameterAttributes.None, "e");
 
-            var il = method.GetILGenerator();
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldfld, propertyChangedField);
-            il.Emit(OpCodes.Dup);
-            var invokeLabel = il.DefineLabel();
-            il.Emit(OpCodes.Brtrue_S, invokeLabel);
-            il.Emit(OpCodes.Pop);
-            il.Emit(OpCodes.Ret);
-            il.MarkLabel(invokeLabel);
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Callvirt,
+            var ilGen = method.GetILGenerator();
+            ilGen.Emit(OpCodes.Ldarg_0);
+            ilGen.Emit(OpCodes.Ldfld, propertyChangedField);
+            ilGen.Emit(OpCodes.Dup);
+            var invokeLabel = ilGen.DefineLabel();
+            ilGen.Emit(OpCodes.Brtrue_S, invokeLabel);
+            ilGen.Emit(OpCodes.Pop);
+            ilGen.Emit(OpCodes.Ret);
+            ilGen.MarkLabel(invokeLabel);
+            ilGen.Emit(OpCodes.Ldarg_0);
+            ilGen.Emit(OpCodes.Ldarg_1);
+            ilGen.Emit(OpCodes.Callvirt,
                 typeof(PropertyChangedEventHandler).GetMethod(
                     nameof(PropertyChangedEventHandler.Invoke),
                     new[] { typeof(object), typeof(PropertyChangedEventArgs) })!);
-            il.Emit(OpCodes.Ret);
+            ilGen.Emit(OpCodes.Ret);
 
             return method;
         }
@@ -127,14 +127,14 @@ namespace XstarS.Reflection.Emit
 
                 var method = type.DefineMethodOverride(baseMethod);
 
-                var il = method.GetILGenerator();
-                il.Emit(OpCodes.Ldarg_0);
+                var ilGen = method.GetILGenerator();
+                ilGen.Emit(OpCodes.Ldarg_0);
                 for (int index = 0; index < baseMethod.GetParameters().Length; index++)
                 {
-                    il.EmitLdarg(index + 1);
+                    ilGen.EmitLdarg(index + 1);
                 }
-                il.Emit(OpCodes.Call, baseMethod);
-                il.Emit(OpCodes.Ret);
+                ilGen.Emit(OpCodes.Call, baseMethod);
+                ilGen.Emit(OpCodes.Ret);
 
                 property.SetGetMethod(method);
             }
@@ -145,29 +145,29 @@ namespace XstarS.Reflection.Emit
 
                 var method = type.DefineMethodOverride(baseMethod);
 
-                var il = method.GetILGenerator();
-                il.Emit(OpCodes.Ldarg_0);
+                var ilGen = method.GetILGenerator();
+                ilGen.Emit(OpCodes.Ldarg_0);
                 for (int index = 0; index < baseMethod.GetParameters().Length; index++)
                 {
-                    il.EmitLdarg(index + 1);
+                    ilGen.EmitLdarg(index + 1);
                 }
-                il.Emit(OpCodes.Call, baseMethod);
+                ilGen.Emit(OpCodes.Call, baseMethod);
                 var propertyNotifyName = (baseProperty.GetIndexParameters().Length == 0) ?
                     baseProperty.Name : $"{baseProperty.Name}[]";
                 var eventArgsConstructor =
                     typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) })!;
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldstr, propertyNotifyName);
-                il.Emit(OpCodes.Newobj, eventArgsConstructor);
-                il.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldstr, propertyNotifyName);
+                ilGen.Emit(OpCodes.Newobj, eventArgsConstructor);
+                ilGen.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
                 foreach (var rPropertyName in rPropertyNames)
                 {
-                    il.Emit(OpCodes.Ldarg_0);
-                    il.Emit(OpCodes.Ldstr, rPropertyName);
-                    il.Emit(OpCodes.Newobj, eventArgsConstructor);
-                    il.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
+                    ilGen.Emit(OpCodes.Ldarg_0);
+                    ilGen.Emit(OpCodes.Ldstr, rPropertyName);
+                    ilGen.Emit(OpCodes.Newobj, eventArgsConstructor);
+                    ilGen.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
                 }
-                il.Emit(OpCodes.Ret);
+                ilGen.Emit(OpCodes.Ret);
 
                 property.SetSetMethod(method);
             }
@@ -238,10 +238,10 @@ namespace XstarS.Reflection.Emit
 
                 var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
-                var il = method.GetILGenerator();
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldfld, field);
-                il.Emit(OpCodes.Ret);
+                var ilGen = method.GetILGenerator();
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldfld, field);
+                ilGen.Emit(OpCodes.Ret);
 
                 property.SetGetMethod(method);
             }
@@ -252,24 +252,24 @@ namespace XstarS.Reflection.Emit
 
                 var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
-                var il = method.GetILGenerator();
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldarg_1);
-                il.Emit(OpCodes.Stfld, field);
+                var ilGen = method.GetILGenerator();
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldarg_1);
+                ilGen.Emit(OpCodes.Stfld, field);
                 var eventArgsConstructor =
                     typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) })!;
-                il.Emit(OpCodes.Ldarg_0);
-                il.Emit(OpCodes.Ldstr, baseProperty.Name);
-                il.Emit(OpCodes.Newobj, eventArgsConstructor);
-                il.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
+                ilGen.Emit(OpCodes.Ldarg_0);
+                ilGen.Emit(OpCodes.Ldstr, baseProperty.Name);
+                ilGen.Emit(OpCodes.Newobj, eventArgsConstructor);
+                ilGen.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
                 foreach (var rPropertyName in rPropertyNames)
                 {
-                    il.Emit(OpCodes.Ldarg_0);
-                    il.Emit(OpCodes.Ldstr, rPropertyName);
-                    il.Emit(OpCodes.Newobj, eventArgsConstructor);
-                    il.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
+                    ilGen.Emit(OpCodes.Ldarg_0);
+                    ilGen.Emit(OpCodes.Ldstr, rPropertyName);
+                    ilGen.Emit(OpCodes.Newobj, eventArgsConstructor);
+                    ilGen.Emit(OpCodes.Callvirt, onPropertyChangedMethod);
                 }
-                il.Emit(OpCodes.Ret);
+                ilGen.Emit(OpCodes.Ret);
 
                 property.SetSetMethod(method);
             }
