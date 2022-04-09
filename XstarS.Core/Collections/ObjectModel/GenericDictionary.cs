@@ -201,7 +201,7 @@ namespace XstarS.Collections.ObjectModel
         /// <summary>
         /// 提供非泛型键值对集合的枚举器的泛型包装。
         /// </summary>
-        public sealed class Enumerator
+        public readonly struct Enumerator
             : IEnumerator, IDictionaryEnumerator, IEnumerator<KeyValuePair<TKey, TValue?>>
         {
             /// <summary>

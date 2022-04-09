@@ -8,7 +8,7 @@ namespace XstarS.Collections.ObjectModel
     /// 提供非泛型集合的枚举器的泛型包装。
     /// </summary>
     /// <typeparam name="T">要枚举的对象的类型。</typeparam>
-    public sealed class GenericEnumerator<T> : IEnumerator, IEnumerator<T?>
+    public readonly struct GenericEnumerator<T> : IEnumerator, IEnumerator<T?>
     {
         /// <summary>
         /// 表示当前实例包装的枚举器。
