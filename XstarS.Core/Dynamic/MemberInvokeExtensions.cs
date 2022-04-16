@@ -41,20 +41,20 @@ namespace XstarS.Dynamic
         /// <summary>
         /// 调用当前对象与给定参数匹配的指定名称的实例方法。
         /// </summary>
-        /// <param name="object">要调用实例方法的对象。</param>
+        /// <param name="instance">要调用实例方法的对象。</param>
         /// <param name="name">要调用的实例方法的名称。</param>
         /// <param name="arguments">与要调用实例方法的参数数量、顺序和类型匹配的参数数组。</param>
-        /// <returns>调用 <paramref name="object"/> 中名为 <paramref name="name"/> 的实例方法的返回值。</returns>
+        /// <returns>调用 <paramref name="instance"/> 中名为 <paramref name="name"/> 的实例方法的返回值。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="object"/> 或 <paramref name="name"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="instance"/> 或 <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="MissingMethodException">
         /// 找不到与 <paramref name="arguments"/> 中参数匹配的名为 <paramref name="name"/> 的实例方法。</exception>
         /// <exception cref="AmbiguousMatchException">多个实例方法与绑定条件匹配。</exception>
-        public static object? InvokeMethod(this object @object, string name, params object?[]? arguments)
+        public static object? InvokeMethod(this object instance, string name, params object?[]? arguments)
         {
-            if (@object is null) { throw new ArgumentNullException(nameof(@object)); }
-            return @object.GetType().InvokeMember(name, BindingFlags.InvokeMethod |
-                MemberInvokeExtensions.InstanceBindingFlags, null, @object, arguments);
+            if (instance is null) { throw new ArgumentNullException(nameof(instance)); }
+            return instance.GetType().InvokeMember(name, BindingFlags.InvokeMethod |
+                MemberInvokeExtensions.InstanceBindingFlags, null, instance, arguments);
         }
 
         /// <summary>
@@ -79,33 +79,33 @@ namespace XstarS.Dynamic
         /// <summary>
         /// 获取当前对象指定名称的实例字段的值。
         /// </summary>
-        /// <param name="object">要获取实例字段的值的对象。</param>
+        /// <param name="instance">要获取实例字段的值的对象。</param>
         /// <param name="name">要获取值的实例字段的名称。</param>
-        /// <returns><paramref name="object"/> 中名为 <paramref name="name"/> 的实例字段的值。</returns>
+        /// <returns><paramref name="instance"/> 中名为 <paramref name="name"/> 的实例字段的值。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="object"/> 或 <paramref name="name"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="instance"/> 或 <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="MissingFieldException">找不到名为 <paramref name="name"/> 的实例字段。</exception>
-        public static object? GetField(this object @object, string name)
+        public static object? GetField(this object instance, string name)
         {
-            if (@object is null) { throw new ArgumentNullException(nameof(@object)); }
-            return @object.GetType().InvokeMember(name, BindingFlags.GetField |
-                MemberInvokeExtensions.InstanceBindingFlags, null, @object, null);
+            if (instance is null) { throw new ArgumentNullException(nameof(instance)); }
+            return instance.GetType().InvokeMember(name, BindingFlags.GetField |
+                MemberInvokeExtensions.InstanceBindingFlags, null, instance, null);
         }
 
         /// <summary>
         /// 设置当前对象指定名称的实例字段的值。
         /// </summary>
-        /// <param name="object">要设置实例字段的值的对象。</param>
+        /// <param name="instance">要设置实例字段的值的对象。</param>
         /// <param name="name">要设置值的实例字段的名称。</param>
         /// <param name="value">要设置为实例字段的值的对象。</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="object"/> 或 <paramref name="name"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="instance"/> 或 <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="MissingFieldException">找不到名为 <paramref name="name"/> 的实例字段。</exception>
-        public static void SetField(this object @object, string name, object? value)
+        public static void SetField(this object instance, string name, object? value)
         {
-            if (@object is null) { throw new ArgumentNullException(nameof(@object)); }
-            @object.GetType().InvokeMember(name, BindingFlags.SetField |
-                MemberInvokeExtensions.InstanceBindingFlags, null, @object, new[] { value });
+            if (instance is null) { throw new ArgumentNullException(nameof(instance)); }
+            instance.GetType().InvokeMember(name, BindingFlags.SetField |
+                MemberInvokeExtensions.InstanceBindingFlags, null, instance, new[] { value });
         }
 
         /// <summary>
@@ -144,42 +144,42 @@ namespace XstarS.Dynamic
         /// <summary>
         /// 获取当前对象与给定索引参数匹配的指定名称的实例属性的值。
         /// </summary>
-        /// <param name="object">要获取实例属性的值的对象。</param>
+        /// <param name="instance">要获取实例属性的值的对象。</param>
         /// <param name="name">要获取值的实例属性的名称。</param>
         /// <param name="indices">与要调用实例属性的索引参数数量、顺序和类型匹配的参数数组。</param>
-        /// <returns><paramref name="object"/> 中名为 <paramref name="name"/> 的实例属性的值。</returns>
+        /// <returns><paramref name="instance"/> 中名为 <paramref name="name"/> 的实例属性的值。</returns>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="object"/> 或 <paramref name="name"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="instance"/> 或 <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="MissingFieldException">找不到名为 <paramref name="name"/> 的实例属性。</exception>
         /// <exception cref="MissingMethodException">
         /// 找不到与 <paramref name="indices"/> 中索引参数匹配的名为 <paramref name="name"/> 的实例属性。</exception>
         /// <exception cref="AmbiguousMatchException">多个实例属性与绑定条件匹配。</exception>
-        public static object? GetProperty(this object @object, string name, params object?[]? indices)
+        public static object? GetProperty(this object instance, string name, params object?[]? indices)
         {
-            if (@object is null) { throw new ArgumentNullException(nameof(@object)); }
-            return @object.GetType().InvokeMember(name, BindingFlags.GetProperty |
-                MemberInvokeExtensions.InstanceBindingFlags, null, @object, indices);
+            if (instance is null) { throw new ArgumentNullException(nameof(instance)); }
+            return instance.GetType().InvokeMember(name, BindingFlags.GetProperty |
+                MemberInvokeExtensions.InstanceBindingFlags, null, instance, indices);
         }
 
         /// <summary>
         /// 设置当前对象与给定索引参数匹配的指定名称的实例属性的值。
         /// </summary>
-        /// <param name="object">要设置实例属性的值的对象。</param>
+        /// <param name="instance">要设置实例属性的值的对象。</param>
         /// <param name="name">要设置值的实例属性的名称。</param>
         /// <param name="value">要设置为实例属性的值的对象。</param>
         /// <param name="indices">与要调用实例属性的索引参数数量、顺序和类型匹配的参数数组。</param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="object"/> 或 <paramref name="name"/> 为 <see langword="null"/>。</exception>
+        /// <paramref name="instance"/> 或 <paramref name="name"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="MissingFieldException">找不到名为 <paramref name="name"/> 的实例属性。</exception>
         /// <exception cref="MissingMethodException">
         /// 找不到与 <paramref name="indices"/> 中索引参数匹配的名为 <paramref name="name"/> 的实例属性。</exception>
         /// <exception cref="AmbiguousMatchException">多个实例属性与绑定条件匹配。</exception>
-        public static void SetProperty(this object @object, string name, object? value, params object?[]? indices)
+        public static void SetProperty(this object instance, string name, object? value, params object?[]? indices)
         {
-            if (@object is null) { throw new ArgumentNullException(nameof(@object)); }
+            if (instance is null) { throw new ArgumentNullException(nameof(instance)); }
             var arguments = (indices ?? Array.Empty<object?>()).Append(value);
-            @object.GetType().InvokeMember(name, BindingFlags.SetProperty |
-                MemberInvokeExtensions.InstanceBindingFlags, null, @object, arguments);
+            instance.GetType().InvokeMember(name, BindingFlags.SetProperty |
+                MemberInvokeExtensions.InstanceBindingFlags, null, instance, arguments);
         }
 
         /// <summary>
