@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using ReferenceEqualityComparer =
@@ -31,50 +32,53 @@ namespace XstarS.Runtime.CompilerServices
         private static readonly BinaryFormatter Serializer = new BinaryFormatter();
 
         /// <summary>
-        /// 获取指定对象的浅表副本。
+        /// 创建当前对象的浅表副本。
         /// </summary>
-        /// <param name="value">要获取浅表副本的对象。</param>
+        /// <typeparam name="T">对象的类型。</typeparam>
+        /// <param name="value">要创建浅表副本的对象。</param>
         /// <returns><paramref name="value"/> 的浅表副本。</returns>
         [return: NotNullIfNotNull("value")]
-        public static object? DirectClone(object? value)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static T? MemberwiseClone<T>(this T? value)
         {
-            return (value is null) ? null :
-                ObjectRuntimeValue.CloneDelegate.Invoke(value);
+            return (value is null) ? default(T) :
+                (T)ObjectRuntimeValue.CloneDelegate.Invoke(value);
         }
 
         /// <summary>
-        /// 创建指定对象的深度副本。
+        /// 创建当前对象的深度副本。
         /// </summary>
         /// <remarks>基于反射调用，可能存在性能问题。</remarks>
-        /// <param name="value">要获取深度副本的对象。</param>
+        /// <typeparam name="T">对象的类型。</typeparam>
+        /// <param name="value">要创建深度副本的对象。</param>
         /// <returns><paramref name="value"/> 的深度副本。</returns>
-        /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
         [return: NotNullIfNotNull("value")]
-        public static object? RecursiveClone(object? value)
+        public static T? RecursiveClone<T>(this T? value)
         {
-            if (value is null) { return null; }
+            if (value is null) { return default(T); }
             var comparer = ReferenceEqualityComparer.Default;
             var cloned = new Dictionary<object, object>(comparer);
-            return ObjectRuntimeValue.RecursiveClone(value, cloned);
+            return (T)ObjectRuntimeValue.RecursiveClone(value, cloned);
         }
 
         /// <summary>
-        /// 创建指定对象的序列化副本。
+        /// 创建当前对象的序列化副本。
         /// </summary>
         /// <remarks>基于对象序列化，可能存在性能问题。</remarks>
-        /// <param name="value">要获取序列化副本的对象。</param>
+        /// <typeparam name="T">对象的类型。</typeparam>
+        /// <param name="value">要创建序列化副本的对象。</param>
         /// <returns><paramref name="value"/> 的序列化副本。</returns>
         /// <exception cref="SerializationException">
         /// <paramref name="value"/> 中的某个对象未标记为可序列化。</exception>
         [return: NotNullIfNotNull("value")]
-        public static object? SerializationClone(object? value)
+        public static T? SerializationClone<T>(this T? value)
         {
-            if (value is null) { return null; }
+            if (value is null) { return default(T); }
             using var stream = new MemoryStream();
             var serializer = ObjectRuntimeValue.Serializer;
             serializer.Serialize(stream, value);
             stream.Position = 0L;
-            return serializer.Deserialize(stream);
+            return (T)serializer.Deserialize(stream);
         }
 
         /// <summary>
@@ -89,7 +93,7 @@ namespace XstarS.Runtime.CompilerServices
             if (value is null) { return null; }
             if (cloned.ContainsKey(value)) { return cloned[value]; }
 
-            var clone = ObjectRuntimeValue.DirectClone(value);
+            var clone = ObjectRuntimeValue.MemberwiseClone(value);
             cloned[value] = clone;
 
             var type = clone.GetType();

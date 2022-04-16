@@ -12,15 +12,17 @@ namespace XstarS.Runtime.CompilerServices
     static partial class ObjectRuntimeValue
     {
         /// <summary>
-        /// 确定指定的两个对象包含的值是否递归相等。
+        /// 确定当前对象与指定对象的值是否递归相等。
         /// </summary>
-        /// <remarks>基于反射调用，可能存在性能问题。</remarks>
-        /// <param name="value">要进行值相等比较的第一个对象。</param>
-        /// <param name="other">要进行值相等比较的第二个对象。</param>
-        /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 包含的值递归相等，
+        /// <remarks>基于反射调用，可能存在性能问题。
+        /// 将递归比较至对象的字段（数组的元素）为 .NET 基元类型 (<see cref="Type.IsPrimitive"/>)、
+        /// 字符串 <see cref="string"/> 或指针类型 (<see cref="Type.IsPointer"/>)。</remarks>
+        /// <typeparam name="T">对象的类型。</typeparam>
+        /// <param name="value">要进行值相等比较的对象。</param>
+        /// <param name="other">要与当前对象进行比较的对象。</param>
+        /// <returns>若 <paramref name="value"/> 与 <paramref name="other"/> 的值相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-        public static bool RecursiveEquals(object? value, object? other)
+        public static bool RecursiveEquals<T>(this T? value, T? other)
         {
             var comparer = PairReferenceEqualityComparer.Default;
             var compared = new HashSet<ObjectPair>(comparer);

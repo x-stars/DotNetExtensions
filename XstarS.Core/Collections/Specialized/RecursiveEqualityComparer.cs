@@ -5,26 +5,28 @@ using XstarS.Runtime.CompilerServices;
 namespace XstarS.Collections.Specialized
 {
     /// <summary>
-    /// 提供用于比较对象的值是否相等的方法。
+    /// 提供用于比较对象的值是否递归相等的方法。
     /// </summary>
-    /// <remarks>基于反射调用，可能存在性能问题。</remarks>
+    /// <remarks>基于反射调用，可能存在性能问题。
+    /// 将递归比较至对象的字段（数组的元素）为 .NET 基元类型 (<see cref="Type.IsPrimitive"/>)、
+    /// 字符串 <see cref="string"/> 或指针类型 (<see cref="Type.IsPointer"/>)。</remarks>
     /// <typeparam name="T">要比较的对象的类型。</typeparam>
     [Serializable]
-    public sealed class ValueEqualityComparer<T> : SimpleEqualityComparer<T>
+    public sealed class RecursiveEqualityComparer<T> : SimpleEqualityComparer<T>
     {
         /// <summary>
-        /// 初始化 <see cref="ValueEqualityComparer{T}"/> 类的新实例。
+        /// 初始化 <see cref="RecursiveEqualityComparer{T}"/> 类的新实例。
         /// </summary>
-        public ValueEqualityComparer() { }
+        public RecursiveEqualityComparer() { }
 
         /// <summary>
-        /// 获取 <see cref="ValueEqualityComparer{T}"/> 类的默认实例。
+        /// 获取 <see cref="RecursiveEqualityComparer{T}"/> 类的默认实例。
         /// </summary>
-        /// <returns><see cref="ValueEqualityComparer{T}"/> 类的默认实例。</returns>
-        public static new ValueEqualityComparer<T> Default { get; } = new ValueEqualityComparer<T>();
+        /// <returns><see cref="RecursiveEqualityComparer{T}"/> 类的默认实例。</returns>
+        public static new RecursiveEqualityComparer<T> Default { get; } = new RecursiveEqualityComparer<T>();
 
         /// <summary>
-        /// 确定两对象的值是否相等。
+        /// 确定两对象的值是否递归相等。
         /// </summary>
         /// <param name="x">要比较的第一个对象。</param>
         /// <param name="y">要比较的第二个对象。</param>
@@ -33,7 +35,7 @@ namespace XstarS.Collections.Specialized
         public override bool Equals(T? x, T? y) => ObjectRuntimeValue.RecursiveEquals(x, y);
 
         /// <summary>
-        /// 获取指定对象基于值的哈希代码。
+        /// 获取指定对象递归包含的值的哈希代码。
         /// </summary>
         /// <param name="obj">要获取哈希代码的对象。</param>
         /// <returns><paramref name="obj"/> 基于值的哈希代码。</returns>

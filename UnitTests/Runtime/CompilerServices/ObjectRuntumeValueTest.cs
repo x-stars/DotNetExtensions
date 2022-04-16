@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace XstarS.Runtime.CompilerServices
 {
     [TestClass]
-    public class ObjectRuntumeExtensionsTest
+    public class ObjectRuntumeValueTest
     {
         [TestMethod]
         public void ObjectRecursiveClone_Int32Array_WorksProperly()
@@ -68,67 +68,67 @@ namespace XstarS.Runtime.CompilerServices
         }
 
         [TestMethod]
-        public void ValueEquals_NewObject_ReturnsTrue()
+        public void RecursiveEquals_NewObject_ReturnsTrue()
         {
             var o1 = new object();
             var o2 = new object();
             Assert.IsFalse(o1.Equals(o2));
-            Assert.IsTrue(o1.ValueEquals(o2));
+            Assert.IsTrue(o1.RecursiveEquals(o2));
         }
 
         [TestMethod]
-        public void ValueEquals_EqualKeyValuePair_ReturnsTrue()
+        public void RecursiveEquals_EqualKeyValuePair_ReturnsTrue()
         {
             var o1 = new KeyValuePair<string, int>("0", 0);
             var o2 = new KeyValuePair<string, int>("0", 0);
             Assert.IsTrue(o1.Equals(o2));
-            Assert.IsTrue(o1.ValueEquals(o2));
+            Assert.IsTrue(o1.RecursiveEquals(o2));
         }
 
         [TestMethod]
-        public void ValueEquals_EqualInt32Array_ReturnsTrue()
+        public void RecursiveEquals_EqualInt32Array_ReturnsTrue()
         {
             var o1 = new int[100];
             var o2 = new int[100];
             Assert.IsFalse(o1.Equals(o2));
             Assert.IsTrue(o1.SequenceEqual(o2));
-            Assert.IsTrue(o1.ValueEquals(o2));
+            Assert.IsTrue(o1.RecursiveEquals(o2));
         }
 
         [TestMethod]
-        public void ValueEquals_RankLengthDiffEqualInt32Array_ReturnsFalse()
+        public void RecursiveEquals_RankLengthDiffEqualInt32Array_ReturnsFalse()
         {
             var o1 = new int[100, 2, 3];
             var o2 = new int[2, 3, 100];
             Assert.IsFalse(o1.Equals(o2));
             Assert.IsTrue(o1.Cast<int>().SequenceEqual(o1.Cast<int>()));
-            Assert.IsFalse(o1.ValueEquals(o2));
+            Assert.IsFalse(o1.RecursiveEquals(o2));
         }
 
         [TestMethod]
-        public void ValueEquals_DiffOrderInt32HashSet_ReturnsFalse()
+        public void RecursiveEquals_DiffOrderInt32HashSet_ReturnsFalse()
         {
             var o1 = new HashSet<int>() { 1, 2, 3 };
             var o2 = new HashSet<int>() { 2, 3, 1 };
             Assert.IsFalse(o1.Equals(o2));
             Assert.IsTrue(o1.SetEquals(o2));
             Assert.IsFalse(o1.SequenceEqual(o2));
-            Assert.IsFalse(o1.ValueEquals(o2));
+            Assert.IsFalse(o1.RecursiveEquals(o2));
         }
 
         [TestMethod]
-        public void ValueEquals_DiffOrderStringSortedSet_ReturnsTrue()
+        public void RecursiveEquals_DiffOrderStringSortedSet_ReturnsTrue()
         {
             var o1 = new SortedSet<string>() { "list", "set", "dictionary" };
             var o2 = new SortedSet<string>() { "set", "dictionary", "list" };
             Assert.IsFalse(o1.Equals(o2));
             Assert.IsTrue(o1.SetEquals(o2));
             Assert.IsTrue(o1.SequenceEqual(o2));
-            Assert.IsTrue(o1.ValueEquals(o2));
+            Assert.IsTrue(o1.RecursiveEquals(o2));
         }
 
         [TestMethod]
-        public void ValueEquals_SameOrderObjectLinkedList_ReturnsTrue()
+        public void RecursiveEquals_SameOrderObjectLinkedList_ReturnsTrue()
         {
             var l0 = new LinkedList<object>();
             var l0n0 = l0.AddLast(0);
@@ -142,10 +142,10 @@ namespace XstarS.Runtime.CompilerServices
             Assert.IsFalse(l0n0.Equals(l1n0));
             Assert.IsFalse(l0n1.Equals(l1n1));
             Assert.IsFalse(l0n2.Equals(l1n2));
-            Assert.IsTrue(l0.ValueEquals(l1));
-            Assert.IsTrue(l0n0.ValueEquals(l1n0));
-            Assert.IsTrue(l0n1.ValueEquals(l1n1));
-            Assert.IsTrue(l0n2.ValueEquals(l1n2));
+            Assert.IsTrue(l0.RecursiveEquals(l1));
+            Assert.IsTrue(l0n0.RecursiveEquals(l1n0));
+            Assert.IsTrue(l0n1.RecursiveEquals(l1n1));
+            Assert.IsTrue(l0n2.RecursiveEquals(l1n2));
         }
     }
 }
