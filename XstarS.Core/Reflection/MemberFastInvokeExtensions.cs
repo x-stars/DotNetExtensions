@@ -4,10 +4,10 @@ using System.Reflection;
 
 namespace XstarS.Reflection
 {
-    using DynamicCreateDelegate = Func<object?[]?, object>;
-    using DynamicGetDelegate = Func<object?, object?>;
-    using DynamicInvokeDelegate = Func<object?, object?[]?, object?>;
-    using DynamicSetDelegate = Action<object?, object?>;
+    using DynamicCreator = Func<object?[]?, object>;
+    using DynamicGetter = Func<object?, object?>;
+    using DynamicInvoker = Func<object?, object?[]?, object?>;
+    using DynamicSetter = Action<object?, object?>;
 
     /// <summary>
     /// 提供以委托快速调用类型成员的扩展方法。
@@ -17,26 +17,26 @@ namespace XstarS.Reflection
         /// <summary>
         /// 表示字段对应的获取值的动态调用委托。
         /// </summary>
-        private readonly static ConcurrentDictionary<FieldInfo, DynamicGetDelegate> GetDelegates =
-            new ConcurrentDictionary<FieldInfo, DynamicGetDelegate>();
+        private readonly static ConcurrentDictionary<FieldInfo, DynamicGetter> GetDelegates =
+            new ConcurrentDictionary<FieldInfo, DynamicGetter>();
 
         /// <summary>
         /// 表示字段对应的设置值的动态调用委托。
         /// </summary>
-        private readonly static ConcurrentDictionary<FieldInfo, DynamicSetDelegate> SetDelegates =
-            new ConcurrentDictionary<FieldInfo, DynamicSetDelegate>();
+        private readonly static ConcurrentDictionary<FieldInfo, DynamicSetter> SetDelegates =
+            new ConcurrentDictionary<FieldInfo, DynamicSetter>();
 
         /// <summary>
         /// 表示构造函数对应的动态调用委托。
         /// </summary>
-        private readonly static ConcurrentDictionary<ConstructorInfo, DynamicCreateDelegate> CreateDelegates =
-            new ConcurrentDictionary<ConstructorInfo, DynamicCreateDelegate>();
+        private readonly static ConcurrentDictionary<ConstructorInfo, DynamicCreator> CreateDelegates =
+            new ConcurrentDictionary<ConstructorInfo, DynamicCreator>();
 
         /// <summary>
         /// 表示方法对应的动态调用委托。
         /// </summary>
-        private readonly static ConcurrentDictionary<MethodInfo, DynamicInvokeDelegate> InvokeDelegates =
-            new ConcurrentDictionary<MethodInfo, DynamicInvokeDelegate>();
+        private readonly static ConcurrentDictionary<MethodInfo, DynamicInvoker> InvokeDelegates =
+            new ConcurrentDictionary<MethodInfo, DynamicInvoker>();
 
         /// <summary>
         /// 快速获取指定对象的字段的值。

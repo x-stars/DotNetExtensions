@@ -4,7 +4,7 @@ using XstarS.Reflection;
 
 namespace XstarS
 {
-    using MethodDynamicDelegate = Func<object?, object?[]?, object?>;
+    using DynamicInvoker = Func<object?, object?[]?, object?>;
 
     /// <summary>
     /// 提供委托 <see cref="Delegate"/> 的扩展方法。
@@ -14,8 +14,8 @@ namespace XstarS
         /// <summary>
         /// 表示委托类型对应的动态调用委托。
         /// </summary>
-        private static readonly ConcurrentDictionary<Type, MethodDynamicDelegate> DynamicDelegates =
-            new ConcurrentDictionary<Type, MethodDynamicDelegate>();
+        private static readonly ConcurrentDictionary<Type, DynamicInvoker> InvokeDelegates =
+            new ConcurrentDictionary<Type, DynamicInvoker>();
 
         /// <summary>
         /// 以构造的动态调用委托调用由当前委托所表示的方法。
@@ -32,9 +32,9 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(@delegate));
             }
 
-            var dynamicDelegate = DelegateExtensions.DynamicDelegates.GetOrAdd(@delegate.GetType(),
+            var invokeDelegate = DelegateExtensions.InvokeDelegates.GetOrAdd(@delegate.GetType(),
                 delegateType => delegateType.GetMethod(nameof(Action.Invoke))!.CreateDynamicDelegate());
-            return dynamicDelegate.Invoke(@delegate, arguments);
+            return invokeDelegate.Invoke(@delegate, arguments);
         }
 
         /// <summary>
