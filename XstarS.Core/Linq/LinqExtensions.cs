@@ -176,17 +176,17 @@ namespace XstarS.Linq
 #endif
 
         /// <summary>
-        /// 将序列的每个分组结果映射到新的值，并返回分组键和映射结果的键值对的序列。
+        /// 将序列的每个分组结果序列聚合为新的值，并返回分组键和聚合结果的键值对的序列。
         /// </summary>
         /// <typeparam name="TKey"><see cref="IGrouping{TKey, TElement}"/> 键的类型。</typeparam>
         /// <typeparam name="TElement"><see cref="IGrouping{TKey, TElement}"/> 中的值的类型。</typeparam>
-        /// <typeparam name="TResult">映射结果值的类型。</typeparam>
-        /// <param name="source">要分组结果进行映射的 <see cref="IGrouping{TKey, TElement}"/> 的序列。</param>
-        /// <param name="valueSelector">应用于每个分组结果的转换函数。</param>
+        /// <typeparam name="TResult">聚合结果值的类型。</typeparam>
+        /// <param name="source">要分组结果序列进行聚合的 <see cref="IGrouping{TKey, TElement}"/> 的序列。</param>
+        /// <param name="valueSelector">应用于每个分组结果序列的聚合函数。</param>
         /// <returns>将 <paramref name="source"/> 按组映射结果的键值对的序列。</returns>
         /// <exception cref="ArgumentNullException"><paramref name="source"/>
         /// 或 <paramref name="valueSelector"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<KeyValuePair<TKey, TResult>> SelectValue<TKey, TElement, TResult>(
+        public static IEnumerable<KeyValuePair<TKey, TResult>> AggregateValues<TKey, TElement, TResult>(
             this IEnumerable<IGrouping<TKey, TElement>> source,
             Func<IEnumerable<TElement>, TResult> valueSelector)
         {
