@@ -17,6 +17,27 @@ namespace XstarS.Linq
         /// <returns><paramref name="source"/> 本身。</returns>
         internal static TSource Self<TSource>(TSource source) => source;
 
+        /// <summary>
+        /// 将序列的每个分组结果序列聚合为新的值，并返回分组键和聚合结果的键值对的序列。
+        /// </summary>
+        /// <typeparam name="TKey"><see cref="IGrouping{TKey, TElement}"/> 键的类型。</typeparam>
+        /// <typeparam name="TElement"><see cref="IGrouping{TKey, TElement}"/> 中的值的类型。</typeparam>
+        /// <typeparam name="TResult">聚合结果值的类型。</typeparam>
+        /// <param name="source">要分组结果序列进行聚合的 <see cref="IGrouping{TKey, TElement}"/> 的序列。</param>
+        /// <param name="valuesAggregator">应用于每个分组结果序列的聚合函数。</param>
+        /// <returns>将 <paramref name="source"/> 按组映射结果的键值对的序列。</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="source"/>
+        /// 或 <paramref name="valuesAggregator"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<KeyValuePair<TKey, TResult>> AggregateValues<TKey, TElement, TResult>(
+            this IEnumerable<IGrouping<TKey, TElement>> source,
+            Func<IEnumerable<TElement>, TResult> valuesAggregator)
+        {
+            if (source is null) { throw new ArgumentNullException(nameof(source)); }
+            if (valuesAggregator is null) { throw new ArgumentNullException(nameof(valuesAggregator)); }
+            return source.Select(grouping =>
+                new KeyValuePair<TKey, TResult>(grouping.Key, valuesAggregator.Invoke(grouping)));
+        }
+
 #if NETFRAMEWORK && !NET471_OR_GREATER
         /// <summary>
         /// 将一个值追加到序列末尾。
@@ -34,6 +55,7 @@ namespace XstarS.Linq
         }
 #endif
 
+#if !NET6_0_OR_GREATER
         /// <summary>
         /// 使用键选择器函数和指定的比较器对键进行比较，返回序列中的非重复元素。
         /// </summary>
@@ -52,6 +74,7 @@ namespace XstarS.Linq
             comparer ??= EqualityComparer<TKey>.Default;
             return source.GroupBy(keySelector, comparer).Select(Enumerable.First);
         }
+#endif
 
         /// <summary>
         /// 使用指定的比较器对序列的元素进行分组计数。
@@ -174,27 +197,6 @@ namespace XstarS.Linq
             return (new[] { element }).Concat(source);
         }
 #endif
-
-        /// <summary>
-        /// 将序列的每个分组结果序列聚合为新的值，并返回分组键和聚合结果的键值对的序列。
-        /// </summary>
-        /// <typeparam name="TKey"><see cref="IGrouping{TKey, TElement}"/> 键的类型。</typeparam>
-        /// <typeparam name="TElement"><see cref="IGrouping{TKey, TElement}"/> 中的值的类型。</typeparam>
-        /// <typeparam name="TResult">聚合结果值的类型。</typeparam>
-        /// <param name="source">要分组结果序列进行聚合的 <see cref="IGrouping{TKey, TElement}"/> 的序列。</param>
-        /// <param name="valueSelector">应用于每个分组结果序列的聚合函数。</param>
-        /// <returns>将 <paramref name="source"/> 按组映射结果的键值对的序列。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="source"/>
-        /// 或 <paramref name="valueSelector"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<KeyValuePair<TKey, TResult>> AggregateValues<TKey, TElement, TResult>(
-            this IEnumerable<IGrouping<TKey, TElement>> source,
-            Func<IEnumerable<TElement>, TResult> valueSelector)
-        {
-            if (source is null) { throw new ArgumentNullException(nameof(source)); }
-            if (valueSelector is null) { throw new ArgumentNullException(nameof(valueSelector)); }
-            return source.Select(grouping =>
-                new KeyValuePair<TKey, TResult>(grouping.Key, valueSelector.Invoke(grouping)));
-        }
 
         /// <summary>
         /// 对序列分组的单个分组结果进行计数，并返回分组键和计数的键值对。

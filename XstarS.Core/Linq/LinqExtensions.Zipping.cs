@@ -6,6 +6,7 @@ namespace XstarS.Linq
 {
     static partial class LinqExtensions
     {
+#if !NET6_0_OR_GREATER
         /// <summary>
         /// 将当前序列与另一序列的元素对应连接，得到 2 元组的结果序列。
         /// </summary>
@@ -22,6 +23,7 @@ namespace XstarS.Linq
         {
             return Enumerable.Zip(source, other, ValueTuple.Create);
         }
+#endif
 
         /// <summary>
         /// 将当前 2 元组序列与另一序列的元素对应连接，得到 3 元组的结果序列。
