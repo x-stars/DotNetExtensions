@@ -22,7 +22,7 @@ namespace XstarS.Runtime.CompilerServices
         {
             var negFunc = (Func<int, bool>)(num => num < 0);
             var negPredicate = negFunc.UncheckedCast<Predicate<int>>();
-            foreach (var number in Enumerable.Range(-8, 16))
+            foreach (var number in ^8..8)
             {
                 Assert.AreEqual(negFunc(number), negPredicate(number));
             }
