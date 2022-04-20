@@ -14,7 +14,7 @@ namespace XstarS.Collections.Specialized
         /// <summary>
         /// 初始化 <see cref="ArrayBinaryEqualityComparer{T}"/> 类的新实例。
         /// </summary>
-        public ArrayBinaryEqualityComparer() { }
+        private ArrayBinaryEqualityComparer() { }
 
         /// <summary>
         /// 获取 <see cref="ArrayBinaryEqualityComparer{T}"/> 类的默认实例。

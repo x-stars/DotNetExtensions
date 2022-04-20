@@ -16,7 +16,7 @@ namespace XstarS.Collections.Specialized
         /// <summary>
         /// 初始化 <see cref="RuntimeEqualityComaprer{T}"/> 类的新实例。
         /// </summary>
-        public RuntimeEqualityComaprer() { }
+        private RuntimeEqualityComaprer() { }
 
         /// <summary>
         /// 获取 <see cref="RuntimeEqualityComaprer{T}"/> 类的默认实例。

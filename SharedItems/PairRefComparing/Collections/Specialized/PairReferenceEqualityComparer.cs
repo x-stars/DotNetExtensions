@@ -16,7 +16,7 @@ namespace XstarS.Collections.Specialized
         /// <summary>
         /// 初始化 <see cref="PairReferenceEqualityComparer"/> 类的新实例。
         /// </summary>
-        public PairReferenceEqualityComparer() { }
+        private PairReferenceEqualityComparer() { }
 
         /// <summary>
         /// 获取 <see cref="PairReferenceEqualityComparer"/> 类的默认实例。

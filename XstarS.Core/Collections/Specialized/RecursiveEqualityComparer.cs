@@ -17,7 +17,7 @@ namespace XstarS.Collections.Specialized
         /// <summary>
         /// 初始化 <see cref="RecursiveEqualityComparer{T}"/> 类的新实例。
         /// </summary>
-        public RecursiveEqualityComparer() { }
+        private RecursiveEqualityComparer() { }
 
         /// <summary>
         /// 获取 <see cref="RecursiveEqualityComparer{T}"/> 类的默认实例。
