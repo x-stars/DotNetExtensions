@@ -27,35 +27,6 @@ namespace XstarS.Collections
         }
 
         /// <summary>
-        /// 将 <see cref="IDictionary"/> 中的键值对强制转换为指定类型。
-        /// </summary>
-        /// <typeparam name="TKey"><see cref="IDictionary"/> 中键要转换到的类型。</typeparam>
-        /// <typeparam name="TValue"><see cref="IDictionary"/> 中值要转换到的类型。</typeparam>
-        /// <param name="dictionary">要强制转换键值对类型的 <see cref="IDictionary"/> 对象。</param>
-        /// <returns>将 <paramref name="dictionary"/> 中的键值对强制转换类型后得到的序列。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<KeyValuePair<TKey, TValue?>> Cast<TKey, TValue>(
-            this IDictionary dictionary) where TKey : notnull
-        {
-            if (dictionary is null)
-            {
-                throw new ArgumentNullException(nameof(dictionary));
-            }
-
-            var entryEnum = dictionary.GetEnumerator();
-            using (entryEnum as IDisposable)
-            {
-                while (entryEnum.MoveNext())
-                {
-                    var key = (TKey)entryEnum.Key;
-                    var value = (TValue?)entryEnum.Value;
-                    yield return new KeyValuePair<TKey, TValue?>(key, value);
-                }
-            }
-        }
-
-        /// <summary>
         /// 解构当前 <see cref="DictionaryEntry"/>。
         /// </summary>
         /// <param name="entry">要解构的 <see cref="DictionaryEntry"/>。</param>
