@@ -104,13 +104,15 @@ namespace XstarS.Collections.Generic
         public int IndexOf(T item)
         {
             var index = 0;
+            var node = this.First;
             var comparer = EqualityComparer<T>.Default;
-            foreach (var value in this)
+            while (node is not null)
             {
-                if (comparer.Equals(value, item))
+                if (comparer.Equals(node.Value, item))
                 {
                     return index;
                 }
+                node = node.Next;
                 index++;
             }
             return -1;
@@ -149,9 +151,9 @@ namespace XstarS.Collections.Generic
         /// 则为最后一个匹配项的从零开始的索引；否则为 -1。</returns>
         public int LastIndexOf(T item)
         {
-            var comparer = EqualityComparer<T>.Default;
+            var index = this.Count - 1;
             var node = this.Last;
-            int index = this.Count - 1;
+            var comparer = EqualityComparer<T>.Default;
             while (node is not null)
             {
                 if (comparer.Equals(node.Value, item))
