@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using XstarS.Collections.ObjectModel;
 
 namespace XstarS.Collections.Generic
 {
@@ -22,30 +20,6 @@ namespace XstarS.Collections.Generic
         {
             return new EnumeratorEnumerable<T>(enumerator);
         }
-
-        /// <summary>
-        /// 将 <see cref="IList"/> 强制转换为指定元素类型的泛型集合。
-        /// </summary>
-        /// <typeparam name="T"><see cref="IList"/> 中的元素要转换为的类型。</typeparam>
-        /// <param name="collection">要转换为指定元素类型的 <see cref="IList"/> 对象。</param>
-        /// <returns><paramref name="collection"/> 的指定元素类型的泛型包装。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="collection"/> 为 <see langword="null"/>。</exception>
-        public static GenericCollection<T> AsGeneric<T>(this IList collection) =>
-            new GenericCollection<T>(collection);
-
-        /// <summary>
-        /// 将 <see cref="IDictionary"/> 强制转换为指定键值类型的泛型键值对集合。
-        /// </summary>
-        /// <typeparam name="TKey"><see cref="IDictionary"/> 中的键要转换为的类型。</typeparam>
-        /// <typeparam name="TValue"><see cref="IDictionary"/> 中的值要转换为的类型。</typeparam>
-        /// <param name="dictionary">要转换为指定键值类型的 <see cref="IDictionary"/> 对象。</param>
-        /// <returns><paramref name="dictionary"/> 的指定键值类型的泛型包装。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
-        public static GenericDictionary<TKey, TValue> AsGeneric<TKey, TValue>(
-            this IDictionary dictionary) where TKey : notnull =>
-            new GenericDictionary<TKey, TValue>(dictionary);
 
         /// <summary>
         /// 解构当前 <see cref="KeyValuePair{TKey, TValue}"/>。
