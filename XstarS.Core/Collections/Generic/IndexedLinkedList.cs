@@ -58,33 +58,17 @@ namespace XstarS.Collections.Generic
             set => this.NodeAt(index).Value = value;
         }
 
-        /// <summary>
-        /// 获取或设置指定索引处的元素。
-        /// </summary>
-        /// <param name="index">要获取或设置的元素的从零开始的索引。</param>
-        /// <returns>当前 <see cref="IList"/> 指定索引处的元素。</returns>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="index"/> 不是 <see cref="IList"/> 中的有效索引。</exception>
-        /// <exception cref="InvalidCastException">
-        /// 无法将 <see langword="value"/> 转换为 <typeparamref name="T"/> 类型的对象。</exception>
+        /// <inheritdoc/>
         object? IList.this[int index]
         {
             get => this[index];
             set => this[index] = (T)value!;
         }
 
-        /// <summary>
-        /// 获取一个值，该值指示 <see cref="IList"/> 是否为只读。
-        /// </summary>
-        /// <returns>若 <see cref="IList"/> 是只读的，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <inheritdoc/>
         bool IList.IsReadOnly => false;
 
-        /// <summary>
-        /// 获取一个值，该值指示 <see cref="IList"/> 是否具有固定大小。
-        /// </summary>
-        /// <returns>若 <see cref="IList"/> 具有固定大小，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <inheritdoc/>
         bool IList.IsFixedSize => false;
 
         /// <summary>
@@ -216,34 +200,16 @@ namespace XstarS.Collections.Generic
             this.Remove(this.NodeAt(index)!);
         }
 
-        /// <summary>
-        /// 将某项添加到 <see cref="IList"/> 中。
-        /// </summary>
-        /// <param name="value">要添加到 <see cref="IList"/> 的对象。</param>
-        /// <returns>插入了新元素的位置，-1 指示该项未插入到集合中。</returns>
-        /// <exception cref="InvalidCastException">
-        /// 无法将 <paramref name="value"/> 转换为 <typeparamref name="T"/> 类型的对象。</exception>
+        /// <inheritdoc/>
         int IList.Add(object? value) { this.Add((T)value!); return this.Count; }
 
-        /// <summary>
-        /// 从 <see cref="IList"/> 中移除所有项。
-        /// </summary>
+        /// <inheritdoc/>
         void IList.Clear() => this.Clear();
 
-        /// <summary>
-        ///  确定 <see cref="IList"/> 是否包含特定值。
-        /// </summary>
-        /// <param name="value">要在 <see cref="IList"/> 中定位的对象。</param>
-        /// <returns> 如果在 <see cref="IList"/> 中找到了 <paramref name="value"/>，
-        /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
+        /// <inheritdoc/>
         bool IList.Contains(object? value) => ((IList)this).IndexOf(value) >= 0;
 
-        /// <summary>
-        /// 确定 <see cref="IList"/> 中特定项的索引。
-        /// </summary>
-        /// <param name="value">要在 <see cref="IList"/> 中定位的对象。</param>
-        /// <returns>如果在 <see cref="IList"/> 中找到，
-        /// 则为 <paramref name="value"/> 的索引；否则为 -1。</returns>
+        /// <inheritdoc/>
         int IList.IndexOf(object? value)
         {
             var index = 0;
@@ -258,29 +224,13 @@ namespace XstarS.Collections.Generic
             return -1;
         }
 
-        /// <summary>
-        /// 在 <see cref="IList"/> 中的指定索引处插入一个项。
-        /// </summary>
-        /// <param name="index">应插入 <paramref name="value"/> 的从零开始的索引。</param>
-        /// <param name="value">要插入到 <see cref="IList"/> 中的对象。</param>
-        /// <exception cref="InvalidCastException">
-        /// 无法将 <paramref name="value"/> 转换为 <typeparamref name="T"/> 类型的对象。</exception>
+        /// <inheritdoc/>
         void IList.Insert(int index, object? value) => this.Insert(index, (T)value!);
 
-        /// <summary>
-        /// 从 <see cref="IList"/> 中移除特定对象的第一个匹配项。
-        /// </summary>
-        /// <param name="value">要从 <see cref="IList"/> 中删除的对象。</param>
-        /// <exception cref="InvalidCastException">
-        /// 无法将 <paramref name="value"/> 转换为 <typeparamref name="T"/> 类型的对象。</exception>
+        /// <inheritdoc/>
         void IList.Remove(object? value) => this.Remove((T)value!);
 
-        /// <summary>
-        /// 从 <see cref="IList"/> 中移除位于指定索引处的项。
-        /// </summary>
-        /// <param name="index">要移除的项的从零开始的索引。</param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="index"/> 不是 <see cref="IList"/> 中的有效索引。</exception>
+        /// <inheritdoc/>
         void IList.RemoveAt(int index) => this.RemoveAt(index);
     }
 }
