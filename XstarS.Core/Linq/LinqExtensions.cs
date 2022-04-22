@@ -237,12 +237,9 @@ namespace XstarS.Linq
         /// <param name="elements">要进行计数的 <see cref="IEnumerable{T}"/>。</param>
         /// <returns>将 <paramref name="elements"/>
         /// 进行计数得到的以 <paramref name="key"/> 为键的键值对。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="elements"/> 为 <see langword="null"/>。</exception>
         internal static KeyValuePair<TKey, int> ToCount<TKey, TElement>(
             TKey key, IEnumerable<TElement> elements)
         {
-            if (elements is null) { throw new ArgumentNullException(nameof(elements)); }
             return new KeyValuePair<TKey, int>(key, elements.Count());
         }
     }
