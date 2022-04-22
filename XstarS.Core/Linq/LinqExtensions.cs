@@ -73,16 +73,21 @@ namespace XstarS.Linq
                 throw new ArgumentNullException(nameof(dictionary));
             }
 
-            var entryEnum = dictionary.GetEnumerator();
-            using (entryEnum as IDisposable)
+            static IEnumerable<KeyValuePair<TKey, TValue?>> CastCore(IDictionary dictionary)
             {
-                while (entryEnum.MoveNext())
+                var enumerator = dictionary.GetEnumerator();
+                using (enumerator as IDisposable)
                 {
-                    var key = (TKey)entryEnum.Key;
-                    var value = (TValue?)entryEnum.Value;
-                    yield return new KeyValuePair<TKey, TValue?>(key, value);
+                    while (enumerator.MoveNext())
+                    {
+                        var key = (TKey)enumerator.Key;
+                        var value = (TValue?)enumerator.Value;
+                        yield return new KeyValuePair<TKey, TValue?>(key, value);
+                    }
                 }
             }
+
+            return CastCore(dictionary);
         }
 
 #if !NET6_0_OR_GREATER

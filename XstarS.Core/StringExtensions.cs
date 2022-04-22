@@ -79,29 +79,35 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(isSeparator));
             }
 
-            var token = new mstring();
-            foreach (var @char in text)
+            static IEnumerable<string> SplitCore(string text,
+                Predicate<char> isSeparator, StringSplitOptions options)
             {
-                if (isSeparator(@char))
+                var token = new mstring();
+                foreach (var @char in text)
                 {
-                    if ((token.Length > 0) ||
-                        (options == StringSplitOptions.None))
+                    if (isSeparator(@char))
                     {
-                        yield return token.ToString();
-                        token.Clear();
+                        if ((token.Length > 0) ||
+                            (options == StringSplitOptions.None))
+                        {
+                            yield return token.ToString();
+                            token.Clear();
+                        }
+                    }
+                    else
+                    {
+                        token.Append(@char);
                     }
                 }
-                else
+                if ((token.Length > 0) ||
+                    (options == StringSplitOptions.None))
                 {
-                    token.Append(@char);
+                    yield return token.ToString();
+                    token.Clear();
                 }
             }
-            if ((token.Length > 0) ||
-                (options == StringSplitOptions.None))
-            {
-                yield return token.ToString();
-                token.Clear();
-            }
+
+            return SplitCore(text, isSeparator, options);
         }
 
         /// <summary>

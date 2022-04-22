@@ -22,24 +22,29 @@ namespace XstarS
                 throw new ArgumentNullException(nameof(array));
             }
 
-            if (array.GetType().GetElementType()!.IsArray)
+            static IEnumerable EnumerateCore(Array array)
             {
-                foreach (var item in array)
+                if (array.GetType().GetElementType()!.IsArray)
                 {
-                    var innerItems = ((Array)item!).RecursiveEnumerate();
-                    foreach (var innerItem in innerItems)
+                    foreach (var item in array)
                     {
-                        yield return innerItem;
+                        var innerItems = ((Array)item!).RecursiveEnumerate();
+                        foreach (var innerItem in innerItems)
+                        {
+                            yield return innerItem;
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (var item in array)
+                    {
+                        yield return item;
                     }
                 }
             }
-            else
-            {
-                foreach (var item in array)
-                {
-                    yield return item;
-                }
-            }
+
+            return EnumerateCore(array);
         }
 
         /// <summary>

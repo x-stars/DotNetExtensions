@@ -21,16 +21,21 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(enumerables));
             }
 
-            foreach (var enumerable in enumerables)
+            static IEnumerable<T> ConcatCore(IEnumerable<IEnumerable<T>> enumerables)
             {
-                if (enumerable is not null)
+                foreach (var enumerable in enumerables)
                 {
-                    foreach (var item in enumerable)
+                    if (enumerable is not null)
                     {
-                        yield return item;
+                        foreach (var item in enumerable)
+                        {
+                            yield return item;
+                        }
                     }
                 }
             }
+
+            return ConcatCore(enumerables);
         }
 
         /// <summary>
@@ -134,12 +139,17 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(enumerable));
             }
 
-            var index = 0;
-            foreach (var item in enumerable)
+            static IEnumerable<(int Index, T Item)> IndexedCore(IEnumerable<T> enumerable)
             {
-                yield return (index, item);
-                index++;
+                var index = 0;
+                foreach (var item in enumerable)
+                {
+                    yield return (index, item);
+                    index++;
+                }
             }
+
+            return IndexedCore(enumerable);
         }
     }
 }

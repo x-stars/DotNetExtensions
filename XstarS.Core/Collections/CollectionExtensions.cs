@@ -53,14 +53,19 @@ namespace XstarS.Collections
                 throw new ArgumentNullException(nameof(dictionary));
             }
 
-            var entryEnum = dictionary.GetEnumerator();
-            using (entryEnum as IDisposable)
+            static IEnumerable<DictionaryEntry> EnumerateCore(IDictionary dictionary)
             {
-                while (entryEnum.MoveNext())
+                var enumerator = dictionary.GetEnumerator();
+                using (enumerator as IDisposable)
                 {
-                    yield return entryEnum.Entry;
+                    while (enumerator.MoveNext())
+                    {
+                        yield return enumerator.Entry;
+                    }
                 }
             }
+
+            return EnumerateCore(dictionary);
         }
     }
 }
