@@ -103,16 +103,14 @@ namespace XstarS.Collections.Generic
         /// 则为第一个匹配项的从零开始的索引；否则为 -1。</returns>
         public int IndexOf(T item)
         {
+            var index = 0;
             var comparer = EqualityComparer<T>.Default;
-            var node = this.First;
-            int index = 0;
-            while (node is not null)
+            foreach (var value in this)
             {
-                if (comparer.Equals(node.Value, item))
+                if (comparer.Equals(value, item))
                 {
                     return index;
                 }
-                node = node.Next;
                 index++;
             }
             return -1;
@@ -236,7 +234,7 @@ namespace XstarS.Collections.Generic
         /// <param name="value">要在 <see cref="IList"/> 中定位的对象。</param>
         /// <returns> 如果在 <see cref="IList"/> 中找到了 <paramref name="value"/>，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        bool IList.Contains(object? value) => (value is T item) && this.Contains(item);
+        bool IList.Contains(object? value) => ((IList)this).IndexOf(value) >= 0;
 
         /// <summary>
         /// 确定 <see cref="IList"/> 中特定项的索引。
@@ -244,7 +242,19 @@ namespace XstarS.Collections.Generic
         /// <param name="value">要在 <see cref="IList"/> 中定位的对象。</param>
         /// <returns>如果在 <see cref="IList"/> 中找到，
         /// 则为 <paramref name="value"/> 的索引；否则为 -1。</returns>
-        int IList.IndexOf(object? value) => (value is T item) ? this.IndexOf(item) : -1;
+        int IList.IndexOf(object? value)
+        {
+            var index = 0;
+            foreach (var item in this)
+            {
+                if (object.Equals(item, value))
+                {
+                    return index;
+                }
+                index++;
+            }
+            return -1;
+        }
 
         /// <summary>
         /// 在 <see cref="IList"/> 中的指定索引处插入一个项。
