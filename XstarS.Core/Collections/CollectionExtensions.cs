@@ -19,11 +19,6 @@ namespace XstarS.Collections
         /// <paramref name="enumerator"/> 为 <see langword="null"/>。</exception>
         public static IEnumerable AsEnumerable(IEnumerator enumerator)
         {
-            if (enumerator is null)
-            {
-                throw new ArgumentNullException(nameof(enumerator));
-            }
-
             return new EnumeratorEnumerable(enumerator);
         }
 
@@ -35,8 +30,10 @@ namespace XstarS.Collections
         /// <returns><paramref name="collection"/> 的指定元素类型的泛型包装。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="collection"/> 为 <see langword="null"/>。</exception>
-        public static GenericCollection<T> AsGeneric<T>(this IList collection) =>
-            new GenericCollection<T>(collection);
+        public static GenericCollection<T> AsGeneric<T>(this IList collection)
+        {
+            return new GenericCollection<T>(collection);
+        }
 
         /// <summary>
         /// 将 <see cref="IDictionary"/> 强制转换为指定键值类型的泛型键值对集合。
@@ -47,9 +44,11 @@ namespace XstarS.Collections
         /// <returns><paramref name="dictionary"/> 的指定键值类型的泛型包装。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
-        public static GenericDictionary<TKey, TValue> AsGeneric<TKey, TValue>(
-            this IDictionary dictionary) where TKey : notnull =>
-            new GenericDictionary<TKey, TValue>(dictionary);
+        public static GenericDictionary<TKey, TValue> AsGeneric<TKey, TValue>(this IDictionary dictionary)
+            where TKey : notnull
+        {
+            return new GenericDictionary<TKey, TValue>(dictionary);
+        }
 
         /// <summary>
         /// 解构当前 <see cref="DictionaryEntry"/>。

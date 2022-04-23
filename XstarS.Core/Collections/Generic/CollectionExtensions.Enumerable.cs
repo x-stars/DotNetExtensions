@@ -56,10 +56,9 @@ namespace XstarS.Collections.Generic
             {
                 throw new ArgumentNullException(nameof(enumerable));
             }
-
             comparer ??= EqualityComparer<T>.Default;
 
-            int count = 0;
+            var count = 0;
             foreach (var item in enumerable)
             {
                 if (comparer.Equals(item, value))

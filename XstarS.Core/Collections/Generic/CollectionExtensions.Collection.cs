@@ -47,12 +47,12 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(collection));
             }
 
-            int result = 0;
+            var removed = 0;
             while (collection.Remove(item))
             {
-                result++;
+                removed++;
             }
-            return result;
+            return removed;
         }
 
         /// <summary>
@@ -76,12 +76,12 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(items));
             }
 
-            int result = 0;
+            var removed = 0;
             foreach (var item in items)
             {
-                result += collection.RemoveAll(item);
+                removed += collection.RemoveAll(item);
             }
-            return result;
+            return removed;
         }
 
         /// <summary>
@@ -104,10 +104,10 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(match));
             }
 
-            var removed = new List<T>(collection);
-            var count = removed.RemoveAll(match);
+            var removing = new List<T>(collection);
+            var count = removing.RemoveAll(match);
             collection.Clear();
-            collection.AddRange(removed);
+            collection.AddRange(removing);
             return count;
         }
 
@@ -132,15 +132,15 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(items));
             }
 
-            int result = 0;
+            var removed = 0;
             foreach (var item in items)
             {
                 if (collection.Remove(item))
                 {
-                    result++;
+                    removed++;
                 }
             }
-            return result;
+            return removed;
         }
     }
 }

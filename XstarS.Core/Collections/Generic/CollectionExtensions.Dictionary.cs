@@ -129,7 +129,6 @@ namespace XstarS.Collections.Generic
             {
                 throw new ArgumentNullException(nameof(dictionary));
             }
-
             keyComparer ??= EqualityComparer<TKey>.Default;
             valueComparer ??= EqualityComparer<TValue>.Default;
 
@@ -168,15 +167,15 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(keys));
             }
 
-            int result = 0;
+            var removed = 0;
             foreach (var key in keys)
             {
                 if (dictionary.Remove(key))
                 {
-                    result++;
+                    removed++;
                 }
             }
-            return result;
+            return removed;
         }
 
         /// <summary>
@@ -221,7 +220,6 @@ namespace XstarS.Collections.Generic
             {
                 throw new ArgumentNullException(nameof(pairs));
             }
-
             comparer ??= EqualityComparer<TKey>.Default;
 
             var result = new Dictionary<TKey, TValue>(comparer);

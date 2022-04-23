@@ -26,15 +26,15 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(items));
             }
 
-            int result = 0;
+            var added = 0;
             foreach (var item in items)
             {
                 if (set.Add(item))
                 {
-                    result++;
+                    added++;
                 }
             }
-            return result;
+            return added;
         }
     }
 }

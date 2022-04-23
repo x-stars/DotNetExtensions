@@ -198,7 +198,6 @@ namespace XstarS.Collections.Generic
             {
                 throw new ArgumentNullException(nameof(keySelector));
             }
-
             comparer ??= Comparer<TKey>.Default;
 
             var items = new T[list.Count];
@@ -223,7 +222,6 @@ namespace XstarS.Collections.Generic
             {
                 throw new ArgumentNullException(nameof(list));
             }
-
             comparer ??= Comparer<T>.Default;
 
             var items = new T[list.Count];
