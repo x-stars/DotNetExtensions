@@ -16,7 +16,7 @@ namespace XstarS.Collections.Generic
         /// <returns><paramref name="enumerator"/> 的 <see cref="IEnumerable{T}"/> 包装。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="enumerator"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<T> AsEnumerable<T>(IEnumerator<T> enumerator)
+        public static IEnumerable<T> AsEnumerable<T>(this IEnumerator<T> enumerator)
         {
             return new EnumeratorEnumerable<T>(enumerator);
         }

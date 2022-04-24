@@ -9,7 +9,7 @@ namespace XstarS.Collections
     internal sealed class EnumeratorEnumerable : IEnumerable
     {
         /// <summary>
-        /// 当前实例包装的 <see cref="IEnumerable"/> 对象。
+        /// 当前实例包装的 <see cref="IEnumerator"/> 对象。
         /// </summary>
         private readonly IEnumerator Enumerator;
 

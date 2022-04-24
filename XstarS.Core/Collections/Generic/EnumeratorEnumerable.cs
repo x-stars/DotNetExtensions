@@ -11,7 +11,7 @@ namespace XstarS.Collections.Generic
     internal sealed class EnumeratorEnumerable<T> : IEnumerable<T>
     {
         /// <summary>
-        /// 表示当前包装的 <see cref="IEnumerable{T}"/> 对象。
+        /// 表示当前包装的 <see cref="IEnumerator{T}"/> 对象。
         /// </summary>
         private readonly IEnumerator<T> Enumerator;
 
