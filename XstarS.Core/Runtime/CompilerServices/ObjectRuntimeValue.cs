@@ -48,26 +48,7 @@ namespace XstarS.Runtime.CompilerServices
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe bool RuntimeEquals<T>(this T? value, T? other)
         {
-            var pValue = Unsafe.AsPointer(ref value);
-            var pOther = Unsafe.AsPointer(ref other);
-            var size = Unsafe.SizeOf<T>();
-            return BinaryEqualityComparer.Equals(pValue, pOther, size);
-        }
-
-        /// <summary>
-        /// 获取当前对象的基于计算堆栈值的哈希代码。
-        /// </summary>
-        /// <remarks>对于引用类型，计算堆栈值为对象的引用；
-        /// 对于值类型，计算堆栈值为对象所有字段的序列。</remarks>
-        /// <typeparam name="T">对象的类型。</typeparam>
-        /// <param name="value">要获取基于计算堆栈值哈希代码的对象。</param>
-        /// <returns><paramref name="value"/> 基于的计算堆栈值的哈希代码。</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static unsafe int GetRuntimeHashCode<T>(this T? value)
-        {
-            var pValue = Unsafe.AsPointer(ref value);
-            var size = Unsafe.SizeOf<T>();
-            return BinaryEqualityComparer.GetHashCode(pValue, size);
+            return RuntimeHelpers.Equals(value, other);
         }
     }
 }
