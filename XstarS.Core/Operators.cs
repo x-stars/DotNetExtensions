@@ -42,15 +42,31 @@ namespace XstarS
         };
 
         /// <summary>
+        /// 返回指定序列中的元素数。
+        /// </summary>
+        /// <typeparam name="T">序列中的元素的类型。</typeparam>
+        /// <param name="items">包含要计数的元素的序列。</param>
+        /// <returns>输入序列中的元素数量。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="items"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="OverflowException">
+        /// <paramref name="items"/> 中的元素数大于 <see cref="int.MaxValue"/>。</exception>
+        public static int Count<T>(IEnumerable<T> items) => items switch
+        {
+            null => throw new ArgumentNullException(nameof(items)),
+            Array array => array.Length,
+            string text => text.Length,
+            ICollection<T> collection => collection.Count,
+            _ => items.Count()
+        };
+
+        /// <summary>
         /// 创建一个包含指定元素的数组。
         /// </summary>
         /// <typeparam name="T">数组中元素的类型。</typeparam>
         /// <param name="items">用于创建数组的元素。</param>
         /// <returns>一个包含 <paramref name="items"/> 中元素的数组。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="items"/> 为 <see langword="null"/>。</exception>
-        public static T[] ArrayOf<T>(params T[] items) =>
-            items ?? throw new ArgumentNullException(nameof(items));
+        public static T[] ArrayOf<T>(params T[] items) => items;
 
         /// <summary>
         /// 创建一个包含指定值的 <see cref="StrongBox{T}"/>。
