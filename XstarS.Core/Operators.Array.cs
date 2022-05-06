@@ -17,7 +17,7 @@ namespace XstarS
         /// <paramref name="indexMap"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="length"/> 小于 0。</exception>
-        public static T[] InitArray<T>(int length, Func<int, T> indexMap)
+        public static T[] MakeArray<T>(int length, Func<int, T> indexMap)
         {
             if (length < 0)
             {
@@ -49,7 +49,7 @@ namespace XstarS
         /// <paramref name="indicesMap"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="lengths"/> 中有元素小于 0。</exception>
-        public static T[,] InitArray<T>((int, int) lengths, Func<int, int, T> indicesMap)
+        public static T[,] MakeArray<T>((int, int) lengths, Func<int, int, T> indicesMap)
         {
             var (length1, length2) = lengths;
             if ((length1 < 0) || (length2 < 0))
@@ -85,7 +85,7 @@ namespace XstarS
         /// <paramref name="indicesMap"/> 为 <see langword="null"/>。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="lengths"/> 中有元素小于 0。</exception>
-        public static T[,,] InitArray<T>((int, int, int) lengths, Func<int, int, int, T> indicesMap)
+        public static T[,,] MakeArray<T>((int, int, int) lengths, Func<int, int, int, T> indicesMap)
         {
             var (length1, length2, length3) = lengths;
             if ((length1 < 0) || (length2 < 0) || (length3 < 0))
@@ -126,7 +126,7 @@ namespace XstarS
         /// <paramref name="lengths"/> 中没有任何元素。</exception>
         /// <exception cref="ArgumentOutOfRangeException">
         /// <paramref name="lengths"/> 中包含小于 0 的整数。</exception>
-        public static Array InitArray<T>(int[] lengths, Func<int[], T> indicesMap)
+        public static Array MakeArray<T>(int[] lengths, Func<int[], T> indicesMap)
         {
             if (lengths is null)
             {
