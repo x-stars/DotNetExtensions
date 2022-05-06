@@ -14,7 +14,7 @@ namespace XstarS.Reflection
             var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
             var instance = new List<int>();
             var proxy = new WrapProxyFactory<IList<int>>(handler).CreateInstance(instance);
-            for (int index = 0; index < 10; index++) { proxy.Add(index); }
+            foreach (var index in ..10) { proxy.Add(index); }
             Assert.AreEqual(10, proxy.Count);
         }
 

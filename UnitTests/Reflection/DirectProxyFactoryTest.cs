@@ -13,7 +13,7 @@ namespace XstarS.Reflection
         {
             var handler = ProxyTestHandlers.WriteMethodAndInvokeBaseHandler;
             var proxy = new DirectProxyFactory<Collection<int>>(handler).CreateInstance();
-            for (int index = 0; index < 10; index++) { proxy.Add(index); }
+            foreach (var index in ..10) { proxy.Add(index); }
             Assert.AreEqual(10, proxy.Count);
         }
 
@@ -40,7 +40,7 @@ namespace XstarS.Reflection
             var handler = ProxyTestHandlers.WriteMethodAndReturnDefaultHandler;
             var proxy = new DirectProxyFactory<IList<object>>(handler).CreateInstance();
             Assert.AreEqual(0, proxy.Count);
-            for (int index = 0; index < 10; index++)
+            foreach (var index in ..10)
             {
                 Assert.AreEqual(null, proxy[index]);
             }

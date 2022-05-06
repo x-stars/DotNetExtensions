@@ -31,11 +31,13 @@ namespace XstarS
         {
             var array = new[] { 10000, 1000, 100, 10, 1, 0 };
             var reshaped = (int[][][][][])array.ReshapeJagged(1, 3, 2, 1, 1);
-            for (int index1 = 0; index1 < 3; index1++)
+            foreach (var index1 in ..3)
             {
-                for (int index2 = 0; index2 < 2; index2++)
+                foreach (var index2 in ..2)
                 {
-                    Assert.AreEqual(array[index1 * 2 + index2], reshaped[0][index1][index2][0][0]);
+                    var expected = array[index1 * 2 + index2];
+                    var value = reshaped[0][index1][index2][0][0];
+                    Assert.AreEqual(expected, value);
                 }
             }
             Assert.AreEqual(1, reshaped.Length);

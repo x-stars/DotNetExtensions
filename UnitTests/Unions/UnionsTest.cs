@@ -17,7 +17,7 @@ namespace XstarS.Unions
         public unsafe void HandleUnion_FixedBytes_CanGetSettedValue()
         {
             var handle = HandleUnion.Zero;
-            for (int offset = 0; offset < HandleUnion.Size; offset++)
+            foreach (var offset in ..HandleUnion.Size)
             {
                 handle.Bytes[offset] = (byte)offset;
                 Assert.AreEqual((byte)offset, handle.Bytes[offset]);

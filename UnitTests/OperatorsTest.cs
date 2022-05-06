@@ -17,7 +17,7 @@ namespace XstarS
                             index4 => MakeArray(length,
                                 index5 => new[] {
                                     index1, index2, index3, index4, index5 })))));
-            for (int index = 0; index < 5; index++)
+            foreach (var index in ..5)
             {
                 Assert.AreEqual(index, array[0][1][2][3][4][index]);
             }
