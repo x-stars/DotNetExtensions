@@ -167,7 +167,7 @@ namespace XstarS.Collections.Generic
             if (index < this.Count / 2)
             {
                 var node = this.First;
-                foreach (var _ in 0..index)
+                foreach (var front in 0..index)
                 {
                     node = node!.Next;
                 }
@@ -176,7 +176,7 @@ namespace XstarS.Collections.Generic
             else
             {
                 var node = this.Last;
-                foreach (var _ in 1..(this.Count - index))
+                foreach (var back in 1..(this.Count - index))
                 {
                     node = node!.Previous;
                 }
