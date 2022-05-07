@@ -8,14 +8,14 @@ namespace XstarS.CommandLine.Specialized
     {
         // App.exe -Path <String> [-OutFile <String>] [-Depth Int32] [-Recursive] [-Force]
 
-        private static readonly string[] paramNames = { "-Path", "-OutFile", "-Depth" };
-        private static readonly string[] switchNames = { "-Recursive", "-Force" };
+        private readonly string[] ArgumentNames = { "-Path", "-OutFile", "-Depth" };
+        private readonly string[] OptionNames = { "-Recursive", "-Force" };
 
         [TestMethod]
         public void GetParameterAndSwitch_AllNamed_WorksProperly()
         {
-            string[] arguments = { "-Path", "file1.txt", "-OutFile", "file2.txt", "-Force" };
-            var reader = new PowerShellArgumentReader(arguments, paramNames, switchNames);
+            var arguments = new[] { "-Path", "file1.txt", "-OutFile", "file2.txt", "-Force" };
+            var reader = new PowerShellArgumentReader(arguments, this.ArgumentNames, this.OptionNames);
             Assert.AreEqual("file1.txt", reader.GetArgument("-Path"));
             Assert.AreEqual("file2.txt", reader.GetArgument("-OutFile"));
             Assert.IsNull(reader.GetArgument("-Depth"));
@@ -26,8 +26,8 @@ namespace XstarS.CommandLine.Specialized
         [TestMethod]
         public void GetParameterAndSwitch_PartialNamed_WorksProperly()
         {
-            string[] arguments = { "-OutFile", "file2.txt", "file1.txt", "1", "-Recursive" };
-            var reader = new PowerShellArgumentReader(arguments, paramNames, switchNames);
+            var arguments = new[] { "-OutFile", "file2.txt", "file1.txt", "1", "-Recursive" };
+            var reader = new PowerShellArgumentReader(arguments, this.ArgumentNames, this.OptionNames);
             Assert.AreEqual("file1.txt", reader.GetArgument("-Path"));
             Assert.AreEqual("file2.txt", reader.GetArgument("-OutFile"));
             Assert.AreEqual("1", reader.GetArgument("-Depth"));
@@ -38,8 +38,8 @@ namespace XstarS.CommandLine.Specialized
         [TestMethod]
         public void GetParameterAndSwitch_ExtraParam_Fails()
         {
-            string[] arguments = { "-OutFile", "file2.txt", "-Mode", "777", "file1.txt", "-Recursive" };
-            var reader = new PowerShellArgumentReader(arguments, paramNames, switchNames);
+            var arguments = new[] { "-OutFile", "file2.txt", "-Mode", "777", "file1.txt", "-Recursive" };
+            var reader = new PowerShellArgumentReader(arguments, this.ArgumentNames, this.OptionNames);
             Assert.AreNotEqual(reader.GetArgument("-Path"), "file1.txt");
             Assert.AreEqual("-Mode", reader.GetArgument("-Path"));
             Assert.AreEqual("file2.txt", reader.GetArgument("-OutFile"));
@@ -52,8 +52,8 @@ namespace XstarS.CommandLine.Specialized
         [TestMethod]
         public void GetParameterAndSwitch_IndexedParam_ThrowsException()
         {
-            string[] arguments = { "-OutFile", "file2.txt", "file1.txt", "1", "-Recursive" };
-            var reader = new PowerShellArgumentReader(arguments, paramNames, switchNames);
+            var arguments = new[] { "-OutFile", "file2.txt", "file1.txt", "1", "-Recursive" };
+            var reader = new PowerShellArgumentReader(arguments, this.ArgumentNames, this.OptionNames);
             Assert.ThrowsException<NotSupportedException>(() => reader.GetArgument(0));
             Assert.ThrowsException<NotSupportedException>(() => reader.GetArgument(1));
         }
