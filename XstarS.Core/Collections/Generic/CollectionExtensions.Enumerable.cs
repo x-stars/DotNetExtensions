@@ -132,7 +132,6 @@ namespace XstarS.Collections.Generic
         /// <paramref name="enumerable"/> 为 <see langword="null"/>。</exception>
         public static IEnumerable<(int Index, T Item)> Indexed<T>(this IEnumerable<T> enumerable)
         {
-
             if (enumerable is null)
             {
                 throw new ArgumentNullException(nameof(enumerable));
