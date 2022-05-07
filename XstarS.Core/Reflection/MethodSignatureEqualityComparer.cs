@@ -47,7 +47,7 @@ namespace XstarS.Reflection
             var yGTypes = y.IsGenericMethod ? y.GetGenericArguments() : Array.Empty<Type>();
             if (xGTypes.Length != yGTypes.Length) { return false; }
 
-            bool TypeEquals(Type xType, Type yType)
+            static bool TypeEquals(Type xType, Type yType)
             {
                 if (xType.IsGenericParameter ^ yType.IsGenericParameter) { return false; }
                 if (xType.IsGenericParameter && yType.IsGenericParameter)
@@ -98,7 +98,7 @@ namespace XstarS.Reflection
             if (obj is null) { return 0; }
 
             [MethodImpl(MethodImplOptions.AggressiveInlining)]
-            int CombineHashCode(int hashCode, int nextHashCode)
+            static int CombineHashCode(int hashCode, int nextHashCode)
             {
                 return hashCode * -1521134295 + nextHashCode;
             }
@@ -115,7 +115,7 @@ namespace XstarS.Reflection
                 hashCode = CombineHashCode(hashCode, gIndex);
             }
 
-            int GetTypeHashCode(Type type)
+            static int GetTypeHashCode(Type type)
             {
                 var tHashCode = 0;
 
