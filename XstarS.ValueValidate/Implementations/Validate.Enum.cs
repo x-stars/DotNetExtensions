@@ -31,7 +31,7 @@ namespace XstarS
             /// <returns>若当前枚举类型带有 <see cref="FlagsAttribute"/> 特性，
             /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
             internal static bool IsFlags { get; } =
-                Attribute.IsDefined(typeof(T), typeof(FlagsAttribute), inherit: false);
+                typeof(T).IsDefined(typeof(FlagsAttribute), inherit: false);
 
             /// <summary>
             /// 确定当前枚举类型是否包含指定的枚举值。

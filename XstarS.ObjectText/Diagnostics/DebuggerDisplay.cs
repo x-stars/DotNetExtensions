@@ -54,7 +54,7 @@ namespace XstarS.Diagnostics
         public static string? GetFormat(Type type)
         {
             if (type is null) { throw new ArgumentNullException(nameof(type)); }
-            if (!Attribute.IsDefined(type, typeof(DebuggerDisplayAttribute))) { return null; }
+            if (!type.IsDefined(typeof(DebuggerDisplayAttribute), inherit: true)) { return null; }
             var attribute = Attribute.GetCustomAttribute(type, typeof(DebuggerDisplayAttribute));
             return ((DebuggerDisplayAttribute)attribute!).Value;
         }

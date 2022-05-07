@@ -13,7 +13,7 @@ namespace XstarS
         /// </summary>
         /// <returns>当前枚举类型是否应用了 <see cref="FlagsAttribute"/> 特性。</returns>
         public static bool IsFlags =>
-            Attribute.IsDefined(typeof(TEnum), typeof(FlagsAttribute), inherit: false);
+            typeof(TEnum).IsDefined(typeof(FlagsAttribute), inherit: false);
 
         /// <summary>
         /// 检索当前枚举中常数名称的数组。

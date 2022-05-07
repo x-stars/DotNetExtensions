@@ -28,7 +28,7 @@ namespace XstarS.Diagnostics
         /// <returns>若当前类型应用了 <see cref="DebuggerDisplayAttribute"/> 特性，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         internal static bool HasDebuggerDisplay =>
-            Attribute.IsDefined(typeof(T), typeof(DebuggerDisplayAttribute));
+            typeof(T).IsDefined(typeof(DebuggerDisplayAttribute), inherit: true);
 
         /// <summary>
         /// 将指定对象表示为其 <see cref="DebuggerDisplayAttribute"/> 特性定义的调试器显示格式的字符串。

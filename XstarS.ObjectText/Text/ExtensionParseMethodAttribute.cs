@@ -61,7 +61,7 @@ namespace XstarS.Text
                     .Where(type => !type.IsNested && !type.IsGenericType)
                     .SelectMany(type => type.GetMethods(BindingFlags.Public | BindingFlags.Static))
                     .Where(method => !method.IsGenericMethod)
-                    .Where(method => Attribute.IsDefined(method, typeof(ExtensionParseMethodAttribute)))
+                    .Where(method => method.IsDefined(typeof(ExtensionParseMethodAttribute)))
                     .GroupBy(method => method.ReturnType)
                     .ToDictionary(methods => methods.Key, methods => methods.First());
                 return new ConcurrentDictionary<Type, MethodInfo>(lookupTable);
@@ -82,7 +82,7 @@ namespace XstarS.Text
                     .Where(type => !type.IsNested && !type.IsGenericType)
                     .SelectMany(type => type.GetMethods(BindingFlags.Public | BindingFlags.Static))
                     .Where(method => !method.IsGenericMethod)
-                    .Where(method => Attribute.IsDefined(method, typeof(ExtensionParseMethodAttribute)));
+                    .Where(method => method.IsDefined(typeof(ExtensionParseMethodAttribute)));
                 foreach (var method in methods)
                 {
                     lookupTable.TryAdd(method.ReturnType, method);

@@ -19,8 +19,7 @@ namespace XstarS.Diagnostics
         /// 表示 <see cref="StructuralRepresenter{T}.Default"/> 的延迟初始化值。
         /// </summary>
         private static readonly Lazy<StructuralRepresenter<T>> LazyDefault =
-            new Lazy<StructuralRepresenter<T>>(
-                StructuralRepresenter<T>.CreateDefault);
+            new Lazy<StructuralRepresenter<T>>(StructuralRepresenter<T>.CreateDefault);
 
         /// <summary>
         /// 初始化 <see cref="StructuralRepresenter{T}"/> 类的新实例。
@@ -40,7 +39,7 @@ namespace XstarS.Diagnostics
         /// <returns>若当前类型应用了 <see cref="DebuggerDisplayAttribute"/> 特性，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         internal static bool HasDebuggerDisplay =>
-            Attribute.IsDefined(typeof(T), typeof(DebuggerDisplayAttribute));
+            typeof(T).IsDefined(typeof(DebuggerDisplayAttribute), inherit: true);
 
         /// <summary>
         /// 判断当前类型的 <see cref="object.ToString"/> 方法是否为默认定义。
