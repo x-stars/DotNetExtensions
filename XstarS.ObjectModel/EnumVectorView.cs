@@ -58,7 +58,7 @@ namespace XstarS.ComponentModel
             var enumNames = Enum.GetNames(typeof(TEnum));
             var enumValues = (TEnum[])Enum.GetValues(typeof(TEnum));
             var lookupTable = new Dictionary<string, TEnum>(enumNames.Length);
-            for (int index = 0; index < enumNames.Length; index++)
+            foreach (var index in ..enumNames.Length)
             {
                 lookupTable[enumNames[index]] = enumValues[index];
             }

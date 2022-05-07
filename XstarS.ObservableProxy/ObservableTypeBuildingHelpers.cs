@@ -129,7 +129,7 @@ namespace XstarS.Reflection.Emit
 
                 var ilGen = method.GetILGenerator();
                 ilGen.Emit(OpCodes.Ldarg_0);
-                for (int index = 0; index < baseMethod.GetParameters().Length; index++)
+                foreach (var index in ..baseMethod.GetParameters().Length)
                 {
                     ilGen.EmitLdarg(index + 1);
                 }
@@ -147,7 +147,7 @@ namespace XstarS.Reflection.Emit
 
                 var ilGen = method.GetILGenerator();
                 ilGen.Emit(OpCodes.Ldarg_0);
-                for (int index = 0; index < baseMethod.GetParameters().Length; index++)
+                foreach (var index in ..baseMethod.GetParameters().Length)
                 {
                     ilGen.EmitLdarg(index + 1);
                 }

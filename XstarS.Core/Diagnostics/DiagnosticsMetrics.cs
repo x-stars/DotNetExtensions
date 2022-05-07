@@ -31,7 +31,7 @@ namespace XstarS.Diagnostics
 
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            for (int count = 0; count < repeat; count++)
+            foreach (var count in ..repeat)
             {
                 process.Invoke();
             }
@@ -63,7 +63,7 @@ namespace XstarS.Diagnostics
 
             var stopWatch = new Stopwatch();
             stopWatch.Start();
-            for (int count = 0; count < repeat; count++)
+            foreach (var count in ..repeat)
             {
                 process.Invoke();
             }

@@ -89,7 +89,7 @@ namespace XstarS
             var items = array.RecursiveEnumerate().GetEnumerator();
 
             bool isMultiDim = lengths.Length > 1;
-            for (int offset = 0; offset < result.Length; offset++)
+            foreach (var offset in ..result.Length)
             {
                 if (items.MoveNext())
                 {
@@ -183,10 +183,10 @@ namespace XstarS
                 while (restLengths.Length > 0)
                 {
                     result = Array.CreateInstance(itemType.MakeArrayType(), ProductOf(restLengths));
-                    for (int index = 0; index < result.Length; index++)
+                    foreach (var index in ..result.Length)
                     {
                         var innerArray = Array.CreateInstance(itemType, lastLengths[^1]);
-                        for (int innerIndex = 0; innerIndex < innerArray.Length; innerIndex++)
+                        foreach (var innerIndex in ..innerArray.Length)
                         {
                             if (items.MoveNext())
                             {
@@ -233,10 +233,10 @@ namespace XstarS
             var length2 = array.GetLength(1);
 
             var result = new T[length1][];
-            for (int index1 = 0; index1 < length1; index1++)
+            foreach (var index1 in ..length1)
             {
                 var result2 = new T[length2];
-                for (int index2 = 0; index2 < length2; index2++)
+                foreach (var index2 in ..length2)
                 {
                     result2[index2] = array[index1, index2];
                 }
@@ -265,13 +265,13 @@ namespace XstarS
             var length3 = array.GetLength(2);
 
             var result = new T[length1][][];
-            for (int index1 = 0; index1 < length1; index1++)
+            foreach (var index1 in ..length1)
             {
                 var result2 = new T[length2][];
-                for (int index2 = 0; index2 < length2; index2++)
+                foreach (var index2 in ..length2)
                 {
                     var result3 = new T[length3];
-                    for (int index3 = 0; index3 < length3; index3++)
+                    foreach (var index3 in ..length3)
                     {
                         result3[index3] = array[index1, index2, index3];
                     }
@@ -313,7 +313,7 @@ namespace XstarS
             var length2 = array[0].Length;
 
             var result = new T[length1, length2];
-            for (int index1 = 0; index1 < length1; index1++)
+            foreach (var index1 in ..length1)
             {
                 var array2 = array[index1];
                 if (array2.Length != length2)
@@ -321,7 +321,7 @@ namespace XstarS
                     throw new ArgumentOutOfRangeException(nameof(array));
                 }
 
-                for (int index2 = 0; index2 < length2; index2++)
+                foreach (var index2 in ..length2)
                 {
                     result[index1, index2] = array2[index2];
                 }
@@ -369,7 +369,7 @@ namespace XstarS
             var length3 = array[0][0].Length;
 
             var result = new T[length1, length2, length3];
-            for (int index1 = 0; index1 < length1; index1++)
+            foreach (var index1 in ..length1)
             {
                 var array2 = array[index1];
                 if (array2.Length != length2)
@@ -377,7 +377,7 @@ namespace XstarS
                     throw new ArgumentOutOfRangeException(nameof(array));
                 }
 
-                for (int index2 = 0; index2 < length2; index2++)
+                foreach (var index2 in ..length2)
                 {
                     var array3 = array2[index2];
                     if (array3.Length != length3)
@@ -385,7 +385,7 @@ namespace XstarS
                         throw new ArgumentOutOfRangeException(nameof(array));
                     }
 
-                    for (int index3 = 0; index3 < length3; index3++)
+                    foreach (var index3 in ..length3)
                     {
                         result[index1, index2, index3] = array3[index3];
                     }

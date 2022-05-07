@@ -140,7 +140,7 @@ namespace XstarS.Collections.ObjectModel
             var length = array.Length - index;
             var entries = new DictionaryEntry[length];
             this.Dictionary.CopyTo(entries, 0);
-            for (int offset = 0; offset < length; offset++)
+            foreach (var offset in ..length)
             {
                 array[offset + index] = new KeyValuePair<TKey, TValue?>(
                     (TKey)entries[offset].Key, (TValue?)entries[offset].Value);

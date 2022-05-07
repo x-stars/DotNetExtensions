@@ -100,7 +100,7 @@ namespace XstarS.Reflection.Emit
                 {
                     var typeGenericDefinition = constraintType.GetGenericTypeDefinition();
                     var typeGenericArguments = constraintType.GetGenericArguments();
-                    for (int index = 0; index < typeGenericArguments.Length; index++)
+                    foreach (var index in ..typeGenericArguments.Length)
                     {
                         typeGenericArguments[index] = MakeConstraint(typeGenericArguments[index]);
                     }
@@ -112,7 +112,7 @@ namespace XstarS.Reflection.Emit
                 }
             }
 
-            for (int index = 0; index < genericParams.Length; index++)
+            foreach (var index in ..genericParams.Length)
             {
                 var genericParam = genericParams[index];
                 var baseGenericParam = baseGenericParams[index];
@@ -197,7 +197,7 @@ namespace XstarS.Reflection.Emit
                 var ilGen = delegateMethod.GetILGenerator();
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.EmitUnbox(baseType);
-                for (int pIndex = 0; pIndex < baseParameters.Length; pIndex++)
+                foreach (var pIndex in ..baseParameters.Length)
                 {
                     var baseParameter = baseParameters[pIndex];
                     int gIndex = Array.IndexOf(
@@ -366,7 +366,7 @@ namespace XstarS.Reflection.Emit
             var baseParameters = baseMethod.GetParameters();
             ilGen.EmitLdcI4(baseParameters.Length);
             ilGen.Emit(OpCodes.Newarr, typeof(object));
-            for (int index = 0; index < baseParameters.Length; index++)
+            foreach (var index in ..baseParameters.Length)
             {
                 var baseParameter = baseParameters[index];
                 ilGen.Emit(OpCodes.Dup);
@@ -427,7 +427,7 @@ namespace XstarS.Reflection.Emit
             {
                 ilGen.Emit(OpCodes.Ldfld, instanceField);
             }
-            for (int index = 0; index < baseMethod.GetParameters().Length; index++)
+            foreach (var index in ..baseMethod.GetParameters().Length)
             {
                 ilGen.EmitLdarg(index + 1);
             }

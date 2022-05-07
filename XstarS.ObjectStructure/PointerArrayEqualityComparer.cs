@@ -41,7 +41,7 @@ namespace XstarS
             var yArray = (Array)(object)y;
 
             var methodGet = PointerArrayEqualityComparer<T>.GetMethod;
-            for (int index = 0; index < xArray.Length; index++)
+            foreach (var index in ..xArray.Length)
             {
                 var xItem = methodGet.Invoke(xArray, xArray.OffsetToIndices(index).Box());
                 var yItem = methodGet.Invoke(yArray, yArray.OffsetToIndices(index).Box());
@@ -62,7 +62,7 @@ namespace XstarS
 
             var hashCode = array.GetType().GetHashCode();
             var methodGet = PointerArrayEqualityComparer<T>.GetMethod;
-            for (int index = 0; index < array.Length; index++)
+            foreach (var index in ..array.Length)
             {
                 var item = methodGet.Invoke(array, array.OffsetToIndices(index).Box());
                 var nextHashCode = PointerEqualityComparer.GetHashCode(item);

@@ -65,7 +65,7 @@ namespace XstarS.Reflection
                 var xTypeGTypes = xType.GetGenericArguments();
                 var yTypeGTypes = yType.GetGenericArguments();
                 if (xTypeGTypes.Length != yTypeGTypes.Length) { return false; }
-                for (int index = 0; index < xTypeGTypes.Length; index++)
+                foreach (var index in ..xTypeGTypes.Length)
                 {
                     if (!TypeEquals(xTypeGTypes[index], yTypeGTypes[index])) { return false; }
                 }
@@ -80,7 +80,7 @@ namespace XstarS.Reflection
             var xPTypes = Array.ConvertAll(x.GetParameters(), param => param.ParameterType);
             var yPTypes = Array.ConvertAll(y.GetParameters(), param => param.ParameterType);
             if (xPTypes.Length != yPTypes.Length) { return false; }
-            for (int index = 0; index < xPTypes.Length; index++)
+            foreach (var index in ..xPTypes.Length)
             {
                 if (!TypeEquals(xPTypes[index], yPTypes[index])) { return false; }
             }
@@ -110,7 +110,7 @@ namespace XstarS.Reflection
 
             if (obj.IsGenericMethod) { obj = obj.GetGenericMethodDefinition(); }
             var gTypes = obj.IsGenericMethod ? obj.GetGenericArguments() : Array.Empty<Type>();
-            for (int gIndex = 0; gIndex < gTypes.Length; gIndex++)
+            foreach (var gIndex in ..gTypes.Length)
             {
                 hashCode = CombineHashCode(hashCode, gIndex);
             }

@@ -105,7 +105,7 @@ namespace XstarS.Runtime.CompilerServices
         {
             if (value.Rank != other.Rank) { return false; }
             if (value.Length != other.Length) { return false; }
-            for (int rank = 0; rank < value.Rank; rank++)
+            foreach (var rank in ..value.Rank)
             {
                 if (value.GetLength(rank) != other.GetLength(rank))
                 {
@@ -117,7 +117,7 @@ namespace XstarS.Runtime.CompilerServices
             if (typeArray.GetElementType()!.IsPointer)
             {
                 var methodGet = typeArray.GetMethod("Get")!;
-                for (int index = 0; index < value.Length; index++)
+                foreach (var index in ..value.Length)
                 {
                     var valueItem = methodGet.Invoke(value, value.OffsetToIndices(index).Box())!;
                     var otherItem = methodGet.Invoke(other, other.OffsetToIndices(index).Box())!;
@@ -130,7 +130,7 @@ namespace XstarS.Runtime.CompilerServices
             else
             {
                 bool isSZArray = value.IsSZArray();
-                for (int index = 0; index < value.Length; index++)
+                foreach (var index in ..value.Length)
                 {
                     var valueItem = isSZArray ?
                         value.GetValue(index) : value.GetValue(value.OffsetToIndices(index));

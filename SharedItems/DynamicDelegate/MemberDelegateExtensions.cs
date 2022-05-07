@@ -122,7 +122,7 @@ namespace XstarS.Reflection
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.EmitUnbox(method.DeclaringType!);
             }
-            for (int index = 0; index < paramInfos.Length; index++)
+            foreach (var index in ..paramInfos.Length)
             {
                 ilGen.Emit(OpCodes.Ldarg_1);
                 ilGen.EmitLdcI4(index);

@@ -334,7 +334,7 @@ namespace XstarS.Reflection
             var createMethod = new DynamicMethod("CreateInstance",
                 constructor.DeclaringType!, paramTypes, restrictedSkipVisibility: true);
             var ilGen = createMethod.GetILGenerator();
-            for (int index = 0; index < paramInfos.Length; index++)
+            foreach (var index in ..paramInfos.Length)
             {
                 var param = paramInfos[index];
                 createMethod.DefineParameter(index + 1, param.Attributes, param.Name);

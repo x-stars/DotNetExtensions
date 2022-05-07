@@ -31,7 +31,7 @@ namespace XstarS
             if (x.Length != y.Length) { return false; }
 
             var length = x.Length;
-            for (int index = 0; index < length; index++)
+            foreach (var index in ..length)
             {
                 if (x[index]?.GetType() != y[index]?.GetType()) { return false; }
 
@@ -51,7 +51,7 @@ namespace XstarS
         {
             var length = obj.Length;
             var hashCode = obj.GetType().GetHashCode();
-            for (int index = 0; index < length; index++)
+            foreach (var index in ..length)
             {
                 var comparer = StructuralEqualityComparer.OfType(obj[index]?.GetType());
                 var nextHashCode = comparer.GetHashCode(obj[index]!);

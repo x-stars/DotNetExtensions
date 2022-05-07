@@ -35,7 +35,7 @@ namespace XstarS
 
             if (xArray.Rank != yArray.Rank) { return false; }
             if (xArray.Length != yArray.Length) { return false; }
-            for (int rank = 0; rank < xArray.Rank; rank++)
+            foreach (var rank in ..xArray.Rank)
             {
                 if (xArray.GetLength(rank) != yArray.GetLength(rank))
                 {
@@ -43,7 +43,7 @@ namespace XstarS
                 }
             }
 
-            for (int index = 0; index < xArray.Length; index++)
+            foreach (var index in ..xArray.Length)
             {
                 var xItem = xArray.GetValue(xArray.OffsetToIndices(index));
                 var yItem = yArray.GetValue(yArray.OffsetToIndices(index));
@@ -67,7 +67,7 @@ namespace XstarS
             var array = (Array)(object)obj;
 
             var hashCode = array.GetType().GetHashCode();
-            for (int index = 0; index < array.Length; index++)
+            foreach (var index in ..array.Length)
             {
                 var item = array.GetValue(array.OffsetToIndices(index));
                 var comparer = StructuralEqualityComparer.OfType(item?.GetType());

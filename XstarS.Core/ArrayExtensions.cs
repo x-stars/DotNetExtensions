@@ -47,7 +47,7 @@ namespace XstarS
 
             var length = array.Length;
             var result = new object[length];
-            for (int index = 0; index < length; index++)
+            foreach (var index in ..length)
             {
                 result[index] = array[index];
             }
@@ -71,7 +71,7 @@ namespace XstarS
 
             var length = array.Length;
             var result = new object?[length];
-            for (int index = 0; index < length; index++)
+            foreach (var index in ..length)
             {
                 result[index] = array[index];
             }
@@ -120,7 +120,7 @@ namespace XstarS
             }
 
             int length = 0;
-            for (int index = 0; index < arrays.Length; index++)
+            foreach (var index in ..arrays.Length)
             {
                 var array = arrays[index] ?? Array.Empty<T>();
                 length += array.Length;
@@ -128,7 +128,7 @@ namespace XstarS
 
             var result = new T[length];
             int offset = 0;
-            for (int index = 0; index < arrays.Length; index++)
+            foreach (var index in ..arrays.Length)
             {
                 var array = arrays[index] ?? Array.Empty<T>();
                 Array.Copy(array, 0, result, offset, array.Length);
@@ -247,7 +247,7 @@ namespace XstarS
 
             var result = new int[array.Rank];
             var scale = array.Length;
-            for (int rank = 0; rank < array.Rank; rank++)
+            foreach (var rank in ..array.Rank)
             {
                 var start = array.GetLowerBound(rank);
                 scale /= array.GetLength(rank);

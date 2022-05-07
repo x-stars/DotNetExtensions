@@ -120,7 +120,7 @@ namespace XstarS.Runtime.CompilerServices
             {
                 if (value.IsSZArray())
                 {
-                    for (int index = 0; index < value.Length; index++)
+                    foreach (var index in ..value.Length)
                     {
                         var item = value.GetValue(index);
                         var clone = ObjectRuntimeValue.RecursiveClone(item, cloned);
@@ -129,7 +129,7 @@ namespace XstarS.Runtime.CompilerServices
                 }
                 else
                 {
-                    for (int index = 0; index < value.Length; index++)
+                    foreach (var index in ..value.Length)
                     {
                         var indices = value.OffsetToIndices(index);
                         var item = value.GetValue(indices);

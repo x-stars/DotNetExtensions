@@ -103,7 +103,7 @@ namespace XstarS.Runtime.CompilerServices
             if (typeArray.GetElementType()!.IsPointer)
             {
                 var methodGet = typeArray.GetMethod("Get")!;
-                for (int index = 0; index < value.Length; index++)
+                foreach (var index in ..value.Length)
                 {
                     var item = methodGet.Invoke(value, value.OffsetToIndices(index).Box())!;
                     hashCode = ObjectRuntimeValue.CombineHashCode(
@@ -113,7 +113,7 @@ namespace XstarS.Runtime.CompilerServices
             else
             {
                 bool isSZArray = value.IsSZArray();
-                for (int index = 0; index < value.Length; index++)
+                foreach (var index in ..value.Length)
                 {
                     var item = isSZArray ?
                         value.GetValue(index) : value.GetValue(value.OffsetToIndices(index));

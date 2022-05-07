@@ -48,7 +48,7 @@ namespace XstarS
             {
                 var represents = new List<string>();
                 var length = array.GetLength(indices.Length);
-                for (int index = 0; index < length; index++)
+                foreach (var index in ..length)
                 {
                     var nextIndices = indices.Append(index);
                     represents.Add(this.RepresentArray(array, nextIndices, represented));
