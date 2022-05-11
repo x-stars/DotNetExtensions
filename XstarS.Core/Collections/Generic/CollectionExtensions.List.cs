@@ -109,6 +109,29 @@ namespace XstarS.Collections.Generic
         }
 
         /// <summary>
+        /// 移除并返回位于 <see cref="IList{T}"/> 结尾处的对象。
+        /// </summary>
+        /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
+        /// <param name="list">要移除尾部值的 <see cref="IList{T}"/> 对象。</param>
+        /// <returns>从 <paramref name="list"/> 的结尾处移除的对象。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="list"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="list"/> 为空。</exception>
+        public static T Pop<T>(this IList<T> list)
+        {
+            if (list is null)
+            {
+                throw new ArgumentNullException(nameof(list));
+            }
+
+            var lastIndex = list.Count - 1;
+            var lastValue = list[lastIndex];
+            list.RemoveAt(lastIndex);
+            return lastValue;
+        }
+
+        /// <summary>
         /// 从 <see cref="IList{T}"/> 中移除一定范围的元素。
         /// </summary>
         /// <typeparam name="T"><see cref="IList{T}"/> 中的元素的类型。</typeparam>
