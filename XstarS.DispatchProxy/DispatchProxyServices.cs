@@ -73,7 +73,7 @@ namespace XstarS.Reflection
         /// <returns><paramref name="method"/> 方法的动态调用委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-        public static Func<object, object?[]?, object?> GetDynamicDelegate(this MethodInfo method)
+        public static MethodDynamicDelegate GetDynamicDelegate(this MethodInfo method)
         {
             if (method is null)
             {

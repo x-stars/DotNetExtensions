@@ -29,7 +29,7 @@ namespace XstarS.Reflection
         /// 方法创建 <see cref="DispatchProxy{TInterface}"/> 类的实例。</para>
         /// </remarks>
         [EditorBrowsable(EditorBrowsableState.Never)]
-        [Obsolete("For internal usages only, use Create method insted.", error: true)]
+        [Obsolete("For internal usages only, use Create method instead.", error: true)]
         public DispatchProxy() : base() { }
 
         /// <summary>
