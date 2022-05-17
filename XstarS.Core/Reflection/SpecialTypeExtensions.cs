@@ -17,13 +17,6 @@ namespace XstarS.Reflection
                 "System.TypedReference" }.Select(Type.GetType).OfType<Type>());
 
         /// <summary>
-        /// 确定类型是否是类引用传递结构类型的方法的委托。
-        /// </summary>
-        private static readonly Predicate<Type> IsByRefLikeDelegate =
-            (typeof(Type).GetProperty("IsByRefLike")?.GetMethod?.CreateDelegate(
-                typeof(Predicate<Type>)) as Predicate<Type>) ?? (type => false);
-
-        /// <summary>
         /// 确定当前 <see cref="Type"/> 是否是与可变参数列表方法相关的类型。
         /// </summary>
         /// <param name="type">要确定是否相关的 <see cref="Type"/> 对象。</param>
@@ -56,8 +49,11 @@ namespace XstarS.Reflection
                 throw new ArgumentNullException(nameof(type));
             }
 
-            return type.IsByRef || type.IsVarArgType() ||
-                SpecialTypeExtensions.IsByRefLikeDelegate.Invoke(type);
+            return type.IsByRef ||
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+                (!type.IsGenericParameter && type.IsByRefLike) ||
+#endif
+                type.IsVarArgType();
         }
 
         /// <summary>
