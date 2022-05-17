@@ -3,14 +3,14 @@
 namespace XstarS.Reflection
 {
     [TestClass]
-    public class ByRefConverterTest
+    public class ByRefUnsafeConverterTest
     {
         [TestMethod]
         public void ToIntPtr_Int32ByRef_CanEditRefValue()
         {
             int value = 0;
-            var pointer = ByRefConverter.ToIntPtr(ref value);
-            ByRefConverter.ToByRef<int>(pointer) = 1;
+            var pointer = ByRefUnsafeConverter.ToIntPtr(ref value);
+            ByRefUnsafeConverter.ToByRef<int>(pointer) = 1;
             Assert.AreEqual(1, value);
         }
 
@@ -19,7 +19,7 @@ namespace XstarS.Reflection
         {
             var box = (object)0;
             var value = 10;
-            ByRefConverter.RefBoxed<int>(box) = value;
+            ByRefUnsafeConverter.RefBoxed<int>(box) = value;
             Assert.AreEqual(value, box);
         }
     }

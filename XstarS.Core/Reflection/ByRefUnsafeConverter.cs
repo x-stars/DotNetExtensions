@@ -6,7 +6,7 @@ namespace XstarS.Reflection
     /// <summary>
     /// 提供转换引用传递 <see langword="ref"/> 类型的方法。
     /// </summary>
-    public static unsafe class ByRefConverter
+    public static unsafe class ByRefUnsafeConverter
     {
         /// <summary>
         /// 将指定的 <see cref="IntPtr"/> 表示的地址转换为等效的 <typeparamref name="T"/> 类型的值的引用。
