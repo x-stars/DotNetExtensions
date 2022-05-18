@@ -75,11 +75,12 @@ namespace XstarS.Reflection.Emit
                 throw new ArgumentException(inner.Message, nameof(baseConstructor), inner);
             }
 
+            var baseParameters = baseConstructor.GetParameters();
+
             var constructor = type.DefineConstructor(
                 baseConstructor.Attributes, baseConstructor.CallingConvention,
-                Array.ConvertAll(baseConstructor.GetParameters(), param => param.ParameterType));
+                Array.ConvertAll(baseParameters, param => param.ParameterType));
 
-            var baseParameters = baseConstructor.GetParameters();
             foreach (var index in ..baseParameters.Length)
             {
                 var baseParameter = baseParameters[index];
@@ -305,7 +306,7 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 是索引属性或无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        public static KeyValuePair<PropertyBuilder, FieldBuilder> DefineAutoPropertyOverride(
+        public static (PropertyBuilder Property, FieldBuilder Field) DefineAutoPropertyOverride(
             this TypeBuilder type, PropertyInfo baseProperty, bool explicitOverride = false)
         {
             if (type is null)
@@ -370,7 +371,7 @@ namespace XstarS.Reflection.Emit
                 property.SetSetMethod(method);
             }
 
-            return new KeyValuePair<PropertyBuilder, FieldBuilder>(property, field);
+            return (property, field);
         }
 
         /// <summary>
@@ -435,7 +436,7 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseEvent"/> 的方法无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        public static KeyValuePair<EventBuilder, FieldBuilder> DefineDefaultEventOverride(
+        public static (EventBuilder Event, FieldBuilder Field) DefineDefaultEventOverride(
             this TypeBuilder type, EventInfo baseEvent, bool explicitOverride = false)
         {
             if (type is null)
@@ -547,7 +548,7 @@ namespace XstarS.Reflection.Emit
                 @event.SetRemoveOnMethod(method);
             }
 
-            return new KeyValuePair<EventBuilder, FieldBuilder>(@event, field);
+            return (@event, field);
         }
     }
 }

@@ -147,11 +147,11 @@ namespace XstarS.Reflection.Emit
         /// <param name="baseMethod">作为基础的方法。</param>
         /// <param name="baseType">定义基础方法的类型；若为泛型类型，则应为构造泛型类型。</param>
         /// <param name="instanceField">代理对象的字段；<see langword="null"/> 表示代理对象为当前实例。</param>
-        /// <returns>定义的基类方法的 <see cref="MethodInfo"/> 和 <see cref="MethodDelegate"/> 字段</returns>
+        /// <returns>定义的基类方法的 <see cref="MethodInfo"/> 和 <see cref="MethodDelegate"/> 字段。</returns>
         /// <exception cref="ArgumentException">
         /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static KeyValuePair<FieldBuilder, FieldBuilder> DefineBaseMethodInfoAndDelegateField(
+        internal static (FieldBuilder InfoField, FieldBuilder DelegateField) DefineBaseMethodInfoAndDelegateField(
             this TypeBuilder type, MethodInfo baseMethod, Type baseType, FieldInfo? instanceField = null)
         {
             if (type is null)
@@ -255,7 +255,7 @@ namespace XstarS.Reflection.Emit
 
             nestedType.CreateTypeInfo();
 
-            return new KeyValuePair<FieldBuilder, FieldBuilder>(infoField, delegateField);
+            return (infoField, delegateField);
         }
 
         /// <summary>

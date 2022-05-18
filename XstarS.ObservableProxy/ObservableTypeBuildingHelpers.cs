@@ -188,7 +188,7 @@ namespace XstarS.Reflection.Emit
         /// <exception cref="ArgumentException">
         /// <paramref name="baseProperty"/> 是索引属性或无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
-        internal static KeyValuePair<PropertyBuilder, FieldBuilder> DefineObservableAutoPropertyOverride(
+        internal static (PropertyBuilder Property, FieldBuilder Field) DefineObservableAutoPropertyOverride(
             this TypeBuilder type, PropertyInfo baseProperty,
             MethodInfo onPropertyChangedMethod, bool explicitOverride = false)
         {
@@ -274,7 +274,7 @@ namespace XstarS.Reflection.Emit
                 property.SetSetMethod(method);
             }
 
-            return new KeyValuePair<PropertyBuilder, FieldBuilder>(property, field);
+            return (property, field);
         }
     }
 }

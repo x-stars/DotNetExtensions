@@ -319,8 +319,8 @@ namespace XstarS.Reflection
             {
                 var fields = type.DefineBaseMethodInfoAndDelegateField(
                     baseMethod, baseType, instanceField);
-                infoFields[baseMethod] = fields.Key;
-                delegateFields[baseMethod] = fields.Value;
+                infoFields[baseMethod] = fields.InfoField;
+                delegateFields[baseMethod] = fields.DelegateField;
             }
 
             this.BaseMethodInfoFields = infoFields;

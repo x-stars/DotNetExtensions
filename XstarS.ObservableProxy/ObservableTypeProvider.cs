@@ -226,7 +226,7 @@ namespace XstarS.ComponentModel
 
             if (baseEvent?.AddMethod!.IsAbstract == true)
             {
-                var field = type.DefineDefaultEventOverride(baseEvent).Value;
+                var field = type.DefineDefaultEventOverride(baseEvent).Field;
                 var method = type.DefineOnPropertyChangedMethod(field);
 
                 this.OnPropertyChangedMethod = method;
