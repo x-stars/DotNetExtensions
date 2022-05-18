@@ -60,20 +60,6 @@ namespace XstarS
         }
 
         /// <summary>
-        /// 抛出 <see cref="IndexOutOfRangeException"/> 类型的异常。
-        /// </summary>
-        /// <param name="message">自定义抛出异常的消息。</param>
-        /// <param name="innerException">引发当前异常的异常。</param>
-        /// <exception cref="IndexOutOfRangeException">
-        /// 总是抛出 <see cref="IndexOutOfRangeException"/> 类型的异常。</exception>
-        internal static void ThrowIndexOutOfRangeException(
-            string? message = null, Exception? innerException = null)
-        {
-            message ??= new IndexOutOfRangeException().Message;
-            throw new IndexOutOfRangeException(message, innerException);
-        }
-
-        /// <summary>
         /// 抛出 <see cref="KeyNotFoundException"/> 类型的异常。
         /// </summary>
         /// <param name="message">自定义抛出异常的消息。</param>

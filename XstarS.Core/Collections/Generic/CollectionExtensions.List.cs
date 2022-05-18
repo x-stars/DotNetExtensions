@@ -88,7 +88,7 @@ namespace XstarS.Collections.Generic
         /// 集合自身不能为 <see langword="null"/>，但它可以包含为 <see langword="null"/> 的元素。</param>
         /// <exception cref="ArgumentNullException"><paramref name="list"/>
         /// 或 <paramref name="collection"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="IndexOutOfRangeException"><paramref name="index"/> 小于 0，
+        /// <exception cref="ArgumentOutOfRangeException"><paramref name="index"/> 小于 0，
         /// 或 <paramref name="index"/> 大于 <see cref="ICollection{T}.Count"/>。</exception>
         public static void InsertRange<T>(this IList<T> list, int index, IEnumerable<T> collection)
         {

@@ -62,7 +62,7 @@ namespace XstarS
         {
             if ((valueInfo.Value.Count() < minCount) || (valueInfo.Value.Count() > maxCount))
             {
-                ThrowHelper.ThrowArgumentException(valueInfo.Name, message, new IndexOutOfRangeException());
+                ThrowHelper.ThrowArgumentException(valueInfo.Name, message);
             }
 
             return valueInfo;
