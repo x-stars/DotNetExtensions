@@ -79,7 +79,9 @@ namespace XstarS.Reflection.Emit
 
             var constructor = type.DefineConstructor(
                 baseConstructor.Attributes, baseConstructor.CallingConvention,
-                Array.ConvertAll(baseParameters, param => param.ParameterType));
+                Array.ConvertAll(baseParameters, param => param.ParameterType),
+                Array.ConvertAll(baseParameters, param => param.GetRequiredCustomModifiers()),
+                Array.ConvertAll(baseParameters, param => param.GetOptionalCustomModifiers()));
 
             foreach (var index in ..baseParameters.Length)
             {
@@ -181,8 +183,13 @@ namespace XstarS.Reflection.Emit
             }
 
             var method = type.DefineMethod(methodName,
-                attributes, baseMethod.CallingConvention, baseReturnParam.ParameterType,
-                Array.ConvertAll(baseParameters, param => param.ParameterType));
+                attributes, baseMethod.CallingConvention,
+                baseReturnParam.ParameterType,
+                baseReturnParam.GetRequiredCustomModifiers(),
+                baseReturnParam.GetOptionalCustomModifiers(),
+                Array.ConvertAll(baseParameters, param => param.ParameterType),
+                Array.ConvertAll(baseParameters, param => param.GetRequiredCustomModifiers()),
+                Array.ConvertAll(baseParameters, param => param.GetOptionalCustomModifiers()));
 
             var genericParams = (baseGenericParams.Length == 0) ?
                 Array.Empty<GenericTypeParameterBuilder>() :
@@ -244,6 +251,52 @@ namespace XstarS.Reflection.Emit
         }
 
         /// <summary>
+        /// 以指定的属性为基础，定义重写属性，并添加到当前类型。
+        /// </summary>
+        /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
+        /// <param name="baseProperty">作为基础的属性。</param>
+        /// <param name="explicitOverride">指定是否以显式方式重写。</param>
+        /// <returns>定义完成的属性，仅包括属性定义，不包括任何访问器及其实现。</returns>
+        /// <exception cref="ArgumentException">
+        /// <paramref name="baseProperty"/> 的方法无法在程序集外部重写。</exception>
+        /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
+        public static PropertyBuilder DefinePropertyOverride(
+            this TypeBuilder type, PropertyInfo baseProperty, bool explicitOverride = false)
+        {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+            if (baseProperty is null)
+            {
+                throw new ArgumentNullException(nameof(baseProperty));
+            }
+            if (!baseProperty.GetAccessors().All(accessor => accessor.IsOverridable()))
+            {
+                var inner = new MemberAccessException();
+                throw new ArgumentException(inner.Message, nameof(baseProperty), inner);
+            }
+
+            var propertyName = baseProperty.Name;
+            var baseParameters = baseProperty.GetIndexParameters();
+
+            if (explicitOverride)
+            {
+                var baseHandle = baseProperty.GetAccessors().First().MethodHandle;
+                propertyName += $"#{baseHandle.Value.ToString()}";
+            }
+
+            var property = type.DefineProperty(
+                propertyName, baseProperty.Attributes, baseProperty.PropertyType,
+                baseProperty.GetRequiredCustomModifiers(), baseProperty.GetOptionalCustomModifiers(),
+                Array.ConvertAll(baseParameters, param => param.ParameterType),
+                Array.ConvertAll(baseParameters, param => param.GetRequiredCustomModifiers()),
+                Array.ConvertAll(baseParameters, param => param.GetOptionalCustomModifiers()));
+
+            return property;
+        }
+
+        /// <summary>
         /// 以指定的属性为基础，定义抛出未实现异常的重写属性，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义属性的 <see cref="TypeBuilder"/> 对象。</param>
@@ -270,16 +323,7 @@ namespace XstarS.Reflection.Emit
                 throw new ArgumentException(inner.Message, nameof(baseProperty), inner);
             }
 
-            var propertyName = baseProperty.Name;
-            if (explicitOverride)
-            {
-                var baseHandle = baseProperty.GetAccessors().First().MethodHandle;
-                propertyName += $"#{baseHandle.Value.ToString()}";
-            }
-
-            var property = type.DefineProperty(
-                propertyName, baseProperty.Attributes, baseProperty.PropertyType,
-                Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
+            var property = type.DefinePropertyOverride(baseProperty, explicitOverride);
 
             if (baseProperty.CanRead)
             {
@@ -328,19 +372,10 @@ namespace XstarS.Reflection.Emit
                 throw new ArgumentException(inner.Message, nameof(baseProperty), inner);
             }
 
-            var propertyName = baseProperty.Name;
-            if (explicitOverride)
-            {
-                var baseHandle = baseProperty.GetAccessors().First().MethodHandle;
-                propertyName += $"#{baseHandle.Value.ToString()}";
-            }
-
-            var property = type.DefineProperty(
-                propertyName, baseProperty.Attributes, baseProperty.PropertyType,
-                Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
+            var property = type.DefinePropertyOverride(baseProperty, explicitOverride);
 
             var field = type.DefineField(
-                propertyName, baseProperty.PropertyType, FieldAttributes.Private);
+                property.Name, baseProperty.PropertyType, FieldAttributes.Private);
 
             if (baseProperty.CanRead)
             {

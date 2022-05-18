@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
@@ -110,16 +109,7 @@ namespace XstarS.Reflection.Emit
             var rPropertyNames = baseProperty.GetCustomAttribute<
                 RelatedPropertiesAttribute>()?.PropertyNames ?? Array.Empty<string>();
 
-            var propertyName = baseProperty.Name;
-            if (explicitOverride)
-            {
-                var baseHandle = baseProperty.GetAccessors().First().MethodHandle;
-                propertyName += $"#{baseHandle.Value.ToString()}";
-            }
-
-            var property = type.DefineProperty(
-                propertyName, baseProperty.Attributes, baseProperty.PropertyType,
-                Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
+            var property = type.DefinePropertyOverride(baseProperty, explicitOverride);
 
             if (baseProperty.CanRead)
             {
@@ -218,19 +208,10 @@ namespace XstarS.Reflection.Emit
             var rPropertyNames = baseProperty.GetCustomAttribute<
                 RelatedPropertiesAttribute>()?.PropertyNames ?? Array.Empty<string>();
 
-            var propertyName = baseProperty.Name;
-            if (explicitOverride)
-            {
-                var baseHandle = baseProperty.GetAccessors().First().MethodHandle;
-                propertyName += $"#{baseHandle.Value.ToString()}";
-            }
-
-            var property = type.DefineProperty(
-                propertyName, baseProperty.Attributes, baseProperty.PropertyType,
-                Array.ConvertAll(baseProperty.GetIndexParameters(), param => param.ParameterType));
+            var property = type.DefinePropertyOverride(baseProperty, explicitOverride);
 
             var field = type.DefineField(
-                propertyName, baseProperty.PropertyType, FieldAttributes.Private);
+                property.Name, baseProperty.PropertyType, FieldAttributes.Private);
 
             if (baseProperty.CanRead)
             {
