@@ -13,16 +13,9 @@ namespace XstarS.Runtime.CompilerServices
         /// </summary>
         /// <param name="instance">要获取类型句柄引用的对象。</param>
         /// <returns>对 <paramref name="instance"/> 的类型句柄的引用。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="instance"/> 为 <see langword="null"/>。</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static unsafe ref IntPtr RefTypeHandle(this object instance)
         {
-            if (instance is null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
             return ref **(IntPtr**)Unsafe.AsPointer(ref instance);
         }
 
@@ -35,7 +28,7 @@ namespace XstarS.Runtime.CompilerServices
         /// <paramref name="instance"/> 的浅表副本。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="instance"/> 为 <see langword="null"/>。</exception>
-        public static T UncheckedCast<T>(this object instance)
+        public static T UncheckedCast<T>(this object instance) where T : class
         {
             if (instance is null)
             {
@@ -44,7 +37,7 @@ namespace XstarS.Runtime.CompilerServices
 
             var casting = instance.MemberwiseClone();
             casting.RefTypeHandle() = typeof(T).TypeHandle.Value;
-            return Unsafe.As<object, T>(ref casting);
+            return Unsafe.As<T>(casting);
         }
     }
 }
