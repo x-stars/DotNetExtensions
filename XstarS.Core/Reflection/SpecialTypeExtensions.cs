@@ -35,14 +35,14 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 确定当前 <see cref="Type"/> 的实例是否仅能分配于计算堆栈上。
+        /// 确定当前 <see cref="Type"/> 的实例是否不能转换或包装为 <see cref="object"/>。
         /// </summary>
-        /// <param name="type">要确定是否仅能分配于堆栈的 <see cref="Type"/> 对象。</param>
-        /// <returns>若 <paramref name="type"/> 的实例仅能分配于计算堆栈上，
+        /// <param name="type">要确定是否转换或包装的 <see cref="Type"/> 对象。</param>
+        /// <returns>若 <paramref name="type"/> 的实例不能转换或包装为 <see cref="object"/>，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        public static bool IsStackOnly(this Type type)
+        public static bool IsNotBoxable(this Type type)
         {
             if (type is null)
             {
@@ -57,21 +57,21 @@ namespace XstarS.Reflection
         }
 
         /// <summary>
-        /// 确定当前 <see cref="Type"/> 的实例是否不能转换为 <see cref="object"/>。
+        /// 确定当前 <see cref="Type"/> 的实例是否不能直接转换为 <see cref="object"/>。
         /// </summary>
-        /// <param name="type">要确定是否不能转换的 <see cref="Type"/> 对象。</param>
-        /// <returns>若 <paramref name="type"/> 的实例不能转换为 <see cref="object"/>，
+        /// <param name="type">要确定是否不能直接转换的 <see cref="Type"/> 对象。</param>
+        /// <returns>若 <paramref name="type"/> 的实例不能直接转换为 <see cref="object"/>，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        public static bool IsNotBoxable(this Type type)
+        public static bool IsNotObject(this Type type)
         {
             if (type is null)
             {
                 throw new ArgumentNullException(nameof(type));
             }
 
-            return type.IsPointer || type.IsStackOnly();
+            return type.IsPointer || type.IsNotBoxable();
         }
     }
 }

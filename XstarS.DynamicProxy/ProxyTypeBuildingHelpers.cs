@@ -26,10 +26,10 @@ namespace XstarS.Reflection.Emit
             }
 
             return method.IsOverridable() &&
-                !method.ReturnParameter.ParameterType.IsNotILBoxable() &&
+                !method.ReturnParameter.ParameterType.IsNotBoxable() &&
                 Array.TrueForAll(
                     Array.ConvertAll(method.GetParameters(), param => param.ParameterType),
-                    type => !type.IsNotILBoxable());
+                    type => !type.IsNotBoxable());
         }
 
         /// <summary>

@@ -270,7 +270,7 @@ namespace XstarS.ComponentModel
                         {
                             type.DefineNotImplementedPropertyOverride(baseProperty);
                         }
-                        else if (baseProperty.PropertyType.IsStackOnly())
+                        else if (baseProperty.PropertyType.IsNotBoxable())
                         {
                             type.DefineNotImplementedPropertyOverride(baseProperty);
                         }
