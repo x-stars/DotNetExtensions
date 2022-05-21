@@ -52,6 +52,11 @@ namespace XstarS.ComponentModel
         private readonly Lazy<Type> LazyObservableType;
 
         /// <summary>
+        /// 表示原型类型中按照更改通知模式重写的属性列表。
+        /// </summary>
+        private readonly List<PropertyInfo> BaseProperties;
+
+        /// <summary>
         /// 表示属性更改通知类型的 <see cref="TypeBuilder"/> 对象。
         /// </summary>
         private TypeBuilder? ObservableTypeBuilder;
@@ -83,6 +88,7 @@ namespace XstarS.ComponentModel
 
             this.BaseType = baseType;
             this.LazyObservableType = new Lazy<Type>(this.CreateObservableType);
+            this.BaseProperties = new List<PropertyInfo>();
         }
 
         /// <summary>
@@ -114,6 +120,16 @@ namespace XstarS.ComponentModel
             ObservableTypeProvider.LazyOfTypes.GetOrAdd(baseType,
                 newBaseType => new Lazy<ObservableTypeProvider>(
                     () => new ObservableTypeProvider(newBaseType))).Value;
+
+        /// <summary>
+        /// 获取原型类型中按照更改通知模式重写的属性列表。
+        /// </summary>
+        /// <returns>原型类型中按照更改通知模式重写的属性列表。</returns>
+        public PropertyInfo[] GetObservableProperties()
+        {
+            var type = this.ObservableType;
+            return this.BaseProperties.ToArray();
+        }
 
         /// <summary>
         /// 使用与指定参数匹配程度最高的构造函数创建属性更改通知类型的实例。
@@ -277,11 +293,13 @@ namespace XstarS.ComponentModel
                         else
                         {
                             type.DefineObservableAutoPropertyOverride(baseProperty, onPropertyChangedMethod);
+                            this.BaseProperties.Add(baseProperty);
                         }
                     }
                     else
                     {
                         type.DefineObservableBaseInvokePropertyOverride(baseProperty, onPropertyChangedMethod);
+                        this.BaseProperties.Add(baseProperty);
                     }
                 }
             }

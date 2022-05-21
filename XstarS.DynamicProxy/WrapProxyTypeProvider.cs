@@ -60,12 +60,12 @@ namespace XstarS.Reflection
         private readonly Lazy<FieldInfo> LazyHandlerField;
 
         /// <summary>
-        /// 表示原型类型中所有应按代理模式重写的方法。
+        /// 表示原型类型中应按照代理模式重写的方法列表。
         /// </summary>
         private MethodInfo[]? BaseMethods;
 
         /// <summary>
-        /// 表示原型类型中所有应按非代理模式重写的方法。
+        /// 表示原型类型中应按照非代理模式重写的方法列表。
         /// </summary>
         private MethodInfo[]? BaseNonMethods;
 
@@ -153,6 +153,17 @@ namespace XstarS.Reflection
             WrapProxyTypeProvider.LazyOfTypes.GetOrAdd(baseType,
                 newBaseType => new Lazy<WrapProxyTypeProvider>(
                     () => new WrapProxyTypeProvider(newBaseType))).Value;
+
+        /// <summary>
+        /// 获取原型类型中按照代理模式重写的方法列表。
+        /// </summary>
+        /// <returns>原型类型中按照代理模式重写的方法列表。</returns>
+        public MethodInfo[] GetProxyOverrideMethods()
+        {
+            var type = this.ProxyType;
+            var methods = this.BaseMethods!;
+            return (MethodInfo[])methods.Clone();
+        }
 
         /// <summary>
         /// 使用指定的代理对象创建代理类型的实例，并将其代理委托设定为指定的委托。
