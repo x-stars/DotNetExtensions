@@ -13,6 +13,28 @@ namespace XstarS.Reflection.Emit
     internal static class ObservableTypeBuildingHelpers
     {
         /// <summary>
+        /// 提供当前类型使用的反射元数据的 <see cref="MemberInfo"/> 对象。
+        /// </summary>
+        private static class ReflectionData
+        {
+            /// <summary>
+            /// 表示 <see cref="PropertyChangedEventArgs.PropertyChangedEventArgs(string)"/>
+            /// 构造函数的 <see cref="ConstructorInfo"/> 对象。
+            /// </summary>
+            internal static readonly ConstructorInfo EventArgsCtor =
+                typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) })!;
+
+            /// <summary>
+            /// 表示 <see cref="PropertyChangedEventHandler.Invoke(object, PropertyChangedEventArgs)"/>
+            /// 方法的 <see cref="MethodInfo"/> 对象。
+            /// </summary>
+            internal static readonly MethodInfo EventHandlerInvokeMethod =
+                typeof(PropertyChangedEventHandler).GetMethod(
+                    nameof(PropertyChangedEventHandler.Invoke),
+                    new[] { typeof(object), typeof(PropertyChangedEventArgs) })!;
+        }
+
+        /// <summary>
         /// 定义 <see cref="INotifyPropertyChanged.PropertyChanged"/> 事件的触发方法，并添加到当前类型。
         /// </summary>
         /// <param name="type">要定义方法的 <see cref="TypeBuilder"/> 对象。</param>
@@ -57,10 +79,7 @@ namespace XstarS.Reflection.Emit
             ilGen.MarkLabel(invokeLabel);
             ilGen.Emit(OpCodes.Ldarg_0);
             ilGen.Emit(OpCodes.Ldarg_1);
-            ilGen.Emit(OpCodes.Callvirt,
-                typeof(PropertyChangedEventHandler).GetMethod(
-                    nameof(PropertyChangedEventHandler.Invoke),
-                    new[] { typeof(object), typeof(PropertyChangedEventArgs) })!);
+            ilGen.Emit(OpCodes.Callvirt, ReflectionData.EventHandlerInvokeMethod);
             ilGen.Emit(OpCodes.Ret);
 
             return method;
@@ -144,8 +163,7 @@ namespace XstarS.Reflection.Emit
                 ilGen.Emit(OpCodes.Call, baseMethod);
                 var propertyNotifyName = (baseProperty.GetIndexParameters().Length == 0) ?
                     baseProperty.Name : $"{baseProperty.Name}[]";
-                var eventArgsConstructor =
-                    typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) })!;
+                var eventArgsConstructor = ReflectionData.EventArgsCtor;
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.Emit(OpCodes.Ldstr, propertyNotifyName);
                 ilGen.Emit(OpCodes.Newobj, eventArgsConstructor);
@@ -237,8 +255,7 @@ namespace XstarS.Reflection.Emit
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.Emit(OpCodes.Ldarg_1);
                 ilGen.Emit(OpCodes.Stfld, field);
-                var eventArgsConstructor =
-                    typeof(PropertyChangedEventArgs).GetConstructor(new[] { typeof(string) })!;
+                var eventArgsConstructor = ReflectionData.EventArgsCtor;
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.Emit(OpCodes.Ldstr, baseProperty.Name);
                 ilGen.Emit(OpCodes.Newobj, eventArgsConstructor);

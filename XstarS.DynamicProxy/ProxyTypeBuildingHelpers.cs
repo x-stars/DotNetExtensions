@@ -11,6 +11,48 @@ namespace XstarS.Reflection.Emit
     internal static class ProxyTypeBuildingHelpers
     {
         /// <summary>
+        /// 提供当前类型使用的反射元数据的 <see cref="MemberInfo"/> 对象。
+        /// </summary>
+        private static class ReflectionData
+        {
+            /// <summary>
+            /// 表示 <see cref="MethodDelegate.MethodDelegate(object, IntPtr)"/>
+            /// 构造函数的 <see cref="ConstructorInfo"/> 对象。
+            /// </summary>
+            internal static readonly ConstructorInfo MethodDelegateCtor =
+                typeof(MethodDelegate).GetConstructor(new[] { typeof(object), typeof(IntPtr) })!;
+
+            /// <summary>
+            /// 表示 <see cref="FieldInfo.GetFieldFromHandle(RuntimeFieldHandle, RuntimeTypeHandle)"/>
+            /// 方法的 <see cref="MethodInfo"/> 对象。
+            /// </summary>
+            internal static readonly MethodInfo FieldFromHandleMethod =
+                typeof(FieldInfo).GetMethod(nameof(FieldInfo.GetFieldFromHandle),
+                    new[] { typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle) })!;
+
+            /// <summary>
+            /// 表示 <see cref="MethodBase.GetMethodFromHandle(RuntimeMethodHandle, RuntimeTypeHandle)"/>
+            /// 方法的 <see cref="MethodInfo"/> 对象。
+            /// </summary>
+            internal static readonly MethodInfo MethodFromHandleMethod =
+                typeof(MethodBase).GetMethod(nameof(MethodBase.GetMethodFromHandle),
+                    new[] { typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle) })!;
+
+            /// <summary>
+            /// 表示 <see cref="FieldInfo.GetValue(object)"/> 方法的 <see cref="MethodInfo"/> 对象。
+            /// </summary>
+            internal static readonly MethodInfo FieldGetValueMethod =
+                typeof(FieldInfo).GetMethod(nameof(FieldInfo.GetValue))!;
+
+            /// <summary>
+            /// 表示 <see cref="MethodInvokeHandler.Invoke(object, MethodInfo, MethodDelegate, object?[])"/>
+            /// 方法的 <see cref="MethodInfo"/> 对象。
+            /// </summary>
+            internal static readonly MethodInfo ProxyHandlerInvokeMethod =
+                typeof(MethodInvokeHandler).GetMethod(nameof(MethodInvokeHandler.Invoke))!;
+        }
+
+        /// <summary>
         /// 确定当前 <see cref="MemberInfo"/> 是否应按照代理模式重写。
         /// </summary>
         /// <param name="method">要确定是否按照代理模式重写的 <see cref="MethodInfo"/> 对象。</param>
@@ -260,15 +302,12 @@ namespace XstarS.Reflection.Emit
                     !baseMethod.IsGenericMethod ? baseMethod :
                         baseMethod.MakeGenericMethod(nestedType.GetGenericArguments()));
                 ilGen.Emit(OpCodes.Ldtoken, baseMethod.DeclaringType!);
-                ilGen.Emit(OpCodes.Call,
-                    typeof(MethodBase).GetMethod(
-                        nameof(MethodBase.GetMethodFromHandle),
-                        new[] { typeof(RuntimeMethodHandle), typeof(RuntimeTypeHandle) })!);
+                ilGen.Emit(OpCodes.Call, ReflectionData.MethodFromHandleMethod);
                 ilGen.Emit(OpCodes.Castclass, typeof(MethodInfo));
                 ilGen.Emit(OpCodes.Stsfld, infoField);
                 ilGen.Emit(OpCodes.Ldnull);
                 ilGen.Emit(OpCodes.Ldftn, delegateMethod);
-                ilGen.Emit(OpCodes.Newobj, typeof(MethodDelegate).GetConstructors()[0]);
+                ilGen.Emit(OpCodes.Newobj, ReflectionData.MethodDelegateCtor);
                 ilGen.Emit(OpCodes.Stsfld, delegateField);
                 ilGen.Emit(OpCodes.Ret);
             }
@@ -357,12 +396,9 @@ namespace XstarS.Reflection.Emit
             {
                 ilGen.Emit(OpCodes.Ldtoken, baseMethodInfoField);
                 ilGen.Emit(OpCodes.Ldtoken, baseMethodInfoField.DeclaringType!);
-                ilGen.Emit(OpCodes.Call,
-                    typeof(FieldInfo).GetMethod(
-                        nameof(FieldInfo.GetFieldFromHandle),
-                        new[] { typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle) })!);
+                ilGen.Emit(OpCodes.Call, ReflectionData.FieldFromHandleMethod);
                 ilGen.Emit(OpCodes.Ldnull);
-                ilGen.Emit(OpCodes.Callvirt, typeof(FieldInfo).GetMethod(nameof(FieldInfo.GetValue))!);
+                ilGen.Emit(OpCodes.Callvirt, ReflectionData.FieldGetValueMethod);
             }
             else
             {
@@ -372,12 +408,9 @@ namespace XstarS.Reflection.Emit
             {
                 ilGen.Emit(OpCodes.Ldtoken, baseMethodDelegateField);
                 ilGen.Emit(OpCodes.Ldtoken, baseMethodDelegateField.DeclaringType!);
-                ilGen.Emit(OpCodes.Call,
-                    typeof(FieldInfo).GetMethod(
-                        nameof(FieldInfo.GetFieldFromHandle),
-                        new[] { typeof(RuntimeFieldHandle), typeof(RuntimeTypeHandle) })!);
+                ilGen.Emit(OpCodes.Call, ReflectionData.FieldFromHandleMethod);
                 ilGen.Emit(OpCodes.Ldnull);
-                ilGen.Emit(OpCodes.Callvirt, typeof(FieldInfo).GetMethod(nameof(FieldInfo.GetValue))!);
+                ilGen.Emit(OpCodes.Callvirt, ReflectionData.FieldGetValueMethod);
             }
             else
             {
@@ -399,8 +432,7 @@ namespace XstarS.Reflection.Emit
                 ilGen.EmitBox(parameterType);
                 ilGen.Emit(OpCodes.Stelem_Ref);
             }
-            ilGen.Emit(OpCodes.Callvirt,
-                typeof(MethodInvokeHandler).GetMethod(nameof(MethodInvokeHandler.Invoke))!);
+            ilGen.Emit(OpCodes.Callvirt, ReflectionData.ProxyHandlerInvokeMethod);
             foreach (var index in ..baseParameters.Length)
             {
                 var baseParameter = baseParameters[index];

@@ -10,27 +10,27 @@ namespace XstarS.Reflection.Emit
     public static class ILGenerationExtensions
     {
         /// <summary>
-        /// 提供当前类型使用的方法的 <see cref="MethodInfo"/> 对象。
+        /// 提供当前类型使用的反射元数据的 <see cref="MemberInfo"/> 对象。
         /// </summary>
-        private static class MethodInfoCache
+        private static class ReflectionData
         {
             /// <summary>
             /// 表示 <see cref="Pointer.Box(void*, Type)"/> 方法的 <see cref="MethodInfo"/> 对象。
             /// </summary>
-            internal static readonly MethodInfo PointerBox =
+            internal static readonly MethodInfo PointerBoxMethod =
                 typeof(Pointer).GetMethod(nameof(Pointer.Box))!;
 
             /// <summary>
             /// 表示 <see cref="Pointer.Unbox(object)"/> 方法的 <see cref="MethodInfo"/> 对象。
             /// </summary>
-            internal static readonly MethodInfo PointerUnbox =
+            internal static readonly MethodInfo PointerUnboxMethod =
                 typeof(Pointer).GetMethod(nameof(Pointer.Unbox))!;
 
             /// <summary>
             /// 表示 <see cref="Type.GetTypeFromHandle(RuntimeTypeHandle)"/>
             /// 方法的 <see cref="MethodInfo"/> 对象。
             /// </summary>
-            internal static readonly MethodInfo TypeFromHandle =
+            internal static readonly MethodInfo TypeFromHandleMethod =
                 typeof(Type).GetMethod(nameof(Type.GetTypeFromHandle))!;
         }
 
@@ -363,8 +363,8 @@ namespace XstarS.Reflection.Emit
             else if (type.IsPointer)
             {
                 ilGen.Emit(OpCodes.Ldtoken, type);
-                ilGen.Emit(OpCodes.Call, MethodInfoCache.TypeFromHandle);
-                ilGen.Emit(OpCodes.Call, MethodInfoCache.PointerBox);
+                ilGen.Emit(OpCodes.Call, ReflectionData.TypeFromHandleMethod);
+                ilGen.Emit(OpCodes.Call, ReflectionData.PointerBoxMethod);
             }
             else if (type.IsValueType)
             {
@@ -401,7 +401,7 @@ namespace XstarS.Reflection.Emit
             }
             else if (type.IsPointer)
             {
-                ilGen.Emit(OpCodes.Call, MethodInfoCache.PointerUnbox);
+                ilGen.Emit(OpCodes.Call, ReflectionData.PointerUnboxMethod);
             }
             else if (type.IsValueType)
             {

@@ -12,6 +12,44 @@ namespace XstarS.Reflection.Emit
     public static class TypeBuildingExtensions
     {
         /// <summary>
+        /// 提供当前类型使用的反射元数据的 <see cref="MemberInfo"/> 对象。
+        /// </summary>
+        private static class ReflectionData
+        {
+            /// <summary>
+            /// 表示 <see cref="NotImplementedException.NotImplementedException()"/>
+            /// 构造函数的 <see cref="ConstructorInfo"/> 对象。
+            /// </summary>
+            internal static readonly ConstructorInfo NotImplementedCtor =
+                typeof(NotImplementedException).GetConstructor(Type.EmptyTypes)!;
+
+            /// <summary>
+            /// 表示 <see cref="Delegate.Combine(Delegate, Delegate)"/>
+            /// 方法的 <see cref="MethodInfo"/> 对象。
+            /// </summary>
+            internal static readonly MethodInfo DelegateCombineMethod =
+                typeof(Delegate).GetMethod(nameof(Delegate.Combine),
+                    new[] { typeof(Delegate), typeof(Delegate) })!;
+
+            /// <summary>
+            /// 表示 <see cref="Delegate.Remove(Delegate, Delegate)"/>
+            /// 方法的 <see cref="MethodInfo"/> 对象。
+            /// </summary>
+            internal static readonly MethodInfo DelegateRemoveMethod =
+                typeof(Delegate).GetMethod(nameof(Delegate.Remove),
+                    new[] { typeof(Delegate), typeof(Delegate) })!;
+
+            /// <summary>
+            /// 表示 <see cref="Interlocked.CompareExchange{T}(ref T, T, T)"/>
+            /// 方法的 <see cref="MethodInfo"/> 对象。
+            /// </summary>
+            internal static readonly MethodInfo CompareExchangeMethod =
+                typeof(Interlocked).GetMethods().Where(
+                    method => method.Name == nameof(Interlocked.CompareExchange) &&
+                    method.IsGenericMethod).Single();
+        }
+
+        /// <summary>
         /// 确定当前 <see cref="MethodBase"/> 是否为程序集外部可继承的实例方法。
         /// </summary>
         /// <param name="method">要进行检查的 <see cref="MethodBase"/> 对象。</param>
@@ -242,8 +280,7 @@ namespace XstarS.Reflection.Emit
             var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
             var ilGen = method.GetILGenerator();
-            ilGen.Emit(OpCodes.Newobj,
-                typeof(NotImplementedException).GetConstructor(Type.EmptyTypes)!);
+            ilGen.Emit(OpCodes.Newobj, ReflectionData.NotImplementedCtor);
             ilGen.Emit(OpCodes.Throw);
 
             return method;
@@ -326,13 +363,15 @@ namespace XstarS.Reflection.Emit
 
             if (baseProperty.CanRead)
             {
-                var method = type.DefineNotImplementedMethodOverride(baseProperty.GetMethod!, explicitOverride);
+                var baseMethod = baseProperty.GetMethod!;
+                var method = type.DefineNotImplementedMethodOverride(baseMethod, explicitOverride);
                 property.SetGetMethod(method);
             }
 
             if (baseProperty.CanWrite)
             {
-                var method = type.DefineNotImplementedMethodOverride(baseProperty.SetMethod!, explicitOverride);
+                var baseMethod = baseProperty.SetMethod!;
+                var method = type.DefineNotImplementedMethodOverride(baseMethod, explicitOverride);
                 property.SetSetMethod(method);
             }
 
@@ -519,19 +558,15 @@ namespace XstarS.Reflection.Emit
                 ilGen.Emit(OpCodes.Stloc_1);
                 ilGen.Emit(OpCodes.Ldloc_1);
                 ilGen.Emit(OpCodes.Ldarg_1);
-                ilGen.Emit(OpCodes.Call,
-                    typeof(Delegate).GetMethod(
-                        nameof(Delegate.Combine),
-                        new[] { typeof(Delegate), typeof(Delegate) })!);
+                ilGen.Emit(OpCodes.Call, ReflectionData.DelegateCombineMethod);
                 ilGen.Emit(OpCodes.Castclass, eventType);
                 ilGen.Emit(OpCodes.Stloc_2);
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.Emit(OpCodes.Ldflda, field);
                 ilGen.Emit(OpCodes.Ldloc_2);
                 ilGen.Emit(OpCodes.Ldloc_1);
-                ilGen.Emit(OpCodes.Call, typeof(Interlocked).GetMethods().Where(
-                    iMethod => iMethod.Name == nameof(Interlocked.CompareExchange) &&
-                    iMethod.IsGenericMethod).Single().MakeGenericMethod(eventType));
+                ilGen.Emit(OpCodes.Call,
+                    ReflectionData.CompareExchangeMethod.MakeGenericMethod(eventType));
                 ilGen.Emit(OpCodes.Stloc_0);
                 ilGen.Emit(OpCodes.Ldloc_0);
                 ilGen.Emit(OpCodes.Ldloc_1);
@@ -560,19 +595,15 @@ namespace XstarS.Reflection.Emit
                 ilGen.Emit(OpCodes.Stloc_1);
                 ilGen.Emit(OpCodes.Ldloc_1);
                 ilGen.Emit(OpCodes.Ldarg_1);
-                ilGen.Emit(OpCodes.Call,
-                    typeof(Delegate).GetMethod(
-                        nameof(Delegate.Remove),
-                        new[] { typeof(Delegate), typeof(Delegate) })!);
+                ilGen.Emit(OpCodes.Call, ReflectionData.DelegateRemoveMethod);
                 ilGen.Emit(OpCodes.Castclass, eventType);
                 ilGen.Emit(OpCodes.Stloc_2);
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.Emit(OpCodes.Ldflda, field);
                 ilGen.Emit(OpCodes.Ldloc_2);
                 ilGen.Emit(OpCodes.Ldloc_1);
-                ilGen.Emit(OpCodes.Call, typeof(Interlocked).GetMethods().Where(
-                    iMethod => iMethod.Name == nameof(Interlocked.CompareExchange) &&
-                    iMethod.IsGenericMethod).Single().MakeGenericMethod(eventType));
+                ilGen.Emit(OpCodes.Call,
+                    ReflectionData.CompareExchangeMethod.MakeGenericMethod(eventType));
                 ilGen.Emit(OpCodes.Stloc_0);
                 ilGen.Emit(OpCodes.Ldloc_0);
                 ilGen.Emit(OpCodes.Ldloc_1);
