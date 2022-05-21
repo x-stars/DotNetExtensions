@@ -247,6 +247,8 @@ namespace XstarS.Reflection
         /// <returns><paramref name="method"/> 方法的动态调用委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException"><paramref name="method"/>
+        /// 包含未分配的泛型类型参数，或 <paramref name="method"/> 按引用返回值。</exception>
         public static Func<object?, object?[]?, object?> CreateDynamicDelegate(this MethodInfo method)
         {
             if (method is null)
@@ -267,6 +269,8 @@ namespace XstarS.Reflection
         /// <returns><paramref name="method"/> 方法的动态调用委托。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException"><paramref name="method"/>
+        /// 包含未分配的泛型类型参数，或 <paramref name="method"/> 按引用返回值。</exception>
         public static Func<object?[]?, object?> CreateDynamicDelegate(this MethodInfo method, object? target)
         {
             if (method is null)
@@ -287,11 +291,23 @@ namespace XstarS.Reflection
         /// <returns><paramref name="method"/> 方法的动态调用方法。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentException"><paramref name="method"/>
+        /// 包含未分配的泛型类型参数，或 <paramref name="method"/> 按引用返回值。</exception>
         private static DynamicMethod CreateDynamicInvokeMethod(this MethodInfo method)
         {
             if (method is null)
             {
                 throw new ArgumentNullException(nameof(method));
+            }
+            if (method.ContainsGenericParameters)
+            {
+                var inner = new InvalidOperationException();
+                throw new ArgumentException(inner.Message, nameof(method), inner);
+            }
+            if (method.ReturnType.IsByRef)
+            {
+                var inner = new NotSupportedException();
+                throw new ArgumentException(inner.Message, nameof(method), inner);
             }
 
             var paramInfos = method.GetParameters();
@@ -306,15 +322,37 @@ namespace XstarS.Reflection
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.EmitUnbox(method.DeclaringType!);
             }
+            var refLocals = new LocalBuilder?[paramInfos.Length];
             foreach (var index in ..paramInfos.Length)
             {
                 ilGen.Emit(OpCodes.Ldarg_1);
                 ilGen.EmitLdcI4(index);
                 ilGen.Emit(OpCodes.Ldelem_Ref);
                 var param = paramInfos[index];
-                ilGen.EmitUnbox(param.ParameterType);
+                var paramType = param.ParameterType;
+                ilGen.EmitUnbox(paramType);
+                if (paramType.IsByRef)
+                {
+                    var paramRefType = paramType.GetElementType()!;
+                    var refLocal = ilGen.DeclareLocal(paramRefType);
+                    var lIndex = refLocal.LocalIndex;
+                    ilGen.EmitStloc(lIndex);
+                    ilGen.Emit((byte)lIndex == lIndex ?
+                        OpCodes.Ldloca_S : OpCodes.Ldloca, lIndex);
+                    refLocals[index] = refLocal;
+                }
             }
             ilGen.Emit(method.IsVirtual ? OpCodes.Callvirt : OpCodes.Call, method);
+            foreach (var index in ..paramInfos.Length)
+            {
+                var refLocal = refLocals[index];
+                if (refLocal is null) { continue; }
+                ilGen.Emit(OpCodes.Ldarg_1);
+                ilGen.EmitLdcI4(index);
+                ilGen.EmitLdloc(refLocal.LocalIndex);
+                ilGen.EmitBox(refLocal.LocalType);
+                ilGen.Emit(OpCodes.Stelem_Ref);
+            }
             var noReturns = method.ReturnType == typeof(void);
             if (noReturns) { ilGen.Emit(OpCodes.Ldnull); }
             else { ilGen.EmitBox(method.ReturnType); }

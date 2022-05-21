@@ -210,8 +210,8 @@ namespace XstarS.Reflection.Emit
                     ilGen.EmitUnbox(parameterType);
                     if (parameterType.IsByRef)
                     {
-                        var refLocal = ilGen.DeclareLocal(
-                            parameterType.GetElementType()!);
+                        var paramRefType = parameterType.GetElementType()!;
+                        var refLocal = ilGen.DeclareLocal(paramRefType);
                         var lIndex = refLocal.LocalIndex;
                         ilGen.EmitStloc(lIndex);
                         ilGen.Emit((byte)lIndex == lIndex ?
