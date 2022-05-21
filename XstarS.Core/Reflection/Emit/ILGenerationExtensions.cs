@@ -339,8 +339,6 @@ namespace XstarS.Reflection.Emit
         /// <param name="type">要转换为 <see cref="object"/> 的值的类型。</param>
         /// <exception cref="ArgumentNullException"><paramref name="ilGen"/>
         /// 或 <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="type"/> 表示一个由引用传递的类型。</exception>
         public static void EmitBox(this ILGenerator ilGen, Type type)
         {
             if (ilGen is null)
@@ -358,8 +356,9 @@ namespace XstarS.Reflection.Emit
             }
             else if (type.IsByRef)
             {
-                var inner = new InvalidCastException();
-                throw new ArgumentException(inner.Message, nameof(type), inner);
+                var refType = type.GetElementType()!;
+                ilGen.EmitLdind(refType);
+                ilGen.EmitBox(refType);
             }
             else if (type.IsPointer)
             {
@@ -380,8 +379,6 @@ namespace XstarS.Reflection.Emit
         /// <param name="type">要由 <see cref="object"/> 转换到的值的类型。</param>
         /// <exception cref="ArgumentNullException"><paramref name="ilGen"/>
         /// 或 <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="type"/> 表示一个由引用传递的类型。</exception>
         public static void EmitUnbox(this ILGenerator ilGen, Type type)
         {
             if (ilGen is null)
@@ -399,8 +396,8 @@ namespace XstarS.Reflection.Emit
             }
             else if (type.IsByRef)
             {
-                var inner = new InvalidCastException();
-                throw new ArgumentException(inner.Message, nameof(type), inner);
+                var refType = type.GetElementType()!;
+                ilGen.EmitUnbox(refType);
             }
             else if (type.IsPointer)
             {
@@ -414,75 +411,6 @@ namespace XstarS.Reflection.Emit
             {
                 ilGen.Emit(OpCodes.Castclass, type);
             }
-        }
-
-        /// <summary>
-        /// 依次发出以下指令： <list type="number">
-        /// <item>将 <see cref="object"/> 数组中指定索引处的元素加载到计算堆栈上；</item>
-        /// <item>将计算堆栈上的 <see cref="object"/> 转换为指定类型的值；</item>
-        /// <item>将计算堆栈上的指定类型的值弹出并存储到一个局部变量；</item>
-        /// <item>将存储值的局部变量的地址加载到计算堆栈上；</item>
-        /// </list>并放到当前指令流中，返回存储值的局部变量的 <see cref="LocalBuilder"/> 对象。
-        /// </summary>
-        /// <param name="ilGen">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
-        /// <param name="index"><see cref="object"/> 数组中的元素的索引。</param>
-        /// <param name="type">要由 <see cref="object"/> 转换到的值的类型。</param>
-        /// <returns>存储数组中元素的值的局部变量的 <see cref="LocalBuilder"/> 对象。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="ilGen"/>
-        /// 或 <paramref name="type"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="type"/> 表示一个由引用传递的类型。</exception>
-        public static LocalBuilder EmitUnboxElemLdloca(this ILGenerator ilGen, int index, Type type)
-        {
-            if (ilGen is null)
-            {
-                throw new ArgumentNullException(nameof(ilGen));
-            }
-            if (type is null)
-            {
-                throw new ArgumentNullException(nameof(type));
-            }
-
-            var local = ilGen.DeclareLocal(type);
-            ilGen.EmitLdcI4(index);
-            ilGen.Emit(OpCodes.Ldelem_Ref);
-            ilGen.EmitUnbox(type);
-            var lIndex = local.LocalIndex;
-            ilGen.EmitStloc(lIndex);
-            ilGen.Emit((byte)lIndex == lIndex ?
-                OpCodes.Ldloca_S : OpCodes.Ldloca, lIndex);
-            return local;
-        }
-
-        /// <summary>
-        /// 依次发出以下指令： <list type="number">
-        /// <item>将指定的局部变量的值加载到计算堆栈上；</item>
-        /// <item>将计算堆栈上的指定类型的值转换为 <see cref="object"/>；</item>
-        /// <item>将计算堆栈上的 <see cref="object"/> 弹出并存储到数组中指定索引处的元素；</item>
-        /// </list>并放到当前指令流中。
-        /// </summary>
-        /// <param name="ilGen">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
-        /// <param name="index"><see cref="object"/> 数组中的元素的索引。</param>
-        /// <param name="local">要加载值的局部变量的 <see cref="LocalBuilder"/> 对象。</param>
-        /// <exception cref="ArgumentNullException"><paramref name="ilGen"/>
-        /// <paramref name="local"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="local"/> 表示的变量的类型的表示一个由引用传递的类型。</exception>
-        public static void EmitBoxLocStelem(this ILGenerator ilGen, int index, LocalBuilder local)
-        {
-            if (ilGen is null)
-            {
-                throw new ArgumentNullException(nameof(ilGen));
-            }
-            if (local is null)
-            {
-                throw new ArgumentNullException(nameof(local));
-            }
-
-            ilGen.EmitLdcI4(index);
-            ilGen.EmitLdloc(local.LocalIndex);
-            ilGen.EmitBox(local.LocalType);
-            ilGen.Emit(OpCodes.Stelem_Ref);
         }
     }
 }

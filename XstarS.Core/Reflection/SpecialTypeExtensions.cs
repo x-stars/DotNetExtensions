@@ -73,5 +73,23 @@ namespace XstarS.Reflection
 
             return type.IsPointer || type.IsNotBoxable();
         }
+
+        /// <summary>
+        /// 尝试获取当前 <see cref="Type"/> 引用的对象的 <see cref="Type"/>。
+        /// </summary>
+        /// <param name="type">要获取引用的类型的 <see cref="Type"/> 对象。</param>
+        /// <returns>若 <paramref name="type"/> 表示一个引用类型，则为其引用的对象的
+        /// <see cref="Type"/>；否则为 <paramref name="type"/> 本身。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="type"/> 为 <see langword="null"/>。</exception>
+        public static Type TryDerefType(this Type type)
+        {
+            if (type is null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            return type.IsByRef ? type.GetElementType()! : type;
+        }
     }
 }

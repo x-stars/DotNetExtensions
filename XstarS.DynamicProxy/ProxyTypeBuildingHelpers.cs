@@ -29,7 +29,7 @@ namespace XstarS.Reflection.Emit
                 !method.ReturnParameter.ParameterType.IsNotBoxable() &&
                 Array.TrueForAll(
                     Array.ConvertAll(method.GetParameters(), param => param.ParameterType),
-                    type => !type.IsNotBoxable());
+                    type => !type.TryDerefType().IsNotBoxable());
         }
 
         /// <summary>
@@ -194,6 +194,7 @@ namespace XstarS.Reflection.Emit
                 delegateMethod.DefineParameter(2, ParameterAttributes.None, "arguments");
 
                 var ilGen = delegateMethod.GetILGenerator();
+                var refLocals = new LocalBuilder?[baseParameters.Length];
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.EmitUnbox(baseType);
                 foreach (var pIndex in ..baseParameters.Length)
@@ -207,10 +208,30 @@ namespace XstarS.Reflection.Emit
                     ilGen.EmitLdcI4(pIndex);
                     ilGen.Emit(OpCodes.Ldelem_Ref);
                     ilGen.EmitUnbox(parameterType);
+                    if (parameterType.IsByRef)
+                    {
+                        var refLocal = ilGen.DeclareLocal(
+                            parameterType.GetElementType()!);
+                        var lIndex = refLocal.LocalIndex;
+                        ilGen.EmitStloc(lIndex);
+                        ilGen.Emit((byte)lIndex == lIndex ?
+                            OpCodes.Ldloca_S : OpCodes.Ldloca, lIndex);
+                        refLocals[pIndex] = refLocal;
+                    }
                 }
                 ilGen.Emit((instanceField is null) ? OpCodes.Call : OpCodes.Callvirt,
                     !baseMethod.IsGenericMethod ? baseMethod :
                         baseMethod.MakeGenericMethod(nestedType.GetGenericArguments()));
+                foreach (var pIndex in ..baseParameters.Length)
+                {
+                    var refLocal = refLocals[pIndex];
+                    if (refLocal is null) { continue; }
+                    ilGen.Emit(OpCodes.Ldarg_1);
+                    ilGen.EmitLdcI4(pIndex);
+                    ilGen.EmitLdloc(refLocal.LocalIndex);
+                    ilGen.EmitBox(refLocal.LocalType);
+                    ilGen.Emit(OpCodes.Stelem_Ref);
+                }
                 if (baseMethod.ReturnType != typeof(void))
                 {
                     int gIndex = Array.IndexOf(
@@ -365,17 +386,34 @@ namespace XstarS.Reflection.Emit
             var baseParameters = baseMethod.GetParameters();
             ilGen.EmitLdcI4(baseParameters.Length);
             ilGen.Emit(OpCodes.Newarr, typeof(object));
+            var argsLocal = ilGen.DeclareLocal(typeof(object[]));
+            ilGen.EmitStloc(argsLocal.LocalIndex);
+            ilGen.EmitLdloc(argsLocal.LocalIndex);
             foreach (var index in ..baseParameters.Length)
             {
                 var baseParameter = baseParameters[index];
+                var parameterType = baseParameter.ParameterType;
                 ilGen.Emit(OpCodes.Dup);
                 ilGen.EmitLdcI4(index);
                 ilGen.EmitLdarg(index + 1);
-                ilGen.EmitBox(baseParameter.ParameterType);
+                ilGen.EmitBox(parameterType);
                 ilGen.Emit(OpCodes.Stelem_Ref);
             }
             ilGen.Emit(OpCodes.Callvirt,
                 typeof(MethodInvokeHandler).GetMethod(nameof(MethodInvokeHandler.Invoke))!);
+            foreach (var index in ..baseParameters.Length)
+            {
+                var baseParameter = baseParameters[index];
+                var parameterType = baseParameter.ParameterType;
+                if (!parameterType.IsByRef) { continue; }
+                var paramRefType = parameterType.GetElementType()!;
+                ilGen.EmitLdarg(index + 1);
+                ilGen.EmitLdloc(argsLocal.LocalIndex);
+                ilGen.EmitLdcI4(index);
+                ilGen.Emit(OpCodes.Ldelem_Ref);
+                ilGen.EmitUnbox(paramRefType);
+                ilGen.EmitStind(paramRefType);
+            }
             if (baseMethod.ReturnType != typeof(void))
             {
                 ilGen.EmitUnbox(baseMethod.ReturnType);
