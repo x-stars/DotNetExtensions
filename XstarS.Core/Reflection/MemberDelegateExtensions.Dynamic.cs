@@ -337,8 +337,7 @@ namespace XstarS.Reflection
                     var refLocal = ilGen.DeclareLocal(paramRefType);
                     var lIndex = refLocal.LocalIndex;
                     ilGen.EmitStloc(lIndex);
-                    ilGen.Emit((byte)lIndex == lIndex ?
-                        OpCodes.Ldloca_S : OpCodes.Ldloca, lIndex);
+                    ilGen.EmitLdloca(lIndex);
                     refLocals[index] = refLocal;
                 }
             }

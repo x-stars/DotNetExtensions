@@ -60,37 +60,10 @@ namespace XstarS.Reflection.Emit
                 case 6: ilGen.Emit(OpCodes.Ldc_I4_6); break;
                 case 7: ilGen.Emit(OpCodes.Ldc_I4_7); break;
                 case 8: ilGen.Emit(OpCodes.Ldc_I4_8); break;
+                case int when (sbyte)value == value:
+                    ilGen.Emit(OpCodes.Ldc_I4_S, (sbyte)value); break;
                 default:
-                    ilGen.Emit((sbyte)value == value ?
-                        OpCodes.Ldc_I4_S : OpCodes.Ldc_I4, value);
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// 发出将指定索引处的参数加载到计算堆栈上的指令，并放到当前指令流中。
-        /// </summary>
-        /// <param name="ilGen">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
-        /// <param name="index">要加载到计算堆栈的参数的索引。</param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="ilGen"/> 为 <see langword="null"/>。</exception>
-        public static void EmitLdarg(this ILGenerator ilGen, int index)
-        {
-            if (ilGen is null)
-            {
-                throw new ArgumentNullException(nameof(ilGen));
-            }
-
-            switch (index)
-            {
-                case 0: ilGen.Emit(OpCodes.Ldarg_0); break;
-                case 1: ilGen.Emit(OpCodes.Ldarg_1); break;
-                case 2: ilGen.Emit(OpCodes.Ldarg_2); break;
-                case 3: ilGen.Emit(OpCodes.Ldarg_3); break;
-                default:
-                    ilGen.Emit((byte)index == index ?
-                        OpCodes.Ldarg_S : OpCodes.Ldarg, index);
-                    break;
+                    ilGen.Emit(OpCodes.Ldc_I4, value); break;
             }
         }
 
@@ -101,11 +74,17 @@ namespace XstarS.Reflection.Emit
         /// <param name="index">要加载到计算堆栈的局部变量的索引。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="ilGen"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> 超出 16 位无符号整数能表示的范围。</exception>
         public static void EmitLdloc(this ILGenerator ilGen, int index)
         {
             if (ilGen is null)
             {
                 throw new ArgumentNullException(nameof(ilGen));
+            }
+            if ((ushort)index != index)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
 
             switch (index)
@@ -114,10 +93,10 @@ namespace XstarS.Reflection.Emit
                 case 1: ilGen.Emit(OpCodes.Ldloc_1); break;
                 case 2: ilGen.Emit(OpCodes.Ldloc_2); break;
                 case 3: ilGen.Emit(OpCodes.Ldloc_3); break;
+                case int when (byte)index == index:
+                    ilGen.Emit(OpCodes.Ldloc_S, (byte)index); break;
                 default:
-                    ilGen.Emit((byte)index == index ?
-                        OpCodes.Ldloc_S : OpCodes.Ldloc, index);
-                    break;
+                    ilGen.Emit(OpCodes.Ldloc, (short)index); break;
             }
         }
 
@@ -128,11 +107,17 @@ namespace XstarS.Reflection.Emit
         /// <param name="index">要存储计算堆栈上的值的局部变量的索引。</param>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="ilGen"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> 超出 16 位无符号整数能表示的范围。</exception>
         public static void EmitStloc(this ILGenerator ilGen, int index)
         {
             if (ilGen is null)
             {
                 throw new ArgumentNullException(nameof(ilGen));
+            }
+            if ((ushort)index != index)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
             }
 
             switch (index)
@@ -141,10 +126,40 @@ namespace XstarS.Reflection.Emit
                 case 1: ilGen.Emit(OpCodes.Stloc_1); break;
                 case 2: ilGen.Emit(OpCodes.Stloc_2); break;
                 case 3: ilGen.Emit(OpCodes.Stloc_3); break;
+                case int when (byte)index == index:
+                    ilGen.Emit(OpCodes.Stloc_S, (byte)index); break;
                 default:
-                    ilGen.Emit((byte)index == index ?
-                        OpCodes.Stloc_S : OpCodes.Stloc, index);
-                    break;
+                    ilGen.Emit(OpCodes.Stloc, (short)index); break;
+            }
+        }
+
+        /// <summary>
+        /// 发出将指定索引处的局部变量的地址加载到计算堆栈上的指令，并放到当前指令流中。
+        /// </summary>
+        /// <param name="ilGen">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
+        /// <param name="index">要加载地址到计算堆栈的局部变量的索引。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="ilGen"/> 为 <see langword="null"/>。</exception>
+        /// <exception cref="ArgumentOutOfRangeException">
+        /// <paramref name="index"/> 超出 16 位无符号整数能表示的范围。</exception>
+        public static void EmitLdloca(this ILGenerator ilGen, int index)
+        {
+            if (ilGen is null)
+            {
+                throw new ArgumentNullException(nameof(ilGen));
+            }
+            if ((ushort)index != index)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index));
+            }
+
+            if ((byte)index == index)
+            {
+                ilGen.Emit(OpCodes.Ldloca_S, (byte)index);
+            }
+            else
+            {
+                ilGen.Emit(OpCodes.Ldloca, (short)index);
             }
         }
 
@@ -173,15 +188,15 @@ namespace XstarS.Reflection.Emit
                 !type.IsValueType ? OpCodes.Ldind_Ref :
                 !type.IsPrimitive ? OpCodes.Ldobj :
                 (type == typeof(nint) || type == typeof(nuint)) ? OpCodes.Ldind_I :
-                type == typeof(sbyte) ? OpCodes.Ldind_I1 :
+                (type == typeof(sbyte)) ? OpCodes.Ldind_I1 :
                 (type == typeof(byte) || type == typeof(bool)) ? OpCodes.Ldind_U1 :
-                type == typeof(short) ? OpCodes.Ldind_I2 :
+                (type == typeof(short)) ? OpCodes.Ldind_I2 :
                 (type == typeof(ushort) || type == typeof(char)) ? OpCodes.Ldind_U2 :
-                type == typeof(int) ? OpCodes.Ldind_I4 :
-                type == typeof(uint) ? OpCodes.Ldind_U4 :
+                (type == typeof(int)) ? OpCodes.Ldind_I4 :
+                (type == typeof(uint)) ? OpCodes.Ldind_U4 :
                 (type == typeof(long) || type == typeof(ulong)) ? OpCodes.Ldind_I8 :
-                type == typeof(float) ? OpCodes.Ldind_R4 :
-                type == typeof(double) ? OpCodes.Ldind_R8 :
+                (type == typeof(float)) ? OpCodes.Ldind_R4 :
+                (type == typeof(double)) ? OpCodes.Ldind_R8 :
                 throw new InvalidProgramException();
 
             if (opcode == OpCodes.Ldobj)
