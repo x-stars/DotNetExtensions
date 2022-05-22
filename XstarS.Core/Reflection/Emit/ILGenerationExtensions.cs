@@ -15,6 +15,13 @@ namespace XstarS.Reflection.Emit
         private static class ReflectionData
         {
             /// <summary>
+            /// 表示 <see cref="NotImplementedException.NotImplementedException()"/>
+            /// 构造函数的 <see cref="ConstructorInfo"/> 对象。
+            /// </summary>
+            internal static readonly ConstructorInfo NotImplementedCtor =
+                typeof(NotImplementedException).GetConstructor(Type.EmptyTypes)!;
+
+            /// <summary>
             /// 表示 <see cref="Pointer.Box(void*, Type)"/> 方法的 <see cref="MethodInfo"/> 对象。
             /// </summary>
             internal static readonly MethodInfo PointerBoxMethod =
@@ -519,6 +526,23 @@ namespace XstarS.Reflection.Emit
             {
                 ilGen.Emit(OpCodes.Castclass, type);
             }
+        }
+
+        /// <summary>
+        /// 发出抛出 <see cref="NotImplementedException"/> 异常的指令，并放到当前指令流中。
+        /// </summary>
+        /// <param name="ilGen">要发出指令的 <see cref="ILGenerator"/> 对象。</param>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="ilGen"/> 为 <see langword="null"/>。</exception>
+        public static void EmitNotImplemented(this ILGenerator ilGen)
+        {
+            if (ilGen is null)
+            {
+                throw new ArgumentNullException(nameof(ilGen));
+            }
+
+            ilGen.Emit(OpCodes.Newobj, ReflectionData.NotImplementedCtor);
+            ilGen.Emit(OpCodes.Throw);
         }
     }
 }

@@ -235,6 +235,13 @@ namespace XstarS.Reflection.Emit
                 delegateMethod.DefineParameter(2, ParameterAttributes.None, "arguments");
 
                 var ilGen = delegateMethod.GetILGenerator();
+
+                if ((instanceField is null) && baseMethod.IsAbstract)
+                {
+                    ilGen.EmitNotImplemented();
+                    goto EndDelegateMethodBuild;
+                }
+
                 var refLocals = new LocalBuilder?[baseParameters.Length];
                 ilGen.Emit(OpCodes.Ldarg_0);
                 ilGen.EmitUnbox(baseType);
@@ -259,9 +266,11 @@ namespace XstarS.Reflection.Emit
                         refLocals[pIndex] = refLocal;
                     }
                 }
-                ilGen.Emit((instanceField is null) ? OpCodes.Call : OpCodes.Callvirt,
-                    !baseMethod.IsGenericMethod ? baseMethod :
-                        baseMethod.MakeGenericMethod(nestedType.GetGenericArguments()));
+
+                var realMethod = !baseMethod.IsGenericMethod ? baseMethod :
+                    baseMethod.MakeGenericMethod(nestedType.GetGenericArguments());
+                ilGen.Emit((instanceField is null) ? OpCodes.Call : OpCodes.Callvirt, realMethod);
+
                 foreach (var pIndex in ..baseParameters.Length)
                 {
                     var refLocal = refLocals[pIndex];
@@ -285,6 +294,8 @@ namespace XstarS.Reflection.Emit
                     ilGen.Emit(OpCodes.Ldnull);
                 }
                 ilGen.Emit(OpCodes.Ret);
+
+            EndDelegateMethodBuild:;
             }
 
             var infoField = nestedType.DefineField(nameof(MethodInfo), typeof(MethodInfo),
@@ -490,6 +501,11 @@ namespace XstarS.Reflection.Emit
             var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
             var ilGen = method.GetILGenerator();
+            if ((instanceField is null) && baseMethod.IsAbstract)
+            {
+                ilGen.EmitNotImplemented();
+                goto EndOverrideMethodBuild;
+            }
             ilGen.Emit(OpCodes.Ldarg_0);
             if (instanceField is not null)
             {
@@ -499,12 +515,11 @@ namespace XstarS.Reflection.Emit
             {
                 ilGen.EmitLdarg(index + 1);
             }
-            ilGen.Emit((instanceField is null) ? OpCodes.Call : OpCodes.Callvirt,
-                (baseMethod.GetGenericArguments().Length == 0) ? baseMethod :
-                    baseMethod.MakeGenericMethod(method.GetGenericArguments()));
+            var realMethod = !baseMethod.IsGenericMethod ? baseMethod :
+                baseMethod.MakeGenericMethod(method.GetGenericArguments());
+            ilGen.Emit((instanceField is null) ? OpCodes.Call : OpCodes.Callvirt, realMethod);
             ilGen.Emit(OpCodes.Ret);
-
-            type.DefineMethodOverride(method, baseMethod);
+        EndOverrideMethodBuild:;
 
             return method;
         }

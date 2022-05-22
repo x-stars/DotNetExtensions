@@ -17,13 +17,6 @@ namespace XstarS.Reflection.Emit
         private static class ReflectionData
         {
             /// <summary>
-            /// 表示 <see cref="NotImplementedException.NotImplementedException()"/>
-            /// 构造函数的 <see cref="ConstructorInfo"/> 对象。
-            /// </summary>
-            internal static readonly ConstructorInfo NotImplementedCtor =
-                typeof(NotImplementedException).GetConstructor(Type.EmptyTypes)!;
-
-            /// <summary>
             /// 表示 <see cref="Delegate.Combine(Delegate, Delegate)"/>
             /// 方法的 <see cref="MethodInfo"/> 对象。
             /// </summary>
@@ -280,8 +273,7 @@ namespace XstarS.Reflection.Emit
             var method = type.DefineMethodOverride(baseMethod, explicitOverride);
 
             var ilGen = method.GetILGenerator();
-            ilGen.Emit(OpCodes.Newobj, ReflectionData.NotImplementedCtor);
-            ilGen.Emit(OpCodes.Throw);
+            ilGen.EmitNotImplemented();
 
             return method;
         }
