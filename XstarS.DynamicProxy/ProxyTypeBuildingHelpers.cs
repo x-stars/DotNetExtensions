@@ -67,7 +67,11 @@ namespace XstarS.Reflection.Emit
                 throw new ArgumentNullException(nameof(method));
             }
 
+            var proxyObjectDefined = method.ReflectedType.IsDefined(
+                typeof(ProxyObjectMethodsAttribute), inherit: false);
+            var isObjectDefined = method.GetBaseDefinition().DeclaringType == typeof(object);
             return method.IsOverridable() &&
+                (proxyObjectDefined || !isObjectDefined) &&
                 !method.ReturnParameter.ParameterType.IsNotBoxable() &&
                 Array.TrueForAll(
                     Array.ConvertAll(method.GetParameters(), param => param.ParameterType),
