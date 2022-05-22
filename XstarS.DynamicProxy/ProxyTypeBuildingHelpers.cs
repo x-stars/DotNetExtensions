@@ -189,8 +189,7 @@ namespace XstarS.Reflection.Emit
         /// <param name="baseType">定义基础方法的类型；若为泛型类型，则应为构造泛型类型。</param>
         /// <param name="instanceField">代理对象的字段；<see langword="null"/> 表示代理对象为当前实例。</param>
         /// <returns>定义的基类方法的 <see cref="MethodInfo"/> 和 <see cref="MethodDelegate"/> 字段。</returns>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
+        /// <exception cref="ArgumentException"><paramref name="baseMethod"/> 无法按照代理模式重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static (FieldBuilder InfoField, FieldBuilder DelegateField) DefineBaseMethodInfoAndDelegateField(
             this TypeBuilder type, MethodInfo baseMethod, Type baseType, FieldInfo? instanceField = null)
@@ -328,8 +327,7 @@ namespace XstarS.Reflection.Emit
         /// <param name="instanceField">代理对象的字段；<see langword="null"/> 表示代理对象为当前实例。</param>
         /// <param name="explicitOverride">指定是否以显式方式重写。</param>
         /// <returns>定义的方法，调用 <paramref name="methodInvokeHandlerField"/> 字段的代理委托。</returns>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
+        /// <exception cref="ArgumentException"><paramref name="baseMethod"/> 无法按照代理模式重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static MethodBuilder DefineProxyMethodOverride(
             this TypeBuilder type, MethodInfo baseMethod, Type baseType,
@@ -418,9 +416,6 @@ namespace XstarS.Reflection.Emit
             var baseParameters = baseMethod.GetParameters();
             ilGen.EmitLdcI4(baseParameters.Length);
             ilGen.Emit(OpCodes.Newarr, typeof(object));
-            var argsLocal = ilGen.DeclareLocal(typeof(object[]));
-            ilGen.EmitStloc(argsLocal.LocalIndex);
-            ilGen.EmitLdloc(argsLocal.LocalIndex);
             foreach (var index in ..baseParameters.Length)
             {
                 var baseParameter = baseParameters[index];
@@ -431,6 +426,12 @@ namespace XstarS.Reflection.Emit
                 ilGen.EmitBox(parameterType);
                 ilGen.Emit(OpCodes.Stelem_Ref);
             }
+            if (baseParameters.Any(param => param.ParameterType.IsByRef))
+            {
+                var argsLocal = ilGen.DeclareLocal(typeof(object[]));
+                ilGen.Emit(OpCodes.Stloc_0);
+                ilGen.Emit(OpCodes.Ldloc_0);
+            }
             ilGen.Emit(OpCodes.Callvirt, ReflectionData.ProxyHandlerInvokeMethod);
             foreach (var index in ..baseParameters.Length)
             {
@@ -439,7 +440,7 @@ namespace XstarS.Reflection.Emit
                 if (!parameterType.IsByRef) { continue; }
                 var paramRefType = parameterType.GetElementType()!;
                 ilGen.EmitLdarg(index + 1);
-                ilGen.EmitLdloc(argsLocal.LocalIndex);
+                ilGen.Emit(OpCodes.Ldloc_0);
                 ilGen.EmitLdcI4(index);
                 ilGen.Emit(OpCodes.Ldelem_Ref);
                 ilGen.EmitUnbox(paramRefType);
@@ -466,8 +467,7 @@ namespace XstarS.Reflection.Emit
         /// <param name="instanceField">代理对象的字段；<see langword="null"/> 表示代理对象为当前实例。</param>
         /// <param name="explicitOverride">指定是否以显式方式重写。</param>
         /// <returns>定义的方法，调用代理对象的 <paramref name="baseMethod"/> 方法。</returns>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="baseMethod"/> 的声明类型不为接口。</exception>
+        /// <exception cref="ArgumentException"><paramref name="baseMethod"/> 无法在程序集外部重写。</exception>
         /// <exception cref="ArgumentNullException">存在为 <see langword="null"/> 的参数。</exception>
         internal static MethodBuilder DefineBaseInvokeMethodOverride(
             this TypeBuilder type, MethodInfo baseMethod,
@@ -481,7 +481,7 @@ namespace XstarS.Reflection.Emit
             {
                 throw new ArgumentNullException(nameof(baseMethod));
             }
-            if (!baseMethod.IsProxyOverride())
+            if (!baseMethod.IsOverridable())
             {
                 var inner = new MemberAccessException();
                 throw new ArgumentException(inner.Message, nameof(baseMethod), inner);
