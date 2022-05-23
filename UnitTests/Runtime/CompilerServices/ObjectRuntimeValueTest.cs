@@ -5,7 +5,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace XstarS.Runtime.CompilerServices
 {
     [TestClass]
-    public class ObjectRuntumeValueTest
+    public class ObjectRuntimeValueTest
     {
         [TestMethod]
         public void ObjectRecursiveClone_Int32Array_WorksProperly()
