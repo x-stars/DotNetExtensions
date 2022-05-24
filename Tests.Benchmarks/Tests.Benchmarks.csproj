@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <AssemblyName>XstarS.UnitTests</AssemblyName>
     <RootNamespace>XstarS</RootNamespace>
     <TargetFrameworks>net461;net472;netcoreapp3.1;net6.0</TargetFrameworks>
+    <OutputType>Exe</OutputType>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -49,9 +49,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="2.2.7" />
-    <PackageReference Include="MSTest.TestFramework" Version="2.2.7" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.13.1" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.Split(`-`)[0].TrimEnd(`.0123456789`))'=='net' And

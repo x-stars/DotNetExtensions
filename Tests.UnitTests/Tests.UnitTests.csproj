@@ -1,0 +1,65 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>XstarS</RootNamespace>
+    <TargetFrameworks>net461;net472;netcoreapp3.1;net6.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <EnableNETAnalyzers>false</EnableNETAnalyzers>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>XstarS</Authors>
+    <Company>XstarS</Company>
+    <Description>$(AssemblyName)</Description>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\SharedItems\Common\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\XstarS.CommandLine\XstarS.CommandLine.csproj" />
+    <ProjectReference Include="..\XstarS.Core\XstarS.Core.csproj" />
+    <ProjectReference Include="..\XstarS.DispatchProxy\XstarS.DispatchProxy.csproj" />
+    <ProjectReference Include="..\XstarS.DynamicProxy\XstarS.DynamicProxy.csproj" />
+    <ProjectReference Include="..\XstarS.ObjectModel\XstarS.ObjectModel.csproj" />
+    <ProjectReference Include="..\XstarS.ObjectStructure\XstarS.ObjectStructure.csproj" />
+    <ProjectReference Include="..\XstarS.ObjectText\XstarS.ObjectText.csproj" />
+    <ProjectReference Include="..\XstarS.ObservableProxy\XstarS.ObservableProxy.csproj" />
+    <ProjectReference Include="..\XstarS.Primitives\XstarS.Primitives.csproj" />
+    <ProjectReference Include="..\XstarS.Unions\XstarS.Unions.csproj" />
+    <ProjectReference Include="..\XstarS.ValueValidate\XstarS.ValueValidate.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="2.2.7" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.2.7" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework.Split(`-`)[0].TrimEnd(`.0123456789`))'=='net' And
+                        '$(TargetFramework.Split(`-`)[0].CompareTo(`net5.0`))'&lt;'0'">
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard'">
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+  </ItemGroup>
+
+</Project>
