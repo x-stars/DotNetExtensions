@@ -27,7 +27,7 @@ namespace XstarS.Reflection
             this.EqualsDynFunc = this.EqualsMethod.CreateDynamicDelegate();
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public void DirectInvoke()
         {
             var value = this.Value;
