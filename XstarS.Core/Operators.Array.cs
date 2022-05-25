@@ -29,7 +29,7 @@ namespace XstarS
             }
 
             var result = new T[length];
-            foreach (var index in ..length)
+            for (int index = 0; index < length; index++)
             {
                 result[index] = indexMap(index);
             }
@@ -62,9 +62,9 @@ namespace XstarS
             }
 
             var result = new T[length1, length2];
-            foreach (var index1 in ..length1)
+            for (int index1 = 0; index1 < length1; index1++)
             {
-                foreach (var index2 in ..length2)
+                for (int index2 = 0; index2 < length2; index2++)
                 {
                     result[index1, index2] = indicesMap(index1, index2);
                 }
@@ -98,11 +98,11 @@ namespace XstarS
             }
 
             var result = new T[length1, length2, length3];
-            foreach (var index1 in ..length1)
+            for (int index1 = 0; index1 < length1; index1++)
             {
-                foreach (var index2 in ..length2)
+                for (int index2 = 0; index2 < length2; index2++)
                 {
-                    foreach (var index3 in ..length3)
+                    for (int index3 = 0; index3 < length3; index3++)
                     {
                         result[index1, index2, index3] = indicesMap(index1, index2, index3);
                     }
@@ -138,7 +138,7 @@ namespace XstarS
             }
 
             var result = Array.CreateInstance(typeof(T), lengths);
-            foreach (var offset in ..result.Length)
+            for (int offset = 0; offset < result.Length; offset++)
             {
                 var indices = result.OffsetToIndices(offset);
                 result.SetValue(indicesMap(indices), indices);

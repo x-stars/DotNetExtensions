@@ -33,7 +33,7 @@ namespace XstarS.Reflection
             var value = this.Value;
             var other = this.Other;
             var count = this.InvokeCount;
-            foreach (var _ in ..count)
+            for (int index = 0; index < count; index++)
             {
                 value.Equals(other);
             }
@@ -46,7 +46,7 @@ namespace XstarS.Reflection
             var other = this.Other;
             var equals = this.EqualsFunc;
             var count = this.InvokeCount;
-            foreach (var _ in ..count)
+            for (int index = 0; index < count; index++)
             {
                 equals.Invoke(value, other);
             }
@@ -59,7 +59,7 @@ namespace XstarS.Reflection
             var other = this.Other;
             var equals = this.EqualsMethod;
             var count = this.InvokeCount;
-            foreach (var _ in ..count)
+            for (int index = 0; index < count; index++)
             {
                 equals.Invoke(value, new[] { other });
             }
@@ -72,7 +72,7 @@ namespace XstarS.Reflection
             var other = this.Other;
             var equals = this.EqualsMethod;
             var count = this.InvokeCount;
-            foreach (var _ in ..count)
+            for (int index = 0; index < count; index++)
             {
                 equals.InvokeFast(value, new[] { other });
             }
@@ -85,7 +85,7 @@ namespace XstarS.Reflection
             var other = this.Other;
             var equals = this.EqualsDynFunc;
             var count = this.InvokeCount;
-            foreach (var _ in ..count)
+            for (int index = 0; index < count; index++)
             {
                 equals.Invoke(value, new[] { other });
             }

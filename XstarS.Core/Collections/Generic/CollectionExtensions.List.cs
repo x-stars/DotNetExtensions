@@ -42,7 +42,7 @@ namespace XstarS.Collections.Generic
             }
 
             var range = new List<T>(count);
-            foreach (var offset in ..count)
+            for (int offset = 0; offset < count; offset++)
             {
                 range.Add(list[index + offset]);
             }
@@ -68,7 +68,7 @@ namespace XstarS.Collections.Generic
 
             var indices = new List<int>();
             var comparer = EqualityComparer<T>.Default;
-            foreach (var index in ..list.Count)
+            for (int index = 0; index < list.Count; index++)
             {
                 if (comparer.Equals(list[index], item))
                 {
@@ -151,7 +151,7 @@ namespace XstarS.Collections.Generic
                 throw new ArgumentNullException(nameof(list));
             }
 
-            foreach (var offset in ..count)
+            for (int offset = 0; offset < count; offset++)
             {
                 list.RemoveAt(index);
             }
@@ -193,7 +193,7 @@ namespace XstarS.Collections.Generic
             }
 
             var random = new Random();
-            foreach (var index in ..list.Count)
+            for (int index = 0; index < list.Count; index++)
             {
                 int rIndex = random.Next(list.Count);
                 (list[rIndex], list[index]) = (list[index], list[rIndex]);
