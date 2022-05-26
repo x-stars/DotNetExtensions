@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
-using XstarS.Unions;
 
 namespace XstarS.Runtime.CompilerServices
 {
@@ -11,12 +10,16 @@ namespace XstarS.Runtime.CompilerServices
         [Params(1, 10, 100, 1000)]
         public int CompareCount;
 
+        private readonly struct ValueBox<T> where T : struct
+        {
+            public readonly T Value;
+            public ValueBox(T value) { this.Value = value; }
+        }
+
         private readonly nint Value = 42;
         private readonly nint Other = 24;
-        private readonly object BoxedValue = (nint)42;
-        private readonly object BoxedOther = (nint)24;
-        private readonly HandleUnion WrappedValue = (nint)42;
-        private readonly HandleUnion WrappedOther = (nint)24;
+        private readonly ValueBox<nint> WrappedValue = new(42);
+        private readonly ValueBox<nint> WrappedOther = new(24);
 
         [Benchmark(Baseline = true)]
         public void PrimitiveCompare()
@@ -56,22 +59,10 @@ namespace XstarS.Runtime.CompilerServices
         }
 
         [Benchmark]
-        public void RuntimeCompare()
+        public void ObjectCompare()
         {
-            var value = this.Value;
-            var other = this.Other;
-            var count = this.CompareCount;
-            for (int index = 0; index < count; index++)
-            {
-                var result = value.RuntimeEquals(other);
-            }
-        }
-
-        [Benchmark]
-        public void BoxedValueCompare()
-        {
-            var value = this.BoxedValue;
-            var other = this.BoxedOther;
+            var value = (object)this.Value;
+            var other = (object)this.Other;
             var count = this.CompareCount;
             for (int index = 0; index < count; index++)
             {
@@ -80,10 +71,10 @@ namespace XstarS.Runtime.CompilerServices
         }
 
         [Benchmark]
-        public void WrappedValueCompare()
+        public void ValueTypeCompare()
         {
-            var value = this.WrappedValue;
-            var other = this.WrappedOther;
+            var value = (object)this.WrappedValue;
+            var other = (object)this.WrappedOther;
             var count = this.CompareCount;
             for (int index = 0; index < count; index++)
             {
@@ -104,10 +95,22 @@ namespace XstarS.Runtime.CompilerServices
         }
 
         [Benchmark]
+        public void RuntimeCompare()
+        {
+            var value = (object)this.Value;
+            var other = (object)this.Other;
+            var count = this.CompareCount;
+            for (int index = 0; index < count; index++)
+            {
+                var result = value.RuntimeEquals(other);
+            }
+        }
+
+        [Benchmark]
         public void RecursiveCompare()
         {
-            var value = this.Value;
-            var other = this.Other;
+            var value = (object)this.Value;
+            var other = (object)this.Other;
             var count = this.CompareCount;
             for (int index = 0; index < count; index++)
             {
