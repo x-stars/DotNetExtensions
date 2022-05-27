@@ -3,7 +3,7 @@ using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Running;
 
-namespace XstarS.GuidGenerators
+namespace XstarS
 {
     internal static class BenchmarkProgram
     {
