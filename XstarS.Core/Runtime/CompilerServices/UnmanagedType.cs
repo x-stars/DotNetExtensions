@@ -47,11 +47,12 @@ namespace XstarS.Runtime.CompilerServices
         /// <typeparam name="T">非托管值的类型。</typeparam>
         /// <param name="value">要填充到字节数组的非托管类型的值。</param>
         /// <returns>以 <paramref name="value"/> 的二进制值填充的字节数组。</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static byte[] ToByteArray<T>(this T value) where T : unmanaged
         {
             var size = sizeof(T);
             var bytes = new byte[size];
-            fixed (byte* pBytes = bytes)
+            fixed (byte* pBytes = &bytes[0])
             {
                 *(T*)pBytes = value;
             }

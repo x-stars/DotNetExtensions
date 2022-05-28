@@ -26,15 +26,9 @@ namespace XstarS.Runtime.CompilerServices
         /// <param name="instance">要强制转换为另一类型的对象。</param>
         /// <returns>已转换为 <typeparamref name="T"/> 类型的
         /// <paramref name="instance"/> 的浅表副本。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="instance"/> 为 <see langword="null"/>。</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static T UncheckedCast<T>(this object instance) where T : class
         {
-            if (instance is null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-
             var casting = instance.MemberwiseClone();
             casting.RefTypeHandle() = typeof(T).TypeHandle.Value;
             return Unsafe.As<T>(casting);
