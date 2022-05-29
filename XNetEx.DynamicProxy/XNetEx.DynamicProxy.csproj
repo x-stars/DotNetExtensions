@@ -1,13 +1,12 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>XstarS</RootNamespace>
+    <RootNamespace>XstarS.Reflection</RootNamespace>
     <TargetFrameworks>
       net461;net472;netcoreapp3.1;net6.0;netstandard2.0;netstandard2.1
     </TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
@@ -17,7 +16,7 @@
     <Version>1.0.0</Version>
     <Product>XstarS .NET Extensions</Product>
     <Description>$(AssemblyName)</Description>
-    <Copyright>Copyright © $(Company) 2020</Copyright>
+    <Copyright>Copyright © $(Company) 2019</Copyright>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -53,17 +52,15 @@
 
   <ItemGroup>
     <Compile Include="..\SharedItems\Common\**\*.cs" />
-    <Compile Include="..\SharedItems\PairRefComparing\**\*.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\XstarS.Core\XstarS.Core.csproj" />
-    <ProjectReference Include="..\XstarS.ObjectText\XstarS.ObjectText.csproj" />
+    <ProjectReference Include="..\XNetEx.Core\XNetEx.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.01234567890`))'=='net' And
-                        '$(TargetFramework.CompareTo(`net47`))'&lt;'0'">
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard' And
+                        '$(TargetFramework.CompareTo(`netstandard2.1`))'&lt;'0'">
+    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
   </ItemGroup>
 
 </Project>

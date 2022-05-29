@@ -35,31 +35,31 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.Benchmarks", "Tests.B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.UnitTests", "Tests.UnitTests\Tests.UnitTests.csproj", "{BA4F1AD2-DACC-4B0D-BBC8-771D83C32CED}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.CommandLine", "XstarS.CommandLine\XstarS.CommandLine.csproj", "{B5EF52C2-DE52-4ADD-ACD7-191A6BBC426E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.CommandLine", "XNetEx.CommandLine\XNetEx.CommandLine.csproj", "{B5EF52C2-DE52-4ADD-ACD7-191A6BBC426E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Core", "XstarS.Core\XstarS.Core.csproj", "{0CB35110-130B-4359-BA62-5585C12E44A7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Core", "XNetEx.Core\XNetEx.Core.csproj", "{0CB35110-130B-4359-BA62-5585C12E44A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.DispatchProxy", "XstarS.DispatchProxy\XstarS.DispatchProxy.csproj", "{0C98D0FF-1256-4C40-80FC-E722FFA7D891}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.DispatchProxy", "XNetEx.DispatchProxy\XNetEx.DispatchProxy.csproj", "{0C98D0FF-1256-4C40-80FC-E722FFA7D891}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.DynamicProxy", "XstarS.DynamicProxy\XstarS.DynamicProxy.csproj", "{22963809-2D60-44CE-B7F4-8143E8D2AC48}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.DynamicProxy", "XNetEx.DynamicProxy\XNetEx.DynamicProxy.csproj", "{22963809-2D60-44CE-B7F4-8143E8D2AC48}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.ObjectModel", "XstarS.ObjectModel\XstarS.ObjectModel.csproj", "{1CD40780-2782-4FC0-956A-9A9AA2CB79AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.ObjectModel", "XNetEx.ObjectModel\XNetEx.ObjectModel.csproj", "{1CD40780-2782-4FC0-956A-9A9AA2CB79AB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.ObjectStructure", "XstarS.ObjectStructure\XstarS.ObjectStructure.csproj", "{8535C33B-3A8A-49C6-A03E-45B6F952D823}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.ObjectStructure", "XNetEx.ObjectStructure\XNetEx.ObjectStructure.csproj", "{8535C33B-3A8A-49C6-A03E-45B6F952D823}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.ObjectText", "XstarS.ObjectText\XstarS.ObjectText.csproj", "{C16AAD4E-08A3-497B-968D-5E8153880414}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.ObjectText", "XNetEx.ObjectText\XNetEx.ObjectText.csproj", "{C16AAD4E-08A3-497B-968D-5E8153880414}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.ObservableProxy", "XstarS.ObservableProxy\XstarS.ObservableProxy.csproj", "{BE082600-979D-4DA8-A1D9-F966173FCB30}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.ObservableProxy", "XNetEx.ObservableProxy\XNetEx.ObservableProxy.csproj", "{BE082600-979D-4DA8-A1D9-F966173FCB30}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Primitives", "XstarS.Primitives\XstarS.Primitives.csproj", "{FFF406FE-3738-4899-8136-4B2823DC7FEC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Primitives", "XNetEx.Primitives\XNetEx.Primitives.csproj", "{FFF406FE-3738-4899-8136-4B2823DC7FEC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Unions", "XstarS.Unions\XstarS.Unions.csproj", "{27B5E3DA-78F3-41D6-8C03-C01A2CB9EFE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Unions", "XNetEx.Unions\XNetEx.Unions.csproj", "{27B5E3DA-78F3-41D6-8C03-C01A2CB9EFE5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.ValueValidate", "XstarS.ValueValidate\XstarS.ValueValidate.csproj", "{6690ECA8-ABC2-4B83-BD3F-AEDBBCE69C8D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.ValueValidate", "XNetEx.ValueValidate\XNetEx.ValueValidate.csproj", "{6690ECA8-ABC2-4B83-BD3F-AEDBBCE69C8D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Win32", "XstarS.Win32\XstarS.Win32.csproj", "{0B423D1F-050E-4843-86EC-A41D77CD5AF4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Win32", "XNetEx.Win32\XNetEx.Win32.csproj", "{0B423D1F-050E-4843-86EC-A41D77CD5AF4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XstarS.Windows", "XstarS.Windows\XstarS.Windows.csproj", "{665560E7-547C-42EF-A1C7-2887E2089430}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Windows", "XNetEx.Windows\XNetEx.Windows.csproj", "{665560E7-547C-42EF-A1C7-2887E2089430}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

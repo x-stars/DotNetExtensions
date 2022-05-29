@@ -55,7 +55,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\XstarS.Core\XstarS.Core.csproj" />
+    <ProjectReference Include="..\XNetEx.Core\XNetEx.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard' And

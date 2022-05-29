@@ -32,17 +32,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\XstarS.CommandLine\XstarS.CommandLine.csproj" />
-    <ProjectReference Include="..\XstarS.Core\XstarS.Core.csproj" />
-    <ProjectReference Include="..\XstarS.DispatchProxy\XstarS.DispatchProxy.csproj" />
-    <ProjectReference Include="..\XstarS.DynamicProxy\XstarS.DynamicProxy.csproj" />
-    <ProjectReference Include="..\XstarS.ObjectModel\XstarS.ObjectModel.csproj" />
-    <ProjectReference Include="..\XstarS.ObjectStructure\XstarS.ObjectStructure.csproj" />
-    <ProjectReference Include="..\XstarS.ObjectText\XstarS.ObjectText.csproj" />
-    <ProjectReference Include="..\XstarS.ObservableProxy\XstarS.ObservableProxy.csproj" />
-    <ProjectReference Include="..\XstarS.Primitives\XstarS.Primitives.csproj" />
-    <ProjectReference Include="..\XstarS.Unions\XstarS.Unions.csproj" />
-    <ProjectReference Include="..\XstarS.ValueValidate\XstarS.ValueValidate.csproj" />
+    <ProjectReference Include="..\XNetEx.CommandLine\XNetEx.CommandLine.csproj" />
+    <ProjectReference Include="..\XNetEx.Core\XNetEx.Core.csproj" />
+    <ProjectReference Include="..\XNetEx.DispatchProxy\XNetEx.DispatchProxy.csproj" />
+    <ProjectReference Include="..\XNetEx.DynamicProxy\XNetEx.DynamicProxy.csproj" />
+    <ProjectReference Include="..\XNetEx.ObjectModel\XNetEx.ObjectModel.csproj" />
+    <ProjectReference Include="..\XNetEx.ObjectStructure\XNetEx.ObjectStructure.csproj" />
+    <ProjectReference Include="..\XNetEx.ObjectText\XNetEx.ObjectText.csproj" />
+    <ProjectReference Include="..\XNetEx.ObservableProxy\XNetEx.ObservableProxy.csproj" />
+    <ProjectReference Include="..\XNetEx.Primitives\XNetEx.Primitives.csproj" />
+    <ProjectReference Include="..\XNetEx.Unions\XNetEx.Unions.csproj" />
+    <ProjectReference Include="..\XNetEx.ValueValidate\XNetEx.ValueValidate.csproj" />
   </ItemGroup>
 
   <ItemGroup>

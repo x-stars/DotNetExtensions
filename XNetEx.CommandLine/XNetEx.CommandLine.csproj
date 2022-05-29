@@ -55,8 +55,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\XstarS.Core\XstarS.Core.csproj" />
-    <ProjectReference Include="..\XstarS.ObjectText\XstarS.ObjectText.csproj" />
+    <ProjectReference Include="..\XNetEx.Core\XNetEx.Core.csproj" />
+    <ProjectReference Include="..\XNetEx.ObjectText\XNetEx.ObjectText.csproj" />
   </ItemGroup>
 
 </Project>
