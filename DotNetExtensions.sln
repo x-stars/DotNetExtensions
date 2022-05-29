@@ -37,6 +37,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests.UnitTests", "Tests.Un
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.CommandLine", "XNetEx.CommandLine\XNetEx.CommandLine.csproj", "{B5EF52C2-DE52-4ADD-ACD7-191A6BBC426E}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Console", "XNetEx.Console\XNetEx.Console.csproj", "{113B7358-C7A6-4417-A236-8E29ABC973FE}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Core", "XNetEx.Core\XNetEx.Core.csproj", "{0CB35110-130B-4359-BA62-5585C12E44A7}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.DispatchProxy", "XNetEx.DispatchProxy\XNetEx.DispatchProxy.csproj", "{0C98D0FF-1256-4C40-80FC-E722FFA7D891}"
@@ -79,6 +81,10 @@ Global
 		{B5EF52C2-DE52-4ADD-ACD7-191A6BBC426E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B5EF52C2-DE52-4ADD-ACD7-191A6BBC426E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B5EF52C2-DE52-4ADD-ACD7-191A6BBC426E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{113B7358-C7A6-4417-A236-8E29ABC973FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{113B7358-C7A6-4417-A236-8E29ABC973FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{113B7358-C7A6-4417-A236-8E29ABC973FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{113B7358-C7A6-4417-A236-8E29ABC973FE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0CB35110-130B-4359-BA62-5585C12E44A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0CB35110-130B-4359-BA62-5585C12E44A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CB35110-130B-4359-BA62-5585C12E44A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
