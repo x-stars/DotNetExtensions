@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     /// <summary>
     /// 提供基于代理委托 <see cref="MethodInvokeHandler"/> 的包装代理类型，并提供创建此代理类型的实例的方法。

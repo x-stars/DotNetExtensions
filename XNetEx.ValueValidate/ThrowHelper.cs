@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace XstarS
+namespace XNetEx
 {
     /// <summary>
     /// 提供抛出异常的方法。

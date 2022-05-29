@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace XstarS.Collections.Generic
+namespace XNetEx.Collections.Generic
 {
     using ObjectPair = KeyValuePair<object, object>;
 

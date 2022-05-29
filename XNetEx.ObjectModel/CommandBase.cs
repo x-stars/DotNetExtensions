@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Windows.Input;
 
-namespace XstarS.Windows.Input
+namespace XNetEx.Windows.Input
 {
     /// <summary>
     /// 提供命令 <see cref="ICommand"/> 的抽象基类。

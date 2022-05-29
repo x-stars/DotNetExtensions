@@ -3,7 +3,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Security;
 
-namespace XstarS
+namespace XNetEx
 {
     static partial class ConsoleEx
     {

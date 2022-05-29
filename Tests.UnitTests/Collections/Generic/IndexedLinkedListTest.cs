@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XstarS.Collections.Generic
+namespace XNetEx.Collections.Generic
 {
     [TestClass]
     public class IndexedLinkedListTest

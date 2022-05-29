@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 
-namespace XstarS.Runtime.CompilerServices
+namespace XNetEx.Runtime.CompilerServices
 {
     public class ValueTypeEqualsBenchmark
     {

@@ -1,4 +1,4 @@
-﻿namespace XstarS.Collections.Generic
+﻿namespace XNetEx.Collections.Generic
 {
     /// <summary>
     /// 提供结构化对象相等比较的扩展方法。

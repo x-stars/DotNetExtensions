@@ -5,10 +5,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using XstarS.Reflection;
-using XstarS.Reflection.Emit;
+using XNetEx.Reflection;
+using XNetEx.Reflection.Emit;
 
-namespace XstarS.ComponentModel
+namespace XNetEx.ComponentModel
 {
     /// <summary>
     /// 提供基于 <see cref="INotifyPropertyChanged"/> 的属性更改通知类型。

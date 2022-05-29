@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS.Text
+namespace XNetEx.Text
 {
     /// <summary>
     /// 为字符串解析对象 <see cref="IStringParser{T}"/> 提供抽象基类。

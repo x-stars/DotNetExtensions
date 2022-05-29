@@ -1,4 +1,4 @@
-﻿namespace XstarS.Reflection
+﻿namespace XNetEx.Reflection
 {
     /// <summary>
     /// 表示方法的动态调用委托。

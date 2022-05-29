@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace XstarS.ComponentModel
+namespace XNetEx.ComponentModel
 {
     /// <summary>
     /// 提供接收属性更改通知的机制，并在属性发生更改时发出通知。

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS
+namespace XNetEx
 {
     /// <summary>
     /// 提供数组的扩展方法。

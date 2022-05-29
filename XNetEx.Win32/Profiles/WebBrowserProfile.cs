@@ -2,7 +2,7 @@
 using System.Security;
 using Microsoft.Win32;
 
-namespace XstarS.Win32.Profiles
+namespace XNetEx.Win32.Profiles
 {
     /// <summary>
     /// 表示当前程序的内置网络浏览器组件的相关配置。

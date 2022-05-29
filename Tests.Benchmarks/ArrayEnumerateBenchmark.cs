@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using BenchmarkDotNet.Attributes;
 
-namespace XstarS
+namespace XNetEx
 {
     public class ArrayEnumerateBenchmark
     {

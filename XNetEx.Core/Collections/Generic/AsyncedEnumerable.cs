@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace XstarS.Collections.Generic
+namespace XNetEx.Collections.Generic
 {
     /// <summary>
     /// 提供 <see cref="IEnumerable{T}"/> 的 <see cref="IAsyncEnumerable{T}"/> 包装。

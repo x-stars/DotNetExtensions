@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace XstarS.Collections.Generic
+namespace XNetEx.Collections.Generic
 {
     /// <summary>
     /// 提供泛型集合的扩展方法。

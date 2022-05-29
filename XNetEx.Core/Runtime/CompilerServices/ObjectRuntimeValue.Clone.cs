@@ -7,14 +7,14 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using ReferenceEqualityComparer =
-    XstarS.Collections.Specialized.ReferenceEqualityComparer;
+    XNetEx.Collections.Specialized.ReferenceEqualityComparer;
 
 #if NET5_0_OR_GREATER
 #pragma warning disable SYSLIB0011  // BinaryFormatter serialization is obsolete.
 // Justification: No external serialized data will be transfered into current app domain.
 #endif
 
-namespace XstarS.Runtime.CompilerServices
+namespace XNetEx.Runtime.CompilerServices
 {
     static partial class ObjectRuntimeValue
     {

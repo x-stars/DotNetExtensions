@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 
-namespace XstarS.Text
+namespace XNetEx.Text
 {
     /// <summary>
     /// 指示当前方法是用于将字符串解析为指定类型的对象的扩展字符串解析方法。

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using XstarS.Reflection;
+using XNetEx.Reflection;
 
-namespace XstarS
+namespace XNetEx
 {
     using DynamicInvoker = Func<object?, object?[]?, object?>;
 

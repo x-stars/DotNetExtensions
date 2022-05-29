@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XstarS.Runtime.CompilerServices
+namespace XNetEx.Runtime.CompilerServices
 {
     [TestClass]
     public class ObjectRuntimeTypeTest

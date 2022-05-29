@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using XstarS.Reflection.Emit;
+using XNetEx.Reflection.Emit;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     /// <summary>
     /// 提供基于代理委托 <see cref="MethodInvokeHandler"/> 的直接代理类型。

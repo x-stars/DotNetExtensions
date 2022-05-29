@@ -2,9 +2,9 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Reflection.Emit;
-using XstarS.Reflection.Emit;
+using XNetEx.Reflection.Emit;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     /// <summary>
     /// 提供创建类型成员调用委托的扩展方法。

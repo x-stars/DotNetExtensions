@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace XstarS.Collections.Generic
+namespace XNetEx.Collections.Generic
 {
     /// <summary>
     /// 表示一个指定比较器的反转的比较器 <see cref="Comparer{T}"/>。

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace XstarS.IO
+namespace XNetEx.IO
 {
     /// <summary>
     /// 提供文本写入器 <see cref="TextWriter"/> 的扩展方法。

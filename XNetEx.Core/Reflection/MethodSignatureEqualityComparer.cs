@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using XstarS.Collections.Generic;
+using XNetEx.Collections.Generic;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     /// <summary>
     /// 提供用于比较方法的签名是否相等的方法。

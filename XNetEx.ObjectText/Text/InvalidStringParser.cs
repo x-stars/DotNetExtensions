@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace XstarS.Text
+namespace XNetEx.Text
 {
     /// <summary>
     /// 表示无法由字符串形式转换为对象的类型的字符串解析对象。

@@ -1,8 +1,8 @@
 ﻿using System;
-using XstarS.Collections.Generic;
-using XstarS.Runtime.CompilerServices;
+using XNetEx.Collections.Generic;
+using XNetEx.Runtime.CompilerServices;
 
-namespace XstarS.Collections.Specialized
+namespace XNetEx.Collections.Specialized
 {
     /// <summary>
     /// 提供用于比较非托管类型的数组是否二进制相等的方法。

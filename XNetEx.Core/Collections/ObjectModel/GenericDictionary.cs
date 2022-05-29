@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace XstarS.Collections.ObjectModel
+namespace XNetEx.Collections.ObjectModel
 {
     /// <summary>
     /// 提供非泛型键值对集合的泛型包装。

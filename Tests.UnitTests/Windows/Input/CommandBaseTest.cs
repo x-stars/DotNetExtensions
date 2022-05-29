@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XstarS.Windows.Input
+namespace XNetEx.Windows.Input
 {
     [TestClass]
     public class CommandBaseTest

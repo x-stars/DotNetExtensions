@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XstarS.Unions
+namespace XNetEx.Unions
 {
     [TestClass]
     public class UnionsTest

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS
+namespace XNetEx
 {
     /// <summary>
     /// 提供值元组的扩展运算符。

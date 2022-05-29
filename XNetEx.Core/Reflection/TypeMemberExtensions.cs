@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     /// <summary>
     /// 提供类型成员相关的扩展方法。

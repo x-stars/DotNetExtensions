@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-namespace XstarS.Reflection.TestTypes
+namespace XNetEx.Reflection.TestTypes
 {
     public static class ProxyTestHandlers
     {

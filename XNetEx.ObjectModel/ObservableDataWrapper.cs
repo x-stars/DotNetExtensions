@@ -1,8 +1,8 @@
 ﻿using System;
 using System.ComponentModel;
-using XstarS.Reflection;
+using XNetEx.Reflection;
 
-namespace XstarS.ComponentModel
+namespace XNetEx.ComponentModel
 {
     /// <summary>
     /// 提供属性更改通知类型 <see cref="INotifyPropertyChanged"/> 的包装抽象基类。

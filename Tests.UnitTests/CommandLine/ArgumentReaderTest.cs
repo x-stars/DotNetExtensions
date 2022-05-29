@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XstarS.CommandLine
+namespace XNetEx.CommandLine
 {
     [TestClass]
     public class ArgumentReaderTest

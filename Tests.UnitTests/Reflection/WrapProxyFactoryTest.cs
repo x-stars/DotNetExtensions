@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using XstarS.Reflection.TestTypes;
+using XNetEx.Reflection.TestTypes;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     [TestClass]
     public class WrapProxyFactoryTest

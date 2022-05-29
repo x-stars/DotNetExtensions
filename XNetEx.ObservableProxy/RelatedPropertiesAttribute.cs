@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS.ComponentModel
+namespace XNetEx.ComponentModel
 {
     /// <summary>
     /// 指示与当前属性的值相关的其他属性。

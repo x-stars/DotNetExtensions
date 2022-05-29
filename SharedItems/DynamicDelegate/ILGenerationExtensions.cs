@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Reflection.Emit;
 
-namespace XstarS.Reflection.Emit
+namespace XNetEx.Reflection.Emit
 {
     /// <summary>
     /// 提供 IL 指令生成相关的扩展方法。

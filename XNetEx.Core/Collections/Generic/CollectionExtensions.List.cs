@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-namespace XstarS.Collections.Generic
+namespace XNetEx.Collections.Generic
 {
     static partial class CollectionExtensions
     {

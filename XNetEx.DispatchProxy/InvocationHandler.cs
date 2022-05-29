@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     /// <summary>
     /// 表示调用代理类型方法时所用的代理委托。

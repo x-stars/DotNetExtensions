@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace XstarS.Diagnostics
+namespace XNetEx.Diagnostics
 {
     /// <summary>
     /// 提供用于程序诊断和测试的度量方法。

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS.Collections.Generic
+namespace XNetEx.Collections.Generic
 {
     /// <summary>
     /// 为无参数的无环相等比较器 <see cref="IAcyclicEqualityComparer{T}"/> 提供抽象基类。

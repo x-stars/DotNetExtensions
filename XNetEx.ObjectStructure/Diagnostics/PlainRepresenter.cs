@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace XstarS.Diagnostics
+namespace XNetEx.Diagnostics
 {
     /// <summary>
     /// 提供将非结构化对象表示为字符串的方法。

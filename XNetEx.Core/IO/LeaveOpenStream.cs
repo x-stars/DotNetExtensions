@@ -3,7 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace XstarS.IO
+namespace XNetEx.IO
 {
     /// <summary>
     /// 表示在释放后保持打开状态的 <see cref="Stream"/> 的包装。

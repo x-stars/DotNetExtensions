@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using mstring = System.Text.StringBuilder;
 
-namespace XstarS.IO
+namespace XNetEx.IO
 {
     /// <summary>
     /// 提供文本读取器 <see cref="TextReader"/> 的扩展方法。

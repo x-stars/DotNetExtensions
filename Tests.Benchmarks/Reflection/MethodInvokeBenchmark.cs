@@ -2,7 +2,7 @@
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     public class MethodInvokeBenchmark
     {

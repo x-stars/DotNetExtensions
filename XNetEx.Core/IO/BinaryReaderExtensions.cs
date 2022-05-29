@@ -2,7 +2,7 @@
 using System.IO;
 using mstring = System.Text.StringBuilder;
 
-namespace XstarS.IO
+namespace XNetEx.IO
 {
     /// <summary>
     /// 提供二进制读取器 <see cref="BinaryReader"/> 的扩展方法。

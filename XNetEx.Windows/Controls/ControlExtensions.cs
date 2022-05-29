@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Windows.Controls;
 
-namespace XstarS.Windows.Controls
+namespace XNetEx.Windows.Controls
 {
     /// <summary>
     /// 提供 WPF 用户控件 <see cref="Control"/> 及其派生类的扩展方法。

@@ -1,4 +1,4 @@
-﻿namespace XstarS.Text
+﻿namespace XNetEx.Text
 {
     /// <summary>
     /// 为无参数的字符串解析对象 <see cref="IStringParser{T}"/> 提供抽象基类。

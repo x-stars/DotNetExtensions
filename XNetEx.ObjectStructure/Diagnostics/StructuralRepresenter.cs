@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using XstarS.Collections;
-using XstarS.Collections.Generic;
-using XstarS.Reflection;
+using XNetEx.Collections;
+using XNetEx.Collections.Generic;
+using XNetEx.Reflection;
 
-namespace XstarS.Diagnostics
+namespace XNetEx.Diagnostics
 {
     /// <summary>
     /// 为结构化对象的字符串表示对象提供抽象基类。

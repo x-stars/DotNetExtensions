@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace XstarS.IO
+namespace XNetEx.IO
 {
     /// <summary>
     /// 提供二进制写入器 <see cref="BinaryWriter"/> 的扩展方法。

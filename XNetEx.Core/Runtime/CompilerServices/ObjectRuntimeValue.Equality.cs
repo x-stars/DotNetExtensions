@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using PairReferenceEqualityComparer =
-    XstarS.Collections.Specialized.PairReferenceEqualityComparer;
+    XNetEx.Collections.Specialized.PairReferenceEqualityComparer;
 
-namespace XstarS.Runtime.CompilerServices
+namespace XNetEx.Runtime.CompilerServices
 {
     using ObjectPair = KeyValuePair<object, object>;
 

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace XstarS.Collections.Generic
+namespace XNetEx.Collections.Generic
 {
     /// <summary>
     /// 提供 <see cref="IEnumerator{T}"/> 的 <see cref="IEnumerable{T}"/> 包装。

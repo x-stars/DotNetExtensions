@@ -9,7 +9,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 
-namespace XstarS.ComponentModel
+namespace XNetEx.ComponentModel
 {
     /// <summary>
     /// 提供属性更改通知类型 <see cref="INotifyPropertyChanged"/>

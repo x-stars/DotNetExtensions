@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace XstarS.IO
+namespace XNetEx.IO
 {
     /// <summary>
     /// 提供字节流 <see cref="Stream"/> 的扩展方法。

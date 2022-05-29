@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     /// <summary>
     /// 用于标记类型的动态代理类型应代理在 <see cref="object"/> 类型中定义的基础方法。

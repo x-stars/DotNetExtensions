@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace XstarS.Text
+namespace XNetEx.Text
 {
     /// <summary>
     /// 表示使用标记为 <see cref="ExtensionParseMethodAttribute"/> 的方法将字符串转换为对象的字符串解析对象。

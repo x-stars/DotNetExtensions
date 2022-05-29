@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     public class DynamicProxyBenchmark
     {

@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using XstarS.Diagnostics;
+using XNetEx.Diagnostics;
 
-namespace XstarS.Collections
+namespace XNetEx.Collections
 {
     /// <summary>
     /// 提供将 <see cref="DictionaryEntry"/> 中的键值表示为字符串的方法。

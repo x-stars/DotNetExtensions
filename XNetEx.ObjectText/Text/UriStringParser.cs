@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS.Text
+namespace XNetEx.Text
 {
     /// <summary>
     /// 表示将输入的 URI 字符串转换为其等效的 <see cref="Uri"/> 对象的字符串解析对象。

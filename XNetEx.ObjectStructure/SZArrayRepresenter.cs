@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using XstarS.Diagnostics;
+using XNetEx.Diagnostics;
 
-namespace XstarS
+namespace XNetEx
 {
     /// <summary>
     /// 提供将数组中的元素的表示为字符串的方法。

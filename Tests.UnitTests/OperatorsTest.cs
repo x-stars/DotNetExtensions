@@ -1,7 +1,7 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using static XstarS.Operators;
+using static XNetEx.Operators;
 
-namespace XstarS
+namespace XNetEx
 {
     [TestClass]
     public class OperatorsTest

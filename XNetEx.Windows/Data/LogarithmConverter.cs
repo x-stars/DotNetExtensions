@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Data;
 using Convertible = System.Convert;
 
-namespace XstarS.Windows.Data
+namespace XNetEx.Windows.Data
 {
     /// <summary>
     /// 表示 <see cref="IConvertible"/> 数字到其对应的对数的转换器。

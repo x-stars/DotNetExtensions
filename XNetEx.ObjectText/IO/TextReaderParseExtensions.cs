@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
-using XstarS.Text;
+using XNetEx.Text;
 
-namespace XstarS.IO
+namespace XNetEx.IO
 {
     /// <summary>
     /// 提供文本读取器 <see cref="TextReader"/> 数值解析相关的扩展方法。

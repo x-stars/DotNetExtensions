@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     using MethodDynamicDelegate = Func<object?, object?[]?, object?>;
 

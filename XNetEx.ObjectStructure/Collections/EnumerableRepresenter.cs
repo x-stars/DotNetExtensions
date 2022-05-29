@@ -1,8 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
-using XstarS.Diagnostics;
+using XNetEx.Diagnostics;
 
-namespace XstarS.Collections
+namespace XNetEx.Collections
 {
     /// <summary>
     /// 提供用于将 <see cref="IEnumerable"/> 中的元素表示为字符串的方法。

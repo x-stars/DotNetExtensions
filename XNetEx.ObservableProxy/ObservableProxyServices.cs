@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS.ComponentModel
+namespace XNetEx.ComponentModel
 {
     /// <summary>
     /// 提供属性更改通知代理类型相关的服务方法。

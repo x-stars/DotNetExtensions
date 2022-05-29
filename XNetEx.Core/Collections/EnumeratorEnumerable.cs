@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 
-namespace XstarS.Collections
+namespace XNetEx.Collections
 {
     /// <summary>
     /// 提供 <see cref="IEnumerator"/> 的 <see cref="IEnumerable"/> 包装。

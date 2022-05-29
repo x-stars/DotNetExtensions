@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     /// <summary>
     /// 表示方法调用时所用的代理。

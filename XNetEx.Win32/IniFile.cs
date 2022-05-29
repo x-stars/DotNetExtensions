@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using mstring = System.Text.StringBuilder;
 
-namespace XstarS.Win32
+namespace XNetEx.Win32
 {
     /// <summary>
     /// 提供 INI 配置文件的读写方法。

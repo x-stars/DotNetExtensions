@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS
+namespace XNetEx
 {
     /// <summary>
     /// 提供对象的值的验证和对应异常的抛出所需的数据。

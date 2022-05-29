@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS
+namespace XNetEx
 {
     static partial class Operators
     {

@@ -2,7 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 
-namespace XstarS.Unions
+namespace XNetEx.Unions
 {
     /// <summary>
     /// 表示指针或句柄类型的联合。

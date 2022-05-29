@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace XstarS.Linq
+namespace XNetEx.Linq
 {
     /// <summary>
     /// 提供 LINQ 查询方法的扩展。

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace XstarS.Diagnostics
+namespace XNetEx.Diagnostics
 {
     /// <summary>
     /// 提供将对象无环地表示为字符串的方法。

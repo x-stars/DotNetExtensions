@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using XstarS.Diagnostics;
+using XNetEx.Diagnostics;
 
-namespace XstarS
+namespace XNetEx
 {
     /// <summary>
     /// 提供指针将数组中的元素表示为字符串的方法。

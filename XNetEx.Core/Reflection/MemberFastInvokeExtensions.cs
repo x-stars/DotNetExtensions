@@ -2,7 +2,7 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     using DynamicCreator = Func<object?[]?, object>;
     using DynamicGetter = Func<object?, object?>;

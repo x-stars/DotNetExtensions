@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace XstarS.CommandLine
+namespace XNetEx.CommandLine
 {
     /// <summary>
     /// 简单的通用命令行参数解析器 <see cref="ArgumentReader"/>。

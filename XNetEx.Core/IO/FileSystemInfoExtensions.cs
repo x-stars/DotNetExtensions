@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace XstarS.IO
+namespace XNetEx.IO
 {
     /// <summary>
     /// 为文件系统信息 <see cref="FileSystemInfo"/> 类及其派生类提供扩展方法。

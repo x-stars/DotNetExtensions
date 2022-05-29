@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
 
-namespace XstarS
+namespace XNetEx
 {
     /// <summary>
     /// 提供可克隆对象 <see cref="ICloneable"/> 的扩展方法。

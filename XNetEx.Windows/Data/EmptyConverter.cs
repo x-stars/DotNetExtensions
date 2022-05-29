@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace XstarS.Windows.Data
+namespace XNetEx.Windows.Data
 {
     /// <summary>
     /// 表示不做任何转换的空转换器。

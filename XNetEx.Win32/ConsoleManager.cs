@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 
-namespace XstarS.Win32
+namespace XNetEx.Win32
 {
     /// <summary>
     /// 提供窗口应用程序的控制台窗口管理方法。

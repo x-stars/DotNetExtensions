@@ -6,7 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
 
-namespace XstarS.Diagnostics
+namespace XNetEx.Diagnostics
 {
     using StringPair = KeyValuePair<string, string>;
 

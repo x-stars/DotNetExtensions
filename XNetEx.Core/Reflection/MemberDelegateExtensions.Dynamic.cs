@@ -2,9 +2,9 @@
 using System.Collections.Concurrent;
 using System.Reflection;
 using System.Reflection.Emit;
-using XstarS.Reflection.Emit;
+using XNetEx.Reflection.Emit;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     static partial class MemberDelegateExtensions
     {

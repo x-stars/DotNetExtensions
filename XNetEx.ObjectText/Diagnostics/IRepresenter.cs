@@ -1,4 +1,4 @@
-﻿namespace XstarS.Diagnostics
+﻿namespace XNetEx.Diagnostics
 {
     /// <summary>
     /// 提供将对象表示为字符串的方法。

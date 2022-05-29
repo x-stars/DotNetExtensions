@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS.Text
+namespace XNetEx.Text
 {
     /// <summary>
     /// 提供将字符串转换为对象的方法。

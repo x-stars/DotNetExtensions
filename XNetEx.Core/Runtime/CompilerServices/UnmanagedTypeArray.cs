@@ -3,7 +3,7 @@
 using System;
 #endif
 
-namespace XstarS.Runtime.CompilerServices
+namespace XNetEx.Runtime.CompilerServices
 {
     /// <summary>
     /// 提供非托管类型的数组相关的帮助方法。

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Reflection;
-using XstarS.Collections.Generic;
+using XNetEx.Collections.Generic;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     /// <summary>
     /// 提供以 <see cref="Pointer"/> 包装的指针的帮助方法。

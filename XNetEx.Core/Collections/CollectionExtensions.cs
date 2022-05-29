@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using XstarS.Collections.ObjectModel;
+using XNetEx.Collections.ObjectModel;
 
-namespace XstarS.Collections
+namespace XNetEx.Collections
 {
     /// <summary>
     /// 提供集合的扩展方法。

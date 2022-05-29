@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     /// <summary>
     /// 提供动态代理类型相关的服务方法。

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS
+namespace XNetEx
 {
     /// <summary>
     /// 提供时间间隔 <see cref="TimeSpan"/> 的扩展方法。

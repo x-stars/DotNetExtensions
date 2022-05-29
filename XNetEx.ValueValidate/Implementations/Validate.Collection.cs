@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace XstarS
+namespace XNetEx
 {
     static partial class Validate
     {

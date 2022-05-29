@@ -1,6 +1,6 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XstarS
+namespace XNetEx
 {
     [TestClass]
     public class ArrayExtensionsTest

@@ -1,8 +1,8 @@
 ﻿using System;
-using XstarS.Collections.Generic;
-using XstarS.Runtime.CompilerServices;
+using XNetEx.Collections.Generic;
+using XNetEx.Runtime.CompilerServices;
 
-namespace XstarS.Collections.Specialized
+namespace XNetEx.Collections.Specialized
 {
     /// <summary>
     /// 提供用于比较对象的值是否递归相等的方法。

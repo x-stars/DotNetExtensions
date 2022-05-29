@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
 
-namespace XstarS.Text
+namespace XNetEx.Text
 {
     /// <summary>
     /// 表示使用类似于 <see cref="int.Parse(string)"/> 的方法将字符串转换为对象的字符串解析对象。

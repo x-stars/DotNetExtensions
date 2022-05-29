@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS.Diagnostics
+namespace XNetEx.Diagnostics
 {
     /// <summary>
     /// 提供将指定基元类型的值表示为其 <see cref="object.ToString()"/> 方法返回的字符串的方法。

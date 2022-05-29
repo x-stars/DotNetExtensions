@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace XstarS.CommandLine.Specialized
+namespace XNetEx.CommandLine.Specialized
 {
     /// <summary>
     /// PowerShell 风格的命令行参数解析器，参数名称忽略大小写。

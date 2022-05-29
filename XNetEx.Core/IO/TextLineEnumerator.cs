@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 #endif
 
-namespace XstarS.IO
+namespace XNetEx.IO
 {
     /// <summary>
     /// 为 <see cref="TextReader"/> 提供按行迭代的枚举器。

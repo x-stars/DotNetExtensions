@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using ReferenceEqualityComparer =
-    XstarS.Collections.Specialized.ReferenceEqualityComparer;
+    XNetEx.Collections.Specialized.ReferenceEqualityComparer;
 
-namespace XstarS.Runtime.CompilerServices
+namespace XNetEx.Runtime.CompilerServices
 {
     static partial class ObjectRuntimeValue
     {

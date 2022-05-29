@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Windows.Input;
-using XstarS.ComponentModel;
+using XNetEx.ComponentModel;
 
-namespace XstarS.Windows.Input
+namespace XNetEx.Windows.Input
 {
     /// <summary>
     /// 表示由委托定义的命令 <see cref="ICommand"/>。

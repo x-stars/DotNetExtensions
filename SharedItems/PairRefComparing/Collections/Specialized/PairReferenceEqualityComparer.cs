@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using XstarS.Collections.Generic;
+using XNetEx.Collections.Generic;
 
-namespace XstarS.Collections.Specialized
+namespace XNetEx.Collections.Specialized
 {
     using ObjectPair = KeyValuePair<object, object>;
 

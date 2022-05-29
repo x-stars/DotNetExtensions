@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace XstarS.ComponentModel.TestTypes
+namespace XNetEx.ComponentModel.TestTypes
 {
     public class ObservablePersonName : ObservableDataObject
     {

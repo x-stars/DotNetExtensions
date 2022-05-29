@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS
+namespace XNetEx
 {
     /// <summary>
     /// 提供抛出特定异常的方法。

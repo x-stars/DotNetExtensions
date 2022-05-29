@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace XstarS.Collections.Generic
+namespace XNetEx.Collections.Generic
 {
     /// <summary>
     /// 为无参数的相等比较器 <see cref="IEqualityComparer{T}"/> 提供抽象基类。

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS.Diagnostics
+namespace XNetEx.Diagnostics
 {
     /// <summary>
     /// 为字符串表示对象 <see cref="IRepresenter{T}"/> 提供抽象基类。

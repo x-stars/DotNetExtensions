@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Runtime.CompilerServices;
-using XstarS.Collections.Generic;
+using XNetEx.Collections.Generic;
 
-namespace XstarS.Collections.Specialized
+namespace XNetEx.Collections.Specialized
 {
     /// <summary>
     /// 提供用于比较对象的引用是否相等的方法。

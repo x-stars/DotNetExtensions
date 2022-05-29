@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using mstring = System.Text.StringBuilder;
 
-namespace XstarS
+namespace XNetEx
 {
     /// <summary>
     /// 提供字符串 <see cref="string"/> 的扩展方法。

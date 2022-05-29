@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace XstarS.Collections.Generic
+namespace XNetEx.Collections.Generic
 {
     using ObjectPair = KeyValuePair<object, object>;
 

@@ -2,9 +2,9 @@
 using System.Collections.ObjectModel;
 using System.Reflection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using XstarS.Collections.Generic;
+using XNetEx.Collections.Generic;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     [TestClass]
     public class DispatchProxyTest

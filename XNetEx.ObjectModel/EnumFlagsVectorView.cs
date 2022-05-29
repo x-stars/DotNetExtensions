@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS.ComponentModel
+namespace XNetEx.ComponentModel
 {
     /// <summary>
     /// 提供位域枚举的向量视图的基类。

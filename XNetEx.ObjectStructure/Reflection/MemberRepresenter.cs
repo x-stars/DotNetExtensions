@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
-using XstarS.Diagnostics;
+using XNetEx.Diagnostics;
 
-namespace XstarS.Reflection
+namespace XNetEx.Reflection
 {
     using NamedValue = KeyValuePair<string, object?>;
     using NamedValues = Dictionary<string, object?>;

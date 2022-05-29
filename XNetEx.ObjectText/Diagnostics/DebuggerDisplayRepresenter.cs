@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 
-namespace XstarS.Diagnostics
+namespace XNetEx.Diagnostics
 {
     /// <summary>
     /// 提供将应用了 <see cref="DebuggerDisplayAttribute"/> 特性的类型的对象表示为其调试器显示格式的方法。

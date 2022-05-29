@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using XstarS.Diagnostics;
+using XNetEx.Diagnostics;
 
-namespace XstarS
+namespace XNetEx
 {
     /// <summary>
     /// 提供将数组中的元素表示为字符串的方法。

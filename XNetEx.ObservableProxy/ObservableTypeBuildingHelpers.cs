@@ -3,9 +3,9 @@ using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
-using XstarS.ComponentModel;
+using XNetEx.ComponentModel;
 
-namespace XstarS.Reflection.Emit
+namespace XNetEx.Reflection.Emit
 {
     /// <summary>
     /// 提供属性更改通知类型运行时类型生成相关的帮助方法。

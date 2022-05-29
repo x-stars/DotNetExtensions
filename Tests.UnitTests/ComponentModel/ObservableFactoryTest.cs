@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using XstarS.ComponentModel.TestTypes;
+using XNetEx.ComponentModel.TestTypes;
 
-namespace XstarS.ComponentModel
+namespace XNetEx.ComponentModel
 {
     [TestClass]
     public class ObservableFactoryTest

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XstarS.Text
+namespace XNetEx.Text
 {
     /// <summary>
     /// 表示以 <see cref="Converter{TInput, TOutput}"/> 委托定义的字符串解析对象。

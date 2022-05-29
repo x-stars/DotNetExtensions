@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-using XstarS.IO;
+using XNetEx.IO;
 
-namespace XstarS
+namespace XNetEx
 {
     static partial class ConsoleEx
     {

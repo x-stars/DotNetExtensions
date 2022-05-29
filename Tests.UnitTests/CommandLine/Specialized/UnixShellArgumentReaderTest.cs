@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace XstarS.CommandLine.Specialized
+namespace XNetEx.CommandLine.Specialized
 {
     [TestClass]
     public class UnixShellArgumentReaderTest

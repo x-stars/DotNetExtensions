@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Runtime.CompilerServices;
-using XstarS.IO;
+using XNetEx.IO;
 
-namespace XstarS
+namespace XNetEx
 {
     /// <summary>
     /// 提供控制台应用程序的输入流、输出流和错误流的扩展方法。

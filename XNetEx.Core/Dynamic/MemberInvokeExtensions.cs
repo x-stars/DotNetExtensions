@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace XstarS.Dynamic
+namespace XNetEx.Dynamic
 {
     /// <summary>
     /// 提供动态调用对象或类型成员的扩展方法。

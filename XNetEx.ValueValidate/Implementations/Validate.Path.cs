@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace XstarS
+namespace XNetEx
 {
     static partial class Validate
     {

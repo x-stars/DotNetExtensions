@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Reflection;
 
-namespace XstarS.Text
+namespace XNetEx.Text
 {
     /// <summary>
     /// 表示将类型的完整名称转换为其等效的类型声明的字符串解析对象。

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 
-namespace XstarS.ComponentModel
+namespace XNetEx.ComponentModel
 {
     /// <summary>
     /// 提供基于 <see cref="INotifyPropertyChanged"/> 的属性更改通知类型，

@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Runtime.InteropServices;
 
-namespace XstarS
+namespace XNetEx
 {
     /// <summary>
     /// 表示半精度浮点数。

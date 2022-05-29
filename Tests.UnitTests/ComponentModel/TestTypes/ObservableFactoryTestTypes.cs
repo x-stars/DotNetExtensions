@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace XstarS.ComponentModel.TestTypes
+namespace XNetEx.ComponentModel.TestTypes
 {
     public interface IMutableRectangle
     {

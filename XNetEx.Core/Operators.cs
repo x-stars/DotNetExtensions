@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
-namespace XstarS
+namespace XNetEx
 {
     /// <summary>
     /// 提供常用的运算符。
