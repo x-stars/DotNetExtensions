@@ -1,6 +1,6 @@
 ﻿# 属性更改通知接口实现框架
 
-本文叙述了 XstarS.ObjectModel 和 XstarS.ObservableProxy 程序集中包含的若干实现属性更改通知接口 `System.ComponentModel.INotifyPropertyChanged` 的类型的使用方法。结合集合更改通知列表 `System.Collections.ObjectModel.ObservableCollection<T>`，可实现数据绑定到客户端。
+本文叙述了 XNetEx.ObjectModel 和 XNetEx.ObservableProxy 程序集中包含的若干实现属性更改通知接口 `System.ComponentModel.INotifyPropertyChanged` 的类型的使用方法。结合集合更改通知列表 `System.Collections.ObjectModel.ObservableCollection<T>`，可实现数据绑定到客户端。
 
 目前提供的方案：
 
@@ -11,7 +11,7 @@
 
 将属性的存储交由字典实现，并调用相关方法实现属性的读写。
 
-### 抽象类 `XstarS.ComponentModel.ObservableDataObject`
+### 抽象类 `XNetEx.ComponentModel.ObservableDataObject`
 
 `System.ComponentModel.INotifyPropertyChanged` 接口的实现，用于实现通知客户端属性更改的抽象类。
 
@@ -21,7 +21,7 @@
 
 ``` CSharp
 using System.ComponentModel;
-using XstarS.ComponentModel;
+using XNetEx.ComponentModel;
 
 public class ObservableRectangle : ObservableDataObject
 {
@@ -57,7 +57,7 @@ public class ObservableRectangle : ObservableDataObject
 
 定义一个原型基类或接口，通过反射发出 `System.Reflection.Emit` 在运行时生成派生类，并在派生类的属性中实现属性更改通知的相关代码。
 
-### 泛型密封类 `XstarS.ComponentModel.ObservableFactory<T>`
+### 泛型密封类 `XNetEx.ComponentModel.ObservableFactory<T>`
 
 提供原型类型对应的属性更改通知的派生类型，并提供创建此属性更改通知派生类型的实例的方法。
 
@@ -66,7 +66,7 @@ public class ObservableRectangle : ObservableDataObject
 * `CreateInstance()`: 创建一个 `ObservableType` 的实例。
 * `CreateInstance(object[])`: 以指定参数创建一个 `ObservableType` 的实例。
 
-### 特性类 `XstarS.ComponentModel.RelatedPropertiesAttribute`
+### 特性类 `XNetEx.ComponentModel.RelatedPropertiesAttribute`
 
 标识当前属性更改时会引起其他属性的更改。
 
@@ -76,7 +76,7 @@ public class ObservableRectangle : ObservableDataObject
 
 ``` CSharp
 using System.ComponentModel;
-using XstarS.ComponentModel;
+using XNetEx.ComponentModel;
 
 public abstract class ObservableRectangle : INotifyPropertyChanged
 {

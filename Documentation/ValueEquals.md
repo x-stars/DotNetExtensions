@@ -1,6 +1,6 @@
 ﻿# .NET 对象的值相等比较
 
-本文叙述了通用的值相等比较方法 `XstarS.Runtime.CompilerServices.ObjectRuntimeValues.RecursiveEquals(System.Object, System.Object)` 的实现原理。
+本文叙述了通用的值相等比较方法 `XNetEx.Runtime.CompilerServices.ObjectRuntimeValues.RecursiveEquals(System.Object, System.Object)` 的实现原理。
 
 ## 基本原理
 

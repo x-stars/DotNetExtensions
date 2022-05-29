@@ -74,10 +74,10 @@ new ObservableBox();
 
 ## 属性委托
 
-继承 `XstarS.ComponentModel.ObservableDataObject` 抽象类以使用 `GetProperty` 和 `SetProperty` 方法。
+继承 `XNetEx.ComponentModel.ObservableDataObject` 抽象类以使用 `GetProperty` 和 `SetProperty` 方法。
 
 ``` CSharp
-using XstarS.ComponentModel;
+using XNetEx.ComponentModel;
 
 // 类型定义。
 public class ObservableBox : ObservableDataObject
@@ -109,11 +109,11 @@ new ObservableBox();
 
 ## 运行时类型生成
 
-使用 `XstarS.ComponentModel.ObservableFactory<T>` 在运行时生成属性更改通知派生类。
+使用 `XNetEx.ComponentModel.ObservableFactory<T>` 在运行时生成属性更改通知派生类。
 
 ``` CSharp
 using System.ComponentModel;
-using XstarS.ComponentModel;
+using XNetEx.ComponentModel;
 
 // 原型定义。
 public abstract class ObservableBox : INotifyPropertyChanged

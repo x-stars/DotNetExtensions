@@ -1,4 +1,4 @@
-$Projects = Get-Item 'XstarS.*' | ForEach-Object { $_.Name }
+$Projects = Get-Item 'XNetEx.*' | ForEach-Object { $_.Name }
 $Configuration, $Framework = 'Release', 'net6.0*'
 $Pattern = "$PSScriptRoot\{0}\bin\$Configuration\$Framework\{0}.dll"
 $Assemblies = $Projects | ForEach-Object { $Pattern -f $_ }

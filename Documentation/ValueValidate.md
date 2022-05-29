@@ -1,28 +1,28 @@
 ﻿# 对象的值的验证
 
-包含于 XstarS.ValueValidate 程序集，使用扩展方法实现连续对象的值的验证和抛出异常。
+包含于 XNetEx.ValueValidate 程序集，使用扩展方法实现连续对象的值的验证和抛出异常。
 
-## 泛型接口 `XstarS.IValueInfo<out T>`
+## 泛型接口 `XNetEx.IValueInfo<out T>`
 
 提供值的验证所需的数据，包括值 `Value` 和值的名称 `Name`。
 
-## 静态类 `XstarS.Validate`
+## 静态类 `XNetEx.Validate`
 
-提供 `XstarS.IValueInfo<out T>` 接口实例的工厂方法，以及值的验证和抛出异常的方法。
+提供 `XNetEx.IValueInfo<out T>` 接口实例的工厂方法，以及值的验证和抛出异常的方法。
 
-值的验证过程全部通过 `XstarS.IValueInfo<out T>` 的扩展方法实现，以便设定各种泛型约束。每个验证方法均包含一个名为 `message` 的可选参数，可自定义异常消息。
+值的验证过程全部通过 `XNetEx.IValueInfo<out T>` 的扩展方法实现，以便设定各种泛型约束。每个验证方法均包含一个名为 `message` 的可选参数，可自定义异常消息。
 
 ## 值验证示例
 
 ``` CSharp
-using XstarS;
+using XNetEx;
 
 // 存在一个 string 类型的名为 param 的值。
 // 现要求其以数字开头，并且包含在键的集合 keys 中，
 // 且不以 "." 结尾。
 
-Validate.Value(param, nameof(param))    // 使用 XstarS.Validate.Value<T>(T, string) 方法，
-                                        // 创建一个 XstarS.IValueInfo<out T> 接口的实例。
+Validate.Value(param, nameof(param))    // 使用 XNetEx.Validate.Value<T>(T, string) 方法，
+                                        // 创建一个 XNetEx.IValueInfo<out T> 接口的实例。
 
     .IsNotNull()                        // 验证值不为 null，否则抛出 System.ArgumentNullException 异常。
 

@@ -1,6 +1,6 @@
 ﻿# 属性更改通知类型提供对象
 
-本文叙述了以原型类型为基础，自动构造属性更改通知的类型的 `XstarS.ComponentModel.ObservableTypeProvider` 的实现原理和整体思路。
+本文叙述了以原型类型为基础，自动构造属性更改通知的类型的 `XNetEx.ComponentModel.ObservableTypeProvider` 的实现原理和整体思路。
 
 ## 属性更改通知与 `INotifyPropertyChanged` 接口
 
@@ -151,4 +151,4 @@ public class Properties
 * `ObservableTypeProvider`: 从原型类型构造属性更改通知类型。
 * `ObservableFactory<T>`: 提供创建属性更改通知类型的实例的方法。
 
-具体实现请参见 [XstarS.ObservableProxy](../XstarS.ObservableProxy) 工程源代码。
+具体实现请参见 [XNetEx.ObservableProxy](../XNetEx.ObservableProxy) 工程源代码。

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Class Name="XstarS.Windows.Input.CommandBase">
+  <Class Name="XNetEx.Windows.Input.CommandBase">
     <Position X="14.5" Y="0.5" Width="2.75" />
     <TypeIdentifier>
       <HashCode>EAAAAAAAAAACAAQAAEQAAAAACAAAAAAAAAAAAAAAAAA=</HashCode>
@@ -8,18 +8,18 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="XstarS.Windows.Input.DelegateCommand">
+  <Class Name="XNetEx.Windows.Input.DelegateCommand">
     <Position X="14.5" Y="4" Width="2.75" />
     <Compartments>
       <Compartment Name="Nested Types" Collapsed="false" />
     </Compartments>
     <NestedTypes>
-      <Class Name="XstarS.Windows.Input.DelegateCommand.Parameterless">
+      <Class Name="XNetEx.Windows.Input.DelegateCommand.Parameterless">
         <TypeIdentifier>
           <NewMemberFileName>DelegateCommand.cs</NewMemberFileName>
         </TypeIdentifier>
       </Class>
-      <Class Name="XstarS.Windows.Input.DelegateCommand.Parameter&lt;T&gt;">
+      <Class Name="XNetEx.Windows.Input.DelegateCommand.Parameter&lt;T&gt;">
         <TypeIdentifier>
           <NewMemberFileName>DelegateCommand.cs</NewMemberFileName>
         </TypeIdentifier>
@@ -30,28 +30,28 @@
       <FileName>DelegateCommand.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="XstarS.ComponentModel.EnumFlagsVectorView&lt;TEnum&gt;">
+  <Class Name="XNetEx.ComponentModel.EnumFlagsVectorView&lt;TEnum&gt;">
     <Position X="2.75" Y="10" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAEAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
       <FileName>EnumFlagsVectorView.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="XstarS.ComponentModel.EnumListView&lt;TEnum&gt;">
+  <Class Name="XNetEx.ComponentModel.EnumListView&lt;TEnum&gt;">
     <Position X="10.25" Y="0.5" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAAAAAAIAAAAIAAAAEAAAAAAAAAJAAAAAAAAA=</HashCode>
       <FileName>EnumListView.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="XstarS.ComponentModel.EnumVectorView&lt;TEnum&gt;">
+  <Class Name="XNetEx.ComponentModel.EnumVectorView&lt;TEnum&gt;">
     <Position X="2.75" Y="6" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAEAAECBAAAAAAAEAQAAAAAAAgAAAAAAA=</HashCode>
       <FileName>EnumVectorView.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="XstarS.ComponentModel.ObservableDataObject">
+  <Class Name="XNetEx.ComponentModel.ObservableDataObject">
     <Position X="6.5" Y="0.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>EAAAAAAACAiAAIQEIAAAAiAAgAEAAAQAAAgAAAAIAAg=</HashCode>
@@ -59,7 +59,7 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="XstarS.ComponentModel.ObservableValidDataObject">
+  <Class Name="XNetEx.ComponentModel.ObservableValidDataObject">
     <Position X="6.5" Y="6" Width="2.5" />
     <TypeIdentifier>
       <HashCode>gAABAAAAAAgQAAABAAAAgAAAAAEAAAMIAQAAAAABIgA=</HashCode>
@@ -67,14 +67,14 @@
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="XstarS.ComponentModel.ObservableDataWrapper&lt;TData&gt;">
+  <Class Name="XNetEx.ComponentModel.ObservableDataWrapper&lt;TData&gt;">
     <Position X="10.25" Y="6" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAAAAAAAAAAAiAAAACAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>ObservableDataWrapper.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="XstarS.ComponentModel.ObservableValidDataWrapper&lt;TData&gt;">
+  <Class Name="XNetEx.ComponentModel.ObservableValidDataWrapper&lt;TData&gt;">
     <Position X="10.25" Y="9.25" Width="3" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAABAAAAAAAAAAAiAAAACAAAAAAAAAAAAAAAA=</HashCode>
