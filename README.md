@@ -39,13 +39,8 @@
 
 ## 程序集 XNetEx.CommandLine
 
-提供命令行程序相关类型和扩展方法，包括：
+提供命令行程序的相关服务，包括：
 
-* 控制台方法扩展 `XNetEx.ConsoleEx`
-  * 逐个读取按空白符分隔的输入 `ReadToken`
-  * 逐个读取按空白符分隔的输入并转换为值 `ReadTokenAs`
-  * 以指定的颜色将值写入输出流 `WriteInColor`
-  * 以指定的颜色将值写入错误流 `WriteErrorInColor`
 * 简易的命令行参数解析器 `XNetEx.CommandLine.ArgumentReader`，以及其他风格的实现
   * 命令提示符 CMD `XNetEx.CommandLine.Specialized.CmdArgumentReader`
   * PowerShell `XNetEx.CommandLine.Specialized.PowerShellArgumentReader`
@@ -54,6 +49,16 @@
 相关文档：
 
 * [命令行参数解析器](Documentation/ArgumentReaders.md)
+
+## 程序集 XNetEx.Console
+
+提供控制台相关的扩展方法，包括：
+
+* 控制台方法扩展 `XNetEx.ConsoleEx`
+  * 逐个读取按空白符分隔的输入 `ReadToken`
+  * 逐个读取按空白符分隔的输入并转换为值 `ReadTokenAs`
+  * 以指定的颜色将值写入输出流 `WriteInColor`
+  * 以指定的颜色将值写入错误流 `WriteErrorInColor`
 
 ## 程序集 XNetEx.DispatchProxy
 
