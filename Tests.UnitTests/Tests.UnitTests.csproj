@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\XNetEx.CommandLine\XNetEx.CommandLine.csproj" />
+    <ProjectReference Include="..\XNetEx.Console\XNetEx.Console.csproj" />
     <ProjectReference Include="..\XNetEx.Core\XNetEx.Core.csproj" />
     <ProjectReference Include="..\XNetEx.DispatchProxy\XNetEx.DispatchProxy.csproj" />
     <ProjectReference Include="..\XNetEx.DynamicProxy\XNetEx.DynamicProxy.csproj" />
