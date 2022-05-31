@@ -1,6 +1,6 @@
 ﻿# 命令行参数解析器
 
-包含于程序集 XNetEx.ArgumentReaders，提供简易的命令行参数解析器，以及以此为基础的多种风格的命令行参数解析器。
+包含于程序集 XNetEx.CommandLine，提供简易的命令行参数解析器，以及以此为基础的多种风格的命令行参数解析器。
 
 ## 类 `XNetEx.CommandLine.ArgumentReader`
 
