@@ -151,4 +151,4 @@ public class Properties
 * `ObservableTypeProvider`: 从原型类型构造属性更改通知类型。
 * `ObservableFactory<T>`: 提供创建属性更改通知类型的实例的方法。
 
-具体实现请参见 [XNetEx.ObservableProxy](../XNetEx.ObservableProxy) 工程源代码。
+具体实现请参见 [XNetEx.ObjectModel.ObservableProxy](../XNetEx.ObjectModel.ObservableProxy) 工程源代码。

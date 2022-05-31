@@ -60,21 +60,6 @@
   * 以指定的颜色将值写入输出流 `WriteInColor`
   * 以指定的颜色将值写入错误流 `WriteErrorInColor`
 
-## 程序集 XNetEx.DispatchProxy
-
-提供转发代理类型 `System.Reflection.DispatchProxy` 基于委托的简易实现。
-
-## 程序集 XNetEx.DynamicProxy
-
-提供以反射发出 `System.Reflection.Emit` 构造的动态代理类型。
-
-方法调用包装为通用静态委托 `XNetEx.Reflection.MethodDelegate`，保持动态代理灵活性的同时避免了反射调用的低效率问题。
-
-核心 API 类型：
-
-* 直接代理类型 `XNetEx.Reflection.DirectProxyTypeProvider`
-* 包装代理类型 `XNetEx.Reflection.WrapProxyTypeProvider`
-
 ## 程序集 XNetEx.ObjectModel
 
 提供部分组件模型类型的实现，包括：
@@ -97,6 +82,16 @@
 * [属性更改通知接口实现框架](Documentation/ObservableObject.md)
 * [属性更改通知实现方式比较](Documentation/ObservableObjectCompare.md)
 
+## 程序集 XNetEx.ObjectModel.ObservableProxy
+
+提供以反射发出 `System.Reflection.Emit` 构造的属性更改通知类型 `System.ComponentModel.INotifyPropertyChanged`。
+
+相关文档：
+
+* [属性更改通知接口实现框架](Documentation/ObservableObject.md)
+* [属性更改通知实现方式比较](Documentation/ObservableObjectCompare.md)
+* [属性更改通知类型提供对象](Documentation/ObservableTypeProvider.md)
+
 ## 程序集 XNetEx.ObjectStructure
 
 提供结构化对象（数组、集合等）的结构化相等比较和结构化输出的方法。
@@ -116,16 +111,6 @@
 * 将文本解析为对象 `XNetEx.Text.StringParser<T>`
   * 用户自定义扩展解析方法 `XNetEx.Text.ExtensionParseMethodAttribute`
 
-## 程序集 XNetEx.ObservableProxy
-
-提供以反射发出 `System.Reflection.Emit` 构造的属性更改通知类型 `System.ComponentModel.INotifyPropertyChanged`。
-
-相关文档：
-
-* [属性更改通知接口实现框架](Documentation/ObservableObject.md)
-* [属性更改通知实现方式比较](Documentation/ObservableObjectCompare.md)
-* [属性更改通知类型提供对象](Documentation/ObservableTypeProvider.md)
-
 ## 程序集 XNetEx.Primitives
 
 提供框架原生值类型的补充类型，包括：
@@ -133,6 +118,21 @@
 * 24 位有符号整数 `XNetEx.Int24`
 * 24 位无符号整数 `XNetEx.UInt24`
 * 半精度浮点数 `XNetEx.Half`
+
+## 程序集 XNetEx.Reflection.DispatchProxy
+
+提供转发代理类型 `System.Reflection.DispatchProxy` 基于委托的简易实现。
+
+## 程序集 XNetEx.Reflection.DynamicProxy
+
+提供以反射发出 `System.Reflection.Emit` 构造的动态代理类型。
+
+方法调用包装为通用静态委托 `XNetEx.Reflection.MethodDelegate`，保持动态代理灵活性的同时避免了反射调用的低效率问题。
+
+核心 API 类型：
+
+* 直接代理类型 `XNetEx.Reflection.DirectProxyTypeProvider`
+* 包装代理类型 `XNetEx.Reflection.WrapProxyTypeProvider`
 
 ## 程序集 XNetEx.Unions
 
