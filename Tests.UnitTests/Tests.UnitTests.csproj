@@ -40,15 +40,15 @@
   <ItemGroup>
     <ProjectReference Include="..\XNetEx.CommandLine\XNetEx.CommandLine.csproj" />
     <ProjectReference Include="..\XNetEx.Console\XNetEx.Console.csproj" />
-    <ProjectReference Include="..\XNetEx.Core\XNetEx.Core.csproj" />
     <ProjectReference Include="..\XNetEx.ObjectModel\XNetEx.ObjectModel.csproj" />
     <ProjectReference Include="..\XNetEx.ObjectModel.ObservableProxy\XNetEx.ObjectModel.ObservableProxy.csproj" />
-    <ProjectReference Include="..\XNetEx.ObjectStructure\XNetEx.ObjectStructure.csproj" />
-    <ProjectReference Include="..\XNetEx.ObjectText\XNetEx.ObjectText.csproj" />
-    <ProjectReference Include="..\XNetEx.Primitives\XNetEx.Primitives.csproj" />
     <ProjectReference Include="..\XNetEx.Reflection.DispatchProxy\XNetEx.Reflection.DispatchProxy.csproj" />
     <ProjectReference Include="..\XNetEx.Reflection.DynamicProxy\XNetEx.Reflection.DynamicProxy.csproj" />
-    <ProjectReference Include="..\XNetEx.Unions\XNetEx.Unions.csproj" />
+    <ProjectReference Include="..\XNetEx.Runtime\XNetEx.Runtime.csproj" />
+    <ProjectReference Include="..\XNetEx.Runtime.ObjectStructure\XNetEx.Runtime.ObjectStructure.csproj" />
+    <ProjectReference Include="..\XNetEx.Runtime.ObjectText\XNetEx.Runtime.ObjectText.csproj" />
+    <ProjectReference Include="..\XNetEx.Runtime.Primitives\XNetEx.Runtime.Primitives.csproj" />
+    <ProjectReference Include="..\XNetEx.Runtime.Unions\XNetEx.Runtime.Unions.csproj" />
     <ProjectReference Include="..\XNetEx.ValueValidate\XNetEx.ValueValidate.csproj" />
   </ItemGroup>
 

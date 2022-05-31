@@ -56,8 +56,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\XNetEx.Core\XNetEx.Core.csproj" />
-    <ProjectReference Include="..\XNetEx.ObjectText\XNetEx.ObjectText.csproj" />
+    <ProjectReference Include="..\XNetEx.Runtime\XNetEx.Runtime.csproj" />
+    <ProjectReference Include="..\XNetEx.Runtime.ObjectText\XNetEx.Runtime.ObjectText.csproj" />
   </ItemGroup>
 
 </Project>
