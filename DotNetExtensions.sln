@@ -41,19 +41,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Console", "XNetEx.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Core", "XNetEx.Core\XNetEx.Core.csproj", "{0CB35110-130B-4359-BA62-5585C12E44A7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.DispatchProxy", "XNetEx.DispatchProxy\XNetEx.DispatchProxy.csproj", "{0C98D0FF-1256-4C40-80FC-E722FFA7D891}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.DynamicProxy", "XNetEx.DynamicProxy\XNetEx.DynamicProxy.csproj", "{22963809-2D60-44CE-B7F4-8143E8D2AC48}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.ObjectModel", "XNetEx.ObjectModel\XNetEx.ObjectModel.csproj", "{1CD40780-2782-4FC0-956A-9A9AA2CB79AB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.ObjectModel.ObservableProxy", "XNetEx.ObjectModel.ObservableProxy\XNetEx.ObjectModel.ObservableProxy.csproj", "{BE082600-979D-4DA8-A1D9-F966173FCB30}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.ObjectStructure", "XNetEx.ObjectStructure\XNetEx.ObjectStructure.csproj", "{8535C33B-3A8A-49C6-A03E-45B6F952D823}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.ObjectText", "XNetEx.ObjectText\XNetEx.ObjectText.csproj", "{C16AAD4E-08A3-497B-968D-5E8153880414}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.ObservableProxy", "XNetEx.ObservableProxy\XNetEx.ObservableProxy.csproj", "{BE082600-979D-4DA8-A1D9-F966173FCB30}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Primitives", "XNetEx.Primitives\XNetEx.Primitives.csproj", "{FFF406FE-3738-4899-8136-4B2823DC7FEC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Reflection.DispatchProxy", "XNetEx.Reflection.DispatchProxy\XNetEx.Reflection.DispatchProxy.csproj", "{0C98D0FF-1256-4C40-80FC-E722FFA7D891}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Reflection.DynamicProxy", "XNetEx.Reflection.DynamicProxy\XNetEx.Reflection.DynamicProxy.csproj", "{22963809-2D60-44CE-B7F4-8143E8D2AC48}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Unions", "XNetEx.Unions\XNetEx.Unions.csproj", "{27B5E3DA-78F3-41D6-8C03-C01A2CB9EFE5}"
 EndProject
@@ -89,18 +89,14 @@ Global
 		{0CB35110-130B-4359-BA62-5585C12E44A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0CB35110-130B-4359-BA62-5585C12E44A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0CB35110-130B-4359-BA62-5585C12E44A7}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0C98D0FF-1256-4C40-80FC-E722FFA7D891}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0C98D0FF-1256-4C40-80FC-E722FFA7D891}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0C98D0FF-1256-4C40-80FC-E722FFA7D891}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0C98D0FF-1256-4C40-80FC-E722FFA7D891}.Release|Any CPU.Build.0 = Release|Any CPU
-		{22963809-2D60-44CE-B7F4-8143E8D2AC48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22963809-2D60-44CE-B7F4-8143E8D2AC48}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22963809-2D60-44CE-B7F4-8143E8D2AC48}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22963809-2D60-44CE-B7F4-8143E8D2AC48}.Release|Any CPU.Build.0 = Release|Any CPU
 		{1CD40780-2782-4FC0-956A-9A9AA2CB79AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{1CD40780-2782-4FC0-956A-9A9AA2CB79AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CD40780-2782-4FC0-956A-9A9AA2CB79AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CD40780-2782-4FC0-956A-9A9AA2CB79AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE082600-979D-4DA8-A1D9-F966173FCB30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE082600-979D-4DA8-A1D9-F966173FCB30}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE082600-979D-4DA8-A1D9-F966173FCB30}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE082600-979D-4DA8-A1D9-F966173FCB30}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8535C33B-3A8A-49C6-A03E-45B6F952D823}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8535C33B-3A8A-49C6-A03E-45B6F952D823}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8535C33B-3A8A-49C6-A03E-45B6F952D823}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -109,14 +105,18 @@ Global
 		{C16AAD4E-08A3-497B-968D-5E8153880414}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C16AAD4E-08A3-497B-968D-5E8153880414}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C16AAD4E-08A3-497B-968D-5E8153880414}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE082600-979D-4DA8-A1D9-F966173FCB30}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE082600-979D-4DA8-A1D9-F966173FCB30}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE082600-979D-4DA8-A1D9-F966173FCB30}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE082600-979D-4DA8-A1D9-F966173FCB30}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FFF406FE-3738-4899-8136-4B2823DC7FEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FFF406FE-3738-4899-8136-4B2823DC7FEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FFF406FE-3738-4899-8136-4B2823DC7FEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FFF406FE-3738-4899-8136-4B2823DC7FEC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0C98D0FF-1256-4C40-80FC-E722FFA7D891}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0C98D0FF-1256-4C40-80FC-E722FFA7D891}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0C98D0FF-1256-4C40-80FC-E722FFA7D891}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0C98D0FF-1256-4C40-80FC-E722FFA7D891}.Release|Any CPU.Build.0 = Release|Any CPU
+		{22963809-2D60-44CE-B7F4-8143E8D2AC48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{22963809-2D60-44CE-B7F4-8143E8D2AC48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{22963809-2D60-44CE-B7F4-8143E8D2AC48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{22963809-2D60-44CE-B7F4-8143E8D2AC48}.Release|Any CPU.Build.0 = Release|Any CPU
 		{27B5E3DA-78F3-41D6-8C03-C01A2CB9EFE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{27B5E3DA-78F3-41D6-8C03-C01A2CB9EFE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{27B5E3DA-78F3-41D6-8C03-C01A2CB9EFE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
