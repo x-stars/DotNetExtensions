@@ -16,6 +16,7 @@
     <Product>XstarS .NET Extensions</Product>
     <Description>$(AssemblyName)</Description>
     <Copyright>Copyright © $(Company) 2018</Copyright>
+    <AssemblyTitle>$(Description)</AssemblyTitle>
   </PropertyGroup>
 
   <PropertyGroup>
