@@ -60,21 +60,24 @@
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='net' And
                         '$(TargetFramework.CompareTo(`net47`))'&lt;'0'">
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard' And
                         '$(TargetFramework.CompareTo(`netstandard2.1`))'&lt;'0'">
-    <PackageReference Include="System.Reflection.Emit" Version="4.7.0" />
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Emit" Version="4.6.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.6.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="('$(TargetFramework.Split(`-`)[0].TrimEnd(`.0123456789`))'=='net' And
-                         '$(TargetFramework.Split(`-`)[0].CompareTo(`net5.0`))'&lt;'0') Or
-                        ('$(TargetFramework.TrimEnd(`.0123456789`))'=='netcoreapp' And
+  <ItemGroup Condition="'$(TargetFramework.Split(`-`)[0].TrimEnd(`.0123456789`))'=='net' And
+                        '$(TargetFramework.Split(`-`)[0].CompareTo(`net5.0`))'&lt;'0'">
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="('$(TargetFramework.TrimEnd(`.0123456789`))'=='netcoreapp' And
                          '$(TargetFramework.CompareTo(`netcoreapp3.0`))'&lt;'0') Or
                         ('$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard')">
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
   </ItemGroup>
 
 </Project>

@@ -60,12 +60,12 @@
                          '$(TargetFramework.Split(`-`)[0].CompareTo(`net5.0`))'&lt;'0') Or
                         ('$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard' And
                          '$(TargetFramework.CompareTo(`netstandard2.1`))'&lt;'0')">
-    <PackageReference Include="System.Reflection.DispatchProxy" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.DispatchProxy" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard' And
                         '$(TargetFramework.CompareTo(`netstandard2.1`))'&lt;'0'">
-    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.7.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.6.0" />
   </ItemGroup>
 
 </Project>
