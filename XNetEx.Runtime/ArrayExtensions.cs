@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace XNetEx
 {
@@ -135,6 +136,21 @@ namespace XNetEx
                 offset += array.Length;
             }
             return result;
+        }
+
+        /// <summary>
+        /// 获取当前多维数组的索引数组的 <see cref="IEnumerable{T}"/> 序列。
+        /// </summary>
+        /// <param name="array">要获取索引数组序列的多维数组。</param>
+        /// <param name="reuseIndices">指定序列返回的索引数组是否复用同一数组。</param>
+        /// <returns><paramref name="array"/> 的索引数组的
+        /// <see cref="IEnumerable{T}"/> 序列。</returns>
+        /// <exception cref="ArgumentNullException">
+        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+        public static IEnumerable<int[]> EnumerateIndices(
+            this Array array, bool reuseIndices = false)
+        {
+            return new ArrayIndicesSequence(array, reuseIndices);
         }
 
         /// <summary>
