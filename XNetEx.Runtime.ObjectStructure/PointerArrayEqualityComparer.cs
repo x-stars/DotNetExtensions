@@ -39,12 +39,23 @@ namespace XNetEx
         {
             var xArray = (Array)(object)x;
             var yArray = (Array)(object)y;
+            if (xArray.Rank != yArray.Rank) { return false; }
+            if (xArray.Length != yArray.Length) { return false; }
+            foreach (var rank in ..xArray.Rank)
+            {
+                if ((xArray.GetLowerBound(rank) != yArray.GetLowerBound(rank)) ||
+                    (xArray.GetLength(rank) != yArray.GetLength(rank)))
+                {
+                    return false;
+                }
+            }
 
             var methodGet = PointerArrayEqualityComparer<T>.GetMethod;
-            foreach (var index in ..xArray.Length)
+            foreach (var indices in xArray.EnumerateIndices(reuseIndices: true))
             {
-                var xItem = methodGet.Invoke(xArray, xArray.OffsetToIndices(index).Box());
-                var yItem = methodGet.Invoke(yArray, yArray.OffsetToIndices(index).Box());
+                var boxedIndices = indices.Box();
+                var xItem = methodGet.Invoke(xArray, boxedIndices);
+                var yItem = methodGet.Invoke(yArray, boxedIndices);
                 if (!PointerEqualityComparer.Equals(xItem, yItem)) { return false; }
             }
             return true;
@@ -62,9 +73,9 @@ namespace XNetEx
 
             var hashCode = array.GetType().GetHashCode();
             var methodGet = PointerArrayEqualityComparer<T>.GetMethod;
-            foreach (var index in ..array.Length)
+            foreach (var indices in array.EnumerateIndices(reuseIndices: true))
             {
-                var item = methodGet.Invoke(array, array.OffsetToIndices(index).Box());
+                var item = methodGet.Invoke(array, indices.Box());
                 var nextHashCode = PointerEqualityComparer.GetHashCode(item);
                 hashCode = this.CombineHashCode(hashCode, nextHashCode);
             }

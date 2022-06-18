@@ -116,26 +116,26 @@ namespace XNetEx.Runtime.CompilerServices
         /// <param name="cloned">已经创建副本的对象及其对应的副本。</param>
         private static void ArrayRecursiveClone(Array value, Dictionary<object, object> cloned)
         {
-            if (!value.GetType().GetElementType()!.IsPointer)
+            if (value.GetType().GetElementType()!.IsPointer)
             {
-                if (value.IsSZArray())
+                return;
+            }
+            else if (value.IsSZArray())
+            {
+                foreach (var index in ..value.Length)
                 {
-                    foreach (var index in ..value.Length)
-                    {
-                        var item = value.GetValue(index);
-                        var clone = ObjectRuntimeValue.RecursiveClone(item, cloned);
-                        value.SetValue(clone, index);
-                    }
+                    var item = value.GetValue(index);
+                    var clone = ObjectRuntimeValue.RecursiveClone(item, cloned);
+                    value.SetValue(clone, index);
                 }
-                else
+            }
+            else
+            {
+                foreach (var indices in value.EnumerateIndices(reuseIndices: true))
                 {
-                    foreach (var index in ..value.Length)
-                    {
-                        var indices = value.OffsetToIndices(index);
-                        var item = value.GetValue(indices);
-                        var clone = ObjectRuntimeValue.RecursiveClone(item, cloned);
-                        value.SetValue(clone, indices);
-                    }
+                    var item = value.GetValue(indices);
+                    var clone = ObjectRuntimeValue.RecursiveClone(item, cloned);
+                    value.SetValue(clone, indices);
                 }
             }
         }

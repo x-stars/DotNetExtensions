@@ -103,20 +103,27 @@ namespace XNetEx.Runtime.CompilerServices
             if (typeArray.GetElementType()!.IsPointer)
             {
                 var methodGet = typeArray.GetMethod("Get")!;
-                foreach (var index in ..value.Length)
+                foreach (var indices in value.EnumerateIndices(reuseIndices: true))
                 {
-                    var item = methodGet.Invoke(value, value.OffsetToIndices(index).Box())!;
+                    var item = methodGet.Invoke(value, indices.Box())!;
                     hashCode = ObjectRuntimeValue.CombineHashCode(
                         hashCode, ObjectRuntimeValue.GetBoxedPointerHashCode(item));
                 }
             }
-            else
+            else if (value.IsSZArray())
             {
-                bool isSZArray = value.IsSZArray();
                 foreach (var index in ..value.Length)
                 {
-                    var item = isSZArray ?
-                        value.GetValue(index) : value.GetValue(value.OffsetToIndices(index));
+                    var item = value.GetValue(index);
+                    hashCode = ObjectRuntimeValue.CombineHashCode(
+                        hashCode, ObjectRuntimeValue.GetRecursiveHashCode(item, computed));
+                }
+            }
+            else
+            {
+                foreach (var indices in value.EnumerateIndices(reuseIndices: true))
+                {
+                    var item = value.GetValue(indices);
                     hashCode = ObjectRuntimeValue.CombineHashCode(
                         hashCode, ObjectRuntimeValue.GetRecursiveHashCode(item, computed));
                 }

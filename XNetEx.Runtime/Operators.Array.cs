@@ -138,9 +138,8 @@ namespace XNetEx
             }
 
             var result = Array.CreateInstance(typeof(T), lengths);
-            for (int offset = 0; offset < result.Length; offset++)
+            foreach (var indices in result.EnumerateIndices())
             {
-                var indices = result.OffsetToIndices(offset);
                 result.SetValue(indicesMap(indices), indices);
             }
             return result;

@@ -86,29 +86,37 @@ namespace XNetEx
             }
 
             var result = Array.CreateInstance(itemType, lengths);
-            var items = array.RecursiveEnumerate().GetEnumerator();
+            var arrayEtor = array.RecursiveEnumerate().GetEnumerator();
 
-            bool isMultiDim = lengths.Length > 1;
-            foreach (var offset in ..result.Length)
+            if (lengths.Length > 1)
             {
-                if (items.MoveNext())
+                foreach (var indices in result.EnumerateIndices(reuseIndices: true))
                 {
-                    if (isMultiDim)
+                    if (arrayEtor.MoveNext())
                     {
-                        var indices = result.OffsetToIndices(offset);
-                        result.SetValue(items.Current, indices);
+                        result.SetValue(arrayEtor.Current, indices);
                     }
                     else
                     {
-                        result.SetValue(items.Current, offset);
+                        throw new ArgumentOutOfRangeException(nameof(lengths));
                     }
                 }
-                else
+            }
+            else
+            {
+                for (int index = 0; index < result.Length; index++)
                 {
-                    throw new ArgumentOutOfRangeException(nameof(lengths));
+                    if (arrayEtor.MoveNext())
+                    {
+                        result.SetValue(arrayEtor.Current, index);
+                    }
+                    else
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(lengths));
+                    }
                 }
             }
-            if (items.MoveNext())
+            if (arrayEtor.MoveNext())
             {
                 throw new ArgumentOutOfRangeException(nameof(lengths));
             }

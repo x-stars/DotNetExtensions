@@ -107,7 +107,8 @@ namespace XNetEx.Runtime.CompilerServices
             if (value.Length != other.Length) { return false; }
             foreach (var rank in ..value.Rank)
             {
-                if (value.GetLength(rank) != other.GetLength(rank))
+                if ((value.GetLowerBound(rank) != other.GetLowerBound(rank)) ||
+                    (value.GetLength(rank) != other.GetLength(rank)))
                 {
                     return false;
                 }
@@ -117,11 +118,24 @@ namespace XNetEx.Runtime.CompilerServices
             if (typeArray.GetElementType()!.IsPointer)
             {
                 var methodGet = typeArray.GetMethod("Get")!;
+                foreach (var indices in value.EnumerateIndices(reuseIndices: true))
+                {
+                    var boxedIndices = indices.Box();
+                    var valueItem = methodGet.Invoke(value, boxedIndices)!;
+                    var otherItem = methodGet.Invoke(other, boxedIndices)!;
+                    if (!ObjectRuntimeValue.BoxedPointerEquals(valueItem, otherItem))
+                    {
+                        return false;
+                    }
+                }
+            }
+            else if (value.IsSZArray())
+            {
                 foreach (var index in ..value.Length)
                 {
-                    var valueItem = methodGet.Invoke(value, value.OffsetToIndices(index).Box())!;
-                    var otherItem = methodGet.Invoke(other, other.OffsetToIndices(index).Box())!;
-                    if (!ObjectRuntimeValue.BoxedPointerEquals(valueItem, otherItem))
+                    var valueItem = value.GetValue(index);
+                    var otherItem = other.GetValue(index);
+                    if (!ObjectRuntimeValue.RecursiveEquals(valueItem, otherItem, compared))
                     {
                         return false;
                     }
@@ -129,13 +143,10 @@ namespace XNetEx.Runtime.CompilerServices
             }
             else
             {
-                bool isSZArray = value.IsSZArray();
-                foreach (var index in ..value.Length)
+                foreach (var indices in value.EnumerateIndices(reuseIndices: true))
                 {
-                    var valueItem = isSZArray ?
-                        value.GetValue(index) : value.GetValue(value.OffsetToIndices(index));
-                    var otherItem = isSZArray ?
-                        other.GetValue(index) : other.GetValue(other.OffsetToIndices(index));
+                    var valueItem = value.GetValue(indices);
+                    var otherItem = other.GetValue(indices);
                     if (!ObjectRuntimeValue.RecursiveEquals(valueItem, otherItem, compared))
                     {
                         return false;

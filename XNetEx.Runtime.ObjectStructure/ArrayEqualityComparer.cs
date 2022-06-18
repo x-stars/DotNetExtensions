@@ -37,16 +37,19 @@ namespace XNetEx
             if (xArray.Length != yArray.Length) { return false; }
             foreach (var rank in ..xArray.Rank)
             {
-                if (xArray.GetLength(rank) != yArray.GetLength(rank))
+                if ((xArray.GetLowerBound(rank) != yArray.GetLowerBound(rank)) ||
+                    (xArray.GetLength(rank) != yArray.GetLength(rank)))
                 {
                     return false;
                 }
             }
 
-            foreach (var index in ..xArray.Length)
+            var xEtor = xArray.GetEnumerator();
+            var yEtor = yArray.GetEnumerator();
+            while (xEtor.MoveNext() && yEtor.MoveNext())
             {
-                var xItem = xArray.GetValue(xArray.OffsetToIndices(index));
-                var yItem = yArray.GetValue(yArray.OffsetToIndices(index));
+                var xItem = xEtor.Current;
+                var yItem = yEtor.Current;
 
                 if (xItem?.GetType() != yItem?.GetType()) { return false; }
 
@@ -67,9 +70,8 @@ namespace XNetEx
             var array = (Array)(object)obj;
 
             var hashCode = array.GetType().GetHashCode();
-            foreach (var index in ..array.Length)
+            foreach (var item in array)
             {
-                var item = array.GetValue(array.OffsetToIndices(index));
                 var comparer = StructuralEqualityComparer.OfType(item?.GetType());
                 hashCode = this.CombineHashCode(
                     hashCode, comparer.GetHashCode(item!, computed));
