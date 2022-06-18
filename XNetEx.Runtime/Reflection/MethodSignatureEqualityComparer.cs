@@ -30,8 +30,6 @@ namespace XNetEx.Reflection
         /// <param name="y">要比较的第二个 <see cref="MethodInfo"/>。</param>
         /// <returns>若 <paramref name="x"/> 与 <paramref name="y"/> 的方法签名相等，
         /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Style", "IDE0062:MakeLocalFunctionStatic")]
         public override bool Equals(MethodInfo? x, MethodInfo? y)
         {
             if (object.ReferenceEquals(x, y)) { return true; }
