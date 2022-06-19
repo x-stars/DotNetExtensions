@@ -147,7 +147,7 @@ namespace XNetEx
         /// <see cref="IEnumerable{T}"/> 序列。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<int[]> EnumerateIndices(
+        public static IEnumerable<int[]> GetIndicesSequence(
             this Array array, bool reuseIndices = false)
         {
             return new ArrayIndicesSequence(array, reuseIndices);

@@ -64,13 +64,13 @@ namespace XNetEx.Collections
         }
 
         /// <summary>
-        /// 枚举 <see cref="IDictionary"/> 中的键值对。
+        /// 获取 <see cref="IDictionary"/> 中的键值对的公开枚举数。
         /// </summary>
         /// <param name="dictionary">要枚举键值对的 <see cref="IDictionary"/> 对象。</param>
         /// <returns><paramref name="dictionary"/> 中的键值对的泛型枚举数。</returns>
         /// <exception cref="ArgumentNullException">
         /// <paramref name="dictionary"/> 为 <see langword="null"/>。</exception>
-        public static IEnumerable<DictionaryEntry> EnumerateEntries(this IDictionary dictionary)
+        public static IEnumerable<DictionaryEntry> GetEntries(this IDictionary dictionary)
         {
             if (dictionary is null)
             {

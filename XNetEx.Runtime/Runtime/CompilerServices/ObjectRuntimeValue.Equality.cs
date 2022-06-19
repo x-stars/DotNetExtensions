@@ -118,7 +118,7 @@ namespace XNetEx.Runtime.CompilerServices
             if (typeArray.GetElementType()!.IsPointer)
             {
                 var methodGet = typeArray.GetMethod("Get")!;
-                foreach (var indices in value.EnumerateIndices(reuseIndices: true))
+                foreach (var indices in value.GetIndicesSequence(reuseIndices: true))
                 {
                     var boxedIndices = indices.Box();
                     var valueItem = methodGet.Invoke(value, boxedIndices)!;
@@ -143,7 +143,7 @@ namespace XNetEx.Runtime.CompilerServices
             }
             else
             {
-                foreach (var indices in value.EnumerateIndices(reuseIndices: true))
+                foreach (var indices in value.GetIndicesSequence(reuseIndices: true))
                 {
                     var valueItem = value.GetValue(indices);
                     var otherItem = other.GetValue(indices);

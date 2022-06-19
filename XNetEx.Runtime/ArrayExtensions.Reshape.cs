@@ -90,7 +90,7 @@ namespace XNetEx
 
             if (lengths.Length > 1)
             {
-                foreach (var indices in result.EnumerateIndices(reuseIndices: true))
+                foreach (var indices in result.GetIndicesSequence(reuseIndices: true))
                 {
                     if (arrayEtor.MoveNext())
                     {

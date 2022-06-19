@@ -103,7 +103,7 @@ namespace XNetEx.Runtime.CompilerServices
             if (typeArray.GetElementType()!.IsPointer)
             {
                 var methodGet = typeArray.GetMethod("Get")!;
-                foreach (var indices in value.EnumerateIndices(reuseIndices: true))
+                foreach (var indices in value.GetIndicesSequence(reuseIndices: true))
                 {
                     var item = methodGet.Invoke(value, indices.Box())!;
                     hashCode = ObjectRuntimeValue.CombineHashCode(
@@ -121,7 +121,7 @@ namespace XNetEx.Runtime.CompilerServices
             }
             else
             {
-                foreach (var indices in value.EnumerateIndices(reuseIndices: true))
+                foreach (var indices in value.GetIndicesSequence(reuseIndices: true))
                 {
                     var item = value.GetValue(indices);
                     hashCode = ObjectRuntimeValue.CombineHashCode(

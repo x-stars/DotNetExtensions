@@ -138,7 +138,7 @@ namespace XNetEx
             }
 
             var result = Array.CreateInstance(typeof(T), lengths);
-            foreach (var indices in result.EnumerateIndices())
+            foreach (var indices in result.GetIndicesSequence())
             {
                 result.SetValue(indicesMap(indices), indices);
             }

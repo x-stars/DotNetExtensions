@@ -51,7 +51,7 @@ namespace XNetEx
             }
 
             var methodGet = PointerArrayEqualityComparer<T>.GetMethod;
-            foreach (var indices in xArray.EnumerateIndices(reuseIndices: true))
+            foreach (var indices in xArray.GetIndicesSequence(reuseIndices: true))
             {
                 var boxedIndices = indices.Box();
                 var xItem = methodGet.Invoke(xArray, boxedIndices);
@@ -73,7 +73,7 @@ namespace XNetEx
 
             var hashCode = array.GetType().GetHashCode();
             var methodGet = PointerArrayEqualityComparer<T>.GetMethod;
-            foreach (var indices in array.EnumerateIndices(reuseIndices: true))
+            foreach (var indices in array.GetIndicesSequence(reuseIndices: true))
             {
                 var item = methodGet.Invoke(array, indices.Box());
                 var nextHashCode = PointerEqualityComparer.GetHashCode(item);

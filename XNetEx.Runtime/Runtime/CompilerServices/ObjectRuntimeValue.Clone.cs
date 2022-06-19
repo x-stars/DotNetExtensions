@@ -131,7 +131,7 @@ namespace XNetEx.Runtime.CompilerServices
             }
             else
             {
-                foreach (var indices in value.EnumerateIndices(reuseIndices: true))
+                foreach (var indices in value.GetIndicesSequence(reuseIndices: true))
                 {
                     var item = value.GetValue(indices);
                     var clone = ObjectRuntimeValue.RecursiveClone(item, cloned);
