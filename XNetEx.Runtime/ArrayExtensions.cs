@@ -6,7 +6,7 @@ namespace XNetEx
     /// <summary>
     /// 提供数组的扩展方法。
     /// </summary>
-    public static partial class ArrayExtensions
+    public static class ArrayExtensions
     {
         /// <summary>
         /// 返回一个新数组，此数组为当前数组末尾追加指定元素后的结果。

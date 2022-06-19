@@ -3,7 +3,10 @@ using System.Collections;
 
 namespace XNetEx
 {
-    static partial class ArrayExtensions
+    /// <summary>
+    /// 提供改变数组形状的扩展方法。
+    /// </summary>
+    public static class ArrayReshapeExtensions
     {
         /// <summary>
         /// 枚举数组中的每个元素。对于交错数组，将递归枚举至元素的声明类型不为数组。
