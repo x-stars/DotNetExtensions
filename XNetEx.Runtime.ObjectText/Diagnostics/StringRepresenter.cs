@@ -3,7 +3,7 @@
 /// <summary>
 /// 提供将指定字符串包装后表示为字符串的方法。
 /// </summary>
-internal sealed class StringRepresenter : SimpleRepresenter<string>
+internal sealed class StringRepresenter : Representer<string>
 {
     /// <summary>
     /// 初始化 <see cref="StringRepresenter"/> 类的新实例。

@@ -13,7 +13,7 @@ namespace XNetEx.Diagnostics;
 /// 为结构化对象的字符串表示对象提供抽象基类。
 /// </summary>
 /// <typeparam name="T">要表示为字符串的对象的类型。</typeparam>
-public abstract class StructuralRepresenter<T> : SimpleAcyclicRepresenter<T>
+public abstract class StructuralRepresenter<T> : AcyclicRepresenter<T>
 {
     /// <summary>
     /// 表示 <see cref="StructuralRepresenter{T}.Default"/> 的延迟初始化值。

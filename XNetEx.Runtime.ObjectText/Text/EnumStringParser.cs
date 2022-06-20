@@ -6,7 +6,7 @@ namespace XNetEx.Text;
 /// 表示使用 <see cref="Enum.Parse(Type, string)"/> 方法将字符串转换为枚举的字符串解析对象。
 /// </summary>
 /// <typeparam name="T">要转换为的枚举的类型。</typeparam>
-internal sealed class EnumStringParser<T> : SimpleStringParser<T> where T : notnull
+internal sealed class EnumStringParser<T> : StringParser<T> where T : notnull
 {
     /// <summary>
     /// 初始化 <see cref="EnumStringParser{T}"/> 类的新实例。

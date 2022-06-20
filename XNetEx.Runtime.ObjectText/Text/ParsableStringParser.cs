@@ -7,7 +7,7 @@ namespace XNetEx.Text;
 /// 表示使用类似于 <see cref="int.Parse(string)"/> 的方法将字符串转换为对象的字符串解析对象。
 /// </summary>
 /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
-internal sealed class ParsableStringParser<T> : SimpleStringParser<T> where T : notnull
+internal sealed class ParsableStringParser<T> : StringParser<T> where T : notnull
 {
     /// <summary>
     /// 初始化 <see cref="ParsableStringParser{T}"/> 类的新实例。

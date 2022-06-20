@@ -6,7 +6,7 @@ namespace XNetEx.Text;
 /// <summary>
 /// 表示将类型的完整名称转换为其等效的类型声明的字符串解析对象。
 /// </summary>
-internal sealed class TypeStringParser : SimpleStringParser<Type>
+internal sealed class TypeStringParser : StringParser<Type>
 {
     /// <summary>
     /// 初始化 <see cref="TypeStringParser"/> 类的新实例。

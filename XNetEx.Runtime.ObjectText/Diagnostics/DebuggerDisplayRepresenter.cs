@@ -7,7 +7,7 @@ namespace XNetEx.Diagnostics;
 /// 提供将应用了 <see cref="DebuggerDisplayAttribute"/> 特性的类型的对象表示为其调试器显示格式的方法。
 /// </summary>
 /// <typeparam name="T">应用了 <see cref="DebuggerDisplayAttribute"/> 特性的类型。</typeparam>
-internal sealed class DebuggerDisplayRepresenter<T> : SimpleRepresenter<T>
+internal sealed class DebuggerDisplayRepresenter<T> : Representer<T>
 {
     /// <summary>
     /// 初始化 <see cref="DebuggerDisplayRepresenter{T}"/> 类的新实例。

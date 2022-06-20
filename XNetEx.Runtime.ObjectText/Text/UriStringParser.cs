@@ -5,7 +5,7 @@ namespace XNetEx.Text;
 /// <summary>
 /// 表示将输入的 URI 字符串转换为其等效的 <see cref="Uri"/> 对象的字符串解析对象。
 /// </summary>
-internal sealed class UriStringParser : SimpleStringParser<Uri>
+internal sealed class UriStringParser : StringParser<Uri>
 {
     /// <summary>
     /// 初始化 <see cref="UriStringParser"/> 类的新实例。

@@ -3,7 +3,7 @@
 /// <summary>
 /// 表示原样返回的输入字符串的字符串解析对象。
 /// </summary>
-internal sealed class StringStringParser : SimpleStringParser<string>
+internal sealed class StringStringParser : StringParser<string>
 {
     /// <summary>
     /// 初始化 <see cref="StringStringParser"/> 类的新实例。

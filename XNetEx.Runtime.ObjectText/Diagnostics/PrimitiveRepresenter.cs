@@ -6,7 +6,7 @@ namespace XNetEx.Diagnostics;
 /// 提供将指定基元类型的值表示为其 <see cref="object.ToString()"/> 方法返回的字符串的方法。
 /// </summary>
 /// <typeparam name="T">要表示为字符串的基元类型。</typeparam>
-internal sealed class PrimitiveRepresenter<T> : SimpleRepresenter<T>
+internal sealed class PrimitiveRepresenter<T> : Representer<T>
 {
     /// <summary>
     /// 初始化 <see cref="PrimitiveRepresenter{T}"/> 类的新实例。
