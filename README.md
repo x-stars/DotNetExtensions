@@ -12,7 +12,7 @@
 | Framework | 4.6.1, 4.7.2 |
 | Standard  | 2.0, 2.1     |
 
-> C# 语言版本 >= 9.0
+> C# 语言版本 >= 10.0
 
 ## 程序集 XNetEx.Runtime
 
