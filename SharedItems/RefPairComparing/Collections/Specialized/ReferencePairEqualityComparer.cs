@@ -11,19 +11,19 @@ using ObjectPair = KeyValuePair<object, object>;
 /// 提供用于比较 <see cref="ObjectPair"/> 包含的对象的引用是否相等的方法。
 /// </summary>
 [Serializable]
-internal sealed class PairReferenceEqualityComparer : SimpleEqualityComparer<ObjectPair>
+internal sealed class ReferencePairEqualityComparer : SimpleEqualityComparer<ObjectPair>
 {
     /// <summary>
-    /// 初始化 <see cref="PairReferenceEqualityComparer"/> 类的新实例。
+    /// 初始化 <see cref="ReferencePairEqualityComparer"/> 类的新实例。
     /// </summary>
-    private PairReferenceEqualityComparer() { }
+    private ReferencePairEqualityComparer() { }
 
     /// <summary>
-    /// 获取 <see cref="PairReferenceEqualityComparer"/> 类的默认实例。
+    /// 获取 <see cref="ReferencePairEqualityComparer"/> 类的默认实例。
     /// </summary>
-    /// <returns><see cref="PairReferenceEqualityComparer"/> 类的默认实例。</returns>
-    public static new PairReferenceEqualityComparer Default { get; } =
-        new PairReferenceEqualityComparer();
+    /// <returns><see cref="ReferencePairEqualityComparer"/> 类的默认实例。</returns>
+    public static new ReferencePairEqualityComparer Default { get; } =
+        new ReferencePairEqualityComparer();
 
     /// <summary>
     /// 确定两个 <see cref="ObjectPair"/> 包含的对象的引用是否相等。

@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using PairReferenceEqualityComparer =
-    XNetEx.Collections.Specialized.PairReferenceEqualityComparer;
+using XCmpSp = XNetEx.Collections.Specialized;
 
 namespace XNetEx.Runtime.CompilerServices;
 
 using ObjectPair = KeyValuePair<object, object>;
+using ReferencePairEqualityComparer = XCmpSp::ReferencePairEqualityComparer;
 
 static partial class ObjectRuntimeValue
 {
@@ -24,7 +24,7 @@ static partial class ObjectRuntimeValue
     /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
     public static bool RecursiveEquals<T>(this T? value, T? other)
     {
-        var comparer = PairReferenceEqualityComparer.Default;
+        var comparer = ReferencePairEqualityComparer.Default;
         var compared = new HashSet<ObjectPair>(comparer);
         return ObjectRuntimeValue.RecursiveEquals(value, other, compared);
     }

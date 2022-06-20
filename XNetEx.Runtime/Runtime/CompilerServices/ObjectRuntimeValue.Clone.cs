@@ -6,8 +6,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
-using ReferenceEqualityComparer =
-    XNetEx.Collections.Specialized.ReferenceEqualityComparer;
+using XCmpSp = XNetEx.Collections.Specialized;
 
 #if NET5_0_OR_GREATER
 #pragma warning disable SYSLIB0011  // BinaryFormatter serialization is obsolete.
@@ -15,6 +14,8 @@ using ReferenceEqualityComparer =
 #endif
 
 namespace XNetEx.Runtime.CompilerServices;
+
+using ReferenceEqualityComparer = XCmpSp::ReferenceEqualityComparer;
 
 static partial class ObjectRuntimeValue
 {

@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
-using XNetEx.Collections.Specialized;
-using ReferenceEqualityComparer =
-    XNetEx.Collections.Specialized.ReferenceEqualityComparer;
+using XCmpSp = XNetEx.Collections.Specialized;
 
 namespace XNetEx.Collections.Generic;
 
 using ObjectPair = KeyValuePair<object, object>;
+using ReferenceEqualityComparer = XCmpSp::ReferenceEqualityComparer;
+using ReferencePairEqualityComparer = XCmpSp::ReferencePairEqualityComparer;
 
 /// <summary>
 /// 为对象的无环相等比较器 <see cref="IAcyclicEqualityComparer{T}"/> 提供抽象基类。
@@ -32,7 +32,7 @@ public abstract class AcyclicEqualityComparer<T>
     /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
     public sealed override bool Equals(T? x, T? y)
     {
-        var comparer = PairReferenceEqualityComparer.Default;
+        var comparer = ReferencePairEqualityComparer.Default;
         var compared = new HashSet<ObjectPair>(comparer);
         return this.Equals(x, y, compared);
     }

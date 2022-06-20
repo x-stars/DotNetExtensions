@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
-using ReferenceEqualityComparer =
-    XNetEx.Collections.Specialized.ReferenceEqualityComparer;
+using XCmpSp = XNetEx.Collections.Specialized;
 
 namespace XNetEx.Runtime.CompilerServices;
+
+using ReferenceEqualityComparer = XCmpSp::ReferenceEqualityComparer;
 
 static partial class ObjectRuntimeValue
 {

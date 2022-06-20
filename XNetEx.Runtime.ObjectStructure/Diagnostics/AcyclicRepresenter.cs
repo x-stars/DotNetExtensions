@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using ReferenceEqualityComparer =
-    XNetEx.Collections.Specialized.ReferenceEqualityComparer;
+using XCmpSp = XNetEx.Collections.Specialized;
 
 namespace XNetEx.Diagnostics;
+
+using ReferenceEqualityComparer = XCmpSp::ReferenceEqualityComparer;
 
 /// <summary>
 /// 为无环字符串表示对象 <see cref="IAcyclicRepresenter{T}"/> 提供抽象基类。
