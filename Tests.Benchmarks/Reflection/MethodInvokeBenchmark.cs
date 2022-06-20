@@ -2,93 +2,92 @@
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
 
-namespace XNetEx.Reflection
+namespace XNetEx.Reflection;
+
+public class MethodInvokeBenchmark
 {
-    public class MethodInvokeBenchmark
+    [CLSCompliant(false)]
+    [Params(1, 10, 100, 1000)]
+    public int InvokeCount;
+
+    private readonly object Value = string.Empty;
+
+    private readonly object Other = new string(new char[0]);
+
+    private readonly MethodInfo EqualsMethod =
+        typeof(object).GetMethod(nameof(object.Equals), new[] { typeof(object) })!;
+
+    private readonly Func<object, object?, bool> EqualsFunc;
+
+    private readonly Func<object?, object?[]?, object?> EqualsDynFunc;
+
+    public MethodInvokeBenchmark()
     {
-        [CLSCompliant(false)]
-        [Params(1, 10, 100, 1000)]
-        public int InvokeCount;
+        this.EqualsFunc = this.EqualsMethod.CreateDelegate<Func<object, object?, bool>>();
+        this.EqualsDynFunc = this.EqualsMethod.CreateDynamicDelegate();
+    }
 
-        private readonly object Value = string.Empty;
-
-        private readonly object Other = new string(new char[0]);
-
-        private readonly MethodInfo EqualsMethod =
-            typeof(object).GetMethod(nameof(object.Equals), new[] { typeof(object) })!;
-
-        private readonly Func<object, object?, bool> EqualsFunc;
-
-        private readonly Func<object?, object?[]?, object?> EqualsDynFunc;
-
-        public MethodInvokeBenchmark()
+    [Benchmark(Baseline = true)]
+    public void DirectInvoke()
+    {
+        var value = this.Value;
+        var other = this.Other;
+        var count = this.InvokeCount;
+        for (int index = 0; index < count; index++)
         {
-            this.EqualsFunc = this.EqualsMethod.CreateDelegate<Func<object, object?, bool>>();
-            this.EqualsDynFunc = this.EqualsMethod.CreateDynamicDelegate();
+            value.Equals(other);
         }
+    }
 
-        [Benchmark(Baseline = true)]
-        public void DirectInvoke()
+    [Benchmark]
+    public void DelegateInvoke()
+    {
+        var value = this.Value;
+        var other = this.Other;
+        var equals = this.EqualsFunc;
+        var count = this.InvokeCount;
+        for (int index = 0; index < count; index++)
         {
-            var value = this.Value;
-            var other = this.Other;
-            var count = this.InvokeCount;
-            for (int index = 0; index < count; index++)
-            {
-                value.Equals(other);
-            }
+            equals.Invoke(value, other);
         }
+    }
 
-        [Benchmark]
-        public void DelegateInvoke()
+    [Benchmark]
+    public void ReflectionInvoke()
+    {
+        var value = this.Value;
+        var other = this.Other;
+        var equals = this.EqualsMethod;
+        var count = this.InvokeCount;
+        for (int index = 0; index < count; index++)
         {
-            var value = this.Value;
-            var other = this.Other;
-            var equals = this.EqualsFunc;
-            var count = this.InvokeCount;
-            for (int index = 0; index < count; index++)
-            {
-                equals.Invoke(value, other);
-            }
+            equals.Invoke(value, new[] { other });
         }
+    }
 
-        [Benchmark]
-        public void ReflectionInvoke()
+    [Benchmark]
+    public void ReflectionFastInvoke()
+    {
+        var value = this.Value;
+        var other = this.Other;
+        var equals = this.EqualsMethod;
+        var count = this.InvokeCount;
+        for (int index = 0; index < count; index++)
         {
-            var value = this.Value;
-            var other = this.Other;
-            var equals = this.EqualsMethod;
-            var count = this.InvokeCount;
-            for (int index = 0; index < count; index++)
-            {
-                equals.Invoke(value, new[] { other });
-            }
+            equals.InvokeFast(value, new[] { other });
         }
+    }
 
-        [Benchmark]
-        public void ReflectionFastInvoke()
+    [Benchmark]
+    public void DynamicDelegateInvoke()
+    {
+        var value = this.Value;
+        var other = this.Other;
+        var equals = this.EqualsDynFunc;
+        var count = this.InvokeCount;
+        for (int index = 0; index < count; index++)
         {
-            var value = this.Value;
-            var other = this.Other;
-            var equals = this.EqualsMethod;
-            var count = this.InvokeCount;
-            for (int index = 0; index < count; index++)
-            {
-                equals.InvokeFast(value, new[] { other });
-            }
-        }
-
-        [Benchmark]
-        public void DynamicDelegateInvoke()
-        {
-            var value = this.Value;
-            var other = this.Other;
-            var equals = this.EqualsDynFunc;
-            var count = this.InvokeCount;
-            for (int index = 0; index < count; index++)
-            {
-                equals.Invoke(value, new[] { other });
-            }
+            equals.Invoke(value, new[] { other });
         }
     }
 }

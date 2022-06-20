@@ -1,408 +1,407 @@
 ﻿using System;
 using System.Collections;
 
-namespace XNetEx
+namespace XNetEx;
+
+/// <summary>
+/// 提供改变数组形状的扩展方法。
+/// </summary>
+public static class ArrayReshapeExtensions
 {
     /// <summary>
-    /// 提供改变数组形状的扩展方法。
+    /// 枚举数组中的每个元素。对于交错数组，将递归枚举至元素的声明类型不为数组。
     /// </summary>
-    public static class ArrayReshapeExtensions
+    /// <param name="array">要枚举元素数组。</param>
+    /// <returns>数组元素的公开枚举数 <see cref="IEnumerable"/> 对象。</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="array"/> 为 <see langword="null"/>，
+    /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
+    /// <exception cref="NotSupportedException">
+    /// <paramref name="array"/> 的最内层元素为指针。</exception>
+    public static IEnumerable RecursiveEnumerate(this Array array)
     {
-        /// <summary>
-        /// 枚举数组中的每个元素。对于交错数组，将递归枚举至元素的声明类型不为数组。
-        /// </summary>
-        /// <param name="array">要枚举元素数组。</param>
-        /// <returns>数组元素的公开枚举数 <see cref="IEnumerable"/> 对象。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> 为 <see langword="null"/>，
-        /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
-        /// <exception cref="NotSupportedException">
-        /// <paramref name="array"/> 的最内层元素为指针。</exception>
-        public static IEnumerable RecursiveEnumerate(this Array array)
+        if (array is null)
         {
-            if (array is null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
+            throw new ArgumentNullException(nameof(array));
+        }
 
-            static IEnumerable EnumerateCore(Array array)
+        static IEnumerable EnumerateCore(Array array)
+        {
+            if (array.GetType().GetElementType()!.IsArray)
             {
-                if (array.GetType().GetElementType()!.IsArray)
+                foreach (var item in array)
                 {
-                    foreach (var item in array)
+                    var innerItems = ((Array)item!).RecursiveEnumerate();
+                    foreach (var innerItem in innerItems)
                     {
-                        var innerItems = ((Array)item!).RecursiveEnumerate();
-                        foreach (var innerItem in innerItems)
-                        {
-                            yield return innerItem;
-                        }
+                        yield return innerItem;
                     }
+                }
+            }
+            else
+            {
+                foreach (var item in array)
+                {
+                    yield return item;
+                }
+            }
+        }
+
+        return EnumerateCore(array);
+    }
+
+    /// <summary>
+    /// 返回一个指定大小的数组，其每个元素都由当前数组的最内层元素按顺序复制得到。
+    /// </summary>
+    /// <param name="array">作为数据来源的数组。</param>
+    /// <param name="lengths">新数组的每个维度的大小。</param>
+    /// <returns>一个大小等于 <paramref name="lengths"/> 的数组，
+    /// 其每个元素都由 <paramref name="array"/> 的最内层元素按顺序复制得到。</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="array"/> 或 <paramref name="lengths"/> 为 <see langword="null"/>，
+    /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="lengths"/> 中没有任何元素。</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="lengths"/>
+    /// 所表示的数组元素数量与 <paramref name="array"/> 中的元素数量不一致。</exception>
+    /// <exception cref="NotSupportedException">
+    /// <paramref name="array"/> 的最内层元素为指针。</exception>
+    public static Array Reshape(this Array array, params int[] lengths)
+    {
+        if (array is null)
+        {
+            throw new ArgumentNullException(nameof(array));
+        }
+        if (lengths is null)
+        {
+            throw new ArgumentNullException(nameof(lengths));
+        }
+
+        var itemType = array.GetType().GetElementType()!;
+        while (itemType.IsArray)
+        {
+            itemType = itemType.GetElementType()!;
+        }
+
+        if (itemType.IsPointer)
+        {
+            throw new NotSupportedException();
+        }
+
+        var result = Array.CreateInstance(itemType, lengths);
+        var arrayEtor = array.RecursiveEnumerate().GetEnumerator();
+
+        if (lengths.Length > 1)
+        {
+            foreach (var indices in result.GetIndicesSequence(reuseIndices: true))
+            {
+                if (arrayEtor.MoveNext())
+                {
+                    result.SetValue(arrayEtor.Current, indices);
                 }
                 else
                 {
-                    foreach (var item in array)
-                    {
-                        yield return item;
-                    }
+                    throw new ArgumentOutOfRangeException(nameof(lengths));
                 }
             }
-
-            return EnumerateCore(array);
+        }
+        else
+        {
+            for (int index = 0; index < result.Length; index++)
+            {
+                if (arrayEtor.MoveNext())
+                {
+                    result.SetValue(arrayEtor.Current, index);
+                }
+                else
+                {
+                    throw new ArgumentOutOfRangeException(nameof(lengths));
+                }
+            }
+        }
+        if (arrayEtor.MoveNext())
+        {
+            throw new ArgumentOutOfRangeException(nameof(lengths));
         }
 
-        /// <summary>
-        /// 返回一个指定大小的数组，其每个元素都由当前数组的最内层元素按顺序复制得到。
-        /// </summary>
-        /// <param name="array">作为数据来源的数组。</param>
-        /// <param name="lengths">新数组的每个维度的大小。</param>
-        /// <returns>一个大小等于 <paramref name="lengths"/> 的数组，
-        /// 其每个元素都由 <paramref name="array"/> 的最内层元素按顺序复制得到。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> 或 <paramref name="lengths"/> 为 <see langword="null"/>，
-        /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="lengths"/> 中没有任何元素。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="lengths"/>
-        /// 所表示的数组元素数量与 <paramref name="array"/> 中的元素数量不一致。</exception>
-        /// <exception cref="NotSupportedException">
-        /// <paramref name="array"/> 的最内层元素为指针。</exception>
-        public static Array Reshape(this Array array, params int[] lengths)
+        return result;
+    }
+
+    /// <summary>
+    /// 返回一个指定大小的交错数组，其每个元素都由当前数组的最内层元素按顺序复制得到。
+    /// </summary>
+    /// <param name="array">作为数据来源的数组。</param>
+    /// <param name="lengths">新数组的每个维度的大小。</param>
+    /// <returns>一个大小等于 <paramref name="lengths"/> 的交错数组，
+    /// 其每个元素都由 <paramref name="array"/> 的最内层元素按顺序复制得到。</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="array"/> 或 <paramref name="lengths"/> 为 <see langword="null"/>，
+    /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="lengths"/> 中没有任何元素。</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="lengths"/>
+    /// 所表示的数组元素数量与 <paramref name="array"/> 中的元素数量不一致。</exception>
+    /// <exception cref="NotSupportedException">
+    /// <paramref name="array"/> 的最内层元素为指针。</exception>
+    public static Array ReshapeJagged(this Array array, params int[] lengths)
+    {
+        if (array is null)
         {
-            if (array is null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
-            if (lengths is null)
-            {
-                throw new ArgumentNullException(nameof(lengths));
-            }
-
-            var itemType = array.GetType().GetElementType()!;
-            while (itemType.IsArray)
-            {
-                itemType = itemType.GetElementType()!;
-            }
-
-            if (itemType.IsPointer)
-            {
-                throw new NotSupportedException();
-            }
-
-            var result = Array.CreateInstance(itemType, lengths);
-            var arrayEtor = array.RecursiveEnumerate().GetEnumerator();
-
-            if (lengths.Length > 1)
-            {
-                foreach (var indices in result.GetIndicesSequence(reuseIndices: true))
-                {
-                    if (arrayEtor.MoveNext())
-                    {
-                        result.SetValue(arrayEtor.Current, indices);
-                    }
-                    else
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(lengths));
-                    }
-                }
-            }
-            else
-            {
-                for (int index = 0; index < result.Length; index++)
-                {
-                    if (arrayEtor.MoveNext())
-                    {
-                        result.SetValue(arrayEtor.Current, index);
-                    }
-                    else
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(lengths));
-                    }
-                }
-            }
-            if (arrayEtor.MoveNext())
-            {
-                throw new ArgumentOutOfRangeException(nameof(lengths));
-            }
-
-            return result;
+            throw new ArgumentNullException(nameof(array));
+        }
+        if (lengths is null)
+        {
+            throw new ArgumentNullException(nameof(lengths));
         }
 
-        /// <summary>
-        /// 返回一个指定大小的交错数组，其每个元素都由当前数组的最内层元素按顺序复制得到。
-        /// </summary>
-        /// <param name="array">作为数据来源的数组。</param>
-        /// <param name="lengths">新数组的每个维度的大小。</param>
-        /// <returns>一个大小等于 <paramref name="lengths"/> 的交错数组，
-        /// 其每个元素都由 <paramref name="array"/> 的最内层元素按顺序复制得到。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> 或 <paramref name="lengths"/> 为 <see langword="null"/>，
-        /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="lengths"/> 中没有任何元素。</exception>
-        /// <exception cref="ArgumentOutOfRangeException"><paramref name="lengths"/>
-        /// 所表示的数组元素数量与 <paramref name="array"/> 中的元素数量不一致。</exception>
-        /// <exception cref="NotSupportedException">
-        /// <paramref name="array"/> 的最内层元素为指针。</exception>
-        public static Array ReshapeJagged(this Array array, params int[] lengths)
+        var itemType = array.GetType().GetElementType()!;
+        while (itemType.IsArray)
         {
-            if (array is null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
-            if (lengths is null)
-            {
-                throw new ArgumentNullException(nameof(lengths));
-            }
+            itemType = itemType.GetElementType()!;
+        }
 
-            var itemType = array.GetType().GetElementType()!;
-            while (itemType.IsArray)
-            {
-                itemType = itemType.GetElementType()!;
-            }
+        if (itemType.IsPointer)
+        {
+            throw new NotSupportedException();
+        }
 
-            if (itemType.IsPointer)
+        if (lengths.Length == 0)
+        {
+            return Array.CreateInstance(itemType, lengths);
+        }
+        else if (lengths.Length == 1)
+        {
+            return array.Reshape(lengths);
+        }
+        else
+        {
+            static int ProductOf(params int[] values)
             {
-                throw new NotSupportedException();
-            }
-
-            if (lengths.Length == 0)
-            {
-                return Array.CreateInstance(itemType, lengths);
-            }
-            else if (lengths.Length == 1)
-            {
-                return array.Reshape(lengths);
-            }
-            else
-            {
-                static int ProductOf(params int[] values)
+                int product = 1;
+                foreach (var value in values)
                 {
-                    int product = 1;
-                    foreach (var value in values)
-                    {
-                        product *= value;
-                    }
-                    return product;
+                    product *= value;
                 }
+                return product;
+            }
 
-                var result = Array.CreateInstance(itemType, 0);
-                var items = array.RecursiveEnumerate().GetEnumerator();
-                var lastLengths = lengths;
-                var restLengths = new int[lastLengths.Length - 1];
-                Array.Copy(lastLengths, 0, restLengths, 0, restLengths.Length);
+            var result = Array.CreateInstance(itemType, 0);
+            var items = array.RecursiveEnumerate().GetEnumerator();
+            var lastLengths = lengths;
+            var restLengths = new int[lastLengths.Length - 1];
+            Array.Copy(lastLengths, 0, restLengths, 0, restLengths.Length);
 
-                while (restLengths.Length > 0)
+            while (restLengths.Length > 0)
+            {
+                result = Array.CreateInstance(itemType.MakeArrayType(), ProductOf(restLengths));
+                foreach (var index in ..result.Length)
                 {
-                    result = Array.CreateInstance(itemType.MakeArrayType(), ProductOf(restLengths));
-                    foreach (var index in ..result.Length)
+                    var innerArray = Array.CreateInstance(itemType, lastLengths[^1]);
+                    foreach (var innerIndex in ..innerArray.Length)
                     {
-                        var innerArray = Array.CreateInstance(itemType, lastLengths[^1]);
-                        foreach (var innerIndex in ..innerArray.Length)
+                        if (items.MoveNext())
                         {
-                            if (items.MoveNext())
-                            {
-                                innerArray.SetValue(items.Current, innerIndex);
-                            }
-                            else
-                            {
-                                throw new ArgumentOutOfRangeException(nameof(lengths));
-                            }
+                            innerArray.SetValue(items.Current, innerIndex);
                         }
-                        result.SetValue(innerArray, index);
+                        else
+                        {
+                            throw new ArgumentOutOfRangeException(nameof(lengths));
+                        }
                     }
-                    if (items.MoveNext())
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(lengths));
-                    }
-
-                    items = result.GetEnumerator();
-                    itemType = itemType.MakeArrayType();
-                    lastLengths = restLengths;
-                    restLengths = new int[lastLengths.Length - 1];
-                    Array.Copy(lastLengths, 0, restLengths, 0, restLengths.Length);
+                    result.SetValue(innerArray, index);
                 }
-                return result;
-            }
-        }
-
-        /// <summary>
-        /// 将指定的二维数组转换为大小相等、元素相同的二维交错数组。
-        /// </summary>
-        /// <typeparam name="T">多维数组中的元素的类型。</typeparam>
-        /// <param name="array">要转换为二维交错数组的二维数组。</param>
-        /// <returns>与 <paramref name="array"/> 大小相等、元素相同的二维交错数组。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
-        public static T[][] ToJaggedArray<T>(this T[,] array)
-        {
-            if (array is null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
-
-            var length1 = array.GetLength(0);
-            var length2 = array.GetLength(1);
-
-            var result = new T[length1][];
-            for (int index1 = 0; index1 < length1; index1++)
-            {
-                var result2 = new T[length2];
-                for (int index2 = 0; index2 < length2; index2++)
+                if (items.MoveNext())
                 {
-                    result2[index2] = array[index1, index2];
+                    throw new ArgumentOutOfRangeException(nameof(lengths));
                 }
-                result[index1] = result2;
+
+                items = result.GetEnumerator();
+                itemType = itemType.MakeArrayType();
+                lastLengths = restLengths;
+                restLengths = new int[lastLengths.Length - 1];
+                Array.Copy(lastLengths, 0, restLengths, 0, restLengths.Length);
             }
             return result;
         }
+    }
 
-        /// <summary>
-        /// 将指定的三维数组转换为大小相等、元素相同的三维交错数组。
-        /// </summary>
-        /// <typeparam name="T">三维数组中的元素的类型。</typeparam>
-        /// <param name="array">要转换为三维交错数组的三维数组。</param>
-        /// <returns>与 <paramref name="array"/> 大小相等、元素相同的三维交错数组。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
-        public static T[][][] ToJaggedArray<T>(this T[,,] array)
+    /// <summary>
+    /// 将指定的二维数组转换为大小相等、元素相同的二维交错数组。
+    /// </summary>
+    /// <typeparam name="T">多维数组中的元素的类型。</typeparam>
+    /// <param name="array">要转换为二维交错数组的二维数组。</param>
+    /// <returns>与 <paramref name="array"/> 大小相等、元素相同的二维交错数组。</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+    public static T[][] ToJaggedArray<T>(this T[,] array)
+    {
+        if (array is null)
         {
-            if (array is null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
-
-            var length1 = array.GetLength(0);
-            var length2 = array.GetLength(1);
-            var length3 = array.GetLength(2);
-
-            var result = new T[length1][][];
-            for (int index1 = 0; index1 < length1; index1++)
-            {
-                var result2 = new T[length2][];
-                for (int index2 = 0; index2 < length2; index2++)
-                {
-                    var result3 = new T[length3];
-                    for (int index3 = 0; index3 < length3; index3++)
-                    {
-                        result3[index3] = array[index1, index2, index3];
-                    }
-                    result2[index2] = result3;
-                }
-                result[index1] = result2;
-            }
-            return result;
+            throw new ArgumentNullException(nameof(array));
         }
 
-        /// <summary>
-        /// 将指定的二维交错数组转换为大小相等、元素相同的二维数组。
-        /// </summary>
-        /// <typeparam name="T">二维交错数组中的元素的类型。</typeparam>
-        /// <param name="array">要转换为二维数组的二维交错数组。</param>
-        /// <returns>与 <paramref name="array"/> 大小相等、元素相同的二维数组。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> 为 <see langword="null"/>，
-        /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="array"/> 的内层数组的长度不相等。</exception>
-        public static T[,] ToRank2Array<T>(this T[][] array)
+        var length1 = array.GetLength(0);
+        var length2 = array.GetLength(1);
+
+        var result = new T[length1][];
+        for (int index1 = 0; index1 < length1; index1++)
         {
-            if (array is null)
+            var result2 = new T[length2];
+            for (int index2 = 0; index2 < length2; index2++)
             {
-                throw new ArgumentNullException(nameof(array));
+                result2[index2] = array[index1, index2];
+            }
+            result[index1] = result2;
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 将指定的三维数组转换为大小相等、元素相同的三维交错数组。
+    /// </summary>
+    /// <typeparam name="T">三维数组中的元素的类型。</typeparam>
+    /// <param name="array">要转换为三维交错数组的三维数组。</param>
+    /// <returns>与 <paramref name="array"/> 大小相等、元素相同的三维交错数组。</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="array"/> 为 <see langword="null"/>。</exception>
+    public static T[][][] ToJaggedArray<T>(this T[,,] array)
+    {
+        if (array is null)
+        {
+            throw new ArgumentNullException(nameof(array));
+        }
+
+        var length1 = array.GetLength(0);
+        var length2 = array.GetLength(1);
+        var length3 = array.GetLength(2);
+
+        var result = new T[length1][][];
+        for (int index1 = 0; index1 < length1; index1++)
+        {
+            var result2 = new T[length2][];
+            for (int index2 = 0; index2 < length2; index2++)
+            {
+                var result3 = new T[length3];
+                for (int index3 = 0; index3 < length3; index3++)
+                {
+                    result3[index3] = array[index1, index2, index3];
+                }
+                result2[index2] = result3;
+            }
+            result[index1] = result2;
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 将指定的二维交错数组转换为大小相等、元素相同的二维数组。
+    /// </summary>
+    /// <typeparam name="T">二维交错数组中的元素的类型。</typeparam>
+    /// <param name="array">要转换为二维数组的二维交错数组。</param>
+    /// <returns>与 <paramref name="array"/> 大小相等、元素相同的二维数组。</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="array"/> 为 <see langword="null"/>，
+    /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="array"/> 的内层数组的长度不相等。</exception>
+    public static T[,] ToRank2Array<T>(this T[][] array)
+    {
+        if (array is null)
+        {
+            throw new ArgumentNullException(nameof(array));
+        }
+
+        if (array.Length == 0)
+        {
+            return new T[0, 0];
+        }
+        if (array[0] is null)
+        {
+            throw new ArgumentNullException(nameof(array));
+        }
+
+        var length1 = array.Length;
+        var length2 = array[0].Length;
+
+        var result = new T[length1, length2];
+        for (int index1 = 0; index1 < length1; index1++)
+        {
+            var array2 = array[index1];
+            if (array2.Length != length2)
+            {
+                throw new ArgumentOutOfRangeException(nameof(array));
             }
 
-            if (array.Length == 0)
+            for (int index2 = 0; index2 < length2; index2++)
             {
-                return new T[0, 0];
+                result[index1, index2] = array2[index2];
             }
-            if (array[0] is null)
+        }
+        return result;
+    }
+
+    /// <summary>
+    /// 将指定的三维交错数组转换为大小相等、元素相同的三维数组。
+    /// </summary>
+    /// <typeparam name="T">交错数组中的元素的类型。</typeparam>
+    /// <param name="array">要转换为三维数组的三维交错数组。</param>
+    /// <returns>与 <paramref name="array"/> 大小相等、元素相同的三维数组。</returns>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="array"/> 为 <see langword="null"/>，
+    /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="array"/> 的内层数组的长度不相等。</exception>
+    public static T[,,] ToRank3Array<T>(this T[][][] array)
+    {
+        if (array is null)
+        {
+            throw new ArgumentNullException(nameof(array));
+        }
+
+        if (array.Length == 0)
+        {
+            return new T[0, 0, 0];
+        }
+        if (array[0] is null)
+        {
+            throw new ArgumentNullException(nameof(array));
+        }
+        if (array[0].Length == 0)
+        {
+            return new T[0, 0, 0];
+        }
+        if (array[0][0] is null)
+        {
+            throw new ArgumentNullException(nameof(array));
+        }
+
+        var length1 = array.Length;
+        var length2 = array[0].Length;
+        var length3 = array[0][0].Length;
+
+        var result = new T[length1, length2, length3];
+        for (int index1 = 0; index1 < length1; index1++)
+        {
+            var array2 = array[index1];
+            if (array2.Length != length2)
             {
-                throw new ArgumentNullException(nameof(array));
+                throw new ArgumentOutOfRangeException(nameof(array));
             }
 
-            var length1 = array.Length;
-            var length2 = array[0].Length;
-
-            var result = new T[length1, length2];
-            for (int index1 = 0; index1 < length1; index1++)
+            for (int index2 = 0; index2 < length2; index2++)
             {
-                var array2 = array[index1];
-                if (array2.Length != length2)
+                var array3 = array2[index2];
+                if (array3.Length != length3)
                 {
                     throw new ArgumentOutOfRangeException(nameof(array));
                 }
 
-                for (int index2 = 0; index2 < length2; index2++)
+                for (int index3 = 0; index3 < length3; index3++)
                 {
-                    result[index1, index2] = array2[index2];
+                    result[index1, index2, index3] = array3[index3];
                 }
             }
-            return result;
         }
-
-        /// <summary>
-        /// 将指定的三维交错数组转换为大小相等、元素相同的三维数组。
-        /// </summary>
-        /// <typeparam name="T">交错数组中的元素的类型。</typeparam>
-        /// <param name="array">要转换为三维数组的三维交错数组。</param>
-        /// <returns>与 <paramref name="array"/> 大小相等、元素相同的三维数组。</returns>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="array"/> 为 <see langword="null"/>，
-        /// 或 <paramref name="array"/> 的内层数组为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentOutOfRangeException">
-        /// <paramref name="array"/> 的内层数组的长度不相等。</exception>
-        public static T[,,] ToRank3Array<T>(this T[][][] array)
-        {
-            if (array is null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
-
-            if (array.Length == 0)
-            {
-                return new T[0, 0, 0];
-            }
-            if (array[0] is null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
-            if (array[0].Length == 0)
-            {
-                return new T[0, 0, 0];
-            }
-            if (array[0][0] is null)
-            {
-                throw new ArgumentNullException(nameof(array));
-            }
-
-            var length1 = array.Length;
-            var length2 = array[0].Length;
-            var length3 = array[0][0].Length;
-
-            var result = new T[length1, length2, length3];
-            for (int index1 = 0; index1 < length1; index1++)
-            {
-                var array2 = array[index1];
-                if (array2.Length != length2)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(array));
-                }
-
-                for (int index2 = 0; index2 < length2; index2++)
-                {
-                    var array3 = array2[index2];
-                    if (array3.Length != length3)
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(array));
-                    }
-
-                    for (int index3 = 0; index3 < length3; index3++)
-                    {
-                        result[index1, index2, index3] = array3[index3];
-                    }
-                }
-            }
-            return result;
-        }
+        return result;
     }
 }

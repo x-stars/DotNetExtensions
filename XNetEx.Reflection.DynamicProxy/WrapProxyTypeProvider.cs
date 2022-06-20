@@ -6,377 +6,376 @@ using System.Reflection;
 using System.Reflection.Emit;
 using XNetEx.Reflection.Emit;
 
-namespace XNetEx.Reflection
+namespace XNetEx.Reflection;
+
+/// <summary>
+/// 提供基于代理委托 <see cref="MethodInvokeHandler"/> 的包装代理类型。
+/// </summary>
+public sealed class WrapProxyTypeProvider
 {
     /// <summary>
-    /// 提供基于代理委托 <see cref="MethodInvokeHandler"/> 的包装代理类型。
+    /// 提供用于定义代理类型的动态程序集的模块。
     /// </summary>
-    public sealed class WrapProxyTypeProvider
+    private static class ModuleProvider
     {
         /// <summary>
-        /// 提供用于定义代理类型的动态程序集的模块。
+        /// 表示用于定义代理类型的动态程序集的模块。
         /// </summary>
-        private static class ModuleProvider
-        {
-            /// <summary>
-            /// 表示用于定义代理类型的动态程序集的模块。
-            /// </summary>
-            internal static readonly ModuleBuilder ProxyTypesModule =
-                ModuleProvider.CreateProxyTypesModule();
+        internal static readonly ModuleBuilder ProxyTypesModule =
+            ModuleProvider.CreateProxyTypesModule();
 
-            /// <summary>
-            /// 定义代理类型所在的动态程序集的模块。
-            /// </summary>
-            /// <returns>用于定义代理类型的动态程序集的模块。</returns>
-            private static ModuleBuilder CreateProxyTypesModule()
-            {
-                var assemblyName = typeof(WrapProxyTypeProvider).ToString();
-                var assembly = AssemblyBuilder.DefineDynamicAssembly(
-                    new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
-                var module = assembly.DefineDynamicModule($"{assemblyName}.dll");
-                return module;
-            }
+        /// <summary>
+        /// 定义代理类型所在的动态程序集的模块。
+        /// </summary>
+        /// <returns>用于定义代理类型的动态程序集的模块。</returns>
+        private static ModuleBuilder CreateProxyTypesModule()
+        {
+            var assemblyName = typeof(WrapProxyTypeProvider).ToString();
+            var assembly = AssemblyBuilder.DefineDynamicAssembly(
+                new AssemblyName(assemblyName), AssemblyBuilderAccess.Run);
+            var module = assembly.DefineDynamicModule($"{assemblyName}.dll");
+            return module;
+        }
+    }
+
+    /// <summary>
+    /// 表示 <see cref="WrapProxyTypeProvider.OfType(Type)"/> 的延迟初始化对象。
+    /// </summary>
+    private static readonly ConcurrentDictionary<Type, Lazy<WrapProxyTypeProvider>> LazyOfTypes =
+        new ConcurrentDictionary<Type, Lazy<WrapProxyTypeProvider>>();
+
+    /// <summary>
+    /// 表示 <see cref="WrapProxyTypeProvider.ProxyType"/> 的延迟初始化对象。
+    /// </summary>
+    private readonly Lazy<Type> LazyProxyType;
+
+    /// <summary>
+    /// 表示 <see cref="WrapProxyTypeProvider.InstanceField"/> 的延迟初始化对象。
+    /// </summary>
+    private readonly Lazy<FieldInfo> LazyInstanceField;
+
+    /// <summary>
+    /// 表示 <see cref="WrapProxyTypeProvider.HandlerField"/> 的延迟初始化对象。
+    /// </summary>
+    private readonly Lazy<FieldInfo> LazyHandlerField;
+
+    /// <summary>
+    /// 表示原型类型中应按照代理模式重写的方法列表。
+    /// </summary>
+    private MethodInfo[]? BaseMethods;
+
+    /// <summary>
+    /// 表示原型类型中应按照非代理模式重写的方法列表。
+    /// </summary>
+    private MethodInfo[]? BaseNonMethods;
+
+    /// <summary>
+    /// 表示代理类型的 <see cref="TypeBuilder"/> 对象。
+    /// </summary>
+    private TypeBuilder? ProxyTypeBuilder;
+
+    /// <summary>
+    /// 表示代理类型中代理对象的字段。
+    /// </summary>
+    private FieldInfo? ProxyInstanceField;
+
+    /// <summary>
+    /// 表示代理类型中所有原型类型方法的 <see cref="MethodDelegate"/> 委托的字段。
+    /// </summary>
+    private Dictionary<MethodInfo, FieldInfo>? BaseMethodDelegateFields;
+
+    /// <summary>
+    /// 表示代理类型中存储原型类型方法的 <see cref="MethodInfo"/> 的字段。
+    /// </summary>
+    private Dictionary<MethodInfo, FieldInfo>? BaseMethodInfoFields;
+
+    /// <summary>
+    /// 使用指定的原型类型初始化 <see cref="WrapProxyTypeProvider"/> 类的新实例。
+    /// </summary>
+    /// <param name="baseType">原型类型，应为接口。</param>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="baseType"/> 不是公共接口。</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="baseType"/> 为 <see langword="null"/>。</exception>
+    private WrapProxyTypeProvider(Type baseType)
+    {
+        if (baseType is null)
+        {
+            throw new ArgumentNullException(nameof(baseType));
+        }
+        if (!(baseType.IsVisible && baseType.IsInterface && !baseType.ContainsGenericParameters))
+        {
+            var inner = new TypeAccessException();
+            throw new ArgumentException(inner.Message, nameof(baseType), inner);
         }
 
-        /// <summary>
-        /// 表示 <see cref="WrapProxyTypeProvider.OfType(Type)"/> 的延迟初始化对象。
-        /// </summary>
-        private static readonly ConcurrentDictionary<Type, Lazy<WrapProxyTypeProvider>> LazyOfTypes =
-            new ConcurrentDictionary<Type, Lazy<WrapProxyTypeProvider>>();
+        this.BaseType = baseType;
+        this.LazyProxyType = new Lazy<Type>(this.CreateProxyType);
+        this.LazyHandlerField = new Lazy<FieldInfo>(this.FindHandlerField);
+        this.LazyInstanceField = new Lazy<FieldInfo>(this.FindInstanceField);
+    }
 
-        /// <summary>
-        /// 表示 <see cref="WrapProxyTypeProvider.ProxyType"/> 的延迟初始化对象。
-        /// </summary>
-        private readonly Lazy<Type> LazyProxyType;
+    /// <summary>
+    /// 获取原型类型的 <see cref="Type"/> 对象。
+    /// </summary>
+    /// <returns>原型类型的 <see cref="Type"/> 对象。</returns>
+    public Type BaseType { get; }
 
-        /// <summary>
-        /// 表示 <see cref="WrapProxyTypeProvider.InstanceField"/> 的延迟初始化对象。
-        /// </summary>
-        private readonly Lazy<FieldInfo> LazyInstanceField;
+    /// <summary>
+    /// 获取代理类型的 <see cref="Type"/> 对象。
+    /// </summary>
+    /// <returns>代理类型的 <see cref="Type"/> 对象。</returns>
+    public Type ProxyType => this.LazyProxyType.Value;
 
-        /// <summary>
-        /// 表示 <see cref="WrapProxyTypeProvider.HandlerField"/> 的延迟初始化对象。
-        /// </summary>
-        private readonly Lazy<FieldInfo> LazyHandlerField;
+    /// <summary>
+    /// 获取代理类型中的代理对象字段的 <see cref="FieldInfo"/> 对象。
+    /// </summary>
+    /// <returns>代理类型中的代理对象字段的 <see cref="FieldInfo"/> 对象。</returns>
+    public FieldInfo InstanceField => this.LazyInstanceField.Value;
 
-        /// <summary>
-        /// 表示原型类型中应按照代理模式重写的方法列表。
-        /// </summary>
-        private MethodInfo[]? BaseMethods;
+    /// <summary>
+    /// 获取代理类型中的代理委托字段的 <see cref="FieldInfo"/> 对象。
+    /// </summary>
+    /// <returns>代理类型中的代理委托字段的 <see cref="FieldInfo"/> 对象。</returns>
+    public FieldInfo HandlerField => this.LazyHandlerField.Value;
 
-        /// <summary>
-        /// 表示原型类型中应按照非代理模式重写的方法列表。
-        /// </summary>
-        private MethodInfo[]? BaseNonMethods;
+    /// <summary>
+    /// 获取原型类型为指定类型的 <see cref="WrapProxyTypeProvider"/> 类的实例。
+    /// </summary>
+    /// <param name="baseType">原型类型的 <see cref="Type"/> 对象。</param>
+    /// <returns>一个原型类型为 <paramref name="baseType"/> 的
+    /// <see cref="WrapProxyTypeProvider"/> 类的实例。</returns>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="baseType"/> 不是公共接口。</exception>
+    /// <exception cref="ArgumentNullException">
+    /// <paramref name="baseType"/> 为 <see langword="null"/>。</exception>
+    public static WrapProxyTypeProvider OfType(Type baseType) =>
+        WrapProxyTypeProvider.LazyOfTypes.GetOrAdd(baseType,
+            newBaseType => new Lazy<WrapProxyTypeProvider>(
+                () => new WrapProxyTypeProvider(newBaseType))).Value;
 
-        /// <summary>
-        /// 表示代理类型的 <see cref="TypeBuilder"/> 对象。
-        /// </summary>
-        private TypeBuilder? ProxyTypeBuilder;
+    /// <summary>
+    /// 获取原型类型中按照代理模式重写的方法列表。
+    /// </summary>
+    /// <returns>原型类型中按照代理模式重写的方法列表。</returns>
+    public MethodInfo[] GetProxyOverrideMethods()
+    {
+        var type = this.ProxyType;
+        var methods = this.BaseMethods!;
+        return (MethodInfo[])methods.Clone();
+    }
 
-        /// <summary>
-        /// 表示代理类型中代理对象的字段。
-        /// </summary>
-        private FieldInfo? ProxyInstanceField;
-
-        /// <summary>
-        /// 表示代理类型中所有原型类型方法的 <see cref="MethodDelegate"/> 委托的字段。
-        /// </summary>
-        private Dictionary<MethodInfo, FieldInfo>? BaseMethodDelegateFields;
-
-        /// <summary>
-        /// 表示代理类型中存储原型类型方法的 <see cref="MethodInfo"/> 的字段。
-        /// </summary>
-        private Dictionary<MethodInfo, FieldInfo>? BaseMethodInfoFields;
-
-        /// <summary>
-        /// 使用指定的原型类型初始化 <see cref="WrapProxyTypeProvider"/> 类的新实例。
-        /// </summary>
-        /// <param name="baseType">原型类型，应为接口。</param>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="baseType"/> 不是公共接口。</exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="baseType"/> 为 <see langword="null"/>。</exception>
-        private WrapProxyTypeProvider(Type baseType)
+    /// <summary>
+    /// 使用指定的代理对象创建代理类型的实例，并将其代理委托设定为指定的委托。
+    /// </summary>
+    /// <param name="instance">要为其提供代理的对象。</param>
+    /// <param name="handler">方法调用所用的代理委托。</param>
+    /// <returns>一个为指定对象提供以指定委托定义的代理的代理类型的实例。</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="instance"/>
+    /// 或 <paramref name="handler"/> 为 <see langword="null"/>。</exception>
+    /// <exception cref="ArgumentException"><paramref name="instance"/>
+    /// 无法转换为 <see cref="WrapProxyTypeProvider.BaseType"/> 类型。</exception>
+    public object CreateProxyInstance(object instance, MethodInvokeHandler handler)
+    {
+        if (instance is null)
         {
-            if (baseType is null)
-            {
-                throw new ArgumentNullException(nameof(baseType));
-            }
-            if (!(baseType.IsVisible && baseType.IsInterface && !baseType.ContainsGenericParameters))
-            {
-                var inner = new TypeAccessException();
-                throw new ArgumentException(inner.Message, nameof(baseType), inner);
-            }
-
-            this.BaseType = baseType;
-            this.LazyProxyType = new Lazy<Type>(this.CreateProxyType);
-            this.LazyHandlerField = new Lazy<FieldInfo>(this.FindHandlerField);
-            this.LazyInstanceField = new Lazy<FieldInfo>(this.FindInstanceField);
+            throw new ArgumentNullException(nameof(instance));
+        }
+        if (handler is null)
+        {
+            throw new ArgumentNullException(nameof(handler));
+        }
+        if (!this.BaseType.IsAssignableFrom(instance.GetType()))
+        {
+            var inner = new InvalidCastException();
+            throw new ArgumentException(inner.Message, nameof(instance), inner);
         }
 
-        /// <summary>
-        /// 获取原型类型的 <see cref="Type"/> 对象。
-        /// </summary>
-        /// <returns>原型类型的 <see cref="Type"/> 对象。</returns>
-        public Type BaseType { get; }
+        var proxy = Activator.CreateInstance(this.ProxyType)!;
+        this.InstanceField.SetValue(proxy, instance);
+        this.HandlerField.SetValue(proxy, handler);
+        return proxy;
+    }
 
-        /// <summary>
-        /// 获取代理类型的 <see cref="Type"/> 对象。
-        /// </summary>
-        /// <returns>代理类型的 <see cref="Type"/> 对象。</returns>
-        public Type ProxyType => this.LazyProxyType.Value;
+    /// <summary>
+    /// 创建代理类型。
+    /// </summary>
+    /// <returns>创建的代理类型。</returns>
+    private Type CreateProxyType()
+    {
+        this.InitializeBaseMethods();
 
-        /// <summary>
-        /// 获取代理类型中的代理对象字段的 <see cref="FieldInfo"/> 对象。
-        /// </summary>
-        /// <returns>代理类型中的代理对象字段的 <see cref="FieldInfo"/> 对象。</returns>
-        public FieldInfo InstanceField => this.LazyInstanceField.Value;
+        this.DefineProxyType();
 
-        /// <summary>
-        /// 获取代理类型中的代理委托字段的 <see cref="FieldInfo"/> 对象。
-        /// </summary>
-        /// <returns>代理类型中的代理委托字段的 <see cref="FieldInfo"/> 对象。</returns>
-        public FieldInfo HandlerField => this.LazyHandlerField.Value;
+        this.DefineProxyTypeConstructors();
+        this.DefineProxyInstanceField();
+        this.DefineBaseMethodInfoAndDelegateFields();
+        this.DefineProxyOverrideMethods();
+        this.DefineNonProxyOverrideMethods();
 
-        /// <summary>
-        /// 获取原型类型为指定类型的 <see cref="WrapProxyTypeProvider"/> 类的实例。
-        /// </summary>
-        /// <param name="baseType">原型类型的 <see cref="Type"/> 对象。</param>
-        /// <returns>一个原型类型为 <paramref name="baseType"/> 的
-        /// <see cref="WrapProxyTypeProvider"/> 类的实例。</returns>
-        /// <exception cref="ArgumentException">
-        /// <paramref name="baseType"/> 不是公共接口。</exception>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="baseType"/> 为 <see langword="null"/>。</exception>
-        public static WrapProxyTypeProvider OfType(Type baseType) =>
-            WrapProxyTypeProvider.LazyOfTypes.GetOrAdd(baseType,
-                newBaseType => new Lazy<WrapProxyTypeProvider>(
-                    () => new WrapProxyTypeProvider(newBaseType))).Value;
+        return this.ProxyTypeBuilder!.CreateTypeInfo()!;
+    }
 
-        /// <summary>
-        /// 获取原型类型中按照代理模式重写的方法列表。
-        /// </summary>
-        /// <returns>原型类型中按照代理模式重写的方法列表。</returns>
-        public MethodInfo[] GetProxyOverrideMethods()
+    /// <summary>
+    /// 搜寻代理类型中的代理对象字段。
+    /// </summary>
+    /// <returns>代理类型中的 <see cref="MethodInvokeHandler"/> 字段。</returns>
+    private FieldInfo FindInstanceField()
+    {
+        return this.ProxyType.GetField("Instance",
+            BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic)!;
+    }
+
+    /// <summary>
+    /// 搜寻代理类型中的代理委托字段。
+    /// </summary>
+    /// <returns>代理类型中的代理委托字段。</returns>
+    private FieldInfo FindHandlerField()
+    {
+        return this.ProxyType.GetField("Handler",
+            BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic)!;
+    }
+
+    /// <summary>
+    /// 初始化原型类型中应该重写的方法。
+    /// </summary>
+    private void InitializeBaseMethods()
+    {
+        this.BaseMethods = this.BaseType.GetAccessibleMethods().Where(
+            method => method.IsProxyOverride()).ToArray();
+        this.BaseNonMethods = this.BaseType.GetAccessibleMethods().Where(
+            method => method.IsNonProxyOverride()).ToArray();
+    }
+
+    /// <summary>
+    /// 定义代理类型。
+    /// </summary>
+    private void DefineProxyType()
+    {
+        var baseType = this.BaseType;
+        var module = ModuleProvider.ProxyTypesModule;
+
+        var baseNamespace = baseType.Namespace;
+        var @namespace = (baseNamespace is not null) ? $"{baseNamespace}." : "";
+        var baseTypeNames = new List<string>();
+        for (var nestedType = baseType; nestedType is not null; nestedType = nestedType.DeclaringType)
         {
-            var type = this.ProxyType;
-            var methods = this.BaseMethods!;
-            return (MethodInfo[])methods.Clone();
+            baseTypeNames.Insert(0, nestedType.Name);
+        }
+        var typeNames = baseTypeNames.ToArray();
+        var joinedTypeNames = string.Join("-", typeNames);
+        var baseGenericArgumentNames = Array.ConvertAll(
+            baseType.GetGenericArguments(), genericArgument => genericArgument.ToString());
+        var genericArgumentNames = Array.ConvertAll(
+            baseGenericArgumentNames, name => name.Replace('.', '-').Replace('+', '-'));
+        var joinedGenericArgumentNames = baseType.IsGenericType ?
+            $"<{string.Join(",", genericArgumentNames)}>" : "";
+        var fullName = $"{@namespace}$WrapProxy@{joinedTypeNames}{joinedGenericArgumentNames}" +
+            $"#{baseType.TypeHandle.Value.ToString()}";
+
+        var parent = typeof(object);
+        var interfaces = new[] { baseType }.Concat(baseType.GetInterfaces()).ToArray();
+
+        var type = module.DefineType(fullName, TypeAttributes.Class |
+            TypeAttributes.Public | TypeAttributes.BeforeFieldInit, parent, interfaces);
+
+        this.ProxyTypeBuilder = type;
+    }
+
+    /// <summary>
+    /// 定义代理类型的构造函数。
+    /// </summary>
+    private void DefineProxyTypeConstructors()
+    {
+        var baseType = this.BaseType;
+        var type = this.ProxyTypeBuilder!;
+
+        var parent = typeof(object);
+        var baseConstructors = parent.GetConstructors().Where(
+            constructor => constructor.IsInheritable()).ToArray();
+
+        foreach (var baseConstructor in baseConstructors)
+        {
+            var constructor = type.DefineBaseInvokeConstructorLike(baseConstructor);
+        }
+    }
+
+    /// <summary>
+    /// 定义代理对象字段。
+    /// </summary>
+    private void DefineProxyInstanceField()
+    {
+        var baseType = this.BaseType;
+        var type = this.ProxyTypeBuilder!;
+
+        var field = type.DefineField("Instance", baseType, FieldAttributes.Assembly);
+
+        this.ProxyInstanceField = field;
+    }
+
+    /// <summary>
+    /// 定义所有原型类型方法的方法信息和方法委托字段。
+    /// </summary>
+    private void DefineBaseMethodInfoAndDelegateFields()
+    {
+        var baseType = this.BaseType;
+        var baseMethods = this.BaseMethods!;
+        var type = this.ProxyTypeBuilder!;
+        var instanceField = this.ProxyInstanceField!;
+
+        var infoFields = new Dictionary<MethodInfo, FieldInfo>();
+        var delegateFields = new Dictionary<MethodInfo, FieldInfo>();
+
+        foreach (var baseMethod in baseMethods)
+        {
+            var fields = type.DefineBaseMethodInfoAndDelegateField(
+                baseMethod, baseType, instanceField);
+            infoFields[baseMethod] = fields.InfoField;
+            delegateFields[baseMethod] = fields.DelegateField;
         }
 
-        /// <summary>
-        /// 使用指定的代理对象创建代理类型的实例，并将其代理委托设定为指定的委托。
-        /// </summary>
-        /// <param name="instance">要为其提供代理的对象。</param>
-        /// <param name="handler">方法调用所用的代理委托。</param>
-        /// <returns>一个为指定对象提供以指定委托定义的代理的代理类型的实例。</returns>
-        /// <exception cref="ArgumentNullException"><paramref name="instance"/>
-        /// 或 <paramref name="handler"/> 为 <see langword="null"/>。</exception>
-        /// <exception cref="ArgumentException"><paramref name="instance"/>
-        /// 无法转换为 <see cref="WrapProxyTypeProvider.BaseType"/> 类型。</exception>
-        public object CreateProxyInstance(object instance, MethodInvokeHandler handler)
-        {
-            if (instance is null)
-            {
-                throw new ArgumentNullException(nameof(instance));
-            }
-            if (handler is null)
-            {
-                throw new ArgumentNullException(nameof(handler));
-            }
-            if (!this.BaseType.IsAssignableFrom(instance.GetType()))
-            {
-                var inner = new InvalidCastException();
-                throw new ArgumentException(inner.Message, nameof(instance), inner);
-            }
+        this.BaseMethodInfoFields = infoFields;
+        this.BaseMethodDelegateFields = delegateFields;
+    }
 
-            var proxy = Activator.CreateInstance(this.ProxyType)!;
-            this.InstanceField.SetValue(proxy, instance);
-            this.HandlerField.SetValue(proxy, handler);
-            return proxy;
+    /// <summary>
+    /// 定义所有代理方法，并重写原型类型中的对应方法。
+    /// </summary>
+    private void DefineProxyOverrideMethods()
+    {
+        var baseType = this.BaseType;
+        var baseMethods = this.BaseMethods!;
+        var type = this.ProxyTypeBuilder!;
+        var instanceField = this.ProxyInstanceField!;
+        var baseMethodInfoFields = this.BaseMethodInfoFields!;
+        var baseMethodDelegateFields = this.BaseMethodDelegateFields!;
+
+        var handlerField = type.DefineField("Handler",
+            typeof(MethodInvokeHandler), FieldAttributes.Assembly);
+
+        foreach (var baseMethod in baseMethods)
+        {
+            var baseMethodInfoField = baseMethodInfoFields[baseMethod];
+            var baseMethodDelegateField = baseMethodDelegateFields[baseMethod];
+            var method = type.DefineProxyMethodOverride(baseMethod, baseType,
+                baseMethodInfoField, baseMethodDelegateField, handlerField,
+                instanceField, explicitOverride: true);
         }
+    }
 
-        /// <summary>
-        /// 创建代理类型。
-        /// </summary>
-        /// <returns>创建的代理类型。</returns>
-        private Type CreateProxyType()
+    /// <summary>
+    /// 定义所有非代理方法，并重写原型类型中的对应方法。
+    /// </summary>
+    private void DefineNonProxyOverrideMethods()
+    {
+        var baseMethods = this.BaseNonMethods!;
+        var type = this.ProxyTypeBuilder!;
+        var instanceField = this.ProxyInstanceField!;
+
+        foreach (var baseMethod in baseMethods)
         {
-            this.InitializeBaseMethods();
-
-            this.DefineProxyType();
-
-            this.DefineProxyTypeConstructors();
-            this.DefineProxyInstanceField();
-            this.DefineBaseMethodInfoAndDelegateFields();
-            this.DefineProxyOverrideMethods();
-            this.DefineNonProxyOverrideMethods();
-
-            return this.ProxyTypeBuilder!.CreateTypeInfo()!;
-        }
-
-        /// <summary>
-        /// 搜寻代理类型中的代理对象字段。
-        /// </summary>
-        /// <returns>代理类型中的 <see cref="MethodInvokeHandler"/> 字段。</returns>
-        private FieldInfo FindInstanceField()
-        {
-            return this.ProxyType.GetField("Instance",
-                BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic)!;
-        }
-
-        /// <summary>
-        /// 搜寻代理类型中的代理委托字段。
-        /// </summary>
-        /// <returns>代理类型中的代理委托字段。</returns>
-        private FieldInfo FindHandlerField()
-        {
-            return this.ProxyType.GetField("Handler",
-                BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.NonPublic)!;
-        }
-
-        /// <summary>
-        /// 初始化原型类型中应该重写的方法。
-        /// </summary>
-        private void InitializeBaseMethods()
-        {
-            this.BaseMethods = this.BaseType.GetAccessibleMethods().Where(
-                method => method.IsProxyOverride()).ToArray();
-            this.BaseNonMethods = this.BaseType.GetAccessibleMethods().Where(
-                method => method.IsNonProxyOverride()).ToArray();
-        }
-
-        /// <summary>
-        /// 定义代理类型。
-        /// </summary>
-        private void DefineProxyType()
-        {
-            var baseType = this.BaseType;
-            var module = ModuleProvider.ProxyTypesModule;
-
-            var baseNamespace = baseType.Namespace;
-            var @namespace = (baseNamespace is not null) ? $"{baseNamespace}." : "";
-            var baseTypeNames = new List<string>();
-            for (var nestedType = baseType; nestedType is not null; nestedType = nestedType.DeclaringType)
-            {
-                baseTypeNames.Insert(0, nestedType.Name);
-            }
-            var typeNames = baseTypeNames.ToArray();
-            var joinedTypeNames = string.Join("-", typeNames);
-            var baseGenericArgumentNames = Array.ConvertAll(
-                baseType.GetGenericArguments(), genericArgument => genericArgument.ToString());
-            var genericArgumentNames = Array.ConvertAll(
-                baseGenericArgumentNames, name => name.Replace('.', '-').Replace('+', '-'));
-            var joinedGenericArgumentNames = baseType.IsGenericType ?
-                $"<{string.Join(",", genericArgumentNames)}>" : "";
-            var fullName = $"{@namespace}$WrapProxy@{joinedTypeNames}{joinedGenericArgumentNames}" +
-                $"#{baseType.TypeHandle.Value.ToString()}";
-
-            var parent = typeof(object);
-            var interfaces = new[] { baseType }.Concat(baseType.GetInterfaces()).ToArray();
-
-            var type = module.DefineType(fullName, TypeAttributes.Class |
-                TypeAttributes.Public | TypeAttributes.BeforeFieldInit, parent, interfaces);
-
-            this.ProxyTypeBuilder = type;
-        }
-
-        /// <summary>
-        /// 定义代理类型的构造函数。
-        /// </summary>
-        private void DefineProxyTypeConstructors()
-        {
-            var baseType = this.BaseType;
-            var type = this.ProxyTypeBuilder!;
-
-            var parent = typeof(object);
-            var baseConstructors = parent.GetConstructors().Where(
-                constructor => constructor.IsInheritable()).ToArray();
-
-            foreach (var baseConstructor in baseConstructors)
-            {
-                var constructor = type.DefineBaseInvokeConstructorLike(baseConstructor);
-            }
-        }
-
-        /// <summary>
-        /// 定义代理对象字段。
-        /// </summary>
-        private void DefineProxyInstanceField()
-        {
-            var baseType = this.BaseType;
-            var type = this.ProxyTypeBuilder!;
-
-            var field = type.DefineField("Instance", baseType, FieldAttributes.Assembly);
-
-            this.ProxyInstanceField = field;
-        }
-
-        /// <summary>
-        /// 定义所有原型类型方法的方法信息和方法委托字段。
-        /// </summary>
-        private void DefineBaseMethodInfoAndDelegateFields()
-        {
-            var baseType = this.BaseType;
-            var baseMethods = this.BaseMethods!;
-            var type = this.ProxyTypeBuilder!;
-            var instanceField = this.ProxyInstanceField!;
-
-            var infoFields = new Dictionary<MethodInfo, FieldInfo>();
-            var delegateFields = new Dictionary<MethodInfo, FieldInfo>();
-
-            foreach (var baseMethod in baseMethods)
-            {
-                var fields = type.DefineBaseMethodInfoAndDelegateField(
-                    baseMethod, baseType, instanceField);
-                infoFields[baseMethod] = fields.InfoField;
-                delegateFields[baseMethod] = fields.DelegateField;
-            }
-
-            this.BaseMethodInfoFields = infoFields;
-            this.BaseMethodDelegateFields = delegateFields;
-        }
-
-        /// <summary>
-        /// 定义所有代理方法，并重写原型类型中的对应方法。
-        /// </summary>
-        private void DefineProxyOverrideMethods()
-        {
-            var baseType = this.BaseType;
-            var baseMethods = this.BaseMethods!;
-            var type = this.ProxyTypeBuilder!;
-            var instanceField = this.ProxyInstanceField!;
-            var baseMethodInfoFields = this.BaseMethodInfoFields!;
-            var baseMethodDelegateFields = this.BaseMethodDelegateFields!;
-
-            var handlerField = type.DefineField("Handler",
-                typeof(MethodInvokeHandler), FieldAttributes.Assembly);
-
-            foreach (var baseMethod in baseMethods)
-            {
-                var baseMethodInfoField = baseMethodInfoFields[baseMethod];
-                var baseMethodDelegateField = baseMethodDelegateFields[baseMethod];
-                var method = type.DefineProxyMethodOverride(baseMethod, baseType,
-                    baseMethodInfoField, baseMethodDelegateField, handlerField,
-                    instanceField, explicitOverride: true);
-            }
-        }
-
-        /// <summary>
-        /// 定义所有非代理方法，并重写原型类型中的对应方法。
-        /// </summary>
-        private void DefineNonProxyOverrideMethods()
-        {
-            var baseMethods = this.BaseNonMethods!;
-            var type = this.ProxyTypeBuilder!;
-            var instanceField = this.ProxyInstanceField!;
-
-            foreach (var baseMethod in baseMethods)
-            {
-                var method = type.DefineBaseInvokeMethodOverride(
-                    baseMethod, instanceField, explicitOverride: true);
-            }
+            var method = type.DefineBaseInvokeMethodOverride(
+                baseMethod, instanceField, explicitOverride: true);
         }
     }
 }
