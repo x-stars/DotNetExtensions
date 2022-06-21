@@ -51,13 +51,15 @@ internal sealed class TextLineEnumerator : IEnumerable<string>, IEnumerator<stri
     /// 获取文本读取器在当前位置读取到的文本行。
     /// </summary>
     /// <returns>文本读取器在当前位置读取到的文本行。</returns>
-    public string Current => this.CurrentLine!;
+    /// <exception cref="InvalidOperationException">迭代尚未开始或已完成。</exception>
+    public string Current => this.CurrentLine ?? throw new InvalidOperationException();
 
     /// <summary>
     /// 获取文本读取器在当前位置读取到的文本行。
     /// </summary>
     /// <returns>文本读取器在当前位置读取到的文本行。</returns>
-    object IEnumerator.Current => this.CurrentLine!;
+    /// <exception cref="InvalidOperationException">迭代尚未开始或已完成。</exception>
+    object IEnumerator.Current => this.Current;
 
     /// <summary>
     /// 根据初始化参数的指示释放输入的文本读取器。
@@ -113,10 +115,10 @@ internal sealed class TextLineEnumerator : IEnumerable<string>, IEnumerator<stri
     /// 返回当前按行迭代读取文本的枚举器。
     /// </summary>
     /// <returns>当前按行迭代读取文本的枚举器。</returns>
-    IEnumerator IEnumerable.GetEnumerator() => this;
+    IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
     /// <summary>
-    /// 不支持此方法，永远抛出 <see cref="NotSupportedException"/> 异常。
+    /// 不支持此方法，总是抛出 <see cref="NotSupportedException"/> 异常。
     /// </summary>
     /// <exception cref="NotSupportedException">不支持此方法。</exception>
     void IEnumerator.Reset() => throw new NotSupportedException();
