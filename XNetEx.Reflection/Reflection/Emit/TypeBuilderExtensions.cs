@@ -7,9 +7,9 @@ using System.Threading;
 namespace XNetEx.Reflection.Emit;
 
 /// <summary>
-/// 提供运行时类型生成相关的扩展方法。
+/// 提供 <see cref="TypeBuilder"/> 的扩展方法。
 /// </summary>
-public static class TypeBuildingExtensions
+public static class TypeBuilderExtensions
 {
     /// <summary>
     /// 提供当前类型使用的反射元数据的 <see cref="MemberInfo"/> 对象。
@@ -40,43 +40,6 @@ public static class TypeBuildingExtensions
             typeof(Interlocked).GetMethods().Where(
                 method => method.Name == nameof(Interlocked.CompareExchange) &&
                 method.IsGenericMethod).Single();
-    }
-
-    /// <summary>
-    /// 确定当前 <see cref="MethodBase"/> 是否为程序集外部可继承的实例方法。
-    /// </summary>
-    /// <param name="method">要进行检查的 <see cref="MethodBase"/> 对象。</param>
-    /// <returns>若 <paramref name="method"/> 是程序集外部可继承的实例方法，
-    /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-    public static bool IsInheritable(this MethodBase method)
-    {
-        if (method is null)
-        {
-            throw new ArgumentNullException(nameof(method));
-        }
-
-        return method.DeclaringType!.IsVisible && !method.DeclaringType.IsSealed &&
-            !method.IsStatic && (method.IsPublic || method.IsFamily || method.IsFamilyOrAssembly);
-    }
-
-    /// <summary>
-    /// 确定当前 <see cref="MethodInfo"/> 是否为程序集外部可重写的方法。
-    /// </summary>
-    /// <param name="method">要进行检查的 <see cref="MethodInfo"/> 对象。</param>
-    /// <returns>若 <paramref name="method"/> 是程序集外部可重写的方法，
-    /// 则为 <see langword="true"/>；否则为 <see langword="false"/>。</returns>
-    /// <exception cref="ArgumentNullException">
-    /// <paramref name="method"/> 为 <see langword="null"/>。</exception>
-    public static bool IsOverridable(this MethodInfo method)
-    {
-        if (method is null)
-        {
-            throw new ArgumentNullException(nameof(method));
-        }
-
-        return method.IsInheritable() && (method.IsVirtual && !method.IsFinal);
     }
 
     /// <summary>

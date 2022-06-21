@@ -1,12 +1,13 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>XNetEx.ComponentModel</RootNamespace>
+    <RootNamespace>XNetEx</RootNamespace>
     <TargetFrameworks>
       net461;net472;netcoreapp3.1;net6.0;netstandard2.0;netstandard2.1
     </TargetFrameworks>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
@@ -53,15 +54,18 @@
 
   <ItemGroup>
     <Compile Include="..\SharedItems\Common\**\*.cs" />
+    <Compile Include="..\SharedItems\SkipLocalsInit\**\*.cs" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\XNetEx.Reflection\XNetEx.Reflection.csproj" />
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='net' And
+                        '$(TargetFramework.CompareTo(`net47`))'&lt;'0'">
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard' And
                         '$(TargetFramework.CompareTo(`netstandard2.1`))'&lt;'0'">
     <PackageReference Include="System.Reflection.Emit" Version="4.6.0" />
+    <PackageReference Include="System.Reflection.Emit.Lightweight" Version="4.6.0" />
   </ItemGroup>
 
 </Project>

@@ -43,6 +43,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.ObjectModel", "XNetE
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.ObjectModel.ObservableProxy", "XNetEx.ObjectModel.ObservableProxy\XNetEx.ObjectModel.ObservableProxy.csproj", "{BE082600-979D-4DA8-A1D9-F966173FCB30}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Reflection", "XNetEx.Reflection\XNetEx.Reflection.csproj", "{474AFFBB-10C8-422E-BC13-57C3AFB8D205}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Reflection.DispatchProxy", "XNetEx.Reflection.DispatchProxy\XNetEx.Reflection.DispatchProxy.csproj", "{0C98D0FF-1256-4C40-80FC-E722FFA7D891}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Reflection.DynamicProxy", "XNetEx.Reflection.DynamicProxy\XNetEx.Reflection.DynamicProxy.csproj", "{22963809-2D60-44CE-B7F4-8143E8D2AC48}"
@@ -93,6 +95,10 @@ Global
 		{BE082600-979D-4DA8-A1D9-F966173FCB30}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BE082600-979D-4DA8-A1D9-F966173FCB30}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE082600-979D-4DA8-A1D9-F966173FCB30}.Release|Any CPU.Build.0 = Release|Any CPU
+		{474AFFBB-10C8-422E-BC13-57C3AFB8D205}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{474AFFBB-10C8-422E-BC13-57C3AFB8D205}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{474AFFBB-10C8-422E-BC13-57C3AFB8D205}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{474AFFBB-10C8-422E-BC13-57C3AFB8D205}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0C98D0FF-1256-4C40-80FC-E722FFA7D891}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0C98D0FF-1256-4C40-80FC-E722FFA7D891}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C98D0FF-1256-4C40-80FC-E722FFA7D891}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -43,6 +43,7 @@
     <ProjectReference Include="..\XNetEx.Console\XNetEx.Console.csproj" />
     <ProjectReference Include="..\XNetEx.ObjectModel\XNetEx.ObjectModel.csproj" />
     <ProjectReference Include="..\XNetEx.ObjectModel.ObservableProxy\XNetEx.ObjectModel.ObservableProxy.csproj" />
+    <ProjectReference Include="..\XNetEx.Reflection\XNetEx.Reflection.csproj" />
     <ProjectReference Include="..\XNetEx.Reflection.DispatchProxy\XNetEx.Reflection.DispatchProxy.csproj" />
     <ProjectReference Include="..\XNetEx.Reflection.DynamicProxy\XNetEx.Reflection.DynamicProxy.csproj" />
     <ProjectReference Include="..\XNetEx.Runtime\XNetEx.Runtime.csproj" />

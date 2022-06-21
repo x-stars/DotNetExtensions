@@ -5,9 +5,9 @@ using System.Reflection.Emit;
 namespace XNetEx.Reflection.Emit;
 
 /// <summary>
-/// 提供 IL 指令生成相关的扩展方法。
+/// 提供 <see cref="ILGenerator"/> 的扩展方法。
 /// </summary>
-public static class ILGenerationExtensions
+public static class ILGeneratorExtensions
 {
     /// <summary>
     /// 提供当前类型使用的反射元数据的 <see cref="MemberInfo"/> 对象。
