@@ -48,7 +48,7 @@ public static class ArrayExtensions
 
         var length = array.Length;
         var result = new object[length];
-        foreach (var index in ..length)
+        for (int index = 0; index < length; index++)
         {
             result[index] = array[index];
         }
@@ -72,7 +72,7 @@ public static class ArrayExtensions
 
         var length = array.Length;
         var result = new object?[length];
-        foreach (var index in ..length)
+        for (int index = 0; index < length; index++)
         {
             result[index] = array[index];
         }
@@ -121,17 +121,17 @@ public static class ArrayExtensions
         }
 
         int length = 0;
-        foreach (var index in ..arrays.Length)
+        foreach (var item in arrays)
         {
-            var array = arrays[index] ?? Array.Empty<T>();
+            var array = item ?? Array.Empty<T>();
             length += array.Length;
         }
 
         var result = new T[length];
         int offset = 0;
-        foreach (var index in ..arrays.Length)
+        foreach (var item in arrays)
         {
-            var array = arrays[index] ?? Array.Empty<T>();
+            var array = item ?? Array.Empty<T>();
             Array.Copy(array, 0, result, offset, array.Length);
             offset += array.Length;
         }
@@ -261,9 +261,10 @@ public static class ArrayExtensions
             throw new ArgumentOutOfRangeException(nameof(offset));
         }
 
-        var result = new int[array.Rank];
+        var rank = array.Rank;
+        var result = new int[rank];
         var scale = array.Length;
-        foreach (var rank in ..array.Rank)
+        for (int dim = 0; dim < rank; dim++)
         {
             var start = array.GetLowerBound(rank);
             scale /= array.GetLength(rank);
