@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace XNetEx;
+namespace XNetEx.Diagnostics;
 
 static partial class Validate
 {

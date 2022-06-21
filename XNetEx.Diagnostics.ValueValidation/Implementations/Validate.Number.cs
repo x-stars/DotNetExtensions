@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XNetEx;
+namespace XNetEx.Diagnostics;
 
 static partial class Validate
 {

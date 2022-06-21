@@ -1,21 +1,21 @@
 ﻿# 对象的值的验证
 
-包含于 XNetEx.ValueValidate 程序集，使用扩展方法实现连续对象的值的验证和抛出异常。
+包含于 XNetEx.Diagnostics.ValueValidation 程序集，使用扩展方法实现连续对象的值的验证和抛出异常。
 
-## 泛型接口 `XNetEx.IValueInfo<out T>`
+## 泛型接口 `XNetEx.Diagnostics.IValueInfo<out T>`
 
 提供值的验证所需的数据，包括值 `Value` 和值的名称 `Name`。
 
-## 静态类 `XNetEx.Validate`
+## 静态类 `XNetEx.Diagnostics.Validate`
 
-提供 `XNetEx.IValueInfo<out T>` 接口实例的工厂方法，以及值的验证和抛出异常的方法。
+提供 `XNetEx.Diagnostics.IValueInfo<out T>` 接口实例的工厂方法，以及值的验证和抛出异常的方法。
 
-值的验证过程全部通过 `XNetEx.IValueInfo<out T>` 的扩展方法实现，以便设定各种泛型约束。每个验证方法均包含一个名为 `message` 的可选参数，可自定义异常消息。
+值的验证过程全部通过 `XNetEx.Diagnostics.IValueInfo<out T>` 的扩展方法实现，以便设定各种泛型约束。每个验证方法均包含一个名为 `message` 的可选参数，可自定义异常消息。
 
 ## 值验证示例
 
 ``` CSharp
-using XNetEx;
+using XNetEx.Diagnostics;
 
 // 存在一个 string 类型的名为 param 的值。
 // 现要求其以数字开头，并且包含在键的集合 keys 中，

@@ -1,6 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
 
-namespace XNetEx;
+namespace XNetEx.Diagnostics;
 
 /// <summary>
 /// 提供对象的值的验证与对应异常的抛出的方法。

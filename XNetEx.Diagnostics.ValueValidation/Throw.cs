@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace XNetEx;
+namespace XNetEx.Diagnostics;
 
 /// <summary>
 /// 提供抛出特定异常的方法。

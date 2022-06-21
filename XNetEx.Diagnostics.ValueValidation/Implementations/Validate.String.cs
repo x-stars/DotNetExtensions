@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text.RegularExpressions;
 
-namespace XNetEx;
+namespace XNetEx.Diagnostics;
 
 static partial class Validate
 {

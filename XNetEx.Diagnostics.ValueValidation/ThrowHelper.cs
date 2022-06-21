@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace XNetEx;
+namespace XNetEx.Diagnostics;
 
 /// <summary>
 /// 提供抛出异常的方法。
