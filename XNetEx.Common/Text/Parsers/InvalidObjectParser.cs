@@ -7,12 +7,12 @@ namespace XNetEx.Text;
 /// 表示无法由字符串形式转换为对象的类型的字符串解析对象。
 /// </summary>
 /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
-internal sealed class InvalidStringParser<T> : StringParser<T> where T : notnull
+internal sealed class InvalidObjectParser<T> : ObjectParser<T> where T : notnull
 {
     /// <summary>
-    /// 初始化 <see cref="InvalidStringParser{T}"/> 类的新实例。
+    /// 初始化 <see cref="InvalidObjectParser{T}"/> 类的新实例。
     /// </summary>
-    public InvalidStringParser() { }
+    public InvalidObjectParser() { }
 
     /// <summary>
     /// 不支持此方法，始终抛出 <see cref="InvalidCastException"/> 异常。

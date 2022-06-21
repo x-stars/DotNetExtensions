@@ -6,12 +6,12 @@ namespace XNetEx.Text;
 /// <summary>
 /// 表示将类型的完整名称转换为其等效的类型声明的字符串解析对象。
 /// </summary>
-internal sealed class TypeStringParser : StringParser<Type>
+internal sealed class TypeNameParser : ObjectParser<Type>
 {
     /// <summary>
-    /// 初始化 <see cref="TypeStringParser"/> 类的新实例。
+    /// 初始化 <see cref="TypeNameParser"/> 类的新实例。
     /// </summary>
-    public TypeStringParser() { }
+    public TypeNameParser() { }
 
     /// <summary>
     /// 将指定的类型的完整名称转换为其等效的类型声明。
@@ -27,7 +27,7 @@ internal sealed class TypeStringParser : StringParser<Type>
         if (text is null) { throw new ArgumentNullException(nameof(text)); }
         try
         {
-            return Type.GetType(text) ?? TypeStringParser.FindType(text) ??
+            return Type.GetType(text) ?? TypeNameParser.FindType(text) ??
                 throw new TypeLoadException();
         }
         catch (Exception e) { throw new ArgumentException(e.Message, e); }
@@ -46,7 +46,7 @@ internal sealed class TypeStringParser : StringParser<Type>
     {
         return Type.GetType(typeName,
             assemblyResolver: null,
-            typeResolver: TypeStringParser.FindType,
+            typeResolver: TypeNameParser.FindType,
             throwOnError: true,
             ignoreCase: false);
     }

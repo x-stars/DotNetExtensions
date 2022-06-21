@@ -7,16 +7,16 @@ namespace XNetEx.Text;
 /// 表示使用类似于 <see cref="int.Parse(string)"/> 的方法将字符串转换为对象的字符串解析对象。
 /// </summary>
 /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
-internal sealed class ParsableStringParser<T> : StringParser<T> where T : notnull
+internal sealed class ParseMethodParser<T> : ObjectParser<T> where T : notnull
 {
     /// <summary>
-    /// 初始化 <see cref="ParsableStringParser{T}"/> 类的新实例。
+    /// 初始化 <see cref="ParseMethodParser{T}"/> 类的新实例。
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    /// <typeparamref name="T"/> 类型不提供解析字符串的静态方法。</exception>
-    public ParsableStringParser()
+    /// <typeparamref name="T"/> 类型不提供解析字符串的公共静态方法。</exception>
+    public ParseMethodParser()
     {
-        if (!ParsableStringParser<T>.CanParse)
+        if (!ParseMethodParser<T>.CanParse)
         {
             throw new InvalidOperationException();
         }

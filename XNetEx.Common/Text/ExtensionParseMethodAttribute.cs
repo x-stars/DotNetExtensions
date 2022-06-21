@@ -12,7 +12,7 @@ namespace XNetEx.Text;
 /// </summary>
 /// <remarks>
 /// 应用此特性的方法应定义于公共静态非嵌套非泛型类型，且方法本身也应为公共静态非泛型方法，
-/// 否则将无法应用于 <see cref="StringParser{T}.Default"/> 属性；
+/// 否则将无法应用于 <see cref="ObjectParser{T}.Default"/> 属性；
 /// 当存在多个应用于相同类型的扩展字符串解析方法时，仅使用第一个声明此特性的方法。
 /// </remarks>
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]

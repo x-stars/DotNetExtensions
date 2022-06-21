@@ -7,16 +7,16 @@ namespace XNetEx.Text;
 /// 表示使用标记为 <see cref="ExtensionParseMethodAttribute"/> 的方法将字符串转换为对象的字符串解析对象。
 /// </summary>
 /// <typeparam name="T">要从字符串解析为对象的类型。</typeparam>
-internal sealed class ExtensionStringParser<T> : StringParser<T> where T : notnull
+internal sealed class ExtensionMethodParser<T> : ObjectParser<T> where T : notnull
 {
     /// <summary>
-    /// 初始化 <see cref="ExtensionStringParser{T}"/> 类的新实例。
+    /// 初始化 <see cref="ExtensionMethodParser{T}"/> 类的新实例。
     /// </summary>
     /// <exception cref="InvalidOperationException">
     /// 没有适用于 <typeparamref name="T"/> 类型的扩展字符串解析方法。</exception>
-    public ExtensionStringParser()
+    public ExtensionMethodParser()
     {
-        if (!ExtensionStringParser<T>.CanParse)
+        if (!ExtensionMethodParser<T>.CanParse)
         {
             throw new InvalidOperationException();
         }
