@@ -54,7 +54,7 @@
 
   <ItemGroup>
     <Compile Include="..\SharedItems\Common\**\*.cs" />
-    <Compile Include="..\SharedItems\RefPairComparing\**\*.cs" />
+    <Compile Include="..\SharedItems\ReferenceCompare\**\*.cs" />
   </ItemGroup>
 
   <ItemGroup>
