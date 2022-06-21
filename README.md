@@ -14,7 +14,7 @@
 
 > C# 语言版本 >= 10.0
 
-## 程序集 XNetEx.Runtime
+## 程序集 XNetEx.Common
 
 系统基础相关，目前包含的命名空间：
 
@@ -29,6 +29,7 @@
 * `XNetEx.Reflection`
 * `XNetEx.Reflection.Emit`
 * `XNetEx.Runtime.CompilerServices`
+* `XNetEx.Text`
 
 > `XNetEx.Operators` 类型提供部分常用运算符，建议静态引入后调用。
 
@@ -59,6 +60,31 @@
   * 逐个读取按空白符分隔的输入并转换为值 `ReadTokenAs`
   * 以指定的颜色将值写入输出流 `WriteInColor`
   * 以指定的颜色将值写入错误流 `WriteErrorInColor`
+
+## 程序集 XNetEx.Collections.StructuralComparing
+
+提供结构化对象（数组、集合等）的结构化相等比较的方法。
+
+核心 API 类型：
+
+* 对象的结构化相等比较 `XNetEx.Collections.Generic.StructuralEqualityComparer<T>`
+
+## 程序集 XNetEx.Diagnostics.Representation
+
+提供将对象或结构化对象（数组、集合等）表示为文本的方法。
+
+核心 API 类型：
+
+* 将对象表示为文本 `XNetEx.Diagnostics.Representer<T>`
+* 将结构化对象表示为文本 `XNetEx.Diagnostics.StructuralRepresenter<T>`
+
+## 程序集 XNetEx.Diagnostics.ValueValidate
+
+提供连续的对象的值的验证和抛出异常的方法。
+
+相关文档：
+
+* [对象的值的验证](Documentation/ValueValidate.md)
 
 ## 程序集 XNetEx.ObjectModel
 
@@ -107,26 +133,7 @@
 * 直接代理类型 `XNetEx.Reflection.DirectProxyTypeProvider`
 * 包装代理类型 `XNetEx.Reflection.WrapProxyTypeProvider`
 
-## 程序集 XNetEx.Runtime.ObjectStructure
-
-提供结构化对象（数组、集合等）的结构化相等比较和结构化输出的方法。
-
-核心 API 类型：
-
-* 结构化相等比较 `XNetEx.Collections.Generic.StructuralEqualityComparer<T>`
-* 对象结构化输出 `XNetEx.Diagnostics.StructuralRepresenter<T>`
-
-## 程序集 XNetEx.Runtime.ObjectText
-
-提供对象与文本之间相互转换的方法，即将对象表示为文本和将文本解析为对象的方法。
-
-核心 API 类型：
-
-* 将对象表示为文本 `XNetEx.Diagnostics.Representer<T>`
-* 将文本解析为对象 `XNetEx.Text.StringParser<T>`
-  * 用户自定义扩展解析方法 `XNetEx.Text.ExtensionParseMethodAttribute`
-
-## 程序集 XNetEx.Runtime.Primitives
+## 程序集 XNetEx.Primitives
 
 提供框架原生值类型的补充类型，包括：
 
@@ -134,7 +141,7 @@
 * 24 位无符号整数 `XNetEx.UInt24`
 * 半精度浮点数 `XNetEx.Half`
 
-## 程序集 XNetEx.Runtime.Unions
+## 程序集 XNetEx.Primitives.Unions
 
 提供框架原生值类型的联合 `union`，包括：
 
@@ -143,14 +150,6 @@
 * 32 位数据类型联合 `XNetEx.Unions.DWordUnion`: `Int32`, `UInt32`, `Single`
 * 64 位数据类型联合 `XNetEx.Unions.QWordUnion`: `Int64`, `UInt64`, `Double`
 * 指针或句柄类型联合 `XNetEx.Unions.HandleUnion`: `IntPtr`, `UIntPtr`, `Void*`
-
-## 程序集 XNetEx.ValueValidate
-
-提供连续的对象的值的验证和抛出异常的方法。
-
-相关文档：
-
-* [对象的值的验证](Documentation/ValueValidate.md)
 
 ## 程序集 XNetEx.Win32
 
