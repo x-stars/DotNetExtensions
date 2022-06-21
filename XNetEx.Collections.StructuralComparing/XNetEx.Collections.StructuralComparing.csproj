@@ -58,8 +58,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\XNetEx.Runtime\XNetEx.Runtime.csproj" />
-    <ProjectReference Include="..\XNetEx.Runtime.ObjectText\XNetEx.Runtime.ObjectText.csproj" />
+    <ProjectReference Include="..\XNetEx.Common\XNetEx.Common.csproj" />
+    <ProjectReference Include="..\XNetEx.Diagnostics.Representation\XNetEx.Diagnostics.Representation.csproj" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='net' And
