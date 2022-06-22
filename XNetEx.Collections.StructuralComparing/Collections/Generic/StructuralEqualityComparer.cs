@@ -180,6 +180,11 @@ internal abstract class StructuralEqualityComparer<T> : SimpleAcyclicEqualityCom
             return (StructuralEqualityComparer<T>)Activator.CreateInstance(
                 typeof(EnumerableEqualityComparer<>).MakeGenericType(type))!;
         }
+        else if (typeof(IStructuralEquatable).IsAssignableFrom(type))
+        {
+            return (StructuralEqualityComparer<T>)Activator.CreateInstance(
+                typeof(StructuralEquatableEqualityComparer<>).MakeGenericType(type))!;
+        }
         else if (type == typeof(DictionaryEntry))
         {
             return (StructuralEqualityComparer<T>)
