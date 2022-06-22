@@ -3,9 +3,12 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using XNetEx.Collections.Generic;
 using XNetEx.Collections;
+using XNetEx.Collections.Generic;
 using XNetEx.Reflection;
+#if NET471_OR_GREATER || NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+using System.Runtime.CompilerServices;
+#endif
 
 namespace XNetEx.Diagnostics;
 
@@ -138,6 +141,13 @@ internal abstract class StructuralRepresenter<T> : AcyclicRepresenter<T>
             return (StructuralRepresenter<T>)Activator.CreateInstance(
                 typeof(EnumerableRepresenter<>).MakeGenericType(type))!;
         }
+#if NET471_OR_GREATER || NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        else if (typeof(ITuple).IsAssignableFrom(type))
+        {
+            return (StructuralRepresenter<T>)Activator.CreateInstance(
+                typeof(TupleRepresenter<>).MakeGenericType(type))!;
+        }
+#endif
         else if (type == typeof(DictionaryEntry))
         {
             return (StructuralRepresenter<T>)(object)new DictionaryEntryRepresenter();
