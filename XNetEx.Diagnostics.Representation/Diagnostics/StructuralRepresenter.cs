@@ -54,8 +54,8 @@ public static class StructuralRepresenter
     private static IAcyclicRepresenter GetDefault(Type type)
     {
         var typeRepresenter = typeof(StructuralRepresenter<>).MakeGenericType(type);
-        var nameDefualt = nameof(StructuralRepresenter<object>.Default);
-        var propertyDefault = typeRepresenter.GetProperty(nameDefualt)!;
+        var nameDefault = nameof(StructuralRepresenter<object>.Default);
+        var propertyDefault = typeRepresenter.GetProperty(nameDefault)!;
         return (IAcyclicRepresenter)propertyDefault.GetValue(null)!;
     }
 }

@@ -74,8 +74,8 @@ public static class StructuralEqualityComparer
     private static IAcyclicEqualityComparer GetDefault(Type type)
     {
         var typeComparer = typeof(StructuralEqualityComparer<>).MakeGenericType(type);
-        var nameDefualt = nameof(StructuralEqualityComparer<object>.Default);
-        var propertyDefault = typeComparer.GetProperty(nameDefualt);
+        var nameDefault = nameof(StructuralEqualityComparer<object>.Default);
+        var propertyDefault = typeComparer.GetProperty(nameDefault);
         return (IAcyclicEqualityComparer)propertyDefault!.GetValue(null)!;
     }
 
