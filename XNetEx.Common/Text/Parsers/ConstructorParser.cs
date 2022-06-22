@@ -47,7 +47,7 @@ internal sealed class ConstructorParser<T> : ObjectParser<T> where T : notnull
     /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
     public override T Parse(string text)
     {
-        return (T)StringConstructor.CtorInfo!.Invoke(new[] { text })!;
+        return (T)StringConstructor.CtorInfo!.Invoke(new[] { (object)text })!;
     }
 
     /// <summary>

@@ -44,7 +44,7 @@ internal sealed class ParseMethodParser<T> : ObjectParser<T> where T : notnull
     /// <exception cref="FormatException"><paramref name="text"/> 的格式不正确。</exception>
     /// <exception cref="OverflowException">
     /// <paramref name="text"/> 表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
-    public override T Parse(string text) => ParseMethod.Delegate!.Invoke(text)!;
+    public override T Parse(string text) => ParseMethod.Delegate!.Invoke(text);
 
     /// <summary>
     /// 提供类似于 <see cref="int.Parse(string)"/> 的方法的委托。
