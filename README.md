@@ -118,6 +118,17 @@
 * [属性更改通知实现方式比较](Documentation/ObservableObjectCompare.md)
 * [属性更改通知类型提供对象](Documentation/ObservableTypeProvider.md)
 
+## 程序集 XNetEx.Reflection
+
+提供与动态类型生成和动态方法相关的扩展方法，并提供应用以上技术实现的快速动态调用的扩展方法。
+
+核心 API 类型：
+
+* IL 指令发出扩展 `XNetEx.Reflection.Emit.ILGeneratorExtensions`
+* 动态类型定义扩展 `XNetEx.Reflection.Emit.TypeBuilderExtensions`
+* 类型成员动态调用委托创建 `XNetEx.Reflection.MemberDelegateExtensions`
+* 类型成员快速动态调用扩展 `XNetEx.Reflection.MemberFastInvokeExtensions`
+
 ## 程序集 XNetEx.Reflection.DispatchProxy
 
 提供转发代理类型 `System.Reflection.DispatchProxy` 基于委托的简易实现。
