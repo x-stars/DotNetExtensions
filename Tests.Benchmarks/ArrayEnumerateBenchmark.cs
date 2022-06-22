@@ -72,5 +72,4 @@ public class ArrayEnumerateBenchmark
             var item = array[index];
         }
     }
-
 }
