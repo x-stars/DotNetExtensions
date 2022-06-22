@@ -7,7 +7,7 @@ namespace XNetEx.Collections.Generic;
 /// </summary>
 /// <typeparam name="T">要比较的对象的类型。</typeparam>
 [Serializable]
-public abstract class SimpleAcyclicEqualityComparer<T> : AcyclicEqualityComparer<T>
+internal abstract class SimpleAcyclicEqualityComparer<T> : AcyclicEqualityComparer<T>
 {
     /// <summary>
     /// 初始化 <see cref="SimpleAcyclicEqualityComparer{T}"/> 类的新实例。

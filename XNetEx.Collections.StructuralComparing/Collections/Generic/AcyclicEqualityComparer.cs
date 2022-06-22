@@ -15,7 +15,7 @@ using ReferencePairEqualityComparer = XCmpSp::ReferencePairEqualityComparer;
 /// </summary>
 /// <typeparam name="T">要比较的对象的类型。</typeparam>
 [Serializable]
-public abstract class AcyclicEqualityComparer<T>
+internal abstract class AcyclicEqualityComparer<T>
     : EqualityComparer<T>, IAcyclicEqualityComparer, IAcyclicEqualityComparer<T>
 {
     /// <summary>

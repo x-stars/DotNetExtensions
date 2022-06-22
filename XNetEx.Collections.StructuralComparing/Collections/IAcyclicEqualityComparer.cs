@@ -8,7 +8,7 @@ using ObjectPair = KeyValuePair<object, object>;
 /// <summary>
 /// 提供用于无环地比较对象是否相等的方法。
 /// </summary>
-public interface IAcyclicEqualityComparer : IEqualityComparer
+internal interface IAcyclicEqualityComparer : IEqualityComparer
 {
     /// <summary>
     /// 无环地确定指定的对象是否相等。
