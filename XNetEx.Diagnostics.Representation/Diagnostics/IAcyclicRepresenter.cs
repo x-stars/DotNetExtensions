@@ -5,7 +5,7 @@ namespace XNetEx.Diagnostics;
 /// <summary>
 /// 提供将对象无环地表示为字符串的方法。
 /// </summary>
-public interface IAcyclicRepresenter : IRepresenter
+internal interface IAcyclicRepresenter : IRepresenter
 {
     /// <summary>
     /// 将指定对象表示无环地为字符串。
@@ -20,7 +20,7 @@ public interface IAcyclicRepresenter : IRepresenter
 /// 提供将指定类型的对象无环地表示为字符串的方法。
 /// </summary>
 /// <typeparam name="T">要表示为字符串的对象的类型。</typeparam>
-public interface IAcyclicRepresenter<in T> : IRepresenter<T>
+internal interface IAcyclicRepresenter<in T> : IRepresenter<T>
 {
     /// <summary>
     /// 将指定对象无环地表示为字符串。

@@ -6,7 +6,7 @@ namespace XNetEx.Diagnostics;
 /// 为字符串表示对象 <see cref="IRepresenter{T}"/> 提供抽象基类。
 /// </summary>
 /// <typeparam name="T">要表示为字符串的对象的类型。</typeparam>
-public abstract class Representer<T> : IRepresenter, IRepresenter<T>
+internal abstract class Representer<T> : IRepresenter, IRepresenter<T>
 {
     /// <summary>
     /// 表示空引用 <see langword="null"/> 的字符串表示形式。
