@@ -123,7 +123,7 @@ internal sealed class ArrayIndicesSequence : IEnumerable<int[]>
             this.ReuseIndices = indicesInfo.ReuseIndices;
             var rank = this.LowerBounds.Length;
             this.CurrentIndices = new int[rank];
-            this.Reset();
+            this.Initialize();
         }
 
         /// <summary>
@@ -146,6 +146,22 @@ internal sealed class ArrayIndicesSequence : IEnumerable<int[]>
         /// 释放当前实例占有的资源。
         /// </summary>
         public void Dispose() { }
+
+        /// <summary>
+        /// 将枚举数设置为其初始位置，该位置位于数组的第一个索引之前。
+        /// </summary>
+        public void Initialize()
+        {
+            var indices = this.CurrentIndices;
+            var lowerBounds = this.LowerBounds;
+            Buffer.BlockCopy(lowerBounds, 0, indices, 0,
+                             indices.Length * sizeof(int));
+            if (this.ArrayLength == 0)
+            {
+                indices[0] += 1;
+            }
+            indices[^1] -= 1;
+        }
 
         /// <summary>
         /// 获取位于枚举数当前位置的索引数组。
@@ -206,17 +222,6 @@ internal sealed class ArrayIndicesSequence : IEnumerable<int[]>
         /// <summary>
         /// 将枚举数设置为其初始位置，该位置位于数组的第一个索引之前。
         /// </summary>
-        public void Reset()
-        {
-            var indices = this.CurrentIndices;
-            var lowerBounds = this.LowerBounds;
-            Buffer.BlockCopy(lowerBounds, 0, indices, 0,
-                             indices.Length * sizeof(int));
-            if (this.ArrayLength == 0)
-            {
-                indices[0] += 1;
-            }
-            indices[^1] -= 1;
-        }
+        public void Reset() => this.Initialize();
     }
 }
