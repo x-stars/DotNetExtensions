@@ -29,6 +29,7 @@
 * `XNetEx.Reflection`
 * `XNetEx.Reflection.Emit`
 * `XNetEx.Runtime.CompilerServices`
+* `XNetEx.Security.Cryptography`
 * `XNetEx.Text`
 
 > `XNetEx.Operators` 类型提供部分常用运算符，建议静态引入后调用。
