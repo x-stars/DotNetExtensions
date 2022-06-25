@@ -159,10 +159,6 @@ internal abstract class StructuralRepresenter<T> : AcyclicRepresenter<T>
             return (StructuralRepresenter<T>)Activator.CreateInstance(
                 typeof(KeyValuePairRepresenter<,>).MakeGenericType(keyValueTypes))!;
         }
-        else if (StructuralRepresenter<T>.HasDebuggerDisplay)
-        {
-            return new PlainRepresenter<T>();
-        }
         else if (StructuralRepresenter<T>.IsDefaultToString)
         {
             return new MemberRepresenter<T>();
