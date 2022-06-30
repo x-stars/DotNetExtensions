@@ -11,6 +11,48 @@ namespace XNetEx;
 public static partial class ConsoleEx
 {
     /// <summary>
+    /// 从标准输入流读取下一行字符串，并将其转换为等效的对象形式。
+    /// </summary>
+    /// <typeparam name="T">要转换为的对象的类型。</typeparam>
+    /// <param name="endValue">当没有更多的可用字符串行时使用的替代值。</param>
+    /// <returns>输入流中的下一行字符串的对象形式；
+    /// 如果当前没有更多的可用字符串行，则为 <paramref name="endValue"/>。</returns>
+    /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// 下一行字符串的字符数大于 <see cref="int.MaxValue"/>。</exception>
+    /// <exception cref="OutOfMemoryException">
+    /// 没有足够的内存来为下一行字符串分配缓冲区。</exception>
+    /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
+    /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
+    /// <exception cref="OverflowException">
+    /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
+    /// <exception cref="IOException">出现 I/O 错误。</exception>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static T? ReadLineAs<T>(T? endValue = null) where T : class =>
+        Console.In.ReadLineAs<T>(endValue);
+
+    /// <summary>
+    /// 从标准输入流读取下一行字符串，并将其转换为等效的对象形式。
+    /// </summary>
+    /// <typeparam name="T">要转换为的对象的类型。</typeparam>
+    /// <param name="endValue">当没有更多的可用字符串行时使用的替代值。</param>
+    /// <returns>输入流中的下一行字符串的对象形式；
+    /// 如果当前没有更多的可用字符串行，则为 <paramref name="endValue"/>。</returns>
+    /// <exception cref="ArgumentException">读取到的字符串不表示有效的值。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// 下一行字符串的字符数大于 <see cref="int.MaxValue"/>。</exception>
+    /// <exception cref="OutOfMemoryException">
+    /// 没有足够的内存来为下一行字符串分配缓冲区。</exception>
+    /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
+    /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
+    /// <exception cref="OverflowException">
+    /// 读取到的字符串表示的值超出了 <typeparamref name="T"/> 能表示的范围。</exception>
+    /// <exception cref="IOException">出现 I/O 错误。</exception>
+    [MethodImpl(MethodImplOptions.NoInlining)]
+    public static T? ReadLineAs<T>(T? endValue = null) where T : struct =>
+        Console.In.ReadLineAs<T>(endValue);
+
+    /// <summary>
     /// 从标准输入流读取下一个字符串值。
     /// </summary>
     /// <returns>输入流中的下一个字符串值；
