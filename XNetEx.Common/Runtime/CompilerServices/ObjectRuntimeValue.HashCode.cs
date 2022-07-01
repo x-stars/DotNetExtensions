@@ -17,7 +17,7 @@ static partial class ObjectRuntimeValue
     /// <param name="value">要获取递归包含的值的哈希代码的对象。</param>
     /// <returns><paramref name="value"/> 递归包含的值的哈希代码。</returns>
     /// <exception cref="MemberAccessException">调用方没有权限来访问对象的成员。</exception>
-    public static int GetRecursiveHashCode(object? value)
+    public static int GetRecursiveHashCode(this object? value)
     {
         var comparer = ReferenceEqualityComparer.Default;
         var computed = new HashSet<object>(comparer);
