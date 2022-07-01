@@ -54,6 +54,6 @@ public static class DispatchProxyServices
         var createDelegate = DispatchProxyServices.ProxyCreateMethods.GetOrAdd(interfaceType,
             newInterfaceType => typeof(DispatchProxy<>).MakeGenericType(newInterfaceType).GetMethod(
                 nameof(DispatchProxy<object>.Create), new[] { newInterfaceType, typeof(InvocationHandler) })!);
-        return createDelegate.Invoke(null, new[] { instance, handler });
+        return createDelegate.Invoke(null, new[] { instance, handler })!;
     }
 }

@@ -125,7 +125,7 @@ public static partial class LinqExtensions
         this IEnumerable<TSource> source, IEqualityComparer<TSource>? comparer = null)
     {
         comparer ??= EqualityComparer<TSource>.Default;
-        return source.GroupBy(Self, LinqExtensions.ToCount, comparer);
+        return source.GroupBy(LinqExtensions.Self, LinqExtensions.ToCount, comparer);
     }
 
     /// <summary>
