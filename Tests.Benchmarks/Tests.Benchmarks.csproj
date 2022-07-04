@@ -17,7 +17,6 @@
     <Product>XstarS .NET Extensions</Product>
     <Description>$(Product) Benchmarks</Description>
     <Copyright>Copyright © $(Company) 2018</Copyright>
-    <AssemblyTitle>$(Description)</AssemblyTitle>
   </PropertyGroup>
 
   <PropertyGroup>
