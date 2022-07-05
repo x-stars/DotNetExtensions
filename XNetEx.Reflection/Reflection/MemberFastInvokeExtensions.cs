@@ -10,7 +10,7 @@ using DynamicInvoker = Func<object?, object?[]?, object?>;
 using DynamicSetter = Action<object?, object?>;
 
 /// <summary>
-/// 提供以委托快速调用类型成员的扩展方法。
+/// 提供以动态调用委托快速调用类型成员的扩展方法。
 /// </summary>
 public static class MemberFastInvokeExtensions
 {
@@ -39,8 +39,7 @@ public static class MemberFastInvokeExtensions
         new ConcurrentDictionary<MethodInfo, DynamicInvoker>();
 
     /// <summary>
-    /// 快速获取指定对象的字段的值。
-    /// 以委托实现，较 <see cref="FieldInfo.GetValue(object)"/> 更快。
+    /// 以动态调用委托快速获取指定对象的字段的值。
     /// </summary>
     /// <param name="field">要获取值的 <see cref="FieldInfo"/>。</param>
     /// <param name="instance">要获取字段的值的对象。</param>
@@ -60,8 +59,7 @@ public static class MemberFastInvokeExtensions
     }
 
     /// <summary>
-    /// 快速设置指定对象的字段的值。
-    /// 以委托实现，较 <see cref="FieldInfo.SetValue(object, object)"/> 更快。
+    /// 以动态调用委托快速设置指定对象的字段的值。
     /// </summary>
     /// <param name="field">要设置值的 <see cref="FieldInfo"/>。</param>
     /// <param name="instance">要设置字段的值的对象。</param>
@@ -81,8 +79,7 @@ public static class MemberFastInvokeExtensions
     }
 
     /// <summary>
-    /// 使用指定的参数快速调用构造函数以创建对象。
-    /// 以委托实现，较 <see cref="ConstructorInfo.Invoke(object[])"/> 更快。
+    /// 使用指定的参数以动态调用委托快速调用构造函数以创建对象。
     /// </summary>
     /// <param name="constructor">要调用的 <see cref="ConstructorInfo"/>。</param>
     /// <param name="arguments">调用构造函数的参数列表。</param>
@@ -104,8 +101,7 @@ public static class MemberFastInvokeExtensions
     }
 
     /// <summary>
-    /// 使用指定的实例和参数快速调用方法。
-    /// 以委托实现，较 <see cref="MethodBase.Invoke(object, object[])"/> 更快。
+    /// 使用指定的实例和参数以动态调用委托快速调用方法。
     /// </summary>
     /// <param name="method">要调用的 <see cref="MethodInfo"/>。</param>
     /// <param name="instance">在其上调用方法的对象。</param>
@@ -126,8 +122,7 @@ public static class MemberFastInvokeExtensions
     }
 
     /// <summary>
-    /// 快速获取指定对象的属性的值。
-    /// 以委托实现，较 <see cref="PropertyInfo.GetValue(object)"/> 更快。
+    /// 以动态调用委托快速获取指定对象的属性的值。
     /// </summary>
     /// <param name="property">要获取值的 <see cref="PropertyInfo"/>。</param>
     /// <param name="instance">要获取属性的值的对象。</param>
@@ -142,8 +137,7 @@ public static class MemberFastInvokeExtensions
     }
 
     /// <summary>
-    /// 使用指定的索引参数快速获取指定对象的索引化属性的值。
-    /// 以委托实现，较 <see cref="PropertyInfo.GetValue(object, object[])"/> 更快。
+    /// 以动态调用委托快速获取指定对象的索引化属性的值。
     /// </summary>
     /// <param name="property">要获取值的 <see cref="PropertyInfo"/>。</param>
     /// <param name="instance">要获取属性的值的对象。</param>
@@ -171,8 +165,7 @@ public static class MemberFastInvokeExtensions
     }
 
     /// <summary>
-    /// 快速设置指定对象的属性的值。
-    /// 以委托实现，较 <see cref="PropertyInfo.SetValue(object, object)"/> 更快。
+    /// 以动态调用委托快速设置指定对象的属性的值。
     /// </summary>
     /// <param name="property">要设置值的 <see cref="PropertyInfo"/>。</param>
     /// <param name="instance">要设置属性的值的对象。</param>
@@ -187,8 +180,7 @@ public static class MemberFastInvokeExtensions
     }
 
     /// <summary>
-    /// 快速设置指定对象的索引化属性的值。
-    /// 以委托实现，较 <see cref="PropertyInfo.SetValue(object, object, object[])"/> 更快。
+    /// 以动态调用委托快速设置指定对象的索引化属性的值。
     /// </summary>
     /// <param name="property">要设置值的 <see cref="PropertyInfo"/>。</param>
     /// <param name="instance">要设置属性的值的对象。</param>
@@ -217,8 +209,7 @@ public static class MemberFastInvokeExtensions
     }
 
     /// <summary>
-    /// 将指定事件处理程序快速添加到事件源。
-    /// 以委托实现，较 <see cref="EventInfo.AddEventHandler(object, Delegate)"/> 更快。
+    /// 将指定事件处理程序以动态调用委托快速添加到事件源。
     /// </summary>
     /// <param name="event">要添加事件处理程序的 <see cref="EventInfo"/>。</param>
     /// <param name="instance">要添加事件处理程序的事件源。</param>
@@ -245,8 +236,7 @@ public static class MemberFastInvokeExtensions
     }
 
     /// <summary>
-    /// 将指定事件处理程序快速快速从事件源移除。
-    /// 以委托实现，较 <see cref="EventInfo.RemoveEventHandler(object, Delegate)"/> 更快。
+    /// 将指定事件处理程序快速以动态调用委托快速从事件源移除。
     /// </summary>
     /// <param name="event">要移除事件处理程序的 <see cref="EventInfo"/>。</param>
     /// <param name="instance">要移除事件处理程序的事件源。</param>
