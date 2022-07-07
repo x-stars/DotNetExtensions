@@ -25,12 +25,7 @@
     <PackageProjectUrl>https://github.com/x-stars/DotNetExtensions</PackageProjectUrl>
     <RepositoryUrl>https://github.com/x-stars/DotNetExtensions</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-  </PropertyGroup>
-
-  <PropertyGroup>
-    <DocumentationFile>
-      obj\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml
-    </DocumentationFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup>
