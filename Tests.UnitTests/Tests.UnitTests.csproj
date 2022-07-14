@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>XNetEx</RootNamespace>
     <TargetFrameworks>net461;net472;netcoreapp3.1;net6.0</TargetFrameworks>
+    <RootNamespace>XNetEx</RootNamespace>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>

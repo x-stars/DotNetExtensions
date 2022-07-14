@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <RootNamespace>XNetEx.Win32</RootNamespace>
     <TargetFrameworks>net461;net472;netcoreapp3.1;net6.0-windows</TargetFrameworks>
+    <RootNamespace>XNetEx.Win32</RootNamespace>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
