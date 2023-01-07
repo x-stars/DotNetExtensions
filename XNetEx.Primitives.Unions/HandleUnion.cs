@@ -128,10 +128,7 @@ public unsafe struct HandleUnion : IEquatable<HandleUnion>, ISerializable
     /// 在当前 <see cref="HandleUnion"/> 上创建字节跨度。
     /// </summary>
     /// <returns>当前 <see cref="HandleUnion"/> 的字节跨度表示形式。</returns>
-    public Span<byte> AsByteSpan()
-    {
-        fixed (nuint* pValue = &this.UIntPtr) { return new Span<byte>(pValue, Size); }
-    }
+    public Span<byte> AsByteSpan() => MemoryMarshal.CreateSpan(ref this.Bytes[0], Size);
 #endif
 
     /// <summary>
@@ -154,10 +151,7 @@ public unsafe struct HandleUnion : IEquatable<HandleUnion>, ISerializable
     /// 将当前 <see cref="HandleUnion"/> 的值复制到指定字节跨度中。
     /// </summary>
     /// <param name="bytes">作为复制目标的字节跨度。</param>
-    public void CopyTo(Span<byte> bytes)
-    {
-        fixed (byte* pBytes = bytes) { *(nuint*)pBytes = this.UIntPtr; }
-    }
+    public void CopyTo(Span<byte> bytes) => MemoryMarshal.Write(bytes, ref this.UIntPtr);
 #endif
 
     /// <summary>
@@ -203,10 +197,7 @@ public unsafe struct HandleUnion : IEquatable<HandleUnion>, ISerializable
     /// 将指定只读字节跨度的值复制到当前 <see cref="HandleUnion"/> 中。
     /// </summary>
     /// <param name="bytes">作为复制源的只读字节跨度。</param>
-    public void LoadFrom(ReadOnlySpan<byte> bytes)
-    {
-        fixed (byte* pBytes = bytes) { this.UIntPtr = *(nuint*)pBytes; }
-    }
+    public void LoadFrom(ReadOnlySpan<byte> bytes) => this.UIntPtr = MemoryMarshal.Read<nuint>(bytes);
 #endif
 
     /// <summary>

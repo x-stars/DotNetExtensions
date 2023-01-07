@@ -129,10 +129,7 @@ public unsafe struct QWordUnion : IEquatable<QWordUnion>, ISerializable
     /// 在当前 <see cref="QWordUnion"/> 上创建字节跨度。
     /// </summary>
     /// <returns>当前 <see cref="QWordUnion"/> 的字节跨度表示形式。</returns>
-    public Span<byte> AsByteSpan()
-    {
-        fixed (ulong* pValue = &this.UInt64) { return new Span<byte>(pValue, 8); }
-    }
+    public Span<byte> AsByteSpan() => MemoryMarshal.CreateSpan(ref this.Bytes[0], 8);
 #endif
 
     /// <summary>
@@ -155,10 +152,7 @@ public unsafe struct QWordUnion : IEquatable<QWordUnion>, ISerializable
     /// 将当前 <see cref="QWordUnion"/> 的值复制到指定字节跨度中。
     /// </summary>
     /// <param name="bytes">作为复制目标的字节跨度。</param>
-    public void CopyTo(Span<byte> bytes)
-    {
-        fixed (byte* pBytes = bytes) { *(ulong*)pBytes = this.UInt64; }
-    }
+    public void CopyTo(Span<byte> bytes) => MemoryMarshal.Write(bytes, ref this.UInt64);
 #endif
 
     /// <summary>
@@ -204,10 +198,7 @@ public unsafe struct QWordUnion : IEquatable<QWordUnion>, ISerializable
     /// 将指定只读字节跨度的值复制到当前 <see cref="QWordUnion"/> 中。
     /// </summary>
     /// <param name="bytes">作为复制源的只读字节跨度。</param>
-    public void LoadFrom(ReadOnlySpan<byte> bytes)
-    {
-        fixed (byte* pBytes = bytes) { this.UInt64 = *(ulong*)pBytes; }
-    }
+    public void LoadFrom(ReadOnlySpan<byte> bytes) => this.UInt64 = MemoryMarshal.Read<ulong>(bytes);
 #endif
 
     /// <summary>

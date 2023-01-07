@@ -129,10 +129,7 @@ public unsafe struct DWordUnion : IEquatable<DWordUnion>, ISerializable
     /// 在当前 <see cref="DWordUnion"/> 上创建字节跨度。
     /// </summary>
     /// <returns>当前 <see cref="DWordUnion"/> 的字节跨度表示形式。</returns>
-    public Span<byte> AsByteSpan()
-    {
-        fixed (uint* pValue = &this.UInt32) { return new Span<byte>(pValue, 4); }
-    }
+    public Span<byte> AsByteSpan() => MemoryMarshal.CreateSpan(ref this.Bytes[0], 4);
 #endif
 
     /// <summary>
@@ -155,10 +152,7 @@ public unsafe struct DWordUnion : IEquatable<DWordUnion>, ISerializable
     /// 将当前 <see cref="DWordUnion"/> 的值复制到指定字节跨度中。
     /// </summary>
     /// <param name="bytes">作为复制目标的字节跨度。</param>
-    public void CopyTo(Span<byte> bytes)
-    {
-        fixed (byte* pBytes = bytes) { *(uint*)pBytes = this.UInt32; }
-    }
+    public void CopyTo(Span<byte> bytes) => MemoryMarshal.Write(bytes, ref this.UInt32);
 #endif
 
     /// <summary>
@@ -204,10 +198,7 @@ public unsafe struct DWordUnion : IEquatable<DWordUnion>, ISerializable
     /// 将指定只读字节跨度的值复制到当前 <see cref="DWordUnion"/> 中。
     /// </summary>
     /// <param name="bytes">作为复制源的只读字节跨度。</param>
-    public void LoadFrom(ReadOnlySpan<byte> bytes)
-    {
-        fixed (byte* pBytes = bytes) { this.UInt32 = *(uint*)pBytes; }
-    }
+    public void LoadFrom(ReadOnlySpan<byte> bytes) => this.UInt32 = MemoryMarshal.Read<uint>(bytes);
 #endif
 
     /// <summary>

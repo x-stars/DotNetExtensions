@@ -120,10 +120,7 @@ public unsafe struct ByteUnion : IEquatable<ByteUnion>, ISerializable
     /// 在当前 <see cref="ByteUnion"/> 上创建字节跨度。
     /// </summary>
     /// <returns>当前 <see cref="ByteUnion"/> 的字节跨度表示形式。</returns>
-    public Span<byte> AsByteSpan()
-    {
-        fixed (byte* pValue = &this.Byte) { return new Span<byte>(pValue, 1); }
-    }
+    public Span<byte> AsByteSpan() => MemoryMarshal.CreateSpan(ref this.Bytes[0], 1);
 #endif
 
     /// <summary>
@@ -146,10 +143,7 @@ public unsafe struct ByteUnion : IEquatable<ByteUnion>, ISerializable
     /// 将当前 <see cref="ByteUnion"/> 的值复制到指定字节跨度中。
     /// </summary>
     /// <param name="bytes">作为复制目标的字节跨度。</param>
-    public void CopyTo(Span<byte> bytes)
-    {
-        fixed (byte* pBytes = bytes) { *(byte*)pBytes = this.Byte; }
-    }
+    public void CopyTo(Span<byte> bytes) => MemoryMarshal.Write(bytes, ref this.Byte);
 #endif
 
     /// <summary>
@@ -195,10 +189,7 @@ public unsafe struct ByteUnion : IEquatable<ByteUnion>, ISerializable
     /// 将指定只读字节跨度的值复制到当前 <see cref="ByteUnion"/> 中。
     /// </summary>
     /// <param name="bytes">作为复制源的只读字节跨度。</param>
-    public void LoadFrom(ReadOnlySpan<byte> bytes)
-    {
-        fixed (byte* pBytes = bytes) { this.Byte = *(byte*)pBytes; }
-    }
+    public void LoadFrom(ReadOnlySpan<byte> bytes) => this.Byte = MemoryMarshal.Read<byte>(bytes);
 #endif
 
     /// <summary>
