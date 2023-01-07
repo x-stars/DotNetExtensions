@@ -16,7 +16,9 @@ public static class ObjectRuntimeType
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static unsafe ref IntPtr RefTypeHandle(this object instance)
     {
-        return ref **(IntPtr**)Unsafe.AsPointer(ref instance);
+        static object Ret(object value) => value;
+        return ref ((delegate*<object, ref IntPtr>)
+                    (delegate*<object, object>)&Ret)(instance);
     }
 
     /// <summary>
@@ -27,10 +29,12 @@ public static class ObjectRuntimeType
     /// <returns>已转换为 <typeparamref name="T"/> 类型的
     /// <paramref name="instance"/> 的浅表副本。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static T UncheckedCast<T>(this object instance) where T : class
+    public static unsafe T UncheckedCast<T>(this object instance) where T : class
     {
+        static object Ret(object value) => value;
         var casting = instance.MemberwiseClone();
         casting.RefTypeHandle() = typeof(T).TypeHandle.Value;
-        return Unsafe.As<T>(casting);
+        return ((delegate*<object, T>)
+                (delegate*<object, object>)&Ret)(casting);
     }
 }

@@ -46,15 +46,4 @@
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.Split(`-`)[0].TrimEnd(`.0123456789`))'=='net' And
-                        '$(TargetFramework.Split(`-`)[0].CompareTo(`net5.0`))'&lt;'0'">
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
-  </ItemGroup>
-
-  <ItemGroup Condition="('$(TargetFramework.TrimEnd(`.0123456789`))'=='netcoreapp' And
-                         '$(TargetFramework.CompareTo(`netcoreapp3.0`))'&lt;'0') Or
-                        ('$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard')">
-    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.6.0" />
-  </ItemGroup>
-
 </Project>

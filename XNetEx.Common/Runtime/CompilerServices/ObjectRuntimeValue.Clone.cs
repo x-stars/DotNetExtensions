@@ -20,12 +20,22 @@ using ReferenceEqualityComparer = XCmpSp::ReferenceEqualityComparer;
 static partial class ObjectRuntimeValue
 {
     /// <summary>
-    /// 表示 <see cref="object.MemberwiseClone()"/> 方法的静态调用委托。
+    /// 为 <see cref="object.MemberwiseClone()"/> 方法提供桥接访问。
     /// </summary>
-    private static readonly Converter<object, object> CloneDelegate =
-        (typeof(object).GetMethod(nameof(ObjectRuntimeValue.MemberwiseClone),
-            BindingFlags.Instance | BindingFlags.NonPublic)!.CreateDelegate(
-                typeof(Converter<object, object>)) as Converter<object, object>)!;
+    private sealed class CloneMethodBridge
+    {
+        /// <summary>
+        /// 创建指定对象的浅表副本。
+        /// </summary>
+        /// <param name="value">要创建浅表副本的对象。</param>
+        /// <returns><paramref name="value"/> 的浅表副本。</returns>
+        internal static unsafe object MemberwiseClone(object value)
+        {
+            static object Invoke(CloneMethodBridge value) => value.MemberwiseClone();
+            return ((delegate*<object, object>)
+                    (delegate*<CloneMethodBridge, object>)&Invoke)(value);
+        }
+    }
 
     /// <summary>
     /// 表示用于二进制序列化和反序列化对象的 <see cref="BinaryFormatter"/> 对象。
@@ -43,7 +53,7 @@ static partial class ObjectRuntimeValue
     public static T? MemberwiseClone<T>(this T? value)
     {
         return (value is null) ? default(T) :
-            (T)ObjectRuntimeValue.CloneDelegate.Invoke(value);
+            (T)CloneMethodBridge.MemberwiseClone(value);
     }
 
     /// <summary>
