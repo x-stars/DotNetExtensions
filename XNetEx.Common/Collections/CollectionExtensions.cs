@@ -51,19 +51,6 @@ public static class CollectionExtensions
     }
 
     /// <summary>
-    /// 解构当前 <see cref="DictionaryEntry"/>。
-    /// </summary>
-    /// <param name="entry">要解构的 <see cref="DictionaryEntry"/>。</param>
-    /// <param name="key">当前 <see cref="DictionaryEntry"/> 的键。</param>
-    /// <param name="value">当前 <see cref="DictionaryEntry"/> 的值。</param>
-    public static void Deconstruct(
-        this DictionaryEntry entry, out object key, out object? value)
-    {
-        key = entry.Key;
-        value = entry.Value;
-    }
-
-    /// <summary>
     /// 获取 <see cref="IDictionary"/> 中的键值对的公开枚举数。
     /// </summary>
     /// <param name="dictionary">要枚举键值对的 <see cref="IDictionary"/> 对象。</param>

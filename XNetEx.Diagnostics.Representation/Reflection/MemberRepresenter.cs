@@ -70,7 +70,7 @@ internal sealed class MemberRepresenter<T> : StructuralRepresenter<T>
         var namedProperties = MemberRepresenter<T>.PublicProperties.Select(
             property => new NamedValue(property.Name, property.GetValue(value)));
         return Enumerable.Concat(namedFields, namedProperties).ToDictionary(
-            namedValue => namedValue.Key, namedValues => namedValues.Value);
+            namedValue => namedValue.Key, namedValue => namedValue.Value);
     }
 
     /// <summary>

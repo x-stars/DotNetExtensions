@@ -46,9 +46,9 @@ static partial class CollectionExtensions
             throw new ArgumentNullException(nameof(action));
         }
 
-        foreach (var pair in dictionary)
+        foreach (var (key, value) in dictionary)
         {
-            action.Invoke(pair.Key, pair.Value);
+            action.Invoke(key, value);
         }
     }
 
@@ -133,13 +133,13 @@ static partial class CollectionExtensions
         valueComparer ??= EqualityComparer<TValue>.Default;
 
         var result = new Dictionary<TValue, ICollection<TKey>>(valueComparer);
-        foreach (var item in dictionary)
+        foreach (var (key, value) in dictionary)
         {
-            if (!result.ContainsKey(item.Value))
+            if (!result.ContainsKey(value))
             {
-                result.Add(item.Value, new HashSet<TKey>(keyComparer));
+                result.Add(value, new HashSet<TKey>(keyComparer));
             }
-            result[item.Value].Add(item.Key);
+            result[value].Add(key);
         }
         return result;
     }
@@ -223,9 +223,9 @@ static partial class CollectionExtensions
         comparer ??= EqualityComparer<TKey>.Default;
 
         var result = new Dictionary<TKey, TValue>(comparer);
-        foreach (var pair in pairs)
+        foreach (var (key, value) in pairs)
         {
-            result.Add(pair.Key, pair.Value);
+            result.Add(key, value);
         }
         return result;
     }

@@ -22,21 +22,6 @@ public static partial class CollectionExtensions
     }
 
     /// <summary>
-    /// 解构当前 <see cref="KeyValuePair{TKey, TValue}"/>。
-    /// </summary>
-    /// <typeparam name="TKey">当前 <see cref="KeyValuePair{TKey, TValue}"/> 的键的类型。</typeparam>
-    /// <typeparam name="TValue">当前 <see cref="KeyValuePair{TKey, TValue}"/> 的值的类型。</typeparam>
-    /// <param name="pair">要解构的 <see cref="KeyValuePair{TKey, TValue}"/>。</param>
-    /// <param name="key">当前 <see cref="KeyValuePair{TKey, TValue}"/> 的键。</param>
-    /// <param name="value">当前 <see cref="KeyValuePair{TKey, TValue}"/> 的值。</param>
-    public static void Deconstruct<TKey, TValue>(
-        this KeyValuePair<TKey, TValue> pair, out TKey key, out TValue value)
-    {
-        key = pair.Key;
-        value = pair.Value;
-    }
-
-    /// <summary>
     /// 反转 <see cref="IComparer{T}"/> 的比较顺序并返回。
     /// </summary>
     /// <typeparam name="T"><see cref="IComparer{T}"/> 要比较的对象的类型。</typeparam>
