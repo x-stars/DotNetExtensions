@@ -21,7 +21,7 @@ public static partial class Operators
     /// <param name="value">要原样返回的对象。</param>
     /// <returns><paramref name="value"/> 本身。</returns>
     [return: NotNullIfNotNull("value")]
-    public static T Self<T>(T value) => value;
+    public static T Identity<T>(T value) => value;
 
     /// <summary>
     /// 返回指定序列中的元素数。

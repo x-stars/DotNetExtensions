@@ -16,7 +16,7 @@ public static partial class LinqExtensions
     /// <typeparam name="TSource">当前对象的类型。</typeparam>
     /// <param name="source">要原样返回的对象。</param>
     /// <returns><paramref name="source"/> 本身。</returns>
-    internal static TSource Self<TSource>(TSource source) => source;
+    internal static TSource Identity<TSource>(TSource source) => source;
 
     /// <summary>
     /// 将序列的每个分组结果序列聚合为新的值，并返回分组键和聚合结果的键值对的序列。
@@ -125,7 +125,7 @@ public static partial class LinqExtensions
         this IEnumerable<TSource> source, IEqualityComparer<TSource>? comparer = null)
     {
         comparer ??= EqualityComparer<TSource>.Default;
-        return source.GroupBy(LinqExtensions.Self, LinqExtensions.ToCount, comparer);
+        return source.GroupBy(LinqExtensions.Identity, LinqExtensions.ToCount, comparer);
     }
 
     /// <summary>
@@ -196,7 +196,7 @@ public static partial class LinqExtensions
         this IEnumerable<TSource> source, IComparer<TSource>? comparer = null)
     {
         comparer ??= Comparer<TSource>.Default;
-        return source.OrderBy(LinqExtensions.Self, comparer);
+        return source.OrderBy(LinqExtensions.Identity, comparer);
     }
 
     /// <summary>
@@ -213,7 +213,7 @@ public static partial class LinqExtensions
         this IEnumerable<TSource> source, IComparer<TSource>? comparer = null)
     {
         comparer ??= Comparer<TSource>.Default;
-        return source.OrderByDescending(LinqExtensions.Self, comparer);
+        return source.OrderByDescending(LinqExtensions.Identity, comparer);
     }
 
 #if NETFRAMEWORK && !NET471_OR_GREATER
