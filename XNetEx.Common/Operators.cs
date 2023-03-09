@@ -20,7 +20,7 @@ public static partial class Operators
     /// <typeparam name="T">对象的类型。</typeparam>
     /// <param name="value">要原样返回的对象。</param>
     /// <returns><paramref name="value"/> 本身。</returns>
-    [return: NotNullIfNotNull("value")]
+    [return: NotNullIfNotNull(nameof(value))]
     public static T Identity<T>(T value) => value;
 
     /// <summary>
@@ -165,6 +165,6 @@ public static partial class Operators
     /// <typeparam name="T">当前对象的类型。</typeparam>
     /// <param name="value">要返回字符串表示形式的对象。</param>
     /// <returns><paramref name="value"/> 的字符串表示形式。</returns>
-    [return: NotNullIfNotNull("value")]
+    [return: NotNullIfNotNull(nameof(value))]
     public static string? StringOf<T>(T value) => value?.ToString();
 }

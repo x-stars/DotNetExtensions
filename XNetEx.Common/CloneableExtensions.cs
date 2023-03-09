@@ -14,7 +14,7 @@ public static class CloneableExtensions
     /// <typeparam name="T">对象的类型。</typeparam>
     /// <param name="value">要创建副本的对象。</param>
     /// <returns><paramref name="value"/> 的副本。</returns>
-    [return: NotNullIfNotNull("value")]
+    [return: NotNullIfNotNull(nameof(value))]
     public static T? CloneAs<T>(this T? value)
         where T : ICloneable
     {

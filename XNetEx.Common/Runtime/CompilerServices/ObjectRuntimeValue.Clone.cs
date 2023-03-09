@@ -48,7 +48,7 @@ static partial class ObjectRuntimeValue
     /// <typeparam name="T">对象的类型。</typeparam>
     /// <param name="value">要创建浅表副本的对象。</param>
     /// <returns><paramref name="value"/> 的浅表副本。</returns>
-    [return: NotNullIfNotNull("value")]
+    [return: NotNullIfNotNull(nameof(value))]
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static T? MemberwiseClone<T>(this T? value)
     {
@@ -63,7 +63,7 @@ static partial class ObjectRuntimeValue
     /// <typeparam name="T">对象的类型。</typeparam>
     /// <param name="value">要创建深度副本的对象。</param>
     /// <returns><paramref name="value"/> 的深度副本。</returns>
-    [return: NotNullIfNotNull("value")]
+    [return: NotNullIfNotNull(nameof(value))]
     public static T? RecursiveClone<T>(this T? value)
     {
         if (value is null) { return default(T); }
@@ -81,7 +81,7 @@ static partial class ObjectRuntimeValue
     /// <returns><paramref name="value"/> 的序列化副本。</returns>
     /// <exception cref="SerializationException">
     /// <paramref name="value"/> 中的某个对象未标记为可序列化。</exception>
-    [return: NotNullIfNotNull("value")]
+    [return: NotNullIfNotNull(nameof(value))]
     public static T? SerializationClone<T>(this T? value)
     {
         if (value is null) { return default(T); }
@@ -98,7 +98,7 @@ static partial class ObjectRuntimeValue
     /// <param name="value">要获取深度副本的对象。</param>
     /// <returns><paramref name="value"/> 的深度副本。</returns>
     /// <param name="cloned">已经创建副本的对象及其对应的副本。</param>
-    [return: NotNullIfNotNull("value")]
+    [return: NotNullIfNotNull(nameof(value))]
     private static object? RecursiveClone(object? value, Dictionary<object, object> cloned)
     {
         if (value is null) { return null; }

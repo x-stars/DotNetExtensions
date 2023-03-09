@@ -17,7 +17,7 @@ public static partial class Validate
     /// <param name="name">待验证的对象的名称。</param>
     /// <returns><see cref="IValueInfo{T}"/> 接口的新实例。</returns>
     public static IValueInfo<T> Value<T>(T value,
-        [CallerArgumentExpression("value")] string? name = null)
+        [CallerArgumentExpression(nameof(value))] string? name = null)
     {
         return new ValueInfo<T>(value, name);
     }
