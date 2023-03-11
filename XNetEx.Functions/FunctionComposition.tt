@@ -1,0 +1,83 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ output extension=".cs" #>
+<#
+const int funcArgLimit = 16;
+#>
+using System;
+
+namespace XNetEx.Functions;
+
+public static class FunctionComposition
+{
+<#
+for (int funcArgCount = 1; funcArgCount <= funcArgLimit; funcArgCount++)
+{
+    var composeTypeParams = Enumerable.Range(1, funcArgCount)
+        .Select(argIndex => $"T{argIndex}");
+    var composeArgParams = Enumerable.Range(1, funcArgCount)
+        .Select(argIndex => $"arg{argIndex}");
+    for (int innerArgCount = 1; innerArgCount <= funcArgCount; innerArgCount++)
+    {
+        var outterArgCount = funcArgCount - innerArgCount;
+        var innerTypeParams = Enumerable.Range(1, innerArgCount)
+            .Select(argIndex => $"T{argIndex}");
+        var ouuterTypeParams = (new[] { "TM" }).Concat(
+            Enumerable.Range(innerArgCount + 1, outterArgCount)
+                .Select(argIndex => $"T{argIndex}"));
+        var typeParams = innerTypeParams.Concat(ouuterTypeParams);
+        var innerArgs = Enumerable.Range(1, innerArgCount)
+            .Select(argIndex => $"arg{argIndex}");
+        var innerArgsText = string.Join(", ", innerArgs);
+        var outterArgs = Enumerable.Range(innerArgCount + 1, outterArgCount)
+            .Select(argIndex => $"arg{argIndex}");
+        var outterArgsText = string.Join(", ", outterArgs);
+        if (outterArgsText.Length != 0) { outterArgsText = ", " + outterArgsText; }
+#>
+    public static Action<<#= string.Join(", ", composeTypeParams) #>>
+        Compose<<#= string.Join(", ", typeParams) #>>(
+            this Action<<#= string.Join(", ", ouuterTypeParams) #>> outterAction,
+            Func<<#= string.Join(", ", innerTypeParams) #>, TM> innerFunc)
+    {
+        return (<#= string.Join(", ", composeArgParams) #>) =>
+            outterAction.Invoke(innerFunc.Invoke(<#= innerArgsText #>)<#= outterArgsText #>);
+    }
+
+    public static Func<<#= string.Join(", ", composeTypeParams) #>, TR>
+        Compose<<#= string.Join(", ", typeParams) #>, TR>(
+            this Func<<#= string.Join(", ", ouuterTypeParams) #>, TR> outterFunc,
+            Func<<#= string.Join(", ", innerTypeParams) #>, TM> innerFunc)
+    {
+        return (<#= string.Join(", ", composeArgParams) #>) =>
+            outterFunc.Invoke(innerFunc.Invoke(<#= innerArgsText #>)<#= outterArgsText #>);
+    }
+
+    public static Action<<#= string.Join(", ", composeTypeParams) #>>
+        ComposeNext<<#= string.Join(", ", typeParams) #>>(
+            this Func<<#= string.Join(", ", innerTypeParams) #>, TM> innerFunc,
+            Action<<#= string.Join(", ", ouuterTypeParams) #>> outterAction)
+    {
+        return (<#= string.Join(", ", composeArgParams) #>) =>
+            outterAction.Invoke(innerFunc.Invoke(<#= innerArgsText #>)<#= outterArgsText #>);
+    }
+
+    public static Func<<#= string.Join(", ", composeTypeParams) #>, TR>
+        ComposeNext<<#= string.Join(", ", typeParams) #>, TR>(
+            this Func<<#= string.Join(", ", innerTypeParams) #>, TM> innerFunc,
+            Func<<#= string.Join(", ", ouuterTypeParams) #>, TR> outterFunc)
+    {
+        return (<#= string.Join(", ", composeArgParams) #>) =>
+            outterFunc.Invoke(innerFunc.Invoke(<#= innerArgsText #>)<#= outterArgsText #>);
+    }
+<#
+        if ((funcArgCount != funcArgLimit) || (outterArgCount != 0))
+        {
+#>
+
+<#
+        }
+    }
+}
+#>
+}

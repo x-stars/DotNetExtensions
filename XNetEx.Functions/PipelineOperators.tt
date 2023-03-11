@@ -1,0 +1,79 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ output extension=".cs" #>
+<#
+const int funcArgLimit = 16;
+#>
+using System;
+
+namespace XNetEx.Functions;
+
+public static class PipelineOperators
+{
+<#
+for (int funcArgCount = 1; funcArgCount <= funcArgLimit; funcArgCount++)
+{
+    var typeParams = Enumerable.Range(1, funcArgCount)
+        .Select(argIndex => $"T{argIndex}");
+    var funcArgs = (funcArgCount == 1) ? new[] { "arg1" } :
+        Enumerable.Range(1, funcArgCount).Select(argIndex => $"args.Item{argIndex}");
+    var argsTypeParams = (funcArgCount == 1) ? new[] { "T1" } :
+        Enumerable.Range(1, funcArgCount).Select(argIndex => $"T{argIndex}");
+    var argsType = (funcArgCount == 1) ? "T1" :
+        $"({string.Join(", ", argsTypeParams)})";
+    var argsParamName = (funcArgCount == 1) ? "arg1" : "args";
+#>
+    public static <#= argsType #>
+        Perform<<#= string.Join(", ", typeParams) #>>(
+            this <#= argsType #> <#= argsParamName #>,
+            Action<<#= string.Join(", ", typeParams) #>> action)
+    {
+        action.Invoke(<#= string.Join(", ", funcArgs) #>);
+        return <#= argsParamName #>;
+    }
+
+<#
+    for (int argCount = 1; argCount <= funcArgCount; argCount++)
+    {
+        var restArgCount = funcArgCount - argCount;
+        funcArgs = (argCount == 1) ? new[] { "arg1" } :
+            Enumerable.Range(1, argCount).Select(argIndex => $"args.Item{argIndex}");
+        argsTypeParams = (argCount == 1) ? new[] { "T1" } :
+            Enumerable.Range(1, argCount).Select(argIndex => $"T{argIndex}");
+        var argsParam = (argCount == 1) ? "T1 arg1" :
+            $"({string.Join(", ", argsTypeParams)}) args";
+        var restTypeParams = Enumerable.Range(argCount + 1, restArgCount)
+            .Select(argIndex => $"T{argIndex}");
+        var actionReturn = (restArgCount == 0) ? "" : "return ";
+        var restActionType = (restArgCount == 0) ? "void" :
+            $"Action<{string.Join(", ", restTypeParams)}>";
+        var restFuncType = (restArgCount == 0) ? "TR" :
+            $"Func<{string.Join(", ", restTypeParams)}, TR>";
+#>
+    public static <#= restActionType #>
+        Apply<<#= string.Join(", ", typeParams) #>>(
+            this <#= argsParam #>,
+            Action<<#= string.Join(", ", typeParams) #>> action)
+    {
+        <#= actionReturn #>action.Invoke(<#= string.Join(", ", funcArgs) #>);
+    }
+
+    public static <#= restFuncType #>
+        Apply<<#= string.Join(", ", typeParams) #>, TR>(
+            this <#= argsParam #>,
+            Func<<#= string.Join(", ", typeParams) #>, TR> func)
+    {
+        return func.Invoke(<#= string.Join(", ", funcArgs) #>);
+    }
+<#
+        if ((funcArgCount != funcArgLimit) || (argCount != funcArgLimit))
+        {
+#>
+
+<#
+        }
+    }
+}
+#>
+}

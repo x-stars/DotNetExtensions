@@ -1,0 +1,138 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+<#@ output extension=".cs" #>
+<#
+const int funcArgLimit = 16;
+const int placeholderLimit = 4;
+
+static IEnumerable<IEnumerable<bool>> PermuteBooleanVector(int length)
+{
+    if (length == 0)
+    {
+        yield return Enumerable.Empty<bool>();
+        yield break;
+    }
+    foreach (var tail in PermuteBooleanVector(length - 1))
+    {
+        yield return tail.Prepend(false);
+        yield return tail.Prepend(true);
+    }
+}
+#>
+using System;
+
+namespace XNetEx.Functions;
+
+using T__ = Placeholder;
+
+public static class PlaceholderApplication
+{
+<#
+for (int funcArgCount = 2; funcArgCount <= placeholderLimit; funcArgCount++)
+{
+    var typeParams = Enumerable.Range(1, funcArgCount)
+        .Select(argIndex => $"T{argIndex}");
+    var funcArgs = Enumerable.Range(1, funcArgCount)
+        .Select(argIndex => $"arg{argIndex}");
+    foreach (var rawArgFlags in PermuteBooleanVector(funcArgCount))
+    {
+        if (rawArgFlags.Distinct().Count() == 1) { continue; }
+        var argFlags = rawArgFlags
+            .Select((argFlag, argIndex) => (Index: argIndex, Value: argFlag));
+        var lastArgIndex = argFlags.Last(argFlag => argFlag.Value).Index;
+        for (int argCount = lastArgIndex + 1; argCount <= funcArgCount; argCount++)
+        {
+            var trmmiedArgFlags = argFlags.Take(argCount);
+            if (trmmiedArgFlags.All(argFlag => argFlag.Value)) { continue; }
+            var argParams = trmmiedArgFlags
+                .Select(argFlag => argFlag.Value ?
+                    $"T{argFlag.Index + 1} arg{argFlag.Index + 1}" :
+                    $"T__ __{argFlag.Index + 1}");
+            var restArgIndices = argFlags
+                .Where(argFlag => !argFlag.Value).Select(argFlag => argFlag.Index + 1);
+            var restTypeParams = restArgIndices.Select(argIndex => $"T{argIndex}");
+            var restArgParams = restArgIndices.Select(argIndex => $"arg{argIndex}");
+#>
+    public static Action<<#= string.Join(", ", restTypeParams) #>>
+        Invoke<<#= string.Join(", ", typeParams) #>>(
+            this Action<<#= string.Join(", ", typeParams) #>> action,
+            <#= string.Join(", ", argParams) #>)
+    {
+        return (<#= string.Join(", ", restArgParams) #>) =>
+            action.Invoke(<#= string.Join(", ", funcArgs) #>);
+    }
+
+    public static Func<<#= string.Join(", ", restTypeParams) #>, TR>
+        Invoke<<#= string.Join(", ", typeParams) #>, TR>(
+            this Func<<#= string.Join(", ", typeParams) #>, TR> func,
+            <#= string.Join(", ", argParams) #>)
+    {
+        return (<#= string.Join(", ", restArgParams) #>) =>
+            func.Invoke(<#= string.Join(", ", funcArgs) #>);
+    }
+<#
+        }
+    }
+}
+#>
+
+<#
+for (int funcArgCount = placeholderLimit + 1; funcArgCount <= funcArgLimit; funcArgCount++)
+{
+    var typeParams = Enumerable.Range(1, funcArgCount)
+        .Select(argIndex => $"T{argIndex}");
+    var funcArgs = Enumerable.Range(1, funcArgCount)
+        .Select(argIndex => $"arg{argIndex}");
+    foreach (var rawArgFlags in PermuteBooleanVector(placeholderLimit))
+    {
+        if (rawArgFlags.Distinct().Count() == 1) { continue; }
+        var tailArgCount = funcArgCount - placeholderLimit;
+        var tailArgFlags = Enumerable.Range(0, tailArgCount).Select(index => false);
+        var argFlags = rawArgFlags.Concat(tailArgFlags)
+            .Select((argFlag, argIndex) => (Index: argIndex, Value: argFlag));
+        var lastArgIndex = argFlags.Last(argFlag => argFlag.Value).Index;
+        for (int argCount = lastArgIndex + 1; argCount <= placeholderLimit; argCount++)
+        {
+            var trmmiedArgFlags = argFlags.Take(argCount);
+            if (trmmiedArgFlags.All(argFlag => argFlag.Value)) { continue; }
+            var argParams = trmmiedArgFlags
+                .Select(argFlag => argFlag.Value ?
+                    $"T{argFlag.Index + 1} arg{argFlag.Index + 1}" :
+                    $"T__ __{argFlag.Index + 1}");
+            var restArgIndices = argFlags
+                .Where(argFlag => !argFlag.Value).Select(argFlag => argFlag.Index + 1);
+            var restTypeParams = restArgIndices.Select(argIndex => $"T{argIndex}");
+            var restArgParams = restArgIndices.Select(argIndex => $"arg{argIndex}");
+#>
+    public static Action<<#= string.Join(", ", restTypeParams) #>>
+        Invoke<<#= string.Join(", ", typeParams) #>>(
+            this Action<<#= string.Join(", ", typeParams) #>> action,
+            <#= string.Join(", ", argParams) #>)
+    {
+        return (<#= string.Join(", ", restArgParams) #>) =>
+            action.Invoke(<#= string.Join(", ", funcArgs) #>);
+    }
+
+    public static Func<<#= string.Join(", ", restTypeParams) #>, TR>
+        Invoke<<#= string.Join(", ", typeParams) #>, TR>(
+            this Func<<#= string.Join(", ", typeParams) #>, TR> func,
+            <#= string.Join(", ", argParams) #>)
+    {
+        return (<#= string.Join(", ", restArgParams) #>) =>
+            func.Invoke(<#= string.Join(", ", funcArgs) #>);
+    }
+<#
+            if ((funcArgCount != funcArgLimit) || (argCount != placeholderLimit) ||
+                !restArgIndices.Take(2).SequenceEqual(new[] { 1, placeholderLimit + 1 }))
+            {
+#>
+
+<#
+            }
+        }
+    }
+}
+#>
+}

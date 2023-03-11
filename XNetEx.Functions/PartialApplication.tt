@@ -1,0 +1,58 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ output extension=".cs" #>
+<#
+const int funcArgLimit = 16;
+#>
+using System;
+
+namespace XNetEx.Functions;
+
+public static class PartialApplication
+{
+<#
+for (int funcArgCount = 2; funcArgCount <= funcArgLimit; funcArgCount++)
+{
+    var typeParams = Enumerable.Range(1, funcArgCount)
+        .Select(argIndex => $"T{argIndex}");
+    var funcArgs = Enumerable.Range(1, funcArgCount)
+        .Select(argIndex => $"arg{argIndex}");
+    for (int argCount = 1; argCount < funcArgCount; argCount++)
+    {
+        var restArgCount = funcArgCount - argCount;
+        var argParams = Enumerable.Range(1, argCount)
+            .Select(argIndex => $"T{argIndex} arg{argIndex}");
+        var restTypeParams = Enumerable.Range(argCount + 1, restArgCount)
+            .Select(argIndex => $"T{argIndex}");
+        var restArgParams = Enumerable.Range(argCount + 1, restArgCount)
+            .Select(argIndex => $"arg{argIndex}");
+#>
+    public static Action<<#= string.Join(", ", restTypeParams) #>>
+        Invoke<<#= string.Join(", ", typeParams) #>>(
+            this Action<<#= string.Join(", ", typeParams) #>> action,
+            <#= string.Join(", ", argParams) #>)
+    {
+        return (<#= string.Join(", ", restArgParams) #>) =>
+            action.Invoke(<#= string.Join(", ", funcArgs) #>);
+    }
+
+    public static Func<<#= string.Join(", ", restTypeParams) #>, TR>
+        Invoke<<#= string.Join(", ", typeParams) #>, TR>(
+            this Func<<#= string.Join(", ", typeParams) #>, TR> func,
+            <#= string.Join(", ", argParams) #>)
+    {
+        return (<#= string.Join(", ", restArgParams) #>) =>
+            func.Invoke(<#= string.Join(", ", funcArgs) #>);
+    }
+<#
+        if ((funcArgCount != funcArgLimit) || (argCount != funcArgLimit - 1))
+        {
+#>
+
+<#
+        }
+    }
+}
+#>
+}

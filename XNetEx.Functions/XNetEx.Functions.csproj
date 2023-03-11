@@ -1,0 +1,89 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net461;net472;netcoreapp3.1;net6.0</TargetFrameworks>
+    <TargetFrameworks>$(TargetFrameworks);netstandard2.0;netstandard2.1</TargetFrameworks>
+    <RootNamespace>XNetEx.Functions</RootNamespace>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <Authors>XstarS</Authors>
+    <Company>XstarS</Company>
+    <Version>1.0.0</Version>
+    <Product>XstarS .NET Extensions</Product>
+    <AssemblyTitle>$(AssemblyName)</AssemblyTitle>
+    <Copyright>Copyright © $(Company) 2023</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <PackageId>$(AssemblyName)</PackageId>
+    <PackageVersion>$(Version)</PackageVersion>
+    <Description>$(AssemblyName)</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/x-stars/DotNetExtensions</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/x-stars/DotNetExtensions</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\DotNetExtensions.snk</AssemblyOriginatorKeyFile>
+    <GenerateDocumentationFile>false</GenerateDocumentationFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\SharedItems\Common\**\*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="FunctionComposition.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>FunctionComposition.cs</LastGenOutput>
+    </None>
+    <Compile Update="FunctionComposition.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>FunctionComposition.tt</DependentUpon>
+    </Compile>
+    <None Update="PartialApplication.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PartialApplication.cs</LastGenOutput>
+    </None>
+    <Compile Update="PartialApplication.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PartialApplication.tt</DependentUpon>
+    </Compile>
+    <None Update="PipelineOperators.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PipelineOperators.cs</LastGenOutput>
+    </None>
+    <Compile Update="PipelineOperators.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PipelineOperators.tt</DependentUpon>
+    </Compile>
+    <None Update="PlaceholderApplication.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>PlaceholderApplication.cs</LastGenOutput>
+    </None>
+    <Compile Update="PlaceholderApplication.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>PlaceholderApplication.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='net' And
+                        '$(TargetFramework.CompareTo(`net47`))'&lt;'0'">
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+  </ItemGroup>
+
+</Project>

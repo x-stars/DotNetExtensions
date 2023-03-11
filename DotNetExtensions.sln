@@ -65,6 +65,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Win32", "XNetEx.Win3
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XNetEx.Windows", "XNetEx.Windows\XNetEx.Windows.csproj", "{665560E7-547C-42EF-A1C7-2887E2089430}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XNetEx.Functions", "XNetEx.Functions\XNetEx.Functions.csproj", "{C8D9B4AC-7268-4FB1-88E6-897C2B6335D6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -139,6 +141,10 @@ Global
 		{665560E7-547C-42EF-A1C7-2887E2089430}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{665560E7-547C-42EF-A1C7-2887E2089430}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{665560E7-547C-42EF-A1C7-2887E2089430}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8D9B4AC-7268-4FB1-88E6-897C2B6335D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8D9B4AC-7268-4FB1-88E6-897C2B6335D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8D9B4AC-7268-4FB1-88E6-897C2B6335D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8D9B4AC-7268-4FB1-88E6-897C2B6335D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
