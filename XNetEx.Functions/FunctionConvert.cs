@@ -8,8 +8,8 @@ public static class FunctionConvert
     public static Action<object?, EventArgs> ToAction(EventHandler handler) =>
         FunctionConvert.CloneAndChangeType<Action<object?, EventArgs>>(handler);
 
-    public static Action<object?, T> ToAction<T>(EventHandler<T> handler) =>
-        FunctionConvert.CloneAndChangeType<Action<object?, T>>(handler);
+    public static Action<object?, TArgs> ToAction<TArgs>(EventHandler<TArgs> handler) =>
+        FunctionConvert.CloneAndChangeType<Action<object?, TArgs>>(handler);
 
     public static Func<T, T, int> ToFunc<T>(Comparison<T> comparison) =>
         FunctionConvert.CloneAndChangeType<Func<T, T, int>>(comparison);
