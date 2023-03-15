@@ -160,7 +160,7 @@ public static class TextWriterExtensions
 
         foreach (var value in values)
         {
-            await writer.WriteLineAsync(value);
+            await writer.WriteLineAsync(value).ConfigureAwait(false);
         }
     }
 
@@ -188,7 +188,7 @@ public static class TextWriterExtensions
 
         foreach (var value in values)
         {
-            await writer.WriteLineAsync(value?.ToString());
+            await writer.WriteLineAsync(value?.ToString()).ConfigureAwait(false);
         }
     }
 
@@ -217,7 +217,7 @@ public static class TextWriterExtensions
 
         await foreach (var value in values)
         {
-            await writer.WriteLineAsync(value);
+            await writer.WriteLineAsync(value).ConfigureAwait(false);
         }
     }
 
@@ -245,7 +245,7 @@ public static class TextWriterExtensions
 
         await foreach (var value in values)
         {
-            await writer.WriteLineAsync(value?.ToString());
+            await writer.WriteLineAsync(value?.ToString()).ConfigureAwait(false);
         }
     }
 #endif

@@ -108,7 +108,7 @@ internal sealed class TextLineEnumerator : IEnumerable<string>, IEnumerator<stri
     /// 如果成功移动到下一行，则结果为 <see langword="true"/>；
     /// 如果已读取所有字符，则结果为 <see langword="false"/>。</returns>
     public async ValueTask<bool> MoveNextAsync() =>
-        (this.CurrentLine = await this.Reader.ReadLineAsync()) != null;
+        (this.CurrentLine = await this.Reader.ReadLineAsync().ConfigureAwait(false)) != null;
 #endif
 
     /// <summary>
