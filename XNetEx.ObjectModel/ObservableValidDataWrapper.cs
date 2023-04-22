@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using XNetEx.Reflection;
 
 namespace XNetEx.ComponentModel;
@@ -56,7 +57,8 @@ public abstract class ObservableValidDataWrapper<TData> : ObservableValidDataObj
     /// <returns>包装对象中名为 <paramref name="propertyName"/> 的属性或实体的值。</returns>
     /// <exception cref="MissingMemberException">
     /// 无法找到名为 <paramref name="propertyName"/> 的 <see langword="get"/> 属性。</exception>
-    protected override object? GetPropertyCore<T>(string propertyName)
+    [return: MaybeNull]
+    protected override T GetPropertyCore<T>(string propertyName)
     {
         return SimplePropertyAccessor<TData>.GetValue<T>(this.DataObject, propertyName);
     }
@@ -71,8 +73,11 @@ public abstract class ObservableValidDataWrapper<TData> : ObservableValidDataObj
     /// <paramref name="value"/> 无法转换为指定属性的类型。</exception>
     /// <exception cref="MissingMemberException">
     /// 无法找到名为 <paramref name="propertyName"/> 的 <see langword="set"/> 属性。</exception>
-    protected override void SetPropertyCore<T>(string propertyName, object? value)
+    [return: MaybeNull]
+    protected override T ExchangeProperty<T>(string propertyName, [AllowNull] T value)
     {
+        var oldValue = this.GetPropertyCore<T>(propertyName);
         SimplePropertyAccessor<TData>.SetValue(this.DataObject, propertyName, (T?)value);
+        return oldValue;
     }
 }

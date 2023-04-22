@@ -18,11 +18,6 @@ public abstract class ObservableDataObject : INotifyPropertyChanged
     protected const string IndexerName = "Item[]";
 
     /// <summary>
-    /// 表示不存在的值，用于区别 <see langword="null"/> 值。
-    /// </summary>
-    protected static readonly object MissingValue = new object();
-
-    /// <summary>
     /// 表示所有属性的数据存储。
     /// </summary>
     private readonly ConcurrentDictionary<string, object?> PropertyData;
@@ -78,9 +73,7 @@ public abstract class ObservableDataObject : INotifyPropertyChanged
     protected T GetProperty<T>([CallerMemberName] string? propertyName = null)
     {
         if (this.IsEntityName(propertyName)) { return (T)(object)this; }
-        var value = this.GetPropertyCore<T>(propertyName);
-        var hasValue = value != ObservableDataObject.MissingValue;
-        return hasValue ? (T?)value : default(T);
+        return this.GetPropertyCore<T>(propertyName);
     }
 
     /// <summary>
@@ -108,23 +101,11 @@ public abstract class ObservableDataObject : INotifyPropertyChanged
     /// <typeparam name="T">属性的类型。</typeparam>
     /// <param name="propertyName">要获取值的属性的名称。</param>
     /// <returns>名为 <paramref name="propertyName"/> 的属性的值。</returns>
-    protected virtual object? GetPropertyCore<T>(string propertyName)
+    [return: MaybeNull]
+    protected virtual T GetPropertyCore<T>(string propertyName)
     {
         var hasValue = this.PropertyData.TryGetValue(propertyName, out var value);
-        return hasValue ? value : ObservableDataObject.MissingValue;
-    }
-
-    /// <summary>
-    /// 设置指定属性的值。
-    /// </summary>
-    /// <typeparam name="T">属性的类型。</typeparam>
-    /// <param name="value">属性的新值。</param>
-    /// <param name="propertyName">要设置值的属性的名称。</param>
-    /// <exception cref="InvalidCastException">
-    /// <paramref name="value"/> 无法转换为指定属性的类型。</exception>
-    protected virtual void SetPropertyCore<T>(string propertyName, object? value)
-    {
-        this.PropertyData[propertyName] = value;
+        return hasValue ? (T?)value : default(T);
     }
 
     /// <summary>
@@ -136,11 +117,11 @@ public abstract class ObservableDataObject : INotifyPropertyChanged
     /// <returns>名为 <paramref name="propertyName"/> 的属性的原值。</returns>
     /// <exception cref="InvalidCastException">
     /// <paramref name="value"/> 无法转换为指定属性的类型。</exception>
-    protected virtual object? ExchangeProperty<T>(string propertyName, object? value)
+    [return: MaybeNull]
+    protected virtual T ExchangeProperty<T>(string propertyName, [AllowNull] T value)
     {
-        var property = this.GetPropertyCore<T>(propertyName);
-        this.SetPropertyCore<T>(propertyName, value);
-        return property;
+        var hasValue = this.PropertyData.AddOrExchange(propertyName, value, out var oldValue);
+        return hasValue ? (T?)oldValue : default(T);
     }
 
     /// <summary>
