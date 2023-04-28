@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Runtime.CompilerServices;
+#if !NETCOREAPP3_0_OR_GREATER
+using System.Runtime.InteropServices;
+#endif
 
 namespace XNetEx.Security.Cryptography;
 
@@ -9,70 +12,6 @@ namespace XNetEx.Security.Cryptography;
 /// </summary>
 public static class HashAlgorithmExtensions
 {
-    private abstract class MethodBridge : HashAlgorithm
-    {
-        public void AppendData(byte[] buffer, int offset, int count)
-        {
-            this.ValidateInput(buffer, offset, count);
-            this.State = 1;
-            this.HashCore(buffer, offset, count);
-        }
-
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        public void AppendData(ReadOnlySpan<byte> source)
-        {
-            this.State = 1;
-            this.HashCore(source);
-        }
-#endif
-
-        public byte[] GetFinalHash()
-        {
-            var hash = this.HashFinal();
-            this.HashValue = hash;
-            this.State = 0;
-            return (byte[])hash.Clone();
-        }
-
-#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
-        public bool TryGetFinalHash(Span<byte> destination, out int bytesWritten)
-        {
-            var result = this.TryHashFinal(destination, out bytesWritten);
-            this.HashValue = null;
-            this.State = 0;
-            return result;
-        }
-#endif
-
-        [System.Diagnostics.CodeAnalysis.SuppressMessage(
-            "Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
-        private void ValidateInput(byte[] buffer, int offset, int count) =>
-            Validator.Instance.TransformBlock(buffer, offset, count, null, 0);
-
-        private sealed class Validator : MethodBridge
-        {
-            internal static readonly Validator Instance = new Validator();
-
-            public override void Initialize() => throw new NotImplementedException();
-
-            protected override void HashCore(byte[] array, int ibStart, int cbSize) { }
-
-            protected override byte[] HashFinal() => throw new NotImplementedException();
-        }
-    }
-
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    private static unsafe MethodBridge AsBridge(this HashAlgorithm hashing)
-    {
-#if NETCOREAPP3_0_OR_GREATER
-        return Unsafe.As<HashAlgorithm, MethodBridge>(ref hashing);
-#else
-        static object Identity(object value) => value;
-        return ((delegate*<HashAlgorithm, MethodBridge>)
-                (delegate*<object, object>)&Identity)(hashing);
-#endif
-    }
-
     /// <summary>
     /// 计算输入字节数组的哈希值。
     /// </summary>
@@ -185,4 +124,77 @@ public static class HashAlgorithmExtensions
         return hashing.AsBridge().TryGetFinalHash(destination, out bytesWritten);
     }
 #endif
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    private static MethodBridge AsBridge(this HashAlgorithm hashing)
+    {
+#if NETCOREAPP3_0_OR_GREATER
+        return Unsafe.As<MethodBridge>(hashing);
+#else
+        return new UncheckedCasting() { Source = hashing }.Target!;
+#endif
+    }
+
+#if !NETCOREAPP3_0_OR_GREATER
+    [StructLayout(LayoutKind.Explicit)]
+    private struct UncheckedCasting
+    {
+        [FieldOffset(0)] public HashAlgorithm Source;
+        [FieldOffset(0)] public MethodBridge Target;
+    }
+#endif
+
+    private abstract class MethodBridge : HashAlgorithm
+    {
+        public void AppendData(byte[] buffer, int offset, int count)
+        {
+            this.ValidateInput(buffer, offset, count);
+            this.State = 1;
+            this.HashCore(buffer, offset, count);
+        }
+
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        public void AppendData(ReadOnlySpan<byte> source)
+        {
+            this.State = 1;
+            this.HashCore(source);
+        }
+#endif
+
+        public byte[] GetFinalHash()
+        {
+            var hash = this.HashFinal();
+            this.HashValue = hash;
+            this.State = 0;
+            return (byte[])hash.Clone();
+        }
+
+#if NETCOREAPP2_1_OR_GREATER || NETSTANDARD2_1_OR_GREATER
+        public bool TryGetFinalHash(Span<byte> destination, out int bytesWritten)
+        {
+            var result = this.TryHashFinal(destination, out bytesWritten);
+            this.HashValue = null;
+            this.State = 0;
+            return result;
+        }
+#endif
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage(
+            "Microsoft.Performance", "CA1822:MarkMembersAsStatic")]
+        private void ValidateInput(byte[] buffer, int offset, int count)
+        {
+            Validator.Instance.TransformBlock(buffer, offset, count, null, 0);
+        }
+
+        private sealed class Validator : MethodBridge
+        {
+            internal static readonly Validator Instance = new Validator();
+
+            public override void Initialize() => throw new NotImplementedException();
+
+            protected override void HashCore(byte[] array, int ibStart, int cbSize) { }
+
+            protected override byte[] HashFinal() => throw new NotImplementedException();
+        }
+    }
 }
