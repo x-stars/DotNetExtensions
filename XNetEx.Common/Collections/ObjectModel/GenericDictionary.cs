@@ -478,11 +478,11 @@ public class GenericDictionary<TKey, TValue>
         /// 以指定的 <see cref="GenericDictionary{TKey, TValue}"/>
         /// 初始化 <see cref="DebugView"/> 类的新实例。
         /// </summary>
-        /// <param name="dictioanry">
+        /// <param name="dictionary">
         /// 要获取调试器视图的 <see cref="GenericDictionary{TKey, TValue}"/>。</param>
-        internal DebugView(GenericDictionary<TKey, TValue> dictioanry)
+        internal DebugView(GenericDictionary<TKey, TValue> dictionary)
         {
-            this.Dictionary = dictioanry.Dictionary;
+            this.Dictionary = dictionary.Dictionary;
         }
     }
 }
