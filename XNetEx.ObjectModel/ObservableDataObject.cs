@@ -120,7 +120,7 @@ public abstract class ObservableDataObject : INotifyPropertyChanged
     [return: MaybeNull]
     protected virtual T ExchangeProperty<T>(string propertyName, [AllowNull] T value)
     {
-        var hasValue = this.PropertyData.AddOrExchange(propertyName, value, out var oldValue);
+        var hasValue = this.PropertyData.ExchangeOrAdd(propertyName, value, out var oldValue);
         return hasValue ? (T?)oldValue : default(T);
     }
 
