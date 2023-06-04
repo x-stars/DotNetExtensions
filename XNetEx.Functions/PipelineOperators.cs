@@ -5,7 +5,7 @@ namespace XNetEx.Functions;
 public static class PipelineOperators
 {
     public static T1
-        Perform<T1>(
+        Do<T1>(
             this T1 arg1,
             Action<T1> action)
     {
@@ -30,7 +30,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2)
-        Perform<T1, T2>(
+        Do<T1, T2>(
             this (T1, T2) args,
             Action<T1, T2> action)
     {
@@ -71,7 +71,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2, T3)
-        Perform<T1, T2, T3>(
+        Do<T1, T2, T3>(
             this (T1, T2, T3) args,
             Action<T1, T2, T3> action)
     {
@@ -128,7 +128,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2, T3, T4)
-        Perform<T1, T2, T3, T4>(
+        Do<T1, T2, T3, T4>(
             this (T1, T2, T3, T4) args,
             Action<T1, T2, T3, T4> action)
     {
@@ -201,7 +201,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2, T3, T4, T5)
-        Perform<T1, T2, T3, T4, T5>(
+        Do<T1, T2, T3, T4, T5>(
             this (T1, T2, T3, T4, T5) args,
             Action<T1, T2, T3, T4, T5> action)
     {
@@ -290,7 +290,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2, T3, T4, T5, T6)
-        Perform<T1, T2, T3, T4, T5, T6>(
+        Do<T1, T2, T3, T4, T5, T6>(
             this (T1, T2, T3, T4, T5, T6) args,
             Action<T1, T2, T3, T4, T5, T6> action)
     {
@@ -395,7 +395,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2, T3, T4, T5, T6, T7)
-        Perform<T1, T2, T3, T4, T5, T6, T7>(
+        Do<T1, T2, T3, T4, T5, T6, T7>(
             this (T1, T2, T3, T4, T5, T6, T7) args,
             Action<T1, T2, T3, T4, T5, T6, T7> action)
     {
@@ -516,7 +516,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2, T3, T4, T5, T6, T7, T8)
-        Perform<T1, T2, T3, T4, T5, T6, T7, T8>(
+        Do<T1, T2, T3, T4, T5, T6, T7, T8>(
             this (T1, T2, T3, T4, T5, T6, T7, T8) args,
             Action<T1, T2, T3, T4, T5, T6, T7, T8> action)
     {
@@ -653,7 +653,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2, T3, T4, T5, T6, T7, T8, T9)
-        Perform<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
+        Do<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
             this (T1, T2, T3, T4, T5, T6, T7, T8, T9) args,
             Action<T1, T2, T3, T4, T5, T6, T7, T8, T9> action)
     {
@@ -806,7 +806,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)
-        Perform<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
+        Do<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
             this (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10) args,
             Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> action)
     {
@@ -975,7 +975,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11)
-        Perform<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
+        Do<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
             this (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11) args,
             Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11> action)
     {
@@ -1160,7 +1160,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12)
-        Perform<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
+        Do<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
             this (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12) args,
             Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12> action)
     {
@@ -1361,7 +1361,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13)
-        Perform<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(
+        Do<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(
             this (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13) args,
             Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13> action)
     {
@@ -1578,7 +1578,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14)
-        Perform<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(
+        Do<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(
             this (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14) args,
             Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14> action)
     {
@@ -1811,7 +1811,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)
-        Perform<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(
+        Do<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(
             this (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15) args,
             Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15> action)
     {
@@ -2060,7 +2060,7 @@ public static class PipelineOperators
     }
 
     public static (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16)
-        Perform<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(
+        Do<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(
             this (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16) args,
             Action<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16> action)
     {

@@ -25,7 +25,7 @@ for (int funcArgCount = 1; funcArgCount <= funcArgLimit; funcArgCount++)
     var argsParamName = (funcArgCount == 1) ? "arg1" : "args";
 #>
     public static <#= argsType #>
-        Perform<<#= string.Join(", ", typeParams) #>>(
+        Do<<#= string.Join(", ", typeParams) #>>(
             this <#= argsType #> <#= argsParamName #>,
             Action<<#= string.Join(", ", typeParams) #>> action)
     {
