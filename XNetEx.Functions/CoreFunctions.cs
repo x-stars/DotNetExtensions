@@ -11,6 +11,8 @@ public static class CoreFunctions
 
     public static bool IsOfType<T>(object? instance) => instance is T;
 
+    public static object? Box<T>(T value) => (object?)value;
+
     public static T? CastType<T>(object? instance) => (T?)instance;
 
     public static T? TryCastType<T>(object? instance) where T : class => instance as T;
@@ -29,6 +31,8 @@ public static class CoreFunctions
 
     public static class NotNull
     {
+        public static object Box<T>(T value) where T : notnull => (object)value;
+
         public static T CastType<T>(object instance) where T : notnull => (T)instance;
 
         public static Type GetType<T>(object instance) where T : notnull => instance.GetType();
