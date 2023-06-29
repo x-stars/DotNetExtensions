@@ -1,10 +1,16 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿// Copyright (c) 2023 XstarS
+// This file is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace System.Collections.Concurrent;
 
 /// <summary>
 /// Provides extension methods for <see cref="ConcurrentDictionary{TKey, TValue}"/>.
 /// </summary>
+[DebuggerNonUserCode, ExcludeFromCodeCoverage]
 internal static class ConcurrentDictionary
 {
     /// <summary>
