@@ -2,91 +2,107 @@
 // This file is released under the MIT License.
 // https://opensource.org/licenses/MIT
 
-using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
+#pragma warning disable
+#nullable enable
 
-namespace System.Collections.Concurrent;
-
-/// <summary>
-/// Provides extension methods for <see cref="ConcurrentDictionary{TKey, TValue}"/>.
-/// </summary>
-[DebuggerNonUserCode, ExcludeFromCodeCoverage]
-internal static class ConcurrentDictionary
+namespace System.Collections.Concurrent
 {
-    /// <summary>
-    /// Updates the value associated with the specified key and returns the original value
-    /// if the key already exists,
-    /// or adds a key/value pair to the <see cref="ConcurrentDictionary{TKey, TValue}"/>
-    /// if the key does not already exist.
-    /// </summary>
-    /// <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
-    /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
-    /// <param name="dictionary">The <see cref="ConcurrentDictionary{TKey, TValue}"/>.</param>
-    /// <param name="key">The key whose value should be updated or to be added.</param>
-    /// <param name="value">The value to be updated or added for the key.</param>
-    /// <param name="oldValue">When this method returns <see langword="true"/>,
-    /// contains the original value associated with <paramref name="key"/>.</param>
-    /// <returns><see langword="true"/> if <paramref name="key"/> already exists
-    /// in <paramref name="dictionary"/>; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="dictionary"/>
-    /// or <paramref name="key"/> is <see langword="null"/>.</exception>
-    /// <exception cref="OverflowException">
-    /// <paramref name="dictionary"/> contains too many elements.</exception>
-    public static bool ExchangeOrAdd<TKey, TValue>(
-        this ConcurrentDictionary<TKey, TValue> dictionary,
-        TKey key, TValue value, [MaybeNullWhen(false)] out TValue oldValue)
-        where TKey : notnull
-    {
-        if (dictionary is null)
-        {
-            throw new ArgumentNullException(nameof(dictionary));
-        }
-
-        while (true)
-        {
-            var hasValue = dictionary.TryGetValue(key, out oldValue);
-            var exchanged = hasValue ?
-                dictionary.TryUpdate(key, value, oldValue!) :
-                dictionary.TryAdd(key, value);
-            if (exchanged) { return hasValue; }
-        }
-    }
+    using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
-    /// Attempts to update the value associated with the specified key in the
-    /// <see cref="ConcurrentDictionary{TKey, TValue}"/> and returns the original value.
+    /// Provides extension methods for <see cref="ConcurrentDictionary{TKey, TValue}"/>.
     /// </summary>
-    /// <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
-    /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
-    /// <param name="dictionary">The <see cref="ConcurrentDictionary{TKey, TValue}"/>.</param>
-    /// <param name="key">The key whose value should be updated.</param>
-    /// <param name="value">The value to be updated for the key.</param>
-    /// <param name="oldValue">When this method returns <see langword="true"/>,
-    /// contains the original value associated with <paramref name="key"/>.</param>
-    /// <returns><see langword="true"/> if <paramref name="key"/> already exists
-    /// in <paramref name="dictionary"/>; otherwise, <see langword="false"/>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="dictionary"/>
-    /// or <paramref name="key"/> is <see langword="null"/>.</exception>
-    public static bool TryExchange<TKey, TValue>(
-        this ConcurrentDictionary<TKey, TValue> dictionary,
-        TKey key, TValue value, [MaybeNullWhen(false)] out TValue oldValue)
-        where TKey : notnull
+    [DebuggerNonUserCode, ExcludeFromCodeCoverage]
+    internal static class ConcurrentDictionary
     {
-        if (dictionary is null)
+        /// <summary>
+        /// Updates the value associated with the specified key and returns the original value
+        /// if the key already exists,
+        /// or adds a key/value pair to the <see cref="ConcurrentDictionary{TKey, TValue}"/>
+        /// if the key does not already exist.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
+        /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
+        /// <param name="dictionary">The <see cref="ConcurrentDictionary{TKey, TValue}"/>.</param>
+        /// <param name="key">The key whose value should be updated or to be added.</param>
+        /// <param name="value">The value to be updated or added for the key.</param>
+        /// <param name="oldValue">When this method returns <see langword="true"/>,
+        /// contains the original value associated with <paramref name="key"/>.</param>
+        /// <returns><see langword="true"/> if <paramref name="key"/> already exists
+        /// in <paramref name="dictionary"/>; otherwise, <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="dictionary"/>
+        /// or <paramref name="key"/> is <see langword="null"/>.</exception>
+        /// <exception cref="OverflowException">
+        /// <paramref name="dictionary"/> contains too many elements.</exception>
+        public static bool ExchangeOrAdd<TKey, TValue>(
+            this ConcurrentDictionary<TKey, TValue> dictionary,
+            TKey key, TValue value, [MaybeNullWhen(false)] out TValue oldValue)
+            where TKey : notnull
         {
-            throw new ArgumentNullException(nameof(dictionary));
-        }
-
-        while (true)
-        {
-            if (!dictionary.TryGetValue(key, out oldValue))
+            if (dictionary is null)
             {
-                return false;
+                throw new ArgumentNullException(nameof(dictionary));
             }
-            if (dictionary.TryUpdate(key, value, oldValue))
+
+            while (true)
             {
-                return true;
+                var hasValue = dictionary.TryGetValue(key, out oldValue);
+                var exchanged = hasValue ?
+                    dictionary.TryUpdate(key, value, oldValue!) :
+                    dictionary.TryAdd(key, value);
+                if (exchanged) { return hasValue; }
+            }
+        }
+
+        /// <summary>
+        /// Attempts to update the value associated with the specified key in the
+        /// <see cref="ConcurrentDictionary{TKey, TValue}"/> and returns the original value.
+        /// </summary>
+        /// <typeparam name="TKey">The type of the keys in the dictionary.</typeparam>
+        /// <typeparam name="TValue">The type of the values in the dictionary.</typeparam>
+        /// <param name="dictionary">The <see cref="ConcurrentDictionary{TKey, TValue}"/>.</param>
+        /// <param name="key">The key whose value should be updated.</param>
+        /// <param name="value">The value to be updated for the key.</param>
+        /// <param name="oldValue">When this method returns <see langword="true"/>,
+        /// contains the original value associated with <paramref name="key"/>.</param>
+        /// <returns><see langword="true"/> if <paramref name="key"/> already exists
+        /// in <paramref name="dictionary"/>; otherwise, <see langword="false"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="dictionary"/>
+        /// or <paramref name="key"/> is <see langword="null"/>.</exception>
+        public static bool TryExchange<TKey, TValue>(
+            this ConcurrentDictionary<TKey, TValue> dictionary,
+            TKey key, TValue value, [MaybeNullWhen(false)] out TValue oldValue)
+            where TKey : notnull
+        {
+            if (dictionary is null)
+            {
+                throw new ArgumentNullException(nameof(dictionary));
+            }
+
+            while (true)
+            {
+                if (!dictionary.TryGetValue(key, out oldValue))
+                {
+                    return false;
+                }
+                if (dictionary.TryUpdate(key, value, oldValue))
+                {
+                    return true;
+                }
             }
         }
     }
 }
+
+#if !(EXCLUDE_FROM_CODE_COVERAGE_ATTRIBUTE || NETCOREAPP3_0_OR_GREATER)
+#if !(NET40_OR_GREATER || NETCOREAPP2_0_OR_GREATER || NETSTANDARD2_0_OR_GREATER)
+namespace System.Diagnostics.CodeAnalysis
+{
+    // Excludes the attributed code from code coverage information.
+    internal sealed partial class ExcludeFromCodeCoverageAttribute : Attribute
+    {
+    }
+}
+#endif
+#endif
