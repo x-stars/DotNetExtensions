@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using mstring = System.Text.StringBuilder;
+using MString = System.Text.StringBuilder;
 
 namespace XNetEx.Win32;
 
@@ -30,7 +30,7 @@ public class IniFile
         [DllImport("kernel32.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         internal static extern int GetPrivateProfileString(
             string lpAppName, string lpKeyName, string lpDefault,
-            mstring lpReturnedString, int nSize, string lpFileName);
+            MString lpReturnedString, int nSize, string lpFileName);
 
         /// <summary>
         /// 向指定 INI 配置文件中指定区块的指定键写入指定的值。
@@ -84,7 +84,7 @@ public class IniFile
     /// <exception cref="Win32Exception">从当前 INI 配置文件读取值失败。</exception>
     public string ReadProfile(string app, string key)
     {
-        var result = new mstring(ushort.MaxValue);
+        var result = new MString(ushort.MaxValue);
         var length = NativeMethods.GetPrivateProfileString(
             app, key, string.Empty, result, result.Capacity, this.FileName);
         if (length == 0)

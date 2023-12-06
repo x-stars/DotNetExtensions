@@ -143,7 +143,11 @@ public unsafe struct ByteUnion : IEquatable<ByteUnion>, ISerializable
     /// 将当前 <see cref="ByteUnion"/> 的值复制到指定字节跨度中。
     /// </summary>
     /// <param name="bytes">作为复制目标的字节跨度。</param>
+#if NET8_0_OR_GREATER
+    public void CopyTo(Span<byte> bytes) => MemoryMarshal.Write(bytes, in this.Byte);
+#else
     public void CopyTo(Span<byte> bytes) => MemoryMarshal.Write(bytes, ref this.Byte);
+#endif
 #endif
 
     /// <summary>

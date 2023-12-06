@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using mstring = System.Text.StringBuilder;
+using MString = System.Text.StringBuilder;
 
 namespace XNetEx.IO;
 
@@ -61,7 +61,7 @@ public static class BinaryReaderExtensions
         static string? ReadCore(BinaryReader reader)
         {
             var iChar = -1;
-            var result = new mstring();
+            var result = new MString();
             while ((iChar = reader.Read()) != -1)
             {
                 if ((char)iChar == '\0') { break; }

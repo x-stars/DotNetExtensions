@@ -152,7 +152,11 @@ public unsafe struct WordUnion : IEquatable<WordUnion>, ISerializable
     /// 将当前 <see cref="WordUnion"/> 的值复制到指定字节跨度中。
     /// </summary>
     /// <param name="bytes">作为复制目标的字节跨度。</param>
+#if NET8_0_OR_GREATER
+    public void CopyTo(Span<byte> bytes) => MemoryMarshal.Write(bytes, in this.UInt16);
+#else
     public void CopyTo(Span<byte> bytes) => MemoryMarshal.Write(bytes, ref this.UInt16);
+#endif
 #endif
 
     /// <summary>

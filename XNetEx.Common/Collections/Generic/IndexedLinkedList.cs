@@ -40,6 +40,11 @@ public class IndexedLinkedList<T> : LinkedList<T>, IList, IList<T>, IReadOnlyLis
     /// 包含序列化 <see cref="IndexedLinkedList{T}"/> 所需的信息。</param>
     /// <param name="context">一个 <see cref="StreamingContext"/> 结构，
     /// 包含与 <see cref="IndexedLinkedList{T}"/> 关联的序列化流的源和目标。</param>
+#if NET8_0_OR_GREATER
+    [Obsolete("This API supports obsolete formatter-based serialization. " +
+              "It should not be called or extended by application code.",
+              DiagnosticId = "SYSLIB0051", UrlFormat = "https://aka.ms/dotnet-warnings/{0}")]
+#endif
     protected IndexedLinkedList(SerializationInfo info, StreamingContext context)
         : base(info, context)
     {

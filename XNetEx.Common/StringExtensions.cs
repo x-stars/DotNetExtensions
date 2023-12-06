@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using mstring = System.Text.StringBuilder;
+using MString = System.Text.StringBuilder;
 
 namespace XNetEx;
 
@@ -82,7 +82,7 @@ public static class StringExtensions
         static IEnumerable<string> SplitCore(string text,
             Predicate<char> isSeparator, StringSplitOptions options)
         {
-            var token = new mstring();
+            var token = new MString();
             foreach (var @char in text)
             {
                 if (isSeparator(@char))

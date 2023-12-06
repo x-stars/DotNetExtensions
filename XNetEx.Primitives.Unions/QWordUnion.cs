@@ -152,7 +152,11 @@ public unsafe struct QWordUnion : IEquatable<QWordUnion>, ISerializable
     /// 将当前 <see cref="QWordUnion"/> 的值复制到指定字节跨度中。
     /// </summary>
     /// <param name="bytes">作为复制目标的字节跨度。</param>
+#if NET8_0_OR_GREATER
+    public void CopyTo(Span<byte> bytes) => MemoryMarshal.Write(bytes, in this.UInt64);
+#else
     public void CopyTo(Span<byte> bytes) => MemoryMarshal.Write(bytes, ref this.UInt64);
+#endif
 #endif
 
     /// <summary>
