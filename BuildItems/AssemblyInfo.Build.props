@@ -1,0 +1,16 @@
+<Project>
+
+  <PropertyGroup>
+    <Authors>XstarS</Authors>
+    <Company>XstarS</Company>
+    <Version>1.0.0</Version>
+    <Product>XstarS .NET Extensions</Product>
+    <AssemblyTitle>$(AssemblyName)</AssemblyTitle>
+    <Copyright>Copyright © $(Company) 2018</Copyright>
+    <FileVersion>$(Version.Split('-')[0]).0</FileVersion>
+    <VersionMajor>$(Version.Split('.')[0])</VersionMajor>
+    <VersionMinor>$(Version.Split('.')[1])</VersionMinor>
+    <AssemblyVersion>$(VersionMajor).$(VersionMinor).0.0</AssemblyVersion>
+  </PropertyGroup>
+
+</Project>
