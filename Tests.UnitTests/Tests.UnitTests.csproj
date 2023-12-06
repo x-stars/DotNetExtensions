@@ -47,8 +47,4 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard'">
-    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
-  </ItemGroup>
-
 </Project>
