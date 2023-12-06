@@ -1,6 +1,10 @@
 <Project>
 
   <PropertyGroup>
+    <NoWarn>CS8981</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <Authors>XstarS</Authors>
     <Company>XstarS</Company>
     <Version>1.0.0</Version>

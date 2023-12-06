@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using MString = System.Text.StringBuilder;
+using mstring = System.Text.StringBuilder;
 
 namespace XNetEx.IO;
 
@@ -118,7 +118,7 @@ public static class TextReaderExtensions
             {
                 if (!char.IsWhiteSpace((char)iChar)) { break; }
             }
-            var result = new MString();
+            var result = new mstring();
             result.Append((char)iChar);
             while ((iChar = reader.Read()) != -1)
             {
