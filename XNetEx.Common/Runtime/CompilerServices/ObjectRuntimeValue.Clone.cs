@@ -10,7 +10,7 @@ using XCmpSp = XNetEx.Collections.Specialized;
 
 #if NET5_0_OR_GREATER
 #pragma warning disable SYSLIB0011  // BinaryFormatter serialization is obsolete.
-// Justification: No external serialized data will be transfered into current app domain.
+// Justification: No external serialized data will be transferred into current app domain.
 #endif
 
 namespace XNetEx.Runtime.CompilerServices;
