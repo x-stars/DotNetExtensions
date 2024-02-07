@@ -66,8 +66,10 @@
     </Compile>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='net' And
-                        '$(TargetFramework.CompareTo(`net47`))'&lt;'0'">
+  <ItemGroup Condition="
+    '$([MSBuild]::GetTargetFrameworkIdentifier($(TargetFramework)))'=='.NETFramework' And
+    !$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)','net47'))
+  ">
     <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
 

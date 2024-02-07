@@ -16,12 +16,16 @@
     <Compile Include="..\SharedItems\Common\**\*.cs" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netcoreapp'">
+  <ItemGroup Condition="
+    '$([MSBuild]::GetTargetFrameworkIdentifier($(TargetFramework)))'=='.NETCoreApp' And
+    !$([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)','net5.0'))
+  ">
     <PackageReference Include="Microsoft.Win32.Registry" Version="4.0.0" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.Split(`-`)[0].TrimEnd(`.0123456789`))'=='net' And
-                        '$(TargetFramework.Split(`-`)[0].CompareTo(`net5.0`))'&gt;='0'">
+  <ItemGroup Condition="
+    $([MSBuild]::IsTargetFrameworkCompatible('$(TargetFramework)','net5.0'))
+  ">
     <PackageReference Include="Microsoft.Win32.Registry" Version="5.0.0" />
   </ItemGroup>
 

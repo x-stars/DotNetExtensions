@@ -17,12 +17,15 @@
     <Compile Include="..\SharedItems\Common\**\*.cs" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.Split(`-`)[0].TrimEnd(`.0123456789`))'=='net' And
-                        '$(TargetFramework.Split(`-`)[0].CompareTo(`net5.0`))'&lt;'0'">
+  <ItemGroup Condition="
+    '$([MSBuild]::GetTargetFrameworkIdentifier($(TargetFramework)))'=='.NETFramework'
+  ">
     <Reference Include="System.ComponentModel.DataAnnotations" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework.TrimEnd(`.0123456789`))'=='netstandard'">
+  <ItemGroup Condition="
+    '$([MSBuild]::GetTargetFrameworkIdentifier($(TargetFramework)))'=='.NETStandard'
+  ">
     <PackageReference Include="System.ComponentModel.Annotations" Version="4.4.0" />
   </ItemGroup>
 
