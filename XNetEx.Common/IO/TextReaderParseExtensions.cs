@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using XNetEx.Text;
+using XNetEx.ComponentModel;
 
 namespace XNetEx.IO;
 
@@ -26,6 +26,7 @@ public static class TextReaderParseExtensions
     /// <see cref="TextReader"/> 已关闭。</exception>
     /// <exception cref="OutOfMemoryException">
     /// 没有足够的内存来为下一行字符串分配缓冲区。</exception>
+    /// <exception cref="NotSupportedException">读取到的字符串不能转换为适当的对象。</exception>
     /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
     /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
     /// <exception cref="OverflowException">
@@ -40,7 +41,7 @@ public static class TextReaderParseExtensions
         }
 
         var text = reader.ReadLine();
-        return (text is null) ? endValue : text.ParseAs<T>();
+        return (text is null) ? endValue : text.ConvertTo<T>();
     }
 
     /// <summary>
@@ -60,6 +61,7 @@ public static class TextReaderParseExtensions
     /// <see cref="TextReader"/> 已关闭。</exception>
     /// <exception cref="OutOfMemoryException">
     /// 没有足够的内存来为下一行字符串分配缓冲区。</exception>
+    /// <exception cref="NotSupportedException">读取到的字符串不能转换为适当的对象。</exception>
     /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
     /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
     /// <exception cref="OverflowException">
@@ -74,7 +76,7 @@ public static class TextReaderParseExtensions
         }
 
         var text = reader.ReadLine();
-        return (text is null) ? endValue : text.ParseAs<T>();
+        return (text is null) ? endValue : text.ConvertTo<T>();
     }
 
     /// <summary>
@@ -94,6 +96,7 @@ public static class TextReaderParseExtensions
     /// <see cref="TextReader"/> 已关闭。</exception>
     /// <exception cref="OutOfMemoryException">
     /// 没有足够的内存来为下一个字符串值分配缓冲区。</exception>
+    /// <exception cref="NotSupportedException">读取到的字符串不能转换为适当的对象。</exception>
     /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
     /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
     /// <exception cref="OverflowException">
@@ -108,7 +111,7 @@ public static class TextReaderParseExtensions
         }
 
         var text = reader.ReadToken();
-        return (text is null) ? endValue : text.ParseAs<T>();
+        return (text is null) ? endValue : text.ConvertTo<T>();
     }
 
     /// <summary>
@@ -128,6 +131,7 @@ public static class TextReaderParseExtensions
     /// <see cref="TextReader"/> 已关闭。</exception>
     /// <exception cref="OutOfMemoryException">
     /// 没有足够的内存来为下一个字符串值分配缓冲区。</exception>
+    /// <exception cref="NotSupportedException">读取到的字符串不能转换为适当的对象。</exception>
     /// <exception cref="FormatException">读取到的字符串的格式不正确。</exception>
     /// <exception cref="InvalidCastException">指定的从字符串的转换无效。</exception>
     /// <exception cref="OverflowException">
@@ -142,6 +146,6 @@ public static class TextReaderParseExtensions
         }
 
         var text = reader.ReadToken();
-        return (text is null) ? endValue : text.ParseAs<T>();
+        return (text is null) ? endValue : text.ConvertTo<T>();
     }
 }
