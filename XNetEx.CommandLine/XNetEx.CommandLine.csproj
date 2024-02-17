@@ -41,5 +41,4 @@
     <Compile Include="..\SharedItems\Common\**\*.cs" />
   </ItemGroup>
 
-
 </Project>
