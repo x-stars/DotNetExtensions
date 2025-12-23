@@ -13,6 +13,7 @@ namespace System.Collections.Concurrent
 {
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading;
 
     /// <summary>
     /// Provides extension methods for <see cref="ConcurrentDictionary{TKey, TValue}"/>.
@@ -49,6 +50,7 @@ namespace System.Collections.Concurrent
                 throw new ArgumentNullException(nameof(dictionary));
             }
 
+            var spinner = new SpinWait();
             while (true)
             {
                 var hasValue = dictionary.TryGetValue(key, out oldValue);
@@ -56,6 +58,7 @@ namespace System.Collections.Concurrent
                     dictionary.TryUpdate(key, value, oldValue!) :
                     dictionary.TryAdd(key, value);
                 if (exchanged) { return hasValue; }
+                spinner.SpinOnce();
             }
         }
 
@@ -84,6 +87,7 @@ namespace System.Collections.Concurrent
                 throw new ArgumentNullException(nameof(dictionary));
             }
 
+            var spinner = new SpinWait();
             while (true)
             {
                 if (!dictionary.TryGetValue(key, out oldValue))
@@ -94,6 +98,7 @@ namespace System.Collections.Concurrent
                 {
                     return true;
                 }
+                spinner.SpinOnce();
             }
         }
     }
