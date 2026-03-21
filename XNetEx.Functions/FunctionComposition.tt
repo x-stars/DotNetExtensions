@@ -20,58 +20,58 @@ for (int funcArgCount = 1; funcArgCount <= funcArgLimit; funcArgCount++)
         .Select(argIndex => $"arg{argIndex}");
     for (int innerArgCount = 1; innerArgCount <= funcArgCount; innerArgCount++)
     {
-        var outterArgCount = funcArgCount - innerArgCount;
+        var outerArgCount = funcArgCount - innerArgCount;
         var innerTypeParams = Enumerable.Range(1, innerArgCount)
             .Select(argIndex => $"T{argIndex}");
-        var ouuterTypeParams = (new[] { "TM" }).Concat(
-            Enumerable.Range(innerArgCount + 1, outterArgCount)
+        var outerTypeParams = (new[] { "TM" }).Concat(
+            Enumerable.Range(innerArgCount + 1, outerArgCount)
                 .Select(argIndex => $"T{argIndex}"));
-        var typeParams = innerTypeParams.Concat(ouuterTypeParams);
+        var typeParams = innerTypeParams.Concat(outerTypeParams);
         var innerArgs = Enumerable.Range(1, innerArgCount)
             .Select(argIndex => $"arg{argIndex}");
         var innerArgsText = string.Join(", ", innerArgs);
-        var outterArgs = Enumerable.Range(innerArgCount + 1, outterArgCount)
+        var outerArgs = Enumerable.Range(innerArgCount + 1, outerArgCount)
             .Select(argIndex => $"arg{argIndex}");
-        var outterArgsText = string.Join(", ", outterArgs);
-        if (outterArgsText.Length != 0) { outterArgsText = ", " + outterArgsText; }
+        var outerArgsText = string.Join(", ", outerArgs);
+        if (outerArgsText.Length != 0) { outerArgsText = ", " + outerArgsText; }
 #>
     public static Action<<#= string.Join(", ", composeTypeParams) #>>
         Compose<<#= string.Join(", ", typeParams) #>>(
-            this Action<<#= string.Join(", ", ouuterTypeParams) #>> outterAction,
+            this Action<<#= string.Join(", ", outerTypeParams) #>> outerAction,
             Func<<#= string.Join(", ", innerTypeParams) #>, TM> innerFunc)
     {
         return (<#= string.Join(", ", composeArgParams) #>) =>
-            outterAction.Invoke(innerFunc.Invoke(<#= innerArgsText #>)<#= outterArgsText #>);
+            outerAction.Invoke(innerFunc.Invoke(<#= innerArgsText #>)<#= outerArgsText #>);
     }
 
     public static Func<<#= string.Join(", ", composeTypeParams) #>, TR>
         Compose<<#= string.Join(", ", typeParams) #>, TR>(
-            this Func<<#= string.Join(", ", ouuterTypeParams) #>, TR> outterFunc,
+            this Func<<#= string.Join(", ", outerTypeParams) #>, TR> outerFunc,
             Func<<#= string.Join(", ", innerTypeParams) #>, TM> innerFunc)
     {
         return (<#= string.Join(", ", composeArgParams) #>) =>
-            outterFunc.Invoke(innerFunc.Invoke(<#= innerArgsText #>)<#= outterArgsText #>);
+            outerFunc.Invoke(innerFunc.Invoke(<#= innerArgsText #>)<#= outerArgsText #>);
     }
 
     public static Action<<#= string.Join(", ", composeTypeParams) #>>
         ComposeNext<<#= string.Join(", ", typeParams) #>>(
             this Func<<#= string.Join(", ", innerTypeParams) #>, TM> innerFunc,
-            Action<<#= string.Join(", ", ouuterTypeParams) #>> outterAction)
+            Action<<#= string.Join(", ", outerTypeParams) #>> outerAction)
     {
         return (<#= string.Join(", ", composeArgParams) #>) =>
-            outterAction.Invoke(innerFunc.Invoke(<#= innerArgsText #>)<#= outterArgsText #>);
+            outerAction.Invoke(innerFunc.Invoke(<#= innerArgsText #>)<#= outerArgsText #>);
     }
 
     public static Func<<#= string.Join(", ", composeTypeParams) #>, TR>
         ComposeNext<<#= string.Join(", ", typeParams) #>, TR>(
             this Func<<#= string.Join(", ", innerTypeParams) #>, TM> innerFunc,
-            Func<<#= string.Join(", ", ouuterTypeParams) #>, TR> outterFunc)
+            Func<<#= string.Join(", ", outerTypeParams) #>, TR> outerFunc)
     {
         return (<#= string.Join(", ", composeArgParams) #>) =>
-            outterFunc.Invoke(innerFunc.Invoke(<#= innerArgsText #>)<#= outterArgsText #>);
+            outerFunc.Invoke(innerFunc.Invoke(<#= innerArgsText #>)<#= outerArgsText #>);
     }
 <#
-        if ((funcArgCount != funcArgLimit) || (outterArgCount != 0))
+        if ((funcArgCount != funcArgLimit) || (outerArgCount != 0))
         {
 #>
 
