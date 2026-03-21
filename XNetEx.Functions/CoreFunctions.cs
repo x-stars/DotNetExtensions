@@ -7,6 +7,10 @@ public static class CoreFunctions
 {
     public static T Identity<T>(T value) => value;
 
+    public static void Discard<T>(T value) { }
+
+    public static Func<T> Constant<T>(T value) => () => value;
+
     public static bool Not(bool value) => !value;
 
     public static bool IsOfType<T>(object? instance) => instance is T;
@@ -19,11 +23,11 @@ public static class CoreFunctions
 
     public static T? TryCastNullable<T>(object? instance) where T : struct => instance as T?;
 
-    public static int Compare<T>(T? x, T? y) => Comparer<T>.Default.Compare(x!, y!);
+    public static int Compare<T>(T? x, T? y) => Comparer<T?>.Default.Compare(x, y);
 
-    public static bool Equals<T>(T? x, T? y) => EqualityComparer<T>.Default.Equals(x!, y!);
+    public static bool Equals<T>(T? x, T? y) => EqualityComparer<T?>.Default.Equals(x, y);
 
-    public static int GetHashCode<T>(T? obj) => EqualityComparer<T>.Default.GetHashCode(obj!);
+    public static int GetHashCode<T>(T? obj) => EqualityComparer<T?>.Default.GetHashCode(obj);
 
     public static Type? GetType<T>(object? instance) => instance?.GetType();
 
